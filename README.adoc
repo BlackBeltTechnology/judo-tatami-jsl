@@ -1,0 +1,9 @@
+# judo-tatami-jsl
+
+image::https://github.com/BlackBeltTechnology/judo-tatami-jsl/actions/workflows/build.yml/badge.svg?branch=develop[link="https://github.com/BlackBeltTechnology/judo-tatami-jsl/actions/workflows/build.yml" float="center"]
+
+
+For usage in project check
+xref:judo-tatami-jsl-workflow-maven-plugin/README.adoc [judo-tatatmi-jsl-workflow-maven plugin documentation]
+for more information.
+
