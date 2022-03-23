@@ -1,0 +1,3 @@
+operation JSL!EntityDeclaration getPSMEquivalent(): JUDOPSM!EntityType {
+	return self.equivalent("CreateEntityType");
+}

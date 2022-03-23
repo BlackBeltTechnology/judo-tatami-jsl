@@ -1,0 +1,32 @@
+= Tatami JSL Workflow maven plugin
+ifndef::env-site,env-github[]
+include::_attributes.adoc[]
+endif::[]
+// Settings
+:idprefix:
+:idseparator: -
+
+This plugin manages and executes generators for JUDO JSL models.
+
+## Requirements
+
+- Maven 3.6 and Java 1.8
+
+## Installation
+
+Include the plugin as a dependency in your Maven project. Change `LATEST_VERSION` to the latest tagged version.
+
+```xml
+<plugin>
+    <groupId>hu.blackbelt.judo.tatami</groupId>
+    <artifactId>judo-tatami-jsl-workflow-maven-plugin</artifactId>
+    <version>LATEST_VERSION</version>
+    ...
+</plugin>
+<!-- ... -->
+
+```
+
+## Usage
+
+WIP

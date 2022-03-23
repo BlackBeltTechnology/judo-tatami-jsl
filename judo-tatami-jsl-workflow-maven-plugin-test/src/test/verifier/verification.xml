@@ -1,0 +1,24 @@
+<verifications xmlns="http://maven.apache.org/verifications/1.0.0"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://maven.apache.org/verifications/1.0.0 http://maven.apache.org/xsd/verifications-1.0.0.xsd">
+    <files>
+        <file>
+            <location>target/classes/esm/singleclient/pubspec.yaml</location>
+            <contains>foxjump</contains>
+        </file>
+        <file>
+            <location>target/classes/esm/singleclient/lib/main.dart</location>
+            <exists>false</exists>
+        </file>
+
+        <file>
+            <location>target/classes/esm/singleclient/lib/auth_external_user/app.dart</location>
+            <contains>DECORATED</contains>
+        </file>
+        <file>
+            <location>target/classes/esm/singleclient/lib/auth_external_user/app.dart</location>
+            <contains>BuildContext</contains>
+        </file>
+
+    </files>
+</verifications>

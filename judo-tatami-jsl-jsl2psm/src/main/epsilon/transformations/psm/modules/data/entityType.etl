@@ -1,0 +1,14 @@
+import "../../../../operations/_importAll.eol";
+
+rule CreateEntityType
+  transform s : JSL!EntityDeclaration
+  to t : JUDOPSM!EntityType
+  {
+    t.setId("(jsl/" + s.getId() + ")/EntityType");
+    t.`abstract` = s.`abstract`;
+    for (super in s.generalizations) {
+        t.superEntityTypes.add(super.target.getPSMEquivalent());
+    }
+    t.defaultRepresentation = s.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
+    log.debug("Created EntityType: " + t.name);
+  }
