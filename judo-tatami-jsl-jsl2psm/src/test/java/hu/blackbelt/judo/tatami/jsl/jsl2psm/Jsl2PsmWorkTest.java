@@ -36,14 +36,15 @@ class Jsl2PsmWorkTest {
 
 	public static final String MODEL_NAME = "test";
 	public static final String TARGET_TEST_CLASSES = "target/test-classes";
-	public static final String FILE_LOCATION = TARGET_TEST_CLASSES + "/jsl/" + MODEL_NAME + "-jsl.model";
+	public static final String JSL_FILE_LOCATION = TARGET_TEST_CLASSES + "/jsl/" + MODEL_NAME + "-jsl.model";
+	public static final String PSM_FILE_LOCATION = TARGET_TEST_CLASSES + "/jsl/" + MODEL_NAME + "-psm.model";
 
 	Jsl2PsmWork jsl2PsmWork;
 	TransformationContext transformationContext;
 
 	@BeforeEach
 	void setUp() throws JslDslModel.JslDslValidationException, IOException {
-		JslDslModel jslModel = buildJslDslModel().uri(URI.createURI(FILE_LOCATION)).name(MODEL_NAME).build();
+		JslDslModel jslModel = buildJslDslModel().uri(URI.createURI(JSL_FILE_LOCATION)).name(MODEL_NAME).build();
 
 		final EntityDeclaration entityA = EntityDeclarationBuilder.create().withName("A").build();
 		final EntityDeclaration entityB = EntityDeclarationBuilder.create().withName("B").build();
@@ -60,7 +61,7 @@ class Jsl2PsmWorkTest {
 		transformationContext.put(jslModel);
 
 		jsl2PsmWork = new Jsl2PsmWork(transformationContext, calculateJsl2PsmTransformationScriptURI());
-		jslModel.saveJslDslModel(jslDslSaveArgumentsBuilder().file(new File(FILE_LOCATION)).build());
+		jslModel.saveJslDslModel(jslDslSaveArgumentsBuilder().file(new File(JSL_FILE_LOCATION)).build());
 	}
 
 	@Test
@@ -76,7 +77,9 @@ class Jsl2PsmWorkTest {
 
 		Optional<PsmModel> psmModel = transformationContext.getByClass(PsmModel.class);
 		assertTrue(psmModel.isPresent());
-		psmModel.get().savePsmModel(psmSaveArgumentsBuilder().file(new File(FILE_LOCATION)));
+		psmModel.get().savePsmModel(psmSaveArgumentsBuilder().file(new File(PSM_FILE_LOCATION)));
+
+
 	}
 
 }

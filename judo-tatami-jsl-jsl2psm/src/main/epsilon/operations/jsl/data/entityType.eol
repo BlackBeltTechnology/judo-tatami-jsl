@@ -1,3 +1,7 @@
 operation JSL!EntityDeclaration getPSMEquivalent(): JUDOPSM!EntityType {
 	return self.equivalent("CreateEntityType");
 }
+
+operation JSL!EntityDeclaration getId(): String {
+	return (self.eContainer.name + "/" + self.name);
+}
