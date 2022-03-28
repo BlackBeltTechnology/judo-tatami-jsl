@@ -1,1 +1,3 @@
-import "entityType.eol";
+import "dataTypeDeclaration.eol";
+import "entityDeclaration.eol";
+import "modelDeclaration.eol";
