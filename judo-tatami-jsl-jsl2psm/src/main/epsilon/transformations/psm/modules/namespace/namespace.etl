@@ -1,0 +1,10 @@
+import "../../../../operations/_importAll.eol";
+
+rule CreateModel
+  transform s : JSL!ModelDeclaration
+  to t : JUDOPSM!Model
+  {
+    t.setId("(jsl/" + s.getId() + ")/CreateModel");
+    t.name = s.name;
+    log.debug("Created model: " + t.name);
+  }

@@ -33,7 +33,7 @@ import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.resolveTrans
 public class Jsl2PsmTransformationTrace implements TransformationTrace {
 
     public static final String JSL_2_PSM_URI_POSTFIX = "jsl2psm";
-    public static final String ESM_2_PSM_TRACE_URI_PREFIX = "jsl2psmTrace:";
+    public static final String JSL_2_PSM_TRACE_URI_PREFIX = "jsl2psmTrace:";
 
     @NonNull
     @Getter
@@ -238,7 +238,7 @@ public class Jsl2PsmTransformationTrace implements TransformationTrace {
         checkArgument(jslModel.getName().equals(psmModel.getName()), "Model name does not match");
 
         Resource traceResoureLoaded = createJsl2PsmTraceResource(
-                URI.createURI(ESM_2_PSM_TRACE_URI_PREFIX + modelName),
+                URI.createURI(JSL_2_PSM_TRACE_URI_PREFIX + modelName),
                 null);
 
         traceResoureLoaded.load(traceModelInputStream, ImmutableMap.of());
@@ -260,7 +260,7 @@ public class Jsl2PsmTransformationTrace implements TransformationTrace {
     public Resource save(OutputStream outputStream) throws IOException {
         Resource  traceResoureSaved = getJsl2PsmTraceResource(
                 trace,
-                URI.createURI(ESM_2_PSM_TRACE_URI_PREFIX + getModelName()));
+                URI.createURI(JSL_2_PSM_TRACE_URI_PREFIX + getModelName()));
 
         traceResoureSaved.save(outputStream, ImmutableMap.of());
         return traceResoureSaved;

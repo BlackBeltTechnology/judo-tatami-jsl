@@ -1,0 +1,3 @@
+operation JSL!DataTypeDeclaration getId(): String {
+	return (self.eContainer.name + "/" + self.name);
+}

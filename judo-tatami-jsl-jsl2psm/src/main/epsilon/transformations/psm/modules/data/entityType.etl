@@ -6,10 +6,11 @@ rule CreateEntityType
   {
     t.setId("(jsl/" + s.getId() + ")/CreateEntityType");
     t.name = s.name;
-//    t.`abstract` = s.`abstract`;
-//    for (super in s.generalizations) {
-//        t.superEntityTypes.add(super.target.getPSMEquivalent());
-//    }
+    t.`abstract` = s.`isAbstract`;
+    for (super in s.`extends`) {
+        t.superEntityTypes.add(super.getPSMEquivalent());
+    }
 //    t.defaultRepresentation = s.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
+    s.eContainer.getPSMEquivalent().elements.add(t);
     log.debug("Created EntityType: " + t.name);
   }
