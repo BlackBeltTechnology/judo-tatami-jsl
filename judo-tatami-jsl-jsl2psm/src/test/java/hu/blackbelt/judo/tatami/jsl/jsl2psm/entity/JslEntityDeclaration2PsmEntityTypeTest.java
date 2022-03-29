@@ -1,23 +1,30 @@
-package hu.blackbelt.judo.tatami.jsl.jsl2psm;
+package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
 
+import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
+import hu.blackbelt.judo.meta.psm.data.EntityType;
+import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.SaveArguments.jslDslSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.buildJslDslModel;
@@ -25,16 +32,18 @@ import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidat
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.validatePsm;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
-import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.executeJsl2PsmTransformation;
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.Jsl2PsmParameter.jsl2PsmParameter;
+import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.executeJsl2PsmTransformation;
+import static hu.blackbelt.judo.tatami.jsl.jsl2psm.TestUtils.allPsm;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-public class JslNamespace2PsmNamespaceTest {
-    private final String TEST_SOURCE_MODEL_NAME = "urn:test.judo-meta-jsl";
-    private final String TEST = "test";
-    private final String TARGET_TEST_CLASSES = "target/test-classes";
+public class JslEntityDeclaration2PsmEntityTypeTest {
+    private static final String TEST_SOURCE_MODEL_NAME = "urn:test.judo-meta-jsl";
+    private static final String TEST = "JslEntityDeclaration2PsmEntityTypeTest";
+    private static final String TARGET_TEST_CLASSES = "target/test-classes/entity";
 
     Log slf4jlog;
     private JslParser parser;
@@ -45,6 +54,13 @@ public class JslNamespace2PsmNamespaceTest {
     PsmModel psmModel;
     Jsl2PsmTransformationTrace jsl2PsmTransformationTrace;
 
+    @BeforeAll
+    static void prepareTestFolders() throws IOException {
+        if (!Files.exists(Paths.get(TARGET_TEST_CLASSES))) {
+            Files.createDirectories(Paths.get(TARGET_TEST_CLASSES));
+        }
+    }
+
     @BeforeEach
     void setUp() {
         // Default logger
@@ -53,15 +69,10 @@ public class JslNamespace2PsmNamespaceTest {
 
         // Loading JSL to isolated ResourceSet, because in Tatami
         // there is no new namespace registration made.
-        jslModel = buildJslDslModel()
-                .uri(URI.createURI(TEST_SOURCE_MODEL_NAME))
-                .name(TEST)
-                .build();
+        jslModel = buildJslDslModel().uri(URI.createURI(TEST_SOURCE_MODEL_NAME)).name(TEST).build();
 
         // Create empty PSM model
-        psmModel = buildPsmModel()
-                .name(TEST)
-                .build();
+        psmModel = buildPsmModel().name(TEST).build();
     }
 
     @AfterEach
@@ -104,53 +115,43 @@ public class JslNamespace2PsmNamespaceTest {
     }
 
     @Test
-    void testCreateModel() throws Exception {
-        testName = "CreateModel";
+    void testCreateEntityType() throws Exception {
+        testName = "TestCreateEntityType";
 
         Optional<ModelDeclaration> model = parser.getModelFromStrings(
-                "TestModel",
-                List.of("model TestModel"));
+                "EntityTypeCreateModel",
+                List.of("model EntityTypeCreateModel\n" +
+                        "\n" +
+                        "entity Test {\n" +
+                        "}\n" +
+                        "entity abstract Person {\n" +
+                        "}\n" +
+                        "entity SalesPerson extends Person {\n" +
+                        "}\n"
+                )
+        );
+
+        assertTrue(model.isPresent());
 
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<hu.blackbelt.judo.meta.psm.namespace.Model> lookupPSMModel = allPsm(hu.blackbelt.judo.meta.psm.namespace.Model.class)
-                .findAny();
+        final Set<EntityType> psmEntityTypes = allPsm(psmModel, EntityType.class).collect(Collectors.toSet());
+        assertEquals(3, psmEntityTypes.size());
 
-        assertTrue(lookupPSMModel.isPresent());
-        assertThat(lookupPSMModel.get().getName(), IsEqual.equalTo(model.get().getName()));
-    }
+        final Set<String> psmEntityTypeNames = psmEntityTypes.stream().map(NamedElement::getName).collect(Collectors.toSet());
+        final Set<String> jslEntityTypeDeclarationNames = ImmutableSet.of("Test", "Person", "SalesPerson");
+        assertThat(psmEntityTypeNames, IsEqual.equalTo(jslEntityTypeDeclarationNames));
 
-//    @Test
-//    void testCreatePackage() {
-////        testName = "CreatePackage";
-//
-//        Optional<ModelDeclaration> model = parser.getModelFromStrings(
-//                "TestModel",
-//                List.of("model TestModel"));
-//
-//        jslModel.addContent(model.get());
-//        transform();
-//
-//        final Optional<hu.blackbelt.judo.meta.psm.namespace.Package> psmPackage = allPsm(hu.blackbelt.judo.meta.psm.namespace.Package.class)
-//                .findAny();
-//
-//        assertTrue(psmPackage.isPresent());
-//        assertThat(psmPackage.get().getName(), IsEqual.equalTo("package"));
-//        assertThat(psmPackage.get().getNamespace().getName(), IsEqual.equalTo(model.get().getName()));
-        // TODO implement later
-//    }
+        final Optional<EntityType> psmEntityPerson = psmEntityTypes.stream().filter(e -> e.getName().equals("Person")).findAny();
+        assertTrue(psmEntityPerson.isPresent());
+        assertTrue(psmEntityPerson.get().isAbstract());
 
-    static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
-        Iterable<T> iterable = () -> sourceIterator;
-        return StreamSupport.stream(iterable.spliterator(), parallel);
-    }
+        final Optional<EntityType> psmEntitySalesPerson = psmEntityTypes.stream().filter(e -> e.getName().equals("SalesPerson")).findAny();
+        assertTrue(psmEntitySalesPerson.isPresent());
 
-    <T> Stream<T> allPsm() {
-        return asStream((Iterator<T>) psmModel.getResourceSet().getAllContents(), false);
-    }
-
-    private <T> Stream<T> allPsm(final Class<T> clazz) {
-        return allPsm().filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
+        final Set<String> psmEntityType3SuperTypeNames = psmEntitySalesPerson.get().getSuperEntityTypes().stream().map(NamedElement::getName).collect(Collectors.toSet());
+        final Set<String> esmEntityType3SuperTypeNames = ImmutableSet.of("Person");
+        assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(esmEntityType3SuperTypeNames));
     }
 }

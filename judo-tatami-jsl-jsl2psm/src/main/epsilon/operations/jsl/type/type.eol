@@ -2,13 +2,13 @@
 //	return self.equivalent("CreateStringType");
 //}
 
-operation JSL!DataTypeDeclaration getPSMEquivalent(): JUDOPSM!NumericType {
-    if (self.`primitive` == "numeric") {
-        return self.equivalent("CreateNumericType");
-    } else {
-        return self.equivalent("CreateStringType");
-    }
-}
+//operation JSL!DataTypeDeclaration getPSMEquivalent(): JUDOPSM!NumericType {
+//    if (self.primitive == "numeric") {
+//        return self.equivalent("CreateNumericType");
+//    } else {
+//        return self.equivalent("CreateStringType");
+//    }
+//}
 
 //operation ESM!BooleanType getPSMEquivalent(): JUDOPSM!BooleanType {
 //	return self.equivalent("CreateBooleanType");

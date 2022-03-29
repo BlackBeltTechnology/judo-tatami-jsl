@@ -33,7 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 class Jsl2PsmWorkTest {
-
 	public static final String MODEL_NAME = "test";
 	public static final String TARGET_TEST_CLASSES = "target/test-classes";
 	public static final String JSL_FILE_LOCATION = TARGET_TEST_CLASSES + "/jsl/" + MODEL_NAME + "-jsl.model";
