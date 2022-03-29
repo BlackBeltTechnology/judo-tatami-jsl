@@ -2,4 +2,4 @@ import "modules/namespace/namespace.etl";
 
 import "modules/data/entityType.etl";
 
-// import "modules/type/type.etl";
+import "modules/type/type.etl";
