@@ -1,0 +1,3 @@
+operation JSL!EntityFieldSingleType getPSMEquivalent(): JUDOPSM!NumericType {
+	return self.equivalent("CreateNumericType");
+}

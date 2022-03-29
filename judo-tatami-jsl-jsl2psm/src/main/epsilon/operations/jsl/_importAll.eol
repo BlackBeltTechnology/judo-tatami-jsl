@@ -1,2 +1,3 @@
 import "data/_importData.eol";
 import "type/_importType.eol";
+import "namespace/_importNamespace.eol";
