@@ -94,7 +94,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest {
         }
 
         jslModel.saveJslDslModel(jslDslSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, testName + "-jsl.model")));
-        psmModel.savePsmModel(psmSaveArgumentsBuilder().validateModel(false).file(new File(TARGET_TEST_CLASSES, testName + "-psm.model")));
+        psmModel.savePsmModel(psmSaveArgumentsBuilder().file(new File(TARGET_TEST_CLASSES, testName + "-psm.model")));
     }
 
     private void transform() throws Exception {
