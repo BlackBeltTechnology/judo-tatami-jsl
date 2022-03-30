@@ -1,4 +1,4 @@
-operation JSL!EntityFieldSingleType getPSMEquivalent(): JUDOPSM!FlatPrimitiveType {
+operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
     if (self.primitive.isDefined()) {
         switch (self.primitive) {
             case "numeric":
@@ -8,5 +8,8 @@ operation JSL!EntityFieldSingleType getPSMEquivalent(): JUDOPSM!FlatPrimitiveTyp
             default:
                 throw "Unsupported primitive type: " + self.primitive;
         }
+    }
+    if (self.instanceOf(JSL!EnumDeclaration)) {
+        return self.equivalent("CreateEnumerationType");
     }
 }

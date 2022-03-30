@@ -1,5 +1,7 @@
 import "dataTypeDeclaration.eol";
 import "entityDeclaration.eol";
 import "entityFieldDeclaration.eol";
-import "entityFieldSingleType.eol";
+import "primitiveDeclaration.eol";
+import "enumDeclaration.eol";
+import "enumLiteral.eol";
 import "modelDeclaration.eol";
