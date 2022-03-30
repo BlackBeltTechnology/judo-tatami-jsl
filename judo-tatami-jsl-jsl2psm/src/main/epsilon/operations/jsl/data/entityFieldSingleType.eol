@@ -1,3 +1,12 @@
-operation JSL!EntityFieldSingleType getPSMEquivalent(): JUDOPSM!NumericType {
-	return self.equivalent("CreateNumericType");
+operation JSL!EntityFieldSingleType getPSMEquivalent(): JUDOPSM!FlatPrimitiveType {
+    if (self.primitive.isDefined()) {
+        switch (self.primitive) {
+            case "numeric":
+                return self.equivalent("CreateNumericType");
+            case "timestamp":
+                return self.equivalent("CreateTimestampType");
+            default:
+                throw "Unsupported primitive type: " + self.primitive;
+        }
+    }
 }
