@@ -7,6 +7,7 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
+import hu.blackbelt.judo.meta.jsl.util.JslExpressionToJqlExpression;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.Builder;
@@ -82,6 +83,7 @@ public class Jsl2Psm {
                 )
                 .injectContexts(ImmutableMap.of(
 //                        "jslUtils", new JslUtils(),
+                        "expressionUtils", new JslExpressionToJqlExpression(),
                         "psmUtils", new PsmUtils(parameter.psmModel.getResourceSet())
                 ))
                 .build();
