@@ -2,10 +2,10 @@ package hu.blackbelt.judo.tatami.jsl.workflow.maven.plugin;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflow;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
-import hu.blackbelt.judo.tatami.workflow.WorkflowHelper;
+import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflow;
+import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSave;
+import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSetupParameters;
+import hu.blackbelt.judo.tatami.jsl.workflow.WorkflowHelper;
 import lombok.SneakyThrows;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -74,8 +74,8 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "psm")
 	private String psm;
 
-	@Parameter
-	private Map<String, DialectParam> dialects;
+//	@Parameter
+//	private Map<String, DialectParam> dialects;
 
 	@Parameter(property = "destination")
 	private File destination;
@@ -306,8 +306,7 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 						.ignoreJsl2Psm(ignoreJsl2Psm)
 						.ignoreJsl2PsmTrace(ignoreJsl2PsmTrace)
 						.validateModels(validateModels)
-						.modelName(modelName)
-						.dialectList(dialectList);
+						.modelName(modelName);
 
 		defaultWorkflow = new DefaultWorkflow(parameters);
 
@@ -331,7 +330,7 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 		if (error != null || saveModels) {
 			destination.mkdirs();
 			try {
-				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
+				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination);
 			} catch (Exception e) {
 				if (error != null) {
 					throw new MojoFailureException("An error occurred during the execution phase of the workflow.", error);

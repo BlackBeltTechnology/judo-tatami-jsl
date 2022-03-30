@@ -1,4 +1,4 @@
-package org.judo.tatami.workflow;
+package hu.judo.tatami.jsl.workflow;
 
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.judo.meta.psm.data.AssociationEnd;

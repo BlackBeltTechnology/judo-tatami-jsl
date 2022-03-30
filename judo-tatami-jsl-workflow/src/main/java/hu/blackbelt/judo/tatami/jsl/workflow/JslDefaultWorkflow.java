@@ -1,16 +1,16 @@
-package hu.blackbelt.judo.tatami.workflow;
+package hu.blackbelt.judo.tatami.jsl.workflow;
 
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DefaultWorkflow extends AbstractTatamiPipelineWorkflow {
+public class JslDefaultWorkflow extends AbstractTatamiPipelineWorkflow {
 
-	public DefaultWorkflow(DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder builder) {
+	public JslDefaultWorkflow(DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder builder) {
 		super(builder);
 	}
 
-	public DefaultWorkflow(DefaultWorkflowSetupParameters params) {
+	public JslDefaultWorkflow(DefaultWorkflowSetupParameters params) {
 		super(params);
 	}
 

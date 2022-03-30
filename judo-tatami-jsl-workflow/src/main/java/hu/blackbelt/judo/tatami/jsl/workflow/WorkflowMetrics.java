@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.workflow;
+package hu.blackbelt.judo.tatami.jsl.workflow;
 
 import hu.blackbelt.judo.tatami.core.workflow.work.MetricsCollector;
 

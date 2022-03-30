@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.workflow;
+package hu.blackbelt.judo.tatami.jsl.workflow;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

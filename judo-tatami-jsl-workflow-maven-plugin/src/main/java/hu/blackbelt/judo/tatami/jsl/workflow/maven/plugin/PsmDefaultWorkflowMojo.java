@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Set;
 
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSave;
+import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSetupParameters;
+import hu.blackbelt.judo.tatami.jsl.workflow.PsmDefaultWorkflow;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -21,9 +24,6 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
-import hu.blackbelt.judo.tatami.workflow.PsmDefaultWorkflow;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -120,8 +120,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 						.runInParallel(runInParallel)
 						.enableMetrics(enableMetrics)
 						.validateModels(validateModels)
-						.modelName(modelName)
-						.dialectList(dialectList);
+						.modelName(modelName);
 
 			//DefaultWorkflowSetupParameters.addTransformerCalculatedUris(parameters);
 
@@ -145,7 +144,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			defaultWorkflow.startDefaultWorkflow();
 		} catch (IllegalStateException e) {
 			try {
-				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
+				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination);
 			} catch (Exception e2) {
 			}
 			throw new MojoFailureException("An error occurred during the execution phase of the workflow.", e);
@@ -156,7 +155,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 		// ------------------ //
 		destination.mkdirs();
 		try {
-			DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
+			DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination);
 		} catch (Exception e) {
 			throw new MojoFailureException("An error occurred during the saving phase of the workflow.", e);
 		}

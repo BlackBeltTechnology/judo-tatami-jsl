@@ -1,9 +1,9 @@
 package hu.blackbelt.judo.tatami.jsl.workflow.maven.plugin;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSave;
-import hu.blackbelt.judo.tatami.workflow.DefaultWorkflowSetupParameters;
-import hu.blackbelt.judo.tatami.workflow.JslDefaultWorkflow;
+import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSave;
+import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSetupParameters;
+import hu.blackbelt.judo.tatami.jsl.workflow.JslDefaultWorkflow;
 import lombok.SneakyThrows;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -141,8 +141,7 @@ public class JslDefaultWorkflowMojo extends AbstractMojo {
 					.enableMetrics(enableMetrics)
 					.ignoreJsl2Psm(ignoreJsl2Psm)
 					.validateModels(validateModels)
-					.modelName(modelName)
-					.dialectList(dialectList);
+					.modelName(modelName);
 			//DefaultWorkflowSetupParameters.addTransformerCalculatedUris(parameters);
 
 			if (!isNullOrEmpty(jslGeneratorClassName) && !isNullOrEmpty(jslGeneratorMethodName)) {
@@ -165,7 +164,7 @@ public class JslDefaultWorkflowMojo extends AbstractMojo {
 			defaultWorkflow.startDefaultWorkflow();
 		} catch (IllegalStateException e) {
 			try {
-				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
+				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination);
 			} catch (Exception e2) {
 			}
 			throw new MojoFailureException("An error occurred during the execution phase of the workflow.", e);
@@ -176,7 +175,7 @@ public class JslDefaultWorkflowMojo extends AbstractMojo {
 		// ------------------ //
 		destination.mkdirs();
 		try {
-			DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
+			DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination);
 		} catch (Exception e) {
 			throw new MojoFailureException("An error occurred during the saving phase of the workflow.", e);
 		}

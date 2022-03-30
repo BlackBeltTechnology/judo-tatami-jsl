@@ -51,7 +51,7 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
 	@Override
 	public void execute() throws Exception {
 		Optional<JslDslModel> jslModel = getTransformationContext().getByClass(JslDslModel.class);
-		jslModel.orElseThrow(() -> new IllegalArgumentException("ESM Model does not found in transformation context"));
+		jslModel.orElseThrow(() -> new IllegalArgumentException("JSL Model not found in transformation context"));
 
 		PsmModel psmModel = getTransformationContext().getByClass(PsmModel.class)
 				.orElseGet(() -> buildPsmModel().name(jslModel.get().getName()).build());
