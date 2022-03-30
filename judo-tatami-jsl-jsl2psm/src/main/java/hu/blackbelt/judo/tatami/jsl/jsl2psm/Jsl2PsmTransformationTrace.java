@@ -124,7 +124,7 @@ public class Jsl2PsmTransformationTrace implements TransformationTrace {
 
 
     /**
-     * Create PSM 2 ESM Trace model {@link Resource} wth isolated {@link ResourceSet}
+     * Create PSM 2 JSL Trace model {@link Resource} wth isolated {@link ResourceSet}
      *
      * @param uri
      * @param uriHandler
@@ -137,13 +137,13 @@ public class Jsl2PsmTransformationTrace implements TransformationTrace {
     }
 
     /**
-     * Resolves PSM 2 ESM Trace model {@link Resource} and resturns the trace {@link EObject } map
+     * Resolves PSM 2 JSL Trace model {@link Resource} and resturns the trace {@link EObject } map
      *
      * @param traceResource
      * @param jslModel
      * @param psmModel
      *
-     * @return the trace {@link EObject} map between PSM source and ESM target.
+     * @return the trace {@link EObject} map between PSM source and JSL target.
      */
     public static Map<EObject, List<EObject>> resolveJsl2PsmTrace(Resource traceResource,
                                                                     JslDslModel jslModel,
@@ -152,13 +152,13 @@ public class Jsl2PsmTransformationTrace implements TransformationTrace {
     }
 
     /**
-     * Resolves PSM 2 ESM trace:Trace model entries returns the trace {@link EObject } map
+     * Resolves PSM 2 JSL trace:Trace model entries returns the trace {@link EObject } map
      *
      * @param trace
      * @param jslModel
      * @param psmModel
      *
-     * @return the trace {@link EObject} map between PSM source and ESM target.
+     * @return the trace {@link EObject} map between PSM source and JSL target.
      */
     public static Map<EObject, List<EObject>> resolveJsl2PsmTrace(List<EObject> trace,
                                                                     JslDslModel jslModel,

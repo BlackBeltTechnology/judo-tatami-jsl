@@ -102,7 +102,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -266,12 +265,6 @@
             </dependency>
 
             <dependency>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-workflow</artifactId>
-                <version>${judo-tatami-version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
                 <version>1.3</version>
@@ -279,13 +272,7 @@
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-jsl2psm</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-jsl2expression</artifactId>
+                <artifactId>judo-tatami-jsl-jsl2psm</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

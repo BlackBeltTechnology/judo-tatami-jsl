@@ -3,20 +3,20 @@
                xsi:schemaLocation="http://maven.apache.org/verifications/1.0.0 http://maven.apache.org/xsd/verifications-1.0.0.xsd">
     <files>
         <file>
-            <location>target/classes/esm/singleclient/pubspec.yaml</location>
+            <location>target/classes/jsl/singleclient/pubspec.yaml</location>
             <contains>foxjump</contains>
         </file>
         <file>
-            <location>target/classes/esm/singleclient/lib/main.dart</location>
+            <location>target/classes/jsl/singleclient/lib/main.dart</location>
             <exists>false</exists>
         </file>
 
         <file>
-            <location>target/classes/esm/singleclient/lib/auth_external_user/app.dart</location>
+            <location>target/classes/jsl/singleclient/lib/auth_external_user/app.dart</location>
             <contains>DECORATED</contains>
         </file>
         <file>
-            <location>target/classes/esm/singleclient/lib/auth_external_user/app.dart</location>
+            <location>target/classes/jsl/singleclient/lib/auth_external_user/app.dart</location>
             <contains>BuildContext</contains>
         </file>
 

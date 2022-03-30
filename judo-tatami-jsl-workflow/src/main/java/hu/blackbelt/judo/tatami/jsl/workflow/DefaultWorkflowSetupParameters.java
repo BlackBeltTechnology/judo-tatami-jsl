@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.workflow;
+package hu.blackbelt.judo.tatami.jsl.workflow;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import java.net.URI;
-import java.util.List;
 
 @Builder(builderMethodName = "defaultWorkflowSetupParameters")
 @Getter
@@ -31,8 +30,8 @@ public class DefaultWorkflowSetupParameters {
 	@NonNull
 	private String modelName;
 
-	@NonNull
-	private List<String> dialectList;
+//	@NonNull
+//	private List<String> dialectList;
 
 	@Builder.Default
 	private Boolean runInParallel = true;

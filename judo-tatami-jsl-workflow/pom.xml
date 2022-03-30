@@ -79,9 +79,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <groupId>hu.blackbelt.judo.tatami</groupId>
             <artifactId>judo-tatami-core</artifactId>
         </dependency>
+
         <dependency>
             <groupId>hu.blackbelt.judo.tatami</groupId>
-            <artifactId>judo-tatami-jsl2psm</artifactId>
+            <artifactId>judo-tatami-jsl-jsl2psm</artifactId>
         </dependency>
 
         <dependency>

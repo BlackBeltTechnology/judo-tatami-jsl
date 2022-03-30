@@ -151,7 +151,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest {
         assertTrue(psmEntitySalesPerson.isPresent());
 
         final Set<String> psmEntityType3SuperTypeNames = psmEntitySalesPerson.get().getSuperEntityTypes().stream().map(NamedElement::getName).collect(Collectors.toSet());
-        final Set<String> esmEntityType3SuperTypeNames = ImmutableSet.of("Person");
-        assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(esmEntityType3SuperTypeNames));
+        final Set<String> jslEntityType3SuperTypeNames = ImmutableSet.of("Person");
+        assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(jslEntityType3SuperTypeNames));
     }
 }
