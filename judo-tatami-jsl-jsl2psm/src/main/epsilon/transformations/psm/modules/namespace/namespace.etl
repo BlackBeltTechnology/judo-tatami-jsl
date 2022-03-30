@@ -1,10 +1,19 @@
 import "../../../../operations/_importAll.eol";
 
 rule CreateModel
-  transform s : JSL!ModelDeclaration
-  to t : JUDOPSM!Model
-  {
-    t.setId("(jsl/" + s.getId() + ")/CreateModel");
-    t.name = s.name;
-    log.debug("Created model: " + t.name);
-  }
+    transform s : JSL!ModelDeclaration
+    to t : JUDOPSM!Model {
+        t.setId("(jsl/" + s.getId() + ")/CreateModel");
+        t.name = s.name;
+        log.debug("Created model: " + t.name);
+    }
+
+@lazy
+rule CreateGeneratedTypesPackage
+    transform s : JSL!ModelDeclaration
+    to t: JUDOPSM!Package {
+        t.setId("(jsl/" + s.getId() + ")/CreateGeneratedTypesPackage");
+        t.name = "_types";
+        s.equivalent("CreateModel").packages.add(t);
+        log.debug("Created TypesPackage: " + t.name);
+    }

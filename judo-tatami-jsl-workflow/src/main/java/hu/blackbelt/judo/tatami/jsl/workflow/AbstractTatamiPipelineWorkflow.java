@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.tatami.workflow;
+package hu.blackbelt.judo.tatami.jsl.workflow;
 
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
@@ -7,6 +7,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmWork;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,7 +20,7 @@ import java.util.stream.Stream;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
-import static hu.blackbelt.judo.tatami.jsl2psm.Jsl2PsmWork.Jsl2PsmWorkParameter.jsl2PsmWorkParameter;
+
 
 @Slf4j
 public abstract class AbstractTatamiPipelineWorkflow {
@@ -57,7 +58,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
 					new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_SNAPSHOT");
 		}
 
-		transformationContext.put(jsl2PsmWorkParameter().createTrace(!parameters.getIgnoreJsl2PsmTrace()).build());
+		transformationContext.put(Jsl2PsmWork.Jsl2PsmWorkParameter.jsl2PsmWorkParameter().createTrace(!parameters.getIgnoreJsl2PsmTrace()).build());
 
 		loadModels(workflowHelper, metrics, transformationContext, parameters);
 
@@ -86,7 +87,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
 											.build()),
 							Optional.of(
 									aNewParallelFlow()
-											.named("Parallel ESM Transformations")
+											.named("Parallel JSL Transformations")
 											.execute(Stream.of(createPsmWork))
 											.build())
 

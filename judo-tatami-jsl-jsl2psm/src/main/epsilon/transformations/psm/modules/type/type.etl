@@ -1,0 +1,15 @@
+import "../namespace/namespace.etl";
+import "../../../../operations/_importAll.eol";
+
+rule CreateNumericType
+	transform s: JSL!DataTypeDeclaration
+	to t: JUDOPSM!NumericType {
+        guard: s.`primitive` == "numeric"
+
+        t.setId("(jsl/" + s.getId() + ")/CreateNumericType");
+        t.name = s.name;
+        t.precision = s.precision.precision.intValue();
+        t.scale = s.scale.scale.intValue();
+        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        log.debug("Created NumericType: " + t.name);
+    }

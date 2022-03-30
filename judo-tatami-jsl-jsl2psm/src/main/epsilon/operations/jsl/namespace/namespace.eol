@@ -1,0 +1,3 @@
+operation JSL!ModelDeclaration getPSMGeneratedTypesNamespaceEquivalent(): JUDOPSM!Package {
+    return self.equivalent("CreateGeneratedTypesPackage");
+}

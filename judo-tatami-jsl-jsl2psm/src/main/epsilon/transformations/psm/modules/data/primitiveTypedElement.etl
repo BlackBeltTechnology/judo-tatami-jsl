@@ -1,0 +1,21 @@
+import "../../../../operations/_importAll.eol";
+import "../namespace/namespace.etl";
+
+@abstract
+rule CreatePrimitiveTypedElement
+    transform s: JSL!EntityFieldDeclaration
+    to t: JUDOPSM!PrimitiveTypedElement {
+        t.required = s.isRequired;
+        t.dataType = s.singleType.getPSMEquivalent();
+    }
+
+rule CreateAttribute
+    transform s: JSL!EntityFieldDeclaration
+    to t: JUDOPSM!Attribute
+    extends CreatePrimitiveTypedElement {
+        guard: s.singleType.isDefined()
+        t.setId("(jsl/" + s.getId() + ")/CreateAttribute");
+        t.name = s.name;
+        s.eContainer.getPSMEquivalent().attributes.add(t);
+        log.debug("Created Attribute: " + t.name);
+    }

@@ -1,4 +1,4 @@
-package org.judo.tatami.workflow;
+package hu.judo.tatami.jsl.workflow;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
