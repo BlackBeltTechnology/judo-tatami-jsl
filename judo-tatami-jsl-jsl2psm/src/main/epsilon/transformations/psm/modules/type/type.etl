@@ -24,3 +24,22 @@ rule CreateTimestampType
         s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
         log.debug("Created TimestampType: " + t.name);
     }
+
+rule CreateEnumerationType
+	transform s: JSL!EnumDeclaration
+	to t: JUDOPSM!EnumerationType {
+        t.setId("(jsl/" + s.getId() + ")/CreateEnumerationType");
+        t.name = s.name;
+        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        log.debug("Created EnumerationType: " + t.name);
+    }
+
+rule CreateEnumerationMember
+	transform s: JSL!EnumLiteral
+	to t: JUDOPSM!EnumerationMember {
+        t.setId("(jsl/" + s.getId() + ")/CreateEnumerationMember");
+        t.name = s.name;
+        t.ordinal = s.value.intValue();
+        s.eContainer.equivalent("CreateEnumerationType").members.add(t);
+        log.debug("Created EnumerationMember: " + t.name);
+    }
