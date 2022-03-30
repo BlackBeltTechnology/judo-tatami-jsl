@@ -5,7 +5,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.psm.data.Attribute;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
-import hu.blackbelt.judo.meta.psm.type.NumericType;
+import hu.blackbelt.judo.meta.psm.type.TimestampType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,24 +14,27 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.TestUtils.allPsm;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
-    private static final String TARGET_TEST_CLASSES = "target/test-classes/type/numeric";
+public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTest {
+    static final String TARGET_TEST_CLASSES = "target/test-classes/type/timestamp";
 
     @Override
     protected String getTargetTestClasses() {
-        return "target/test-classes/type/numeric";
+        return "target/test-classes/type/timestamp";
     }
 
     @Override
     protected String getTest() {
-        return "JslNumericTypeDeclaration2PsmNumericTypeTest";
+        return "JslTimestampTypeDeclaration2PsmTimestampTypeTest";
     }
 
     @Override
@@ -54,7 +57,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
-                        "type numeric MyNumber precision 12 scale 5\n"
+                        "type timestamp Timestamp\n"
                 )
         );
 
@@ -63,14 +66,12 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
         jslModel.addContent(model.get());
         transform();
 
-        final Set<NumericType> psmNumerics = allPsm(psmModel, NumericType.class).collect(Collectors.toSet());
+        final Set<TimestampType> psmNumerics = allPsm(psmModel, TimestampType.class).collect(Collectors.toSet());
         assertEquals(1, psmNumerics.size());
 
-        final Optional<NumericType> myNumber = psmNumerics.stream().filter(n -> n.getName().equals("MyNumber")).findFirst();
-        assertTrue(myNumber.isPresent());
-        assertEquals(myNumber.get().getName(), "MyNumber");
-        assertEquals(myNumber.get().getPrecision(), 12);
-        assertEquals(myNumber.get().getScale(), 5);
+        final Optional<TimestampType> timestamp = psmNumerics.stream().filter(n -> n.getName().equals("Timestamp")).findFirst();
+        assertTrue(timestamp.isPresent());
+        assertEquals(timestamp.get().getName(), "Timestamp");
     }
 
     @Test
@@ -81,10 +82,10 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 "EntityMemberModel",
                 List.of("model EntityMemberModel\n" +
                         "\n" +
-                        "type numeric Height precision 3 scale 0\n" +
+                        "type timestamp Timestamp\n" +
                         "\n" +
-                        "entity Person {\n" +
-                        "\tfield Height height\n" +
+                        "entity Email {\n" +
+                        "\tfield Timestamp receivedAt\n" +
                         "}"
                 )
         );
@@ -94,12 +95,12 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<NumericType> psmTypeHeight = allPsm(psmModel, NumericType.class).filter(n -> n.getName().equals("Height")).findFirst();
-        assertTrue(psmTypeHeight.isPresent());
-        final Optional<EntityType> psmEntityPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Person")).findFirst();
-        assertTrue(psmEntityPerson.isPresent());
-        final Optional<Attribute> psmPersonHeightAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
-        assertTrue(psmPersonHeightAttribute.isPresent());
+        final Optional<TimestampType> psmTypeReceivedAt = allPsm(psmModel, TimestampType.class).filter(n -> n.getName().equals("Timestamp")).findFirst();
+        assertTrue(psmTypeReceivedAt.isPresent());
+        final Optional<EntityType> psmEntityEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Email")).findFirst();
+        assertTrue(psmEntityEmail.isPresent());
+        final Optional<Attribute> psmEmailReceivedAtAttribute = psmEntityEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
+        assertTrue(psmEmailReceivedAtAttribute.isPresent());
     }
 
     @Test
@@ -110,10 +111,10 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel\n" +
                         "\n" +
-                        "type numeric Height precision 3 scale 0\n" +
+                        "type timestamp Timestamp\n" +
                         "\n" +
-                        "entity Person {\n" +
-                        "\tfield required Height height\n" +
+                        "entity Email {\n" +
+                        "\tfield required Timestamp receivedAt\n" +
                         "}"
                 )
         );
@@ -123,11 +124,11 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<EntityType> psmEntityPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Person")).findFirst();
-        assertTrue(psmEntityPerson.isPresent());
-        final Optional<Attribute> psmPersonHeightAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
-        assertTrue(psmPersonHeightAttribute.isPresent());
-        assertTrue(psmPersonHeightAttribute.get().isRequired());
+        final Optional<EntityType> psmEntityEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Email")).findFirst();
+        assertTrue(psmEntityEmail.isPresent());
+        final Optional<Attribute> psmEmailReceivedAtAttribute = psmEntityEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
+        assertTrue(psmEmailReceivedAtAttribute.isPresent());
+        assertTrue(psmEmailReceivedAtAttribute.get().isRequired());
     }
 
     @Test
@@ -138,13 +139,13 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel\n" +
                         "\n" +
-                        "type numeric Height precision 3 scale 0\n" +
+                        "type timestamp Timestamp\n" +
                         "\n" +
-                        "entity Person {\n" +
-                        "\tfield Height height\n" +
+                        "entity Email {\n" +
+                        "\tfield Timestamp receivedAt\n" +
                         "}\n" +
                         "\n" +
-                        "entity StudentPerson extends Person {\n" +
+                        "entity ImportantEmail extends Email {\n" +
                         "}"
                 )
         );
@@ -154,9 +155,9 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<EntityType> psmStudentPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("StudentPerson")).findFirst();
-        assertTrue(psmStudentPerson.isPresent());
-        final Optional<Attribute> psmStudentHeightAttribute = psmStudentPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
-        assertTrue(psmStudentHeightAttribute.isPresent());
+        final Optional<EntityType> psmImportantEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("ImportantEmail")).findFirst();
+        assertTrue(psmImportantEmail.isPresent());
+        final Optional<Attribute> psmImportantEmailReceivedAtAttribute = psmImportantEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
+        assertTrue(psmImportantEmailReceivedAtAttribute.isPresent());
     }
 }

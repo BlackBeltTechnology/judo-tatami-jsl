@@ -13,3 +13,14 @@ rule CreateNumericType
         s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
         log.debug("Created NumericType: " + t.name);
     }
+
+rule CreateTimestampType
+	transform s: JSL!DataTypeDeclaration
+	to t: JUDOPSM!TimestampType {
+        guard: s.`primitive` == "timestamp"
+
+        t.setId("(jsl/" + s.getId() + ")/CreateTimestampType");
+        t.name = s.name;
+        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        log.debug("Created TimestampType: " + t.name);
+    }
