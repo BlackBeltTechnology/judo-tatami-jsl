@@ -112,12 +112,12 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest {
     }
 
     @Test
-    void testNumericType() throws Exception {
-        testName = "TestNumericType";
+    void testDeclaration() throws Exception {
+        testName = "TestDeclaration";
 
         Optional<ModelDeclaration> model = parser.getModelFromStrings(
-                "NumericTypeModel",
-                List.of("model NumericTypeModel\n" +
+                "DeclarationModel",
+                List.of("model DeclarationModel\n" +
                         "\n" +
                         "type numeric MyNumber precision 12 scale 5\n"
                 )
@@ -139,12 +139,12 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest {
     }
 
     @Test
-    void testNumericTypeInEntity() throws Exception {
-        testName = "TestNumericTypeInEntity";
+    void testEntityMember() throws Exception {
+        testName = "TestEntityMember";
 
         Optional<ModelDeclaration> model = parser.getModelFromStrings(
-                "NumericTypeInEntityModel",
-                List.of("model NumericTypeInEntityModel\n" +
+                "EntityMemberModel",
+                List.of("model EntityMemberModel\n" +
                         "\n" +
                         "type numeric Height precision 3 scale 0\n" +
                         "\n" +
@@ -165,5 +165,63 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest {
         assertTrue(psmEntityPerson.isPresent());
         final Optional<Attribute> psmPersonHeightAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
         assertTrue(psmPersonHeightAttribute.isPresent());
+    }
+
+    @Test
+    void testEntityMemberRequired() throws Exception {
+        testName = "TestEntityMemberRequired";
+
+        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+                "EntityMemberRequiredModel",
+                List.of("model EntityMemberRequiredModel\n" +
+                        "\n" +
+                        "type numeric Height precision 3 scale 0\n" +
+                        "\n" +
+                        "entity Person {\n" +
+                        "\tfield required Height height\n" +
+                        "}"
+                )
+        );
+
+        assertTrue(model.isPresent());
+
+        jslModel.addContent(model.get());
+        transform();
+
+        final Optional<EntityType> psmEntityPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Person")).findFirst();
+        assertTrue(psmEntityPerson.isPresent());
+        final Optional<Attribute> psmPersonHeightAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
+        assertTrue(psmPersonHeightAttribute.isPresent());
+        assertTrue(psmPersonHeightAttribute.get().isRequired());
+    }
+
+    @Test
+    void testEntityMemberInheritance() throws Exception {
+        testName = "TestEntityMemberInheritance";
+
+        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+                "EntityMemberInheritanceModel",
+                List.of("model EntityMemberInheritanceModel\n" +
+                        "\n" +
+                        "type numeric Height precision 3 scale 0\n" +
+                        "\n" +
+                        "entity Person {\n" +
+                        "\tfield Height height\n" +
+                        "}\n" +
+                        "\n" +
+                        "entity StudentPerson extends Person {\n" +
+                        "}"
+                )
+        );
+
+        assertTrue(model.isPresent());
+
+        jslModel.addContent(model.get());
+        transform();
+
+        final Optional<EntityType> psmStudentPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("StudentPerson")).findFirst();
+        assertTrue(psmStudentPerson.isPresent());
+        final Optional<Attribute> psmStudentHeightAttribute = psmStudentPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
+        assertTrue(psmStudentHeightAttribute.isPresent());
     }
 }
