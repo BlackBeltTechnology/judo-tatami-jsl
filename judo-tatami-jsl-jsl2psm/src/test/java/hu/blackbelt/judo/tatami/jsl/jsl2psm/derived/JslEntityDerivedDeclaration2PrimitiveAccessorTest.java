@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-public class JslEntityDerivedDeclaration2PrimiyiveAccessorTest extends AbstractTest {
+public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractTest {
     static final String TARGET_TEST_CLASSES = "target/test-classes/derived/primitiveAccessor";
 
     @Override
