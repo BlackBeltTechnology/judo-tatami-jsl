@@ -3,6 +3,8 @@ operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
         switch (self.primitive) {
             case "numeric":
                 return self.equivalent("CreateNumericType");
+            case "time":
+                return self.equivalent("CreateTimeType");
             case "timestamp":
                 return self.equivalent("CreateTimestampType");
 			case "boolean":
