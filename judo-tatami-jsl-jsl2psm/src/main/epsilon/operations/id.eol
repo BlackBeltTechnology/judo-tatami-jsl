@@ -8,3 +8,14 @@ operation JUDOPSM!NamedElement setId(id: String) {
 operation JUDOPSM!NamedElement getId() : String {
      return self.eResource.getId(self);
 }
+
+/////////////////////////////////////////
+// ExpressionType
+
+operation JUDOPSM!ExpressionType setId(id: String) {
+    self.eResource.setId(self, id);
+}
+
+operation JUDOPSM!ExpressionType getId() : String {
+     return self.eResource.getId(self);
+}

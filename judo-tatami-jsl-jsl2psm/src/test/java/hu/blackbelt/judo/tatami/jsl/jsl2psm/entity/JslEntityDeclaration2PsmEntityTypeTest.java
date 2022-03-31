@@ -71,7 +71,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
         jslModel.addContent(model.get());
         transform();
 
-        final Set<EntityType> psmEntityTypes = allPsm(psmModel, EntityType.class).collect(Collectors.toSet());
+        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
         assertEquals(3, psmEntityTypes.size());
 
         final Set<String> psmEntityTypeNames = psmEntityTypes.stream().map(NamedElement::getName).collect(Collectors.toSet());

@@ -58,7 +58,7 @@ public class JslNamespace2PsmNamespaceTest extends AbstractTest {
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<Model> lookupPSMModel = allPsm(psmModel, Model.class)
+        final Optional<Model> lookupPSMModel = psmModelWrapper.getStreamOfPsmNamespaceModel()
                 .findAny();
 
         assertTrue(lookupPSMModel.isPresent());
