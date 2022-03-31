@@ -34,7 +34,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
 
     @Override
     protected String getTest() {
-        return "JslTimestampTypeDeclaration2PsmTimestampTypeTest";
+        return this.getClass().getSimpleName();
     }
 
     @Override
@@ -159,5 +159,34 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
         assertTrue(psmImportantEmail.isPresent());
         final Optional<Attribute> psmImportantEmailReceivedAtAttribute = psmImportantEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
         assertTrue(psmImportantEmailReceivedAtAttribute.isPresent());
+    }
+
+    @Test
+    void testEntityMemberIdentifier() throws Exception {
+        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+                "EntityMemberInheritanceModel",
+                List.of("model EntityMemberInheritanceModel\n" +
+                        "\n" +
+                        "type timestamp Timestamp\n" +
+                        "\n" +
+                        "entity Email {\n" +
+                        "\tidentifier Timestamp receivedAt\n" +
+                        "}\n" +
+                        "\n" +
+                        "entity ImportantEmail extends Email {\n" +
+                        "}"
+                )
+        );
+
+        assertTrue(model.isPresent());
+
+        jslModel.addContent(model.get());
+        transform();
+
+        final Optional<EntityType> psmImportantEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("ImportantEmail")).findFirst();
+        assertTrue(psmImportantEmail.isPresent());
+        final Optional<Attribute> psmImportantEmailReceivedAtAttribute = psmImportantEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
+        assertTrue(psmImportantEmailReceivedAtAttribute.isPresent());
+        assertTrue(psmImportantEmailReceivedAtAttribute.get().isIdentifier());
     }
 }
