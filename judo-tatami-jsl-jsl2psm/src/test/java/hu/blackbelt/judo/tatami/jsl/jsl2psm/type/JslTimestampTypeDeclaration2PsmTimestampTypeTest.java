@@ -164,16 +164,13 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
     @Test
     void testEntityMemberIdentifier() throws Exception {
         Optional<ModelDeclaration> model = parser.getModelFromStrings(
-                "EntityMemberInheritanceModel",
-                List.of("model EntityMemberInheritanceModel\n" +
+                "EntityMemberIdentifierModel",
+                List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +
                         "type timestamp Timestamp\n" +
                         "\n" +
                         "entity Email {\n" +
                         "\tidentifier Timestamp receivedAt\n" +
-                        "}\n" +
-                        "\n" +
-                        "entity ImportantEmail extends Email {\n" +
                         "}"
                 )
         );
@@ -183,9 +180,9 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<EntityType> psmImportantEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("ImportantEmail")).findFirst();
-        assertTrue(psmImportantEmail.isPresent());
-        final Optional<Attribute> psmImportantEmailReceivedAtAttribute = psmImportantEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
+        final Optional<EntityType> psmEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Email")).findFirst();
+        assertTrue(psmEmail.isPresent());
+        final Optional<Attribute> psmImportantEmailReceivedAtAttribute = psmEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
         assertTrue(psmImportantEmailReceivedAtAttribute.isPresent());
         assertTrue(psmImportantEmailReceivedAtAttribute.get().isIdentifier());
     }
