@@ -71,6 +71,14 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         assertEquals("\"\"+self.value+\"test\"", jql("SalesPerson", "stringConcat"));
         assertEquals("self.leads!count()>0?self.leads!filter(lead|lead.closed)!count()/self.leads!count():0", jql("SalesPerson", "complex"));
         assertEquals("((1+2)*3)/4", jql("SalesPerson", "arithmetic"));
+
+//        assertEquals("`12:12:11.11`", jql("SalesPerson", "timeLiteral"));
+        assertEquals("`2020-12-01T12:12:11.11Z`", jql("SalesPerson", "timestampLiteral"));
+//        assertEquals("`2020-12-01`", jql("SalesPerson", "dateLiteral"));
+//        assertEquals("String\nString2", jql("SalesPerson", "stringLiteral"));
+//        assertEquals("String\\nString2", jql("SalesPerson", "stringRawLiteral"));
+        assertEquals("100.12", jql("SalesPerson", "decimalLiteral"));
+
     }
 
     private String jql(String entity, String field) {

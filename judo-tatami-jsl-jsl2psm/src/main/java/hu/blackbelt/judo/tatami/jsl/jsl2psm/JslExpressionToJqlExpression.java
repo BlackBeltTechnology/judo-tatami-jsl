@@ -23,6 +23,8 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.TernaryOperation;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TimeLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TimeStampLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.UnaryOperation;
+import org.apache.commons.text.StringEscapeUtils;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -278,25 +280,25 @@ public class JslExpressionToJqlExpression {
      */
     protected static String _getJqlDispacher(final DateLiteral it) {
         return it != null
-                ? it.getValue()
+                ? "`" + it.getValue() + "`"
                 : null;
     }
 
     protected static String _getJqlDispacher(final TimeStampLiteral it) {
         return it != null
-                ? it.getValue()
+                ? "`" + it.getValue() + "`"
                 : null;
     }
 
     protected static String _getJqlDispacher(final TimeLiteral it) {
         return it != null
-                ? it.getValue()
+                ? "`" + it.getValue() + "`"
                 : null;
     }
 
     protected static String _getJqlDispacher(final RawStringLiteral it) {
         return it != null
-                ? "\"" + it.getValue() + "\""
+                ? "\"" + StringEscapeUtils.escapeJava(it.getValue()) + "\""
                 : null;
     }
 
