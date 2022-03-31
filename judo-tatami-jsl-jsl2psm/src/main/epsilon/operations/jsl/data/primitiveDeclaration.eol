@@ -7,6 +7,8 @@ operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
                 return self.equivalent("CreateTimestampType");
 			case "boolean":
 				return self.equivalent("CreateBooleanType");
+			case "string":
+				return self.equivalent("CreateStringType");
             default:
                 throw "Unsupported primitive type: " + self.primitive;
         }

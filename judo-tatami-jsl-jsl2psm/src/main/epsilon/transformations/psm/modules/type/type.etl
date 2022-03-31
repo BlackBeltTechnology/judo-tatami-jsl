@@ -54,3 +54,17 @@ rule CreateBooleanType
         s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
         log.debug("Created BooleanType: " + t.name);
 }
+
+    
+rule CreateStringType 
+	transform s : JSL!DataTypeDeclaration
+	to t : JUDOPSM!StringType {
+        guard: s.`primitive` == "string"
+        
+        t.setId("(jsl/" + s.getId() + ")/CreateStringType");
+        t.name = s.name;
+        t.maxLength = s.maxLength.maxLength.intValue();
+        t.regExp = s.regex.value; 
+        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        log.debug("Created StringType: " + t.name);
+}
