@@ -66,10 +66,10 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
         jslModel.addContent(model.get());
         transform();
 
-        final Set<TimestampType> psmNumerics = psmModelWrapper.getStreamOfPsmTypeTimestampType().collect(Collectors.toSet());
-        assertEquals(1, psmNumerics.size());
+        final Set<TimestampType> psmTimestamps = psmModelWrapper.getStreamOfPsmTypeTimestampType().collect(Collectors.toSet());
+        assertEquals(1, psmTimestamps.size());
 
-        final Optional<TimestampType> timestamp = psmNumerics.stream().filter(n -> n.getName().equals("Timestamp")).findFirst();
+        final Optional<TimestampType> timestamp = psmTimestamps.stream().filter(n -> n.getName().equals("Timestamp")).findFirst();
         assertTrue(timestamp.isPresent());
         assertEquals(timestamp.get().getName(), "Timestamp");
     }

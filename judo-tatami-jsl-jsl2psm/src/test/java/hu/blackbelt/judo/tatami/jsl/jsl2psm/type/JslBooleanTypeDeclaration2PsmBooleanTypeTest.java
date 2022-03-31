@@ -66,10 +66,10 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
         jslModel.addContent(model.get());
         transform();
 
-        final Set<BooleanType> psmNumerics = psmModelWrapper.getStreamOfPsmTypeBooleanType().collect(Collectors.toSet());
-        assertEquals(1, psmNumerics.size());
+        final Set<BooleanType> psmBooleans = psmModelWrapper.getStreamOfPsmTypeBooleanType().collect(Collectors.toSet());
+        assertEquals(1, psmBooleans.size());
 
-        final Optional<BooleanType> bool = psmNumerics.stream().filter(n -> n.getName().equals("Boolean")).findFirst();
+        final Optional<BooleanType> bool = psmBooleans.stream().filter(n -> n.getName().equals("Boolean")).findFirst();
         assertTrue(bool.isPresent());
         assertEquals(bool.get().getName(), "Boolean");
     }
