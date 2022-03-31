@@ -4,7 +4,7 @@ import "../../../../operations/_importAll.eol";
 rule CreateGetterExpressionForDataProperty
     transform s : JSL!EntityDerivedDeclaration
     to t: JUDOPSM!DataExpressionType {
-        t.setId("(jsl/" + s.getId() + ")/GetterExpressionForDataProperty");
+        t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForDataProperty");
         t.expression = expressionUtils.getJql(s.expression);
 
         // TODO: Handling parameter type later

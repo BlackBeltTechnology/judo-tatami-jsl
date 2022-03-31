@@ -1,7 +1,5 @@
 import "../../../../operations/_importAll.eol";
-//import "../data/primitiveTypedElement.etl";
 import "expressionType.etl";
-
 
 rule CreateDataProperty
 	transform s : JSL!EntityDerivedDeclaration
@@ -9,7 +7,7 @@ rule CreateDataProperty
 	{
       guard: s.singleType.isDefined() and s.singleType.isKindOf(JSL!PrimitiveDeclaration)
       t.name = s.name;
-      t.setId("(jsl/" + s.getId() + ")/DataProperty");
+      t.setId("(jsl/" + s.getId() + ")/CreateDataProperty");
 	  t.getterExpression = s.equivalent("CreateGetterExpressionForDataProperty");
       t.dataType = s.singleType.getPSMEquivalent();
 
