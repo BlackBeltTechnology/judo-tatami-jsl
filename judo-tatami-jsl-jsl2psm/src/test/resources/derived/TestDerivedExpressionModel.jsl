@@ -4,7 +4,7 @@ type numeric Integer precision 9  scale 0
 type date Date
 type timestamp Timestamp
 type time Time
-type string String max-length 32
+// type string String max-length 32
 type numeric Decimal precision 9  scale 2
 
 entity Lead {
@@ -19,7 +19,7 @@ entity SalesPerson {
     derived Customer[] leadsOver10 = self.leads(limit = 10)
     derived Customer selfDerived = self
     derived Customer anyCustomer = Customer!any()
-    derived Customer stringConcat = "" + self.value + "test"
+//    derived Customer stringConcat = "" + self.value + "test"
     derived Customer complex = self.leads!count() > 0 ? self.leads!filter(lead | lead.closed)!count() / self.leads!count() : 0
     derived Customer arithmetic = ((1 + 2) * 3) / 4
 //    derived Time timeLiteral = `12:12:11.11`
@@ -31,6 +31,6 @@ entity SalesPerson {
 }
 
 entity Customer {
-    identifier required String name
+//    identifier required String name
     relation Lead[] lead opposite-single customer
 }
