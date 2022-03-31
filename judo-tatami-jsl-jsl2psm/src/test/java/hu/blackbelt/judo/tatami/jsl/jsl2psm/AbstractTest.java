@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
+import hu.blackbelt.judo.meta.jsl.jsldsl.support.JslDslModelResourceSupport;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport;
@@ -39,6 +40,7 @@ abstract public class AbstractTest {
     protected Jsl2PsmTransformationTrace jsl2PsmTransformationTrace;
 
     protected PsmModelResourceSupport psmModelWrapper;
+    protected JslDslModelResourceSupport jslModelWrapper;
 
     @BeforeEach
     void setUp() {
@@ -53,6 +55,8 @@ abstract public class AbstractTest {
         // Create empty PSM model
         psmModel = buildPsmModel().name(getTest()).build();
         psmModelWrapper = PsmModelResourceSupport.psmModelResourceSupportBuilder().resourceSet(psmModel.getResourceSet()).build();
+        jslModelWrapper = JslDslModelResourceSupport.jslDslModelResourceSupportBuilder().resourceSet(jslModel.getResourceSet()).build();
+
     }
 
     @AfterEach
