@@ -22,7 +22,7 @@ rule CreateTimeType
         t.setId("(jsl/" + s.getId() + ")/CreateTimeType");
         t.name = s.name;
         s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
-        log.debug("Created TimestampType: " + t.name);
+        log.debug("Created TimeType: " + t.name);
     }
 
 rule CreateTimestampType
