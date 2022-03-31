@@ -3,19 +3,31 @@ import "../namespace/namespace.etl";
 
 @abstract
 rule CreatePrimitiveTypedElement
-    transform s: JSL!EntityFieldDeclaration
+    transform s: JSL!EntityMemberDeclaration
     to t: JUDOPSM!PrimitiveTypedElement {
         t.required = s.isRequired;
-        t.dataType = s.singleType.getPSMEquivalent();
+        t.name = s.name;
     }
 
-rule CreateAttribute
+rule CreateAttributeFromField
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!Attribute
     extends CreatePrimitiveTypedElement {
         guard: s.singleType.isDefined()
-        t.setId("(jsl/" + s.getId() + ")/CreateAttribute");
-        t.name = s.name;
+        t.setId("(jsl/" + s.getId() + ")/CreateAttributeFromField");
+        t.dataType = s.singleType.getPSMEquivalent();
         s.eContainer.getPSMEquivalent().attributes.add(t);
-        log.debug("Created Attribute: " + t.name);
+        log.debug("Created Attribute (Field): " + t.name);
+    }
+
+rule CreateAttributeFromIdentifier
+    transform s: JSL!EntityIdentifierDeclaration
+    to t: JUDOPSM!Attribute
+    extends CreatePrimitiveTypedElement {
+        t.setId("(jsl/" + s.getId() + ")/CreateAttributeFromIdentifier");
+
+        t.dataType = s.type.getPSMEquivalent();
+        t.identifier = true;
+        s.eContainer.getPSMEquivalent().attributes.add(t);
+        log.debug("Created Attribute (Identifier): " + t.name);
     }

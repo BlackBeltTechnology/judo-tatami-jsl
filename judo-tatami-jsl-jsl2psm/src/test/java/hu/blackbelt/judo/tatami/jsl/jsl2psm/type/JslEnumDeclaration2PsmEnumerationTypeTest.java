@@ -35,7 +35,7 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
 
     @Override
     protected String getTest() {
-        return "JslEnumDeclaration2PsmEnumerationTypeTest";
+        return this.getClass().getSimpleName();
     }
 
     @Override
@@ -193,5 +193,40 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
         assertTrue(psmLeadManager.isPresent());
         final Optional<Attribute> psmLeadManagerStatusAttribute = psmLeadManager.get().getAllAttributes().stream().filter(a -> a.getName().equals("status")).findFirst();
         assertTrue(psmLeadManagerStatusAttribute.isPresent());
+    }
+
+    @Test
+    void testEntityMemberIdentifier() throws Exception {
+        testName = "TestEntityMemberIdentifier";
+
+        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+                "EntityMemberInheritanceModel",
+                List.of("model EntityMemberInheritanceModel\n" +
+                        "\n" +
+                        "enum LeadStatus {\n" +
+                        "\tOPPORTUNITY = 0\n" +
+                        "\tLEAD = 1\n" +
+                        "\tPROJECT = 2\n" +
+                        "}\n" +
+                        "\n" +
+                        "entity Lead {\n" +
+                        "\tidentifier LeadStatus status\n" +
+                        "}\n" +
+                        "\n" +
+                        "entity LeadManager extends Lead {\n" +
+                        "}"
+                )
+        );
+
+        assertTrue(model.isPresent());
+
+        jslModel.addContent(model.get());
+        transform();
+
+        final Optional<EntityType> psmLeadManager = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("LeadManager")).findFirst();
+        assertTrue(psmLeadManager.isPresent());
+        final Optional<Attribute> psmLeadManagerStatusAttribute = psmLeadManager.get().getAllAttributes().stream().filter(a -> a.getName().equals("status")).findFirst();
+        assertTrue(psmLeadManagerStatusAttribute.isPresent());
+        assertTrue(psmLeadManagerStatusAttribute.get().isIdentifier());
     }
 }
