@@ -82,6 +82,7 @@ public class Jsl2Psm {
                 )
                 .injectContexts(ImmutableMap.of(
 //                        "jslUtils", new JslUtils(),
+                        "expressionUtils", new JslExpressionToJqlExpression(),
                         "psmUtils", new PsmUtils(parameter.psmModel.getResourceSet())
                 ))
                 .build();

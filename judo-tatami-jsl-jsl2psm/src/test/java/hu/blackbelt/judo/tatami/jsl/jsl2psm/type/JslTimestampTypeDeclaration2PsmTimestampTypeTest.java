@@ -66,7 +66,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
         jslModel.addContent(model.get());
         transform();
 
-        final Set<TimestampType> psmNumerics = allPsm(psmModel, TimestampType.class).collect(Collectors.toSet());
+        final Set<TimestampType> psmNumerics = psmModelWrapper.getStreamOfPsmTypeTimestampType().collect(Collectors.toSet());
         assertEquals(1, psmNumerics.size());
 
         final Optional<TimestampType> timestamp = psmNumerics.stream().filter(n -> n.getName().equals("Timestamp")).findFirst();
@@ -95,9 +95,9 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<TimestampType> psmTypeReceivedAt = allPsm(psmModel, TimestampType.class).filter(n -> n.getName().equals("Timestamp")).findFirst();
+        final Optional<TimestampType> psmTypeReceivedAt = psmModelWrapper.getStreamOfPsmTypeTimestampType().filter(n -> n.getName().equals("Timestamp")).findFirst();
         assertTrue(psmTypeReceivedAt.isPresent());
-        final Optional<EntityType> psmEntityEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Email")).findFirst();
+        final Optional<EntityType> psmEntityEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Email")).findFirst();
         assertTrue(psmEntityEmail.isPresent());
         final Optional<Attribute> psmEmailReceivedAtAttribute = psmEntityEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
         assertTrue(psmEmailReceivedAtAttribute.isPresent());
@@ -124,7 +124,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<EntityType> psmEntityEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Email")).findFirst();
+        final Optional<EntityType> psmEntityEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Email")).findFirst();
         assertTrue(psmEntityEmail.isPresent());
         final Optional<Attribute> psmEmailReceivedAtAttribute = psmEntityEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
         assertTrue(psmEmailReceivedAtAttribute.isPresent());
@@ -155,7 +155,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<EntityType> psmImportantEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("ImportantEmail")).findFirst();
+        final Optional<EntityType> psmImportantEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("ImportantEmail")).findFirst();
         assertTrue(psmImportantEmail.isPresent());
         final Optional<Attribute> psmImportantEmailReceivedAtAttribute = psmImportantEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
         assertTrue(psmImportantEmailReceivedAtAttribute.isPresent());

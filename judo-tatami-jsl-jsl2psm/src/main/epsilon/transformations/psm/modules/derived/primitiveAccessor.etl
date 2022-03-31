@@ -1,0 +1,18 @@
+import "../../../../operations/_importAll.eol";
+//import "../data/primitiveTypedElement.etl";
+import "expressionType.etl";
+
+
+rule CreateDataProperty
+	transform s : JSL!EntityDerivedDeclaration
+	to t : JUDOPSM!DataProperty
+	{
+      guard: s.singleType.isDefined() and s.singleType.isKindOf(JSL!PrimitiveDeclaration)
+      t.name = s.name;
+      t.setId("(jsl/" + s.getId() + ")/DataProperty");
+	  t.getterExpression = s.equivalent("CreateGetterExpressionForDataProperty");
+      t.dataType = s.singleType.getPSMEquivalent();
+
+	  s.eContainer.getPSMEquivalent().dataProperties.add(t);
+	  log.error("Created Data Property: " + t.name);
+}

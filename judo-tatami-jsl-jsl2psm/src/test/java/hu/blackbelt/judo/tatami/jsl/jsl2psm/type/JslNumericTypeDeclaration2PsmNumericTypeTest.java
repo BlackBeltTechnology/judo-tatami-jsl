@@ -63,7 +63,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
         jslModel.addContent(model.get());
         transform();
 
-        final Set<NumericType> psmNumerics = allPsm(psmModel, NumericType.class).collect(Collectors.toSet());
+        final Set<NumericType> psmNumerics = psmModelWrapper.getStreamOfPsmTypeNumericType().collect(Collectors.toSet());
         assertEquals(1, psmNumerics.size());
 
         final Optional<NumericType> myNumber = psmNumerics.stream().filter(n -> n.getName().equals("MyNumber")).findFirst();
@@ -94,9 +94,9 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<NumericType> psmTypeHeight = allPsm(psmModel, NumericType.class).filter(n -> n.getName().equals("Height")).findFirst();
+        final Optional<NumericType> psmTypeHeight = psmModelWrapper.getStreamOfPsmTypeNumericType().filter(n -> n.getName().equals("Height")).findFirst();
         assertTrue(psmTypeHeight.isPresent());
-        final Optional<EntityType> psmEntityPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Person")).findFirst();
+        final Optional<EntityType> psmEntityPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
         assertTrue(psmEntityPerson.isPresent());
         final Optional<Attribute> psmPersonHeightAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
         assertTrue(psmPersonHeightAttribute.isPresent());
@@ -123,7 +123,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<EntityType> psmEntityPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Person")).findFirst();
+        final Optional<EntityType> psmEntityPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
         assertTrue(psmEntityPerson.isPresent());
         final Optional<Attribute> psmPersonHeightAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
         assertTrue(psmPersonHeightAttribute.isPresent());
@@ -154,7 +154,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
         jslModel.addContent(model.get());
         transform();
 
-        final Optional<EntityType> psmStudentPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("StudentPerson")).findFirst();
+        final Optional<EntityType> psmStudentPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("StudentPerson")).findFirst();
         assertTrue(psmStudentPerson.isPresent());
         final Optional<Attribute> psmStudentHeightAttribute = psmStudentPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
         assertTrue(psmStudentHeightAttribute.isPresent());
