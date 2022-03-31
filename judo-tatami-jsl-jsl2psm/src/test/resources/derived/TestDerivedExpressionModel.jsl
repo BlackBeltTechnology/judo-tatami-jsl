@@ -1,0 +1,26 @@
+model TestDerivedExpressionModel
+
+type numeric Integer precision 9  scale 0
+type string String max-length 32
+
+entity Lead {
+    field Integer value = 100000
+}
+
+entity SalesPerson {
+    relation Lead[] leads
+    derived Integer value = self.leads!count()
+    derived Integer t1 = self.leads!count() > 1
+    derived Customer[] leadsOver(Integer limit = 100) = self.leads!filter(lead | lead.value > limit)
+    derived Customer[] leadsOver10 = self.leads(limit = 10)
+    derived Customer selfDerived = self
+    derived Customer anyCustomer = Customer!any()
+    derived Customer stringConcat = "" + self.value + "test"
+    derived Customer complex = self.leads!count() > 0 ? self.leads!filter(lead | lead.closed)!count() / self.leads!count() : 0
+    derived Customer arithmetic = ((1 + 2) * 3) / 4
+}
+
+entity Customer {
+    identifier required String name
+    relation Lead[] lead opposite-single customer
+}

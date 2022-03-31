@@ -3,4 +3,7 @@ import "modules/namespace/namespace.etl";
 import "modules/data/entityType.etl";
 import "modules/data/primitiveTypedElement.etl";
 
+import "modules/derived/expressionType.etl";
+import "modules/derived/primitiveAccessor.etl";
+
 import "modules/type/type.etl";
