@@ -200,8 +200,8 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
         testName = "TestEntityMemberIdentifier";
 
         Optional<ModelDeclaration> model = parser.getModelFromStrings(
-                "EntityMemberInheritanceModel",
-                List.of("model EntityMemberInheritanceModel\n" +
+                "EntityMemberIdentifierModel",
+                List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +
                         "enum LeadStatus {\n" +
                         "\tOPPORTUNITY = 0\n" +
