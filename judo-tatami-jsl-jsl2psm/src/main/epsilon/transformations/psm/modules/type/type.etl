@@ -15,15 +15,26 @@ rule CreateNumericType
     }
 
 rule CreateDateType
-	transform s: JSL!DataTypeDeclaration
-	to t: JUDOPSM!DateType {
+  transform s: JSL!DataTypeDeclaration
+  to t: JUDOPSM!DateType {
         guard: s.`primitive` == "date"
 
         t.setId("(jsl/" + s.getId() + ")/CreateDateType");
         t.name = s.name;
         s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
         log.debug("Created DateType: " + t.name);
-    }
+  }
+
+rule CreateTimeType
+  transform s: JSL!DataTypeDeclaration
+  to t: JUDOPSM!TimeType {
+        guard: s.`primitive` == "time"
+
+        t.setId("(jsl/" + s.getId() + ")/CreateTimeType");
+        t.name = s.name;
+        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        log.debug("Created TimeType: " + t.name);
+  }
 
 rule CreateTimestampType
 	transform s: JSL!DataTypeDeclaration
