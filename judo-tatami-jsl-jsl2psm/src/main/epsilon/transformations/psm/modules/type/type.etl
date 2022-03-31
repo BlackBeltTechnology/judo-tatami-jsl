@@ -43,3 +43,14 @@ rule CreateEnumerationMember
         s.eContainer.equivalent("CreateEnumerationType").members.add(t);
         log.debug("Created EnumerationMember: " + t.name);
     }
+    
+rule CreateBooleanType 
+	transform s : JSL!DataTypeDeclaration
+	to t : JUDOPSM!BooleanType {
+        guard: s.`primitive` == "boolean"
+        
+        t.setId("(jsl/" + s.getId() + ")/CreateBooleanType");
+        t.name = s.name;
+        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        log.debug("Created BooleanType: " + t.name);
+}
