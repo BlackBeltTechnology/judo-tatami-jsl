@@ -31,7 +31,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
     @Override
     protected String getTest() {
-        return "JslNumericTypeDeclaration2PsmNumericTypeTest";
+        return this.getClass().getSimpleName();
     }
 
     @Override
@@ -158,5 +158,33 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
         assertTrue(psmStudentPerson.isPresent());
         final Optional<Attribute> psmStudentHeightAttribute = psmStudentPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
         assertTrue(psmStudentHeightAttribute.isPresent());
+    }
+
+    @Test
+    void testEntityMemberIdentifier() throws Exception {
+        testName = "TestEntityMemberIdentifier";
+
+        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+                "EntityMemberIdentifierModel",
+                List.of("model EntityMemberIdentifierModel\n" +
+                        "\n" +
+                        "type numeric Height precision 3 scale 0\n" +
+                        "\n" +
+                        "entity Person {\n" +
+                        "\tidentifier Height height\n" +
+                        "}"
+                )
+        );
+
+        assertTrue(model.isPresent());
+
+        jslModel.addContent(model.get());
+        transform();
+
+        final Optional<EntityType> psmPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Person")).findFirst();
+        assertTrue(psmPerson.isPresent());
+        final Optional<Attribute> psmPersonHeightAttribute = psmPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
+        assertTrue(psmPersonHeightAttribute.isPresent());
+        assertTrue(psmPersonHeightAttribute.get().isIdentifier());
     }
 }
