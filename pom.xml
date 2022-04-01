@@ -59,7 +59,7 @@
         <judo-meta-jsl-version>1.0.0.20220331_091929_c243398d_develop</judo-meta-jsl-version>
         <judo-meta-psm-version>1.1.0.20220316_215604_2f3c646e_develop</judo-meta-psm-version>
         <judo-meta-expression-version>1.0.1.20220322_181703_52012bb2_develop</judo-meta-expression-version>
-        <judo-tatami-version>1.1.0.20220322_182550_0d2d02ed_develop</judo-tatami-version>
+        <judo-tatami-version>1.1.0.20220401_140548_fea34851_develop</judo-tatami-version>
         <judo-tatami-core-version>1.1.0.20220316_214956_d70a50f5_develop</judo-tatami-core-version>
 
         <!-- Xtend / Xcore -->

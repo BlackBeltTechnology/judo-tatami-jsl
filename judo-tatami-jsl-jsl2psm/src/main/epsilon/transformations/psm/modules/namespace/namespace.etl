@@ -4,8 +4,21 @@ rule CreateModel
     transform s : JSL!ModelDeclaration
     to t : JUDOPSM!Model {
         t.setId("(jsl/" + s.getId() + ")/CreateModel");
-        t.name = s.name;
+        t.name = s.name.replaceAll("::", "_");
         log.debug("Created model: " + t.name);
+
+        var fragments = s.name.split("::");
+        var current : JUDOPSM!Namespace = t;
+
+        for (a in fragments) {
+            var newPackage = new JUDOPSM!Package();
+            current.packages.add(newPackage);
+            current = newPackage;
+            newPackage.name = a;
+            newPackage.setId("(jsl/" + s.getId() + "/" + newPackage.name + ")/CreateModel");
+            log.debug("Created Package: " + newPackage.name);
+        }
+        t.~modelRoot = current;
     }
 
 @lazy
