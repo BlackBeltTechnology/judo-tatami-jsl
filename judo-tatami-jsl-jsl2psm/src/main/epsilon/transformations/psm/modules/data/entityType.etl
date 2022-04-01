@@ -10,7 +10,7 @@ rule CreateEntityType
     for (super in s.`extends`) {
         t.superEntityTypes.add(super.getPSMEquivalent());
     }
-//    t.defaultRepresentation = s.equivalent("CreateDefaultMappedTransferObjectTypeForEntity");
-    s.eContainer.getPSMEquivalent().elements.add(t);
+
+    s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
     log.debug("Created EntityType: " + t.name);
   }
