@@ -18,7 +18,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static hu.blackbelt.judo.tatami.jsl.jsl2psm.TestUtils.allPsm;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,7 +33,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
 
     @Override
     protected String getTest() {
-        return "JslEntityDeclaration2PsmEntityTypeTest";
+        return this.getClass().getSimpleName();
     }
 
     @Override
@@ -61,7 +60,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
                         "}\n" +
                         "entity abstract Person {\n" +
                         "}\n" +
-                        "entity SalesPerson extends Person {\n" +
+                        "entity SalesPerson extends Person, Test {\n" +
                         "}\n"
                 )
         );
@@ -86,7 +85,40 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
         assertTrue(psmEntitySalesPerson.isPresent());
 
         final Set<String> psmEntityType3SuperTypeNames = psmEntitySalesPerson.get().getSuperEntityTypes().stream().map(NamedElement::getName).collect(Collectors.toSet());
-        final Set<String> jslEntityType3SuperTypeNames = ImmutableSet.of("Person");
+        final Set<String> jslEntityType3SuperTypeNames = ImmutableSet.of("Person", "Test");
         assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(jslEntityType3SuperTypeNames));
+    }
+
+    @Test
+    void testEntityLocalName() throws Exception {
+        testName = "TestEntityLocaleName";
+
+        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+                "First::Second::EntityLocaleNameModel",
+                List.of("model First::Second::EntityLocaleNameModel\n" +
+                        "\n" +
+                        "entity Test {\n" +
+                        "}"
+                )
+        );
+
+        assertTrue(model.isPresent());
+
+        jslModel.addContent(model.get());
+        transform();
+
+        final Set<hu.blackbelt.judo.meta.psm.namespace.Package> psmPackageTypes = psmModelWrapper.getStreamOfPsmNamespacePackage().collect(Collectors.toSet());
+        assertEquals(3, psmPackageTypes.size());
+
+        final Set<String> psmEntityPackageNames = psmPackageTypes.stream().map(NamedElement::getName).collect(Collectors.toSet());
+        final Set<String> jslPackageNames = ImmutableSet.of("First", "Second", "EntityLocaleNameModel");
+        assertThat(psmEntityPackageNames, IsEqual.equalTo(jslPackageNames));
+
+        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
+        assertEquals(1, psmEntityTypes.size());
+
+        final Set<String> psmEntityTypeNames = psmEntityTypes.stream().map(NamedElement::getName).collect(Collectors.toSet());
+        final Set<String> jslEntityTypeDeclarationNames = ImmutableSet.of("Test");
+        assertThat(psmEntityTypeNames, IsEqual.equalTo(jslEntityTypeDeclarationNames));
     }
 }
