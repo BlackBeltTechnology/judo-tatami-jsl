@@ -102,6 +102,18 @@ rule CreateBinaryType
         
         t.setId("(jsl/" + s.getId() + ")/CreateBinaryType");
         t.name = s.name;
+        
+        
+        if (s.mimeTypes.isDefined()) {
+        	for (mimeType in s.mimeTypes.mimeTypes) {
+        		t.mimeTypes.add(mimeType);
+        	}
+        }
+        
+        if (s.maxFileSize.isDefined()) {
+        	t.maxFileSize = s.maxFileSize.maxFileSize.longValue();
+        }
+                 
         s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
         log.debug("Created BinaryType: " + t.name);
 }

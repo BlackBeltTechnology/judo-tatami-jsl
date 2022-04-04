@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -57,7 +58,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
-                        "type binary Picture\n"
+                        "type binary Picture mime-types m\"image/png\", m\"image/*\" max-file-size 1024\n"
                 )
         );
 
@@ -69,9 +70,12 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
         final Set<BinaryType> psmBinaries = psmModelWrapper.getStreamOfPsmTypeBinaryType().collect(Collectors.toSet());
         assertEquals(1, psmBinaries.size());
 
-        final Optional<BinaryType> binary = psmBinaries.stream().filter(n -> n.getName().equals("Binary")).findFirst();
+        final Optional<BinaryType> binary = psmBinaries.stream().filter(n -> n.getName().equals("Picture")).findFirst();
         assertTrue(binary.isPresent());
-        assertEquals(binary.get().getName(), "Binary");
+        assertEquals(binary.get().getName(), "Picture");
+        assertEquals(binary.get().getMimeTypes().size(), 2);
+        assertEquals(binary.get().getMimeTypes(), Arrays.asList("m\"image/png\"", "m\"image/*\""));
+        assertEquals(binary.get().getMaxFileSize(), 1024);
     }
 
     @Test
@@ -82,7 +86,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 "EntityMemberModel",
                 List.of("model EntityMemberModel\n" +
                         "\n" +
-                        "type binary Picture\n" +
+                        "type binary Picture" +
                         "\n" +
                         "entity User {\n" +
                         "\tfield Picture profilePicture\n" +
@@ -97,6 +101,8 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         final Optional<BinaryType> psmTypePicture = psmModelWrapper.getStreamOfPsmTypeBinaryType().filter(n -> n.getName().equals("Picture")).findFirst();
         assertTrue(psmTypePicture.isPresent());
+        assertTrue(psmTypePicture.get().getMimeTypes().isEmpty());
+        assertEquals(psmTypePicture.get().getMaxFileSize(), 0);
         final Optional<EntityType> psmEntityUser = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("User")).findFirst();
         assertTrue(psmEntityUser.isPresent());
         final Optional<Attribute> psmUserPictureAttribute = psmEntityUser.get().getAllAttributes().stream().filter(a -> a.getName().equals("profilePicture")).findFirst();
