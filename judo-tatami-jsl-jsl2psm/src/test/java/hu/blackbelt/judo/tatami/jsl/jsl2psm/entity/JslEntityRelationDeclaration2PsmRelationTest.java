@@ -1,15 +1,12 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
 
-import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.Relation;
-import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
-import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -150,7 +146,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         final Optional<EntityType> psmEntitySuperSalesPerson = psmEntityTypes.stream().filter(e -> e.getName().equals("SuperSalesPerson")).findAny();
         assertTrue(psmEntitySuperSalesPerson.isPresent());
 
-        final Optional<Relation> superSalesPersonLeadsRelation = psmEntitySuperSalesPerson.get().getRelations().stream().filter(r -> r.getName().equals("leads")).findFirst();
+        final Optional<Relation> superSalesPersonLeadsRelation = psmEntitySuperSalesPerson.get().getAllRelations().stream().filter(r -> r.getName().equals("leads")).findFirst();
         assertTrue(superSalesPersonLeadsRelation.isPresent());
         assertFalse(superSalesPersonLeadsRelation.get().isRequired());
         assertEquals(0, superSalesPersonLeadsRelation.get().getCardinality().getLower());
@@ -160,7 +156,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         final Optional<EntityType> psmEntityLazySalesPerson = psmEntityTypes.stream().filter(e -> e.getName().equals("LazySalesPerson")).findAny();
         assertTrue(psmEntityLazySalesPerson.isPresent());
 
-        final Optional<Relation> lazySalesPersonLeadsRelation = psmEntityLazySalesPerson.get().getRelations().stream().filter(r -> r.getName().equals("leads")).findFirst();
+        final Optional<Relation> lazySalesPersonLeadsRelation = psmEntityLazySalesPerson.get().getAllRelations().stream().filter(r -> r.getName().equals("leads")).findFirst();
         assertTrue(lazySalesPersonLeadsRelation.isPresent());
         assertFalse(lazySalesPersonLeadsRelation.get().isRequired());
         assertEquals(0, lazySalesPersonLeadsRelation.get().getCardinality().getLower());
