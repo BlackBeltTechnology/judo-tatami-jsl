@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -162,5 +163,29 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertEquals(0, lazySalesPersonLeadsRelation.get().getCardinality().getLower());
         assertEquals(-1, lazySalesPersonLeadsRelation.get().getCardinality().getUpper());
         assertEquals(psmEntityLead.get(), lazySalesPersonLeadsRelation.get().getTarget());
+    }
+    
+    @Test
+    void testEntityAsssociationRelation() throws Exception {
+        testName = "AssociationRelationTest";
+
+        Optional<ModelDeclaration> model = parser.getModelFromFiles(
+                "AssociationRelationTestModel",
+                List.of(new File("src/test/resources/entity/AssociationRelationTestModel.jsl"))
+        );
+
+        assertTrue(model.isPresent());
+
+        jslModel.addContent(model.get());
+        transform();
+
+        /*
+        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
+        assertEquals(5, psmEntityTypes.size());
+
+        final Set<Relation> psmRelations = psmModelWrapper.getStreamOfPsmDataRelation().collect(Collectors.toSet());
+        assertEquals(3, psmRelations.size());
+		*/
+
     }
 }

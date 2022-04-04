@@ -1,0 +1,3 @@
+operation JSL!EntityRelationDeclaration getId(): String {
+	return (self.eContainer.name + "/" + self.name);
+}

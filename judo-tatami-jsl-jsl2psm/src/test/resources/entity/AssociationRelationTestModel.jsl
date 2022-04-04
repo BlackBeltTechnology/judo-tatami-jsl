@@ -1,0 +1,28 @@
+model AssociationRelationTestModel
+
+type numeric Integer precision 9  scale 0
+type string String max-length 128
+
+entity Lead {
+	field Integer value
+	relation Customer namedCustomer1
+	relation Customer[] namedCustomers1
+	relation Customer namedCustomer2
+	relation Customer[] namedCustomers2
+}
+
+entity Customer {
+	relation Lead[] leads
+	relation Lead lead
+
+	relation Lead[] leads1 opposite-name namedCustomer1
+	relation Lead[] leads2 opposite-name namedCustomers1
+	relation Lead[] leads3 opposite-single injectedCustomer1
+	relation Lead[] leads4 opposite-many injectedCustomers1
+
+	relation Lead lead1 opposite-name namedCustomer2
+	relation Lead lead2 opposite-name namedCustomers2
+	relation Lead lead3 opposite-single injectedCustomer2
+	relation Lead lead4 opposite-many injectedCustomers2
+
+}
