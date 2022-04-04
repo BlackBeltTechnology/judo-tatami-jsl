@@ -94,3 +94,14 @@ rule CreateStringType
         s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
         log.debug("Created StringType: " + t.name);
 }
+
+rule CreateBinaryType 
+	transform s : JSL!DataTypeDeclaration
+	to t : JUDOPSM!BinaryType {
+        guard: s.`primitive` == "binary"
+        
+        t.setId("(jsl/" + s.getId() + ")/CreateBinaryType");
+        t.name = s.name;
+        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        log.debug("Created BinaryType: " + t.name);
+}
