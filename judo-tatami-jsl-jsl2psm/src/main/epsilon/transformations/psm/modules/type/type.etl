@@ -105,13 +105,13 @@ rule CreateBinaryType
         
         
         if (s.mimeTypes.isDefined()) {
-        	for (mimeType in s.mimeTypes.mimeTypes) {
-        		t.mimeTypes.add(mimeType);
-        	}
+            for (mimeType in s.mimeTypes.mimeTypes) {
+                t.mimeTypes.add(mimeType);
+            }
         }
         
         if (s.maxFileSize.isDefined()) {
-        	t.maxFileSize = s.maxFileSize.maxFileSize.longValue();
+            t.maxFileSize = s.maxFileSize.maxFileSize.longValue();
         }
                  
         s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
