@@ -13,6 +13,8 @@ operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
 				return self.equivalent("CreateBooleanType");
 			case "string":
 				return self.equivalent("CreateStringType");
+			case "binary":
+				return self.equivalent("CreateBinaryType");
             default:
                 throw "Unsupported primitive type: " + self.primitive;
         }
