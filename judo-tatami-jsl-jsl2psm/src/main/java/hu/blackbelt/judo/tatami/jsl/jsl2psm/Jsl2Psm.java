@@ -3,9 +3,12 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.ExecutionContext.ExecutionContextBuilder;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -21,7 +24,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
@@ -40,6 +47,9 @@ public class Jsl2Psm {
 
         @NonNull
         JslDslModel jslModel;
+
+        @Builder.Default
+        Set<JslDslModel> sidekickJslModels = new HashSet();
 
         @NonNull
         PsmModel psmModel;
@@ -65,21 +75,37 @@ public class Jsl2Psm {
     public static Jsl2PsmTransformationTrace executeJsl2PsmTransformation(Jsl2PsmParameter parameter) throws Exception {
 
         // Execution context
-        ExecutionContext executionContext = executionContextBuilder()
+        ExecutionContextBuilder executionContextBuilder = executionContextBuilder();
+        
+        AtomicInteger counter = new AtomicInteger(0);
+        List<WrappedEmfModelContext> sidekickModels = parameter.sidekickJslModels.stream().map(j -> {
+        	String alias = "JSL_SIDEKICK" + counter.getAndIncrement();
+        	return wrappedEmfModelContextBuilder()
+                    .log(parameter.log)
+                    .name(alias)
+                    .resource(j.getResource())
+                    .build();
+        }).collect(Collectors.toList());
+
+    	
+    	ExecutionContext executionContext = executionContextBuilder
                 .log(parameter.log)
-                .modelContexts(ImmutableList.of(
-                        wrappedEmfModelContextBuilder()
+                .modelContexts(ImmutableList.<ModelContext>builder()
+                		.add(wrappedEmfModelContextBuilder()
                                 .log(parameter.log)
                                 .name("JSL")
                                 .resource(parameter.jslModel.getResource())
-                                .build(),
-                        wrappedEmfModelContextBuilder()
+                                .build()
+                                )
+                		.add(wrappedEmfModelContextBuilder()
                                 .log(parameter.log)
                                 .name("JUDOPSM")
                                 .resource(parameter.psmModel.getResource())
                                 .build()
                         )
-                )
+                		.addAll(sidekickModels)
+                		.build()
+        		)
                 .injectContexts(ImmutableMap.of(
 //                        "jslUtils", new JslUtils(),
                         "expressionUtils", new JslExpressionToJqlExpression(),
