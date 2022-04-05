@@ -1,0 +1,23 @@
+operation JSL!ErrorDeclaration getPSMEquivalent(): JUDOPSM!UnmappedTransferObjectType {
+	return self.equivalent("CreateUnmappedTransferObjectType");
+}
+
+operation JSL!ErrorDeclaration getId(): String {
+	return (self.eContainer.name + "/" + self.name);
+}
+
+operation JSL!ErrorDeclaration getAllFields(): Sequence<ErrorField> {
+    var fields = new Set<ErrorField>;
+
+    if (self.extends.isDefined()) {
+        for (inheritedField in self.extends.getAllFields()) {
+            fields.add(inheritedField);
+        }
+    }
+
+    for (field in self.fields) {
+        fields.add(field);
+    }
+
+    return fields.asSequence();
+}

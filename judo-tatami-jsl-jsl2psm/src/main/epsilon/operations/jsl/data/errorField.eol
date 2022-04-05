@@ -1,0 +1,3 @@
+operation JSL!ErrorField getId(): String {
+	return (self.eContainer.name + "/" + self.name);
+}
