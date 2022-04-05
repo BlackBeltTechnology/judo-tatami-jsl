@@ -9,14 +9,14 @@ operation JSL!ErrorDeclaration getId(): String {
 operation JSL!ErrorDeclaration getAllFields(): Sequence<ErrorField> {
     var fields = new Set<ErrorField>;
 
+    for (field in self.fields) {
+        fields.add(field);
+    }
+
     if (self.extends.isDefined()) {
         for (inheritedField in self.extends.getAllFields()) {
             fields.add(inheritedField);
         }
-    }
-
-    for (field in self.fields) {
-        fields.add(field);
     }
 
     return fields.asSequence();
