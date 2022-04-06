@@ -74,8 +74,41 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "psm")
 	private String psm;
 
-//	@Parameter
-//	private Map<String, DialectParam> dialects;
+	@Parameter(property = "asm")
+	private String asm;
+
+	@Parameter(property = "psm2AsmTrace")
+	private String psm2AsmTrace;
+
+	@Parameter(property = "expression")
+	private String expression;
+
+	@Parameter(property = "sdk")
+	private String sdk;
+
+	@Parameter(property = "sdkInternal")
+	private String sdkInternal;
+
+	@Parameter(property = "ignorePsm2Asm", defaultValue = "false")
+	private Boolean ignorePsm2Asm = false;
+
+	@Parameter(property = "ignorePsm2AsmTrace", defaultValue = "true")
+	private Boolean ignorePsm2AsmTrace = true;
+
+	@Parameter(property = "ignoreAsm2Rdbms", defaultValue = "false")
+	private Boolean ignoreAsm2Rdbms = false;
+
+	@Parameter(property = "ignoreAsm2RdbmsTrace", defaultValue = "false")
+	private Boolean ignoreAsm2RdbmsTrace = false;
+
+	@Parameter(property = "ignoreRdbms2Liquibase", defaultValue = "false")
+	private Boolean ignoreRdbms2Liquibase = false;
+
+	@Parameter(property = "ignoreAsm2sdk", defaultValue = "false")
+	private Boolean ignoreAsm2sdk = false;
+
+	@Parameter(property = "ignoreAsm2Expression", defaultValue = "false")
+	private Boolean ignoreAsm2Expression = false;
 
 	@Parameter(property = "destination")
 	private File destination;
@@ -106,6 +139,9 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 
 	@Parameter(property = "saveModels", defaultValue = "true")
 	private Boolean saveModels = true;
+
+	@Parameter
+	private Map<String, DialectParam> dialects;
 
 	Set<URL> classPathUrls = new HashSet<>();
 
@@ -294,7 +330,6 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 			}
 		}
 
-
 		DefaultWorkflow defaultWorkflow;
 
 		DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder parameters =
@@ -303,10 +338,16 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 						.modelVersion(modelVersion)
 						.runInParallel(runInParallel)
 						.enableMetrics(enableMetrics)
-						.ignoreJsl2Psm(ignoreJsl2Psm)
-						.ignoreJsl2PsmTrace(ignoreJsl2PsmTrace)
+						.ignorePsm2Asm(ignorePsm2Asm)
+						.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
+						.ignoreAsm2sdk(ignoreAsm2sdk)
+						.ignoreAsm2Expression(ignoreAsm2Expression)
+						.ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
+						.ignorePsm2AsmTrace(ignorePsm2AsmTrace)
+						.ignoreAsm2RdbmsTrace(ignoreAsm2RdbmsTrace)
 						.validateModels(validateModels)
-						.modelName(modelName);
+						.modelName(modelName)
+						.dialectList(dialectList);
 
 		defaultWorkflow = new DefaultWorkflow(parameters);
 
@@ -316,8 +357,34 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 			workflowHelper.loadJslModel(modelName, jslModel, jslUri);
 		}
 
-		if (psm != null) {
+		if (psm != null && !psm.trim().equals("")) {
 			workflowHelper.loadPsmModel(modelName, null, getArtifact(psm).toURI());
+		}
+
+		if (asm != null && (ignorePsm2AsmTrace || psm2AsmTrace != null)) {
+			workflowHelper.loadAsmModel(modelName, null, getArtifact(asm).toURI(),
+					null, getArtifact(psm2AsmTrace).toURI());
+		}
+
+		if (expression != null && !expression.trim().equals("")) {
+			workflowHelper.loadExpressionModel(modelName, null, getArtifact(expression).toURI());
+		}
+
+		if (sdk != null && !sdk.trim().equals("") && sdkInternal != null && !sdkInternal.trim().equals("")) {
+			workflowHelper.loadSdk(null, getArtifact(sdk).toURI(), null, getArtifact(sdkInternal).toURI());
+		}
+
+		if (dialects != null) {
+			for (Map.Entry<String, DialectParam> entry : dialects.entrySet()) {
+
+				if (entry.getValue().getRdbms() != null && entry.getValue().getAsm2rdbmsTrace() != null) {
+					workflowHelper.loadRdbmsModel(modelName, entry.getKey(), null, getArtifact(entry.getValue().getRdbms()).toURI(),
+							null, getArtifact(entry.getValue().getAsm2rdbmsTrace()).toURI());
+				}
+				if (entry.getValue().getLiquibase() != null) {
+					workflowHelper.loadLiquibaseModel(modelName, entry.getKey(), null, getArtifact(entry.getValue().getLiquibase()).toURI());
+				}
+			}
 		}
 
 		Exception error = null;

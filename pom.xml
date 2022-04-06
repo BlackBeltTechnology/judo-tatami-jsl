@@ -680,7 +680,6 @@
                 <module>judo-tatami-jsl-jsl2psm</module>
                 <module>judo-tatami-jsl-workflow</module>
                 <module>judo-tatami-jsl-workflow-maven-plugin</module>
-                <module>judo-tatami-jsl-workflow-maven-plugin-test</module>
             </modules>
         </profile>
 
