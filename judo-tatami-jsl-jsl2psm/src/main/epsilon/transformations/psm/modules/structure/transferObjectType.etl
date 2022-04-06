@@ -1,0 +1,17 @@
+import "../../../../operations/_importAll.eol";
+
+rule CreateEntityDefaultTransferObjectType
+    transform s : JSL!EntityDeclaration
+    to t : JUDOPSM!MappedTransferObjectType
+    {
+        t.setId("(jsl/" + s.getId() + ")/CreateEntityDefaultTransferObjectType");
+        t.entityType = s.getPSMEquivalent();
+        t.name = s.name + "DefaultTransferObject";
+        t.optional = false;
+        t.queryCustomizer = false;
+
+        t.entityType = s.getPSMEquivalent();
+
+        s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
+        log.debug("Created MappedTransferObjectType: " + t.name);
+    }
