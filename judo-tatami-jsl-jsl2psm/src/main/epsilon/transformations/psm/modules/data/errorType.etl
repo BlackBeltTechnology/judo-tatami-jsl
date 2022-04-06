@@ -9,7 +9,8 @@ rule CreateUnmappedTransferObjectType
         t.optional = false;
         t.queryCustomizer = false;
 
-        for (field in s.getAllFields()) {
+        // TODO: implement inheritance JNG-3684
+        for (field in s.fields) {
             var attr = new JUDOPSM!TransferAttribute();
             attr.setId("(jsl/" + field.getId() + ")/CreateTransferAttribute");
             attr.name = field.name;

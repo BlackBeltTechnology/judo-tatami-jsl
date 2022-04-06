@@ -67,9 +67,6 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
                         "error MyError {\n" +
                         "\tfield required Integer code\n" +
                         "\tfield String msg\n" +
-                        "}\n" +
-                        "error MyExtendedError extends MyError {\n" +
-                        "\tfield Integer extra = 0\n" +
                         "}"
                 )
         );
@@ -80,7 +77,7 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
         transform();
 
         final Set<UnmappedTransferObjectType> psmUnmappedTOTypes = psmModelWrapper.getStreamOfPsmServiceUnmappedTransferObjectType().collect(Collectors.toSet());
-        assertEquals(2, psmUnmappedTOTypes.size());
+        assertEquals(1, psmUnmappedTOTypes.size());
 
         final Optional<UnmappedTransferObjectType> psmUnmappedTOMyError = psmUnmappedTOTypes.stream().filter(e -> e.getName().equals("MyError")).findAny();
         assertTrue(psmUnmappedTOMyError.isPresent());
@@ -100,13 +97,5 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
         assertTrue(myMsg.isPresent());
         assertFalse(myMsg.get().isRequired());
         assertEquals(psmTypeString.get(), myMsg.get().getDataType());
-
-        final Optional<UnmappedTransferObjectType> psmUnmappedTOMyExtendedError = psmUnmappedTOTypes.stream().filter(e -> e.getName().equals("MyExtendedError")).findAny();
-        assertTrue(psmUnmappedTOMyExtendedError.isPresent());
-
-        final Optional<TransferAttribute> extra = psmUnmappedTOMyExtendedError.get().getAttributes().stream().filter(r -> r.getName().equals("extra")).findFirst();
-        assertTrue(extra.isPresent());
-        assertFalse(extra.get().isRequired());
-        assertEquals(psmTypeInteger.get(), extra.get().getDataType());
     }
 }

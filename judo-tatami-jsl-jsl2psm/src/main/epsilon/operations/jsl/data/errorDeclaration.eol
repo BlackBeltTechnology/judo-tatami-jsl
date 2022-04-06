@@ -5,19 +5,3 @@ operation JSL!ErrorDeclaration getPSMEquivalent(): JUDOPSM!UnmappedTransferObjec
 operation JSL!ErrorDeclaration getId(): String {
 	return (self.eContainer.name + "/" + self.name);
 }
-
-operation JSL!ErrorDeclaration getAllFields(): Sequence<ErrorField> {
-    var fields = new Set<ErrorField>;
-
-    for (field in self.fields) {
-        fields.add(field);
-    }
-
-    if (self.extends.isDefined()) {
-        for (inheritedField in self.extends.getAllFields()) {
-            fields.add(inheritedField);
-        }
-    }
-
-    return fields.asSequence();
-}
