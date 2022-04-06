@@ -17,9 +17,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork.Asm2RdbmsWorkParameter.asm2RdbmsWorkParameter;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork.Psm2AsmWorkParameter.psm2AsmWorkParameter;
 
 
 @Slf4j
@@ -60,6 +62,10 @@ public abstract class AbstractTatamiPipelineWorkflow {
 
 		transformationContext.put(Jsl2PsmWork.Jsl2PsmWorkParameter.jsl2PsmWorkParameter().createTrace(!parameters.getIgnoreJsl2PsmTrace()).build());
 
+		transformationContext.put(psm2AsmWorkParameter().createTrace(!parameters.getIgnorePsm2AsmTrace()).build());
+		transformationContext.put(asm2RdbmsWorkParameter().createTrace(!parameters.getIgnoreAsm2Rdbms())
+				.modelVersion(modelVersion).build());
+
 		loadModels(workflowHelper, metrics, transformationContext, parameters);
 
 //		Optional<Work> validateJslWork = parameters.getValidateModels() && verifier.verifyClassPresent(JslDslModel.class) ?
@@ -73,6 +79,34 @@ public abstract class AbstractTatamiPipelineWorkflow {
 		Optional<Work> createPsmWork = parameters.getIgnoreJsl2Psm() || workflowHelper.jsl2PsmOutputPredicate().get() ?
 				Optional.empty() :
 				Optional.of(workflowHelper.createJsl2PsmWork());
+
+		Optional<Work> createAsmWork = parameters.getIgnorePsm2Asm() || workflowHelper.psm2AsmOutputPredicate().get() ?
+				Optional.empty() :
+				Optional.of(workflowHelper.createPsm2AsmWork());
+
+		Optional<Work> createExpressionWork = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2Expression() || workflowHelper.asm2ExpressionOutputPredicate().get() ?
+				Optional.empty() :
+				Optional.of(workflowHelper.createAsm2ExpressionWork(parameters.getValidateModels()));
+
+		Optional<Work> createSDKWork = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2sdk() || workflowHelper.asm2SDKPredicate().get() ?
+				Optional.empty() :
+				Optional.of(workflowHelper.createAsm2SDKWork());
+
+		Stream<Optional<Work>> createRdbmsWorks = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2Rdbms() ?
+				Stream.empty() :
+				parameters.getDialectList()
+						.stream()
+						.filter(dialect -> !workflowHelper.asm2RdbmsOutputPredicate(dialect).get())
+						.map(dialect -> Optional.of(workflowHelper.createAsm2RdbmsWork(dialect, parameters.getIgnoreRdbms2Liquibase()))
+						);
+
+		Stream<Optional<Work>> createLiquibaseWorks = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2Rdbms() || parameters.getIgnoreRdbms2Liquibase() ?
+				Stream.empty() :
+				parameters.getDialectList()
+						.stream()
+						.filter(dialect -> !workflowHelper.rdbms2LiquibaseOutputPredicate(dialect).get())
+						.map(dialect -> Optional.of(workflowHelper.createRdbms2LiquibaseWork(dialect))
+						);
 
 		WorkFlow workflow;
 
@@ -89,9 +123,23 @@ public abstract class AbstractTatamiPipelineWorkflow {
 									aNewParallelFlow()
 											.named("Parallel JSL Transformations")
 											.execute(Stream.of(createPsmWork))
+											.build()),
+
+							Optional.of(
+									aNewParallelFlow()
+											.named("Parallel PSM Transformations")
+											.execute(Stream.of(createAsmWork))
+											.build()),
+							Optional.of(
+									aNewParallelFlow()
+											.named("Parallel ASM Transformations")
+											.execute(Stream.concat(
+													Stream.of(createExpressionWork, createSDKWork),
+													createRdbmsWorks
+											))
 											.build())
 
-					).build();
+							).build();
 		} else {
 			workflow = aNewSequentialFlow()
 					.named("Run all transformations sequentially")
@@ -99,7 +147,10 @@ public abstract class AbstractTatamiPipelineWorkflow {
 							Stream.of(
 									/*validateJslWork,*/
 									validatePsmWork,
-									createPsmWork
+									createPsmWork,
+									createAsmWork,
+									createExpressionWork,
+									createSDKWork
 							)
 					).build();
 		}

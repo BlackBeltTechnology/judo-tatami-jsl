@@ -144,7 +144,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			defaultWorkflow.startDefaultWorkflow();
 		} catch (IllegalStateException e) {
 			try {
-				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination);
+				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
 			} catch (Exception e2) {
 			}
 			throw new MojoFailureException("An error occurred during the execution phase of the workflow.", e);
@@ -155,7 +155,7 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 		// ------------------ //
 		destination.mkdirs();
 		try {
-			DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination);
+			DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
 		} catch (Exception e) {
 			throw new MojoFailureException("An error occurred during the saving phase of the workflow.", e);
 		}
