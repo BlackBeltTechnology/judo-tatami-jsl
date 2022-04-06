@@ -1,0 +1,16 @@
+import "../../../../operations/_importAll.eol";
+import "../namespace/namespace.etl";
+
+rule CreateTransferAttributeFromField
+    transform s: JSL!EntityFieldDeclaration
+    to t: JUDOPSM!TransferAttribute
+    {
+        guard: s.singleType.isDefined() and s.singleType.isKindOf(JSL!PrimitiveDeclaration)
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferAttributeFromField");
+        t.required = s.isRequired;
+        t.name = s.name;
+        t.binding = s.equivalent("CreateAttributeFromField");
+        t.dataType = s.singleType.getPSMEquivalent();
+        s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
+        log.debug("Created TransferAttribute (Field): " + t.name);
+    }
