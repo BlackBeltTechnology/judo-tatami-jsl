@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import java.net.URI;
+import java.util.List;
 
 @Builder(builderMethodName = "defaultWorkflowSetupParameters")
 @Getter
@@ -30,8 +31,8 @@ public class DefaultWorkflowSetupParameters {
 	@NonNull
 	private String modelName;
 
-//	@NonNull
-//	private List<String> dialectList;
+	@NonNull
+	private List<String> dialectList;
 
 	@Builder.Default
 	private Boolean runInParallel = true;
@@ -45,53 +46,26 @@ public class DefaultWorkflowSetupParameters {
 	@Builder.Default
 	private Boolean ignoreJsl2PsmTrace = false;
 
-//	@Builder.Default
-//	private Boolean ignorePsm2Asm = false;
-//
-//	@Builder.Default
-//	private Boolean ignorePsm2AsmTrace = false;
-//
-//	@Builder.Default
-//	private Boolean ignorePsm2Measure = false;
-//
-//	@Builder.Default
-//	private Boolean ignorePsm2MeasureTrace = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreAsm2Openapi = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreAsm2OpenapiTrace = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreAsm2Rdbms = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreAsm2RdbmsTrace = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreAsm2Keycloak = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreAsm2KeycloakTrace = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreRdbms2Liquibase = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreAsm2sdk = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreAsm2jaxrsapi = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreAsm2Expression = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreAsm2Script = false;
-//
-//	@Builder.Default
-//	private Boolean ignoreScript2Operation = false;
+	@Builder.Default
+	private Boolean ignorePsm2Asm = false;
+
+	@Builder.Default
+	private Boolean ignorePsm2AsmTrace = false;
+
+	@Builder.Default
+	private Boolean ignoreAsm2Rdbms = false;
+
+	@Builder.Default
+	private Boolean ignoreAsm2RdbmsTrace = false;
+
+	@Builder.Default
+	private Boolean ignoreRdbms2Liquibase = false;
+
+	@Builder.Default
+	private Boolean ignoreAsm2sdk = false;
+
+	@Builder.Default
+	private Boolean ignoreAsm2Expression = false;
 
 	@Builder.Default
 	private Boolean validateModels = false;

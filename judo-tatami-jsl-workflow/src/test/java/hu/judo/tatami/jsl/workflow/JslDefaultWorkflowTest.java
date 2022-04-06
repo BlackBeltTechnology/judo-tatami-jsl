@@ -1,5 +1,6 @@
 package hu.judo.tatami.jsl.workflow;
 
+import com.google.common.collect.ImmutableList;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
@@ -40,10 +41,11 @@ public class JslDefaultWorkflowTest {
 		defaultWorkflow = new JslDefaultWorkflow(
 				DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 						.jslModelSourceURI(new File(FILE_LOCATION).toURI())
+						.dialectList(ImmutableList.of("hsqldb"))
 						.modelName(MODEL_NAME)
 		);
 		workReport = defaultWorkflow.startDefaultWorkflow();
-		saveModels(defaultWorkflow.getTransformationContext(), TARGET_TEST_CLASSES);
+		saveModels(defaultWorkflow.getTransformationContext(), TARGET_TEST_CLASSES, ImmutableList.of("hsqldb"));
 	}
 
 	@Test
@@ -59,6 +61,7 @@ public class JslDefaultWorkflowTest {
 		defaultWorkflow = new JslDefaultWorkflow(
 				DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 						.jslModelSourceURI(new File(FILE_LOCATION).toURI())
+						.dialectList(ImmutableList.of("hsqldb"))
 						.modelName(MODEL_NAME)
 		);
 
@@ -77,6 +80,7 @@ public class JslDefaultWorkflowTest {
 		defaultWorkflow = new JslDefaultWorkflow(
 				DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
 						.jslModelSourceURI(new File(FILE_LOCATION).toURI())
+						.dialectList(ImmutableList.of("hsqldb"))
 						.modelName(MODEL_NAME)
 		);
 
