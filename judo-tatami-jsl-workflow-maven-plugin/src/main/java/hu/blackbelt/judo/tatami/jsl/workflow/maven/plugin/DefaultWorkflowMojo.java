@@ -330,7 +330,7 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 		if (error != null || saveModels) {
 			destination.mkdirs();
 			try {
-				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination);
+				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
 			} catch (Exception e) {
 				if (error != null) {
 					throw new MojoFailureException("An error occurred during the execution phase of the workflow.", error);

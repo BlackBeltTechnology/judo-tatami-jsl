@@ -1,25 +1,43 @@
 package hu.blackbelt.judo.tatami.jsl.workflow;
 
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
+import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace;
+import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.util.List;
 
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.SaveArguments.expressionSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.SaveArguments.jslDslSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler.fixUriOutputStream;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.SaveArguments.measureSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
+import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork.getAsm2RdbmsTrace;
+import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork.getRdbmsModel;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.getSdkInternalStream;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.getSdkStream;
 import static hu.blackbelt.judo.tatami.jsl.workflow.ThrowingCosumerWrapper.executeWrapper;
+import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork.getLiquibaseModel;
 
 public class DefaultWorkflowSave {
 
 	private static final boolean VALIDATE_MODELS_ON_SAVE = false; // do not validate models on save
 
-	public static void saveModels(TransformationContext transformationContext, File dest) {
-		saveModels(true, transformationContext, dest);
+	public static void saveModels(TransformationContext transformationContext, File dest, List<String> dialectList) {
+		saveModels(true, transformationContext, dest, dialectList);
 	}
 
-	public static void saveModels(boolean catchError, TransformationContext transformationContext, File dest) {
+	public static void saveModels(boolean catchError, TransformationContext transformationContext, File dest, List<String> dialectList) {
 
 		if (!dest.exists()) {
 			throw new IllegalArgumentException("Destination doesn't exist!");
@@ -40,6 +58,46 @@ public class DefaultWorkflowSave {
 
 		transformationContext.getByClass(Jsl2PsmTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
 				m.save(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "jsl2psm.model")))));
+
+		transformationContext.getByClass(AsmModel.class).ifPresent(executeWrapper(catchError, (m) ->
+				m.saveAsmModel(asmSaveArgumentsBuilder()
+						.validateModel(VALIDATE_MODELS_ON_SAVE)
+						.file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-asm.model"))))));
+
+		transformationContext.getByClass(MeasureModel.class).ifPresent(executeWrapper(catchError, (m) ->
+				m.saveMeasureModel(measureSaveArgumentsBuilder()
+						.validateModel(VALIDATE_MODELS_ON_SAVE)
+						.file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-measure.model"))))));
+
+		dialectList.forEach(dialect -> getRdbmsModel(transformationContext, dialect)
+				.ifPresent(executeWrapper(catchError, (m) -> m.saveRdbmsModel(rdbmsSaveArgumentsBuilder().validateModel(VALIDATE_MODELS_ON_SAVE)
+						.file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "rdbms_" + dialect + ".model")))))));
+
+		transformationContext.getByClass(ExpressionModel.class).ifPresent(executeWrapper(catchError, (m) ->
+				m.saveExpressionModel(expressionSaveArgumentsBuilder()
+						.validateModel(VALIDATE_MODELS_ON_SAVE)
+						.file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-expression.model"))))));
+
+		dialectList.forEach(dialect -> getLiquibaseModel(transformationContext, dialect)
+				.ifPresent(executeWrapper(catchError,
+						(m) -> saveFixedLiquibaseModel(m, new FileOutputStream(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "liquibase_" + dialect + ".changelog.xml")))))));
+
+		transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
+				m.save(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "psm2asm.model")))));
+
+		dialectList.forEach(dialect -> getAsm2RdbmsTrace(transformationContext, dialect)
+				.ifPresent(executeWrapper(catchError, (m) -> m.save(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "asm2rdbms_" + dialect + ".model"))))));
+
+		getSdkStream(transformationContext).ifPresent(executeWrapper(catchError, (m) -> {
+			Files.copy(m, deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "asm2sdk.jar")).toPath());
+			m.close();
+		}));
+
+		getSdkInternalStream(transformationContext).ifPresent(executeWrapper(catchError, (m) -> {
+			Files.copy(m, deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "asm2sdk-internal.jar")).toPath());
+			m.close();
+		}));
+
 	}
 
 	private static File deleteFileIfExists(File file) {
@@ -48,4 +106,13 @@ public class DefaultWorkflowSave {
 		}
 		return file;
 	}
+
+	public static void saveFixedLiquibaseModel(LiquibaseModel liquibaseModel, OutputStream outputStream) throws IOException, LiquibaseModel.LiquibaseValidationException {
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		liquibaseModel.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()
+				.validateModel(VALIDATE_MODELS_ON_SAVE)
+				.outputStream(fixUriOutputStream(byteArrayOutputStream)));
+		byteArrayOutputStream.writeTo(outputStream);
+	}
+
 }
