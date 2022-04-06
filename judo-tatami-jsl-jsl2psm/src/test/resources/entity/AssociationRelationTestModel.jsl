@@ -9,20 +9,23 @@ entity Lead {
 	relation Customer[] namedCustomers1
 	relation Customer namedCustomer2
 	relation Customer[] namedCustomers2
+
+	relation Customer twoSideNamedCustomer opposite-name twoSideNamedLead
 }
 
 entity Customer {
 	relation Lead[] leads
 	relation Lead lead
+	relation Lead twoSideNamedLead opposite-name twoSideNamedCustomer
 
 	relation Lead[] leads1 opposite-name namedCustomer1
 	relation Lead[] leads2 opposite-name namedCustomers1
-	relation Lead[] leads3 opposite-single injectedCustomer1
-	relation Lead[] leads4 opposite-many injectedCustomers1
+	relation Lead[] leads3 opposite-name namedCustomer2
+	relation Lead[] leads4 opposite-name namedCustomers2
 
-	relation Lead lead1 opposite-name namedCustomer2
-	relation Lead lead2 opposite-name namedCustomers2
-	relation Lead lead3 opposite-single injectedCustomer2
-	relation Lead lead4 opposite-many injectedCustomers2
+//	relation Lead[] leads5 opposite-single injectedCustomer1
+//	relation Lead[] leads6 opposite-many injectedCustomers1
+//	relation Lead lead5 opposite-single injectedCustomer2
+//	relation Lead lead6 opposite-many injectedCustomers2
 
 }

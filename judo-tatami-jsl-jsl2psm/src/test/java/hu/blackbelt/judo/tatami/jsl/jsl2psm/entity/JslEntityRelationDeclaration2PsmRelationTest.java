@@ -179,13 +179,21 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         jslModel.addContent(model.get());
         transform();
 
+        final Optional<EntityType> lead = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Lead")).findFirst();
+        assertTrue(lead.isPresent());
+        
+        final Optional<EntityType> customer = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Customer")).findFirst();
+        assertTrue(customer.isPresent());
+        
+        
+        
         /*
         final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
         assertEquals(5, psmEntityTypes.size());
 
         final Set<Relation> psmRelations = psmModelWrapper.getStreamOfPsmDataRelation().collect(Collectors.toSet());
         assertEquals(3, psmRelations.size());
-		*/
+		*/	
 
     }
 }
