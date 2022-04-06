@@ -7,4 +7,6 @@ import "entityIdentifierDeclaration.eol";
 import "primitiveDeclaration.eol";
 import "enumDeclaration.eol";
 import "enumLiteral.eol";
+import "errorDeclaration.eol";
+import "errorField.eol";
 import "modelDeclaration.eol";
