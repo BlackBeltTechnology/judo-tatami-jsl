@@ -10,7 +10,24 @@ rule CreateEntityDefaultTransferObjectType
         t.optional = false;
         t.queryCustomizer = false;
 
-        t.entityType = s.getPSMEquivalent();
+        // By default owned attributes are transformed in `transferAttribute.etl`, therefore we only transform inherited
+        // members by calling the flattened member list from `entity.getInheritedMembers()`
+        for (entity in s.`extends`) {
+            var inheritedMembers = entity.getInheritedMembers();
+
+            for (im in inheritedMembers) {
+                if (im.singleType.isDefined() and im.singleType.isKindOf(JSL!PrimitiveDeclaration)) {
+                    var attr = new JUDOPSM!TransferAttribute();
+                    attr.setId("(jsl/" + im.getId() + ")/CreateTransferAttributeFromField");
+                    attr.required = im.isRequired;
+                    attr.name = im.name;
+                    attr.binding = im.equivalent("CreateAttributeFromField");
+                    attr.dataType = im.singleType.getPSMEquivalent();
+
+                    t.attributes.add(attr);
+                }
+            }
+        }
 
         s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
         log.debug("Created MappedTransferObjectType: " + t.name);
