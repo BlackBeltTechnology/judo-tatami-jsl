@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.namespace;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
@@ -49,19 +50,16 @@ public class JslNamespace2PsmNamespaceTest extends AbstractTest {
     void testCreateModel() throws Exception {
         testName = "CreateModel";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "TestModel",
                 List.of("model TestModel"));
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<Model> lookupPSMModel = psmModelWrapper.getStreamOfPsmNamespaceModel()
                 .findAny();
 
         assertTrue(lookupPSMModel.isPresent());
-        assertThat(lookupPSMModel.get().getName(), IsEqual.equalTo(model.get().getName()));
+        assertThat(lookupPSMModel.get().getName(), IsEqual.equalTo(jslModel.getName()));
     }
 }

@@ -1,7 +1,9 @@
 operation JSL!ModelDeclaration getPSMEquivalent(): JUDOPSM!Model {
+	//return psmModel;	
 	return self.equivalent("CreateModel");
 }
 
 operation JSL!ModelDeclaration getId(): String {
+	//return  psmModel.name;
 	return (self.name);
 }

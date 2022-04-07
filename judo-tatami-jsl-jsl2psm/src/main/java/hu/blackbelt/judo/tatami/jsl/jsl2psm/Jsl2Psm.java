@@ -37,7 +37,6 @@ import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.getTransform
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace.JSL_2_PSM_URI_POSTFIX;
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace.resolveJsl2PsmTrace;
 
-@Slf4j
 public class Jsl2Psm {
 
     public static final String SCRIPT_ROOT_TATAMI_JSL_2_PSM = "tatami/jsl2psm/transformations/psm/";
@@ -47,9 +46,6 @@ public class Jsl2Psm {
 
         @NonNull
         JslDslModel jslModel;
-
-        @Builder.Default
-        Set<JslDslModel> sidekickJslModels = new HashSet();
 
         @NonNull
         PsmModel psmModel;
@@ -77,17 +73,6 @@ public class Jsl2Psm {
         // Execution context
         ExecutionContextBuilder executionContextBuilder = executionContextBuilder();
         
-        AtomicInteger counter = new AtomicInteger(0);
-        List<WrappedEmfModelContext> sidekickModels = parameter.sidekickJslModels.stream().map(j -> {
-        	String alias = "JSL_SIDEKICK" + counter.getAndIncrement();
-        	return wrappedEmfModelContextBuilder()
-                    .log(parameter.log)
-                    .name(alias)
-                    .resource(j.getResource())
-                    .build();
-        }).collect(Collectors.toList());
-
-    	
     	ExecutionContext executionContext = executionContextBuilder
                 .log(parameter.log)
                 .modelContexts(ImmutableList.<ModelContext>builder()
@@ -103,11 +88,11 @@ public class Jsl2Psm {
                                 .resource(parameter.psmModel.getResource())
                                 .build()
                         )
-                		.addAll(sidekickModels)
                 		.build()
         		)
                 .injectContexts(ImmutableMap.of(
 //                        "jslUtils", new JslUtils(),
+                		"defaultModelName", parameter.jslModel.getName(),
                         "expressionUtils", new JslExpressionToJqlExpression(),
                         "psmUtils", new PsmUtils(parameter.psmModel.getResourceSet())
                 ))

@@ -11,7 +11,6 @@ import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.resource.XtextResourceSet;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -56,7 +55,7 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
     void testImportModel() throws Exception {
         testName = "TestImportModelTest";
 
-        XtextResourceSet resourceSet = parser.loadJslFromString(ImmutableList.of(
+        jslModel = parser.getModelFromStrings("ns2::c", ImmutableList.of(
         		"model ns1::a\n"
         		+ "\n"
         		+ "type string String max-length 32",
@@ -66,39 +65,23 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
         		+ "import ns1::a as modela\n"
         		+ "\n"
         		+ "entity B {\n"
+        		+ "	field modela::String f1 \n"
+        		+ "}",
+
+        		"model ns2::c\n"
+        		+ "\n"
+        		+ "import ns1::a\n"
+        		+ "\n"
+        		+ "entity C {\n"
         		+ "	field String f1 \n"
         		+ "}"
+
         		
         		));
         
-        /*
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
-                "EntityTypeCreateModel",
-                List.of("model EntityTypeCreateModel\n" +
-                        "\n" +
-                        "entity Test {\n" +
-                        "}\n" +
-                        "entity abstract Person {\n" +
-                        "}\n" +
-                        "entity SalesPerson extends Person, Test {\n" +
-                        "}\n"
-                )
-        );
-        */
-
-        /*
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
-        */
-        
-        for (Resource resource : resourceSet.getResources()) {
-        	jslModel.addContent(resource.getContents().get(0));
-        }
-
-        /*
         transform();
 
+        /*
         final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
         assertEquals(3, psmEntityTypes.size());
 

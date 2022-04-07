@@ -21,6 +21,47 @@ rule CreateModel
         t.~modelRoot = current;
     }
 
+/*
+pre CreateModelPackages {
+	var psmModel = new JUDOPSM!Model();
+    psmModel.setId("(jsl/" + defaultModelName + ")/CreateModelPackages");
+    psmModel.name = "aaaa"; //defaultModelName.replaceAll("::", "_");
+	psmModel.~modelRoot = psmModel;
+	JUDOPSM.resource.contents.add(psmModel);
+}
+
+rule CreateModelPackages
+    transform s : JSL!ModelDeclaration
+    to t : JUDOPSM!Package {
+
+//        t.setId("(jsl/" + s.getId() + ")/CreateModel");
+//        t.name = s.name.replaceAll("::", "_");
+//        log.info("Created Package: " + t.name);
+        psmModel.packages.add(t);
+
+        var fragments = s.name.split("::");
+        var current : JUDOPSM!Namespace = t;
+
+        for (a in fragments) {
+        	var newPackage = t;
+        	if (hasMore) {
+            	newPackage = new JUDOPSM!Package();
+        	}
+            current.packages.add(newPackage);
+            current = newPackage;
+            newPackage.name = a + "ddd";
+            newPackage.setId("(jsl/" + s.getId() + "/" + newPackage.name + ")/CreateModel");
+            log.info("Created Package: " + newPackage.name);
+        }
+
+        log.info("Test: " + s.name + " " + defaultModelName);
+
+        //if (s.name == defaultModelName) {
+	        psmModel.~modelRoot = current;
+        //}
+    }
+*/
+
 @lazy
 rule CreateGeneratedTypesPackage
     transform s : JSL!ModelDeclaration
@@ -28,5 +69,7 @@ rule CreateGeneratedTypesPackage
         t.setId("(jsl/" + s.getId() + ")/CreateGeneratedTypesPackage");
         t.name = "_types";
         s.equivalent("CreateModel").packages.add(t);
+        //psmModel.packages.add(t);
+
         log.debug("Created TypesPackage: " + t.name);
     }

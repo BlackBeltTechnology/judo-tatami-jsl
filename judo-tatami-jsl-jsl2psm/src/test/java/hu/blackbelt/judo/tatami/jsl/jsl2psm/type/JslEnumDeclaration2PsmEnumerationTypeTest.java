@@ -54,7 +54,7 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
     void testDeclaration() throws Exception {
         testName = "TestDeclaration";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
@@ -66,9 +66,6 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Set<EnumerationType> psmEnumeration = psmModelWrapper.getStreamOfPsmTypeEnumerationType().collect(Collectors.toSet());
@@ -98,7 +95,7 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
     void testEntityMember() throws Exception {
         testName = "TestEntityMember";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberModel",
                 List.of("model EntityMemberModel\n" +
                         "\n" +
@@ -114,9 +111,6 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EnumerationType> psmTypeLeadStatus = psmModelWrapper.getStreamOfPsmTypeEnumerationType().filter(n -> n.getName().equals("LeadStatus")).findFirst();
@@ -131,7 +125,7 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
     void testEntityMemberRequired() throws Exception {
         testName = "TestEntityMemberRequired";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel\n" +
                         "\n" +
@@ -147,9 +141,6 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EnumerationType> psmTypeLeadStatus = psmModelWrapper.getStreamOfPsmTypeEnumerationType().filter(n -> n.getName().equals("LeadStatus")).findFirst();
@@ -165,7 +156,7 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
     void testEntityMemberInheritance() throws Exception {
         testName = "TestEntityMemberInheritance";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel\n" +
                         "\n" +
@@ -184,9 +175,6 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmLeadManager = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("LeadManager")).findFirst();
@@ -199,7 +187,7 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
     void testEntityMemberIdentifier() throws Exception {
         testName = "TestEntityMemberIdentifier";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +
@@ -218,9 +206,6 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmLeadManager = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("LeadManager")).findFirst();
