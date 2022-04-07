@@ -1,0 +1,25 @@
+import "../../../../operations/_importAll.eol";
+
+rule CreateUnmappedTransferObjectType
+    transform s : JSL!ErrorDeclaration
+    to t : JUDOPSM!UnmappedTransferObjectType
+    {
+        t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectType");
+        t.name = s.name;
+        t.optional = false;
+        t.queryCustomizer = false;
+
+        // TODO: implement inheritance JNG-3684
+        for (field in s.fields) {
+            var attr = new JUDOPSM!TransferAttribute();
+            attr.setId("(jsl/" + field.getId() + ")/CreateTransferAttribute");
+            attr.name = field.name;
+            attr.required = field.isRequired;
+            attr.dataType = field.type.getPSMEquivalent();
+
+            t.attributes.add(attr);
+        }
+
+        s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
+        log.debug("Created ErrorType: " + t.name);
+    }

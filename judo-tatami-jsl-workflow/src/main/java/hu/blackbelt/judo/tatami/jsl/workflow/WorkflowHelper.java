@@ -1,20 +1,46 @@
 package hu.blackbelt.judo.tatami.jsl.workflow;
 
 import com.pivovarit.function.ThrowingSupplier;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
+import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
+import hu.blackbelt.judo.meta.rdbms.support.RdbmsModelResourceSupport;
+import hu.blackbelt.judo.tatami.asm2expression.Asm2ExpressionWork;
+import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
+import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork;
+import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
+import hu.blackbelt.judo.tatami.expression.asm.validation.ExpressionValidationOnAsmWork;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmWork;
 import hu.blackbelt.judo.tatami.psm.validation.PsmValidationWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
 import hu.blackbelt.judo.tatami.core.workflow.work.NoOpWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
+import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
+import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
+import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 
+import java.io.InputStream;
 import java.net.URI;
+import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArguments.jslDslLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LoadArguments.liquibaseLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.LoadArguments.rdbmsLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport.registerRdbmsDataTypesMetamodel;
+import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
+import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.*;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.verifySdkInternalStream;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ConditionalFlow.Builder.aNewConditionalFlow;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static java.util.Optional.of;
@@ -66,6 +92,132 @@ public class WorkflowHelper {
                         .name(modelName)))));
     }
 
+    public void loadAsmModel(final String modelName,
+                             final AsmModel asmModel,
+                             final URI asmModelSourceURI,
+                             final Psm2AsmTransformationTrace psm2AsmTransformationTrace,
+                             final URI psm2AsmTransformationTraceSourceURI) {
+
+        if (asmModel == null && asmModelSourceURI == null) {
+            return;
+        }
+
+        transformationContext.put(ofNullable(asmModel).orElseGet(
+                ThrowingSupplier.sneaky(() -> AsmModel.loadAsmModel(asmLoadArgumentsBuilder()
+                        .inputStream(
+                                of(asmModelSourceURI).orElseThrow(() ->
+                                                new IllegalArgumentException("asmModel or asmModelSourceUri have to be defined"))
+                                        .toURL().openStream())
+                        .name(modelName)))));
+
+        Optional<PsmModel> psmModelFromContext = transformationContext.getByClass(PsmModel.class);
+
+        AsmModel asmModelFromContext = transformationContext.getByClass(AsmModel.class).get();
+
+        transformationContext.put(ofNullable(psm2AsmTransformationTrace).orElseGet(
+                ThrowingSupplier.sneaky(() -> Psm2AsmTransformationTrace.fromModelsAndTrace(
+                        modelName,
+                        psmModelFromContext.orElseThrow(() ->
+                                new IllegalArgumentException("psmModel have to be defined")),
+                        asmModelFromContext,
+                        of(psm2AsmTransformationTraceSourceURI).orElseThrow(() ->
+                                        new IllegalArgumentException("psm2AsmTransformationTrace or psm2AsmTransformationTraceSourceURI have to be defined"))
+                                .toURL().openStream()))));
+    }
+
+    public void loadExpressionModel(final String modelName,
+                                    final ExpressionModel expressionModel,
+                                    final URI expressionModelSourceURI) {
+
+        if (expressionModel == null && expressionModelSourceURI == null) {
+            return;
+        }
+        transformationContext.put(ofNullable(expressionModel).orElseGet(
+                ThrowingSupplier.sneaky(() -> ExpressionModel.loadExpressionModel(expressionLoadArgumentsBuilder()
+                        .inputStream(
+                                of(expressionModelSourceURI).orElseThrow(() ->
+                                                new IllegalArgumentException("expressionModel or expressionModelSourceUri have to be defined"))
+                                        .toURL().openStream())
+                        .name(modelName)))));
+    }
+
+    public void loadRdbmsModel(final String modelName,
+                               final String dialect,
+                               final RdbmsModel rdbmsModel,
+                               final URI rdbmsModelSourceURI,
+                               final Asm2RdbmsTransformationTrace asm2RdbmsTransformationTrace,
+                               final URI asm2RdbmsTransformationTraceSourceURI) {
+
+        if (rdbmsModel == null && rdbmsModelSourceURI == null) {
+            return;
+        }
+
+        ResourceSet resourceSet = RdbmsModelResourceSupport.createRdbmsResourceSet();
+        registerRdbmsNameMappingMetamodel(resourceSet);
+        registerRdbmsDataTypesMetamodel(resourceSet);
+        registerRdbmsTableMappingRulesMetamodel(resourceSet);
+        transformationContext.put("rdbms:" + dialect, ofNullable(rdbmsModel).orElseGet(
+                ThrowingSupplier.sneaky(() -> RdbmsModel.loadRdbmsModel(rdbmsLoadArgumentsBuilder()
+                        .resourceSet(resourceSet)
+                        .inputStream(
+                                of(rdbmsModelSourceURI).orElseThrow(() ->
+                                                new IllegalArgumentException("asmModel or asmModelSourceUri have to be defined"))
+                                        .toURL().openStream())
+                        .name(modelName)))));
+
+        Optional<AsmModel> asmModelFromContext = transformationContext.getByClass(AsmModel.class);
+
+        RdbmsModel rdbmsModelFromContext = transformationContext.get(RdbmsModel.class, "rdbms:" + dialect).get();
+
+        transformationContext.put("asm2rdbmstrace:" + dialect, ofNullable(asm2RdbmsTransformationTrace).orElseGet(
+                ThrowingSupplier.sneaky(() -> Asm2RdbmsTransformationTrace.fromModelsAndTrace(
+                        modelName,
+                        asmModelFromContext.orElseThrow(() ->
+                                new IllegalArgumentException("asmModel have to be defined")),
+                        rdbmsModelFromContext,
+                        of(asm2RdbmsTransformationTraceSourceURI).orElseThrow(() ->
+                                        new IllegalArgumentException("asm2RdbmsTransformationTrace or asm2RdbmsTransformationTraceSourceURI have to be defined"))
+                                .toURL().openStream()))));
+    }
+
+    public void loadLiquibaseModel(final String modelName,
+                                   final String dialect,
+                                   final LiquibaseModel liquibaseModel,
+                                   final URI liquibaseModelSourceURI) {
+
+        if (liquibaseModel == null && liquibaseModelSourceURI == null) {
+            return;
+        }
+        transformationContext.put("liquibase:" + dialect, ofNullable(liquibaseModel).orElseGet(
+                ThrowingSupplier.sneaky(() -> LiquibaseModel.loadLiquibaseModel(liquibaseLoadArgumentsBuilder()
+                        .inputStream(
+                                of(liquibaseModelSourceURI).orElseThrow(() ->
+                                                new IllegalArgumentException("liquibaseModel or liquibaseModelSourceURI have to be defined"))
+                                        .toURL().openStream())
+                        .name(modelName)))));
+    }
+
+    public void loadSdk(final InputStream sdk,
+                        final URI sdkSourceURI,
+                        final InputStream sdkInternal,
+                        final URI sdkInternalSourceURI
+    ) {
+
+        if (sdk == null && sdkSourceURI == null || sdkInternal == null && sdkInternalSourceURI == null ) {
+            return;
+        }
+        putSdkStream(transformationContext, ofNullable(sdk).orElseGet(
+                ThrowingSupplier.sneaky(() -> of(sdkSourceURI).orElseThrow(() ->
+                                new IllegalArgumentException("sdk or sdkSourceURI have to be defined"))
+                        .toURL().openStream())));
+
+        putSdkInternalStream(transformationContext, ofNullable(sdkInternal).orElseGet(
+                ThrowingSupplier.sneaky(() -> of(sdkInternalSourceURI).orElseThrow(() ->
+                                new IllegalArgumentException("sdkInternal or sdkInternalSourceURI have to be defined"))
+                        .toURL().openStream())));
+
+    }
+
 //    public Work createJslValidateWork() {
 //        return aNewConditionalFlow()
 //                .named("Conditional when Jsl model exists then Execute JslValidation")
@@ -109,4 +261,122 @@ public class WorkflowHelper {
                 .otherwise(new NoOpWork())
                 .build();
     }
+
+    public Supplier<Boolean> psm2AsmOutputPredicate() {
+        return () -> transformationContext.transformationContextVerifier.verifyClassPresent(AsmModel.class) &&
+                transformationContext.transformationContextVerifier.verifyClassPresent(Psm2AsmTransformationTrace.class);
+    }
+
+    public Work createPsm2AsmWork() {
+        return 	aNewConditionalFlow()
+                .named("Conditional when Psm model exists then Execute Psm2Asm")
+                .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyClassPresent(PsmModel.class)))
+                .when(WorkReportPredicate.COMPLETED)
+                .then(
+                        aNewSequentialFlow()
+                                .named("Execute Psm2Asm")
+                                .execute(
+                                        new Psm2AsmWork(transformationContext).withMetricsCollector(workflowMetrics),
+                                        new CheckWork(psm2AsmOutputPredicate())
+                                )
+                                .build()
+                )
+                .otherwise(new NoOpWork())
+                .build();
+    }
+
+    public Supplier<Boolean> asm2ExpressionOutputPredicate() {
+        return () -> transformationContext.transformationContextVerifier.verifyClassPresent(ExpressionModel.class);
+    }
+
+    public Work createAsm2ExpressionWork(boolean validateExpression) {
+        return 	aNewConditionalFlow()
+                .named("Conditional when Asm model exists then Execute Asm2Expression")
+                .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyClassPresent(AsmModel.class)))
+                .when(WorkReportPredicate.COMPLETED)
+                .then(
+                        aNewSequentialFlow()
+                                .named("Execute Asm2Expression")
+                                .execute(
+                                        aNewSequentialFlow().named("").execute(
+                                                Stream.of(
+                                                        Optional.of(new Asm2ExpressionWork(transformationContext).withMetricsCollector(workflowMetrics)),
+                                                        validateExpression ? Optional.of(new ExpressionValidationOnAsmWork(transformationContext).withMetricsCollector(workflowMetrics)) : Optional.empty()
+                                                ).filter(Optional::isPresent).map(Optional::get).toArray(Work[]::new)
+                                        ).build(),
+                                        new CheckWork(asm2ExpressionOutputPredicate())
+                                )
+                                .build()
+                )
+                .otherwise(new NoOpWork())
+                .build();
+    }
+
+    public Supplier<Boolean> asm2SDKPredicate() {
+        return () -> verifySdkStream(transformationContext) && verifySdkInternalStream(transformationContext);
+    }
+
+    public Work createAsm2SDKWork() {
+        return 	aNewConditionalFlow()
+                .named("Conditional when Asm model exists then Execute Asm2SDK")
+                .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyClassPresent(AsmModel.class)))
+                .when(WorkReportPredicate.COMPLETED)
+                .then(
+                        aNewSequentialFlow()
+                                .named("Execute Asm2SDK")
+                                .execute(
+                                        new Asm2SDKWork(transformationContext).withMetricsCollector(workflowMetrics),
+                                        new CheckWork(asm2SDKPredicate())
+                                )
+                                .build()
+                )
+                .otherwise(new NoOpWork())
+                .build();
+    }
+
+    public Supplier<Boolean> asm2RdbmsOutputPredicate(String dialect) {
+        return () -> transformationContext.transformationContextVerifier.verifyKeyPresent(RdbmsModel.class, "rdbms:" + dialect) &&
+                transformationContext.transformationContextVerifier.verifyKeyPresent(Asm2RdbmsTransformationTrace.class, "asm2rdbmstrace:" + dialect);
+    }
+
+    public Work createAsm2RdbmsWork(String dialect, boolean ignoreLiquibase) {
+        return 	aNewConditionalFlow()
+                .named("Conditional when Asm model exists then Execute Asm2Rdbms")
+                .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyClassPresent(AsmModel.class)))
+                .when(WorkReportPredicate.COMPLETED)
+                .then(
+                        aNewSequentialFlow()
+                                .named("Execute Asm2Rdbms")
+                                .execute(
+                                        new Asm2RdbmsWork(transformationContext, dialect).withMetricsCollector(workflowMetrics),
+                                        new CheckWork(asm2RdbmsOutputPredicate(dialect))
+                                )
+                                .build()
+                )
+                .otherwise(new NoOpWork())
+                .build();
+    }
+
+    public Supplier<Boolean> rdbms2LiquibaseOutputPredicate(String dialect) {
+        return () -> transformationContext.transformationContextVerifier.verifyKeyPresent(LiquibaseModel.class, "liquibase:" + dialect);
+    }
+
+    public Work createRdbms2LiquibaseWork(String dialect) {
+        return 	aNewConditionalFlow()
+                .named("Conditional when Rdbms model exists then Execute Rdbms2Liquibase")
+                .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyKeyPresent(RdbmsModel.class, "rdbms:" + dialect)))
+                .when(WorkReportPredicate.COMPLETED)
+                .then(
+                        aNewSequentialFlow()
+                                .named("Execute Rdbms2Liquibase")
+                                .execute(
+                                        new Rdbms2LiquibaseWork(transformationContext, dialect).withMetricsCollector(workflowMetrics),
+                                        new CheckWork(rdbms2LiquibaseOutputPredicate(dialect))
+                                )
+                                .build()
+                )
+                .otherwise(new NoOpWork())
+                .build();
+    }
+
 }
