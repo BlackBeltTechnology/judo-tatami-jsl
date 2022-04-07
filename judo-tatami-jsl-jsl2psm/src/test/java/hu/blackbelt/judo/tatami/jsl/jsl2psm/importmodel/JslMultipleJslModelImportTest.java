@@ -4,13 +4,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
+import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
+import hu.blackbelt.judo.meta.psm.namespace.Package;
+import hu.blackbelt.judo.meta.psm.type.StringType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 
-import org.eclipse.emf.ecore.resource.Resource;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -81,25 +82,41 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
         
         transform();
 
-        /*
         final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
-        assertEquals(3, psmEntityTypes.size());
+        assertEquals(2, psmEntityTypes.size());
 
-        final Set<String> psmEntityTypeNames = psmEntityTypes.stream().map(NamedElement::getName).collect(Collectors.toSet());
-        final Set<String> jslEntityTypeDeclarationNames = ImmutableSet.of("Test", "Person", "SalesPerson");
-        assertThat(psmEntityTypeNames, IsEqual.equalTo(jslEntityTypeDeclarationNames));
+        assertThat(psmEntityTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()), 
+        		IsEqual.equalTo(ImmutableSet.of("B", "C")));
 
-        final Optional<EntityType> psmEntityPerson = psmEntityTypes.stream().filter(e -> e.getName().equals("Person")).findAny();
-        assertTrue(psmEntityPerson.isPresent());
-        assertTrue(psmEntityPerson.get().isAbstract());
+        final Set<Model> models = psmModelWrapper.getStreamOfPsmNamespaceModel().collect(Collectors.toSet());
+        assertEquals(1, models.size());
+        
+        Model psmModel = models.iterator().next();
+        
+        assertThat(psmModel.getPackages().stream().map(NamedElement::getName).
+        		collect(Collectors.toSet()), 
+        		IsEqual.equalTo(ImmutableSet.of("ns1", "ns2")));
 
-        final Optional<EntityType> psmEntitySalesPerson = psmEntityTypes.stream().filter(e -> e.getName().equals("SalesPerson")).findAny();
-        assertTrue(psmEntitySalesPerson.isPresent());
+        Package ns1 = psmModel.getPackages().stream().filter(p -> p.getName().equals("ns1")).findFirst().get();
+        final Set<String> ns1PackageNames = ns1.getPackages().stream().map(NamedElement::getName).collect(Collectors.toSet());
+        assertThat(ns1PackageNames, 
+        		IsEqual.equalTo(ImmutableSet.of("a")));
 
-        final Set<String> psmEntityType3SuperTypeNames = psmEntitySalesPerson.get().getSuperEntityTypes().stream().map(NamedElement::getName).collect(Collectors.toSet());
-        final Set<String> jslEntityType3SuperTypeNames = ImmutableSet.of("Person", "Test");
-        assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(jslEntityType3SuperTypeNames));
-        */
+        Package a = ns1.getPackages().stream().filter(p -> p.getName().equals("a")).findFirst().get();        
+        assertTrue(a.getElements().stream().filter(p -> p.getName().equals("String")).map(e -> (StringType) e).findFirst().isPresent());
+
+        
+        Package ns2 = psmModel.getPackages().stream().filter(p -> p.getName().equals("ns2")).findFirst().get();
+        assertThat(ns2.getPackages().stream().map(NamedElement::getName).collect(Collectors.toSet()), 
+        		IsEqual.equalTo(ImmutableSet.of("b", "c")));
+
+        Package b = ns2.getPackages().stream().filter(p -> p.getName().equals("b")).findFirst().get();        
+        assertTrue(b.getElements().stream().filter(p -> p.getName().equals("B")).map(e -> (EntityType) e).findFirst().isPresent());
+
+        Package c = ns2.getPackages().stream().filter(p -> p.getName().equals("c")).findFirst().get();        
+        assertTrue(c.getElements().stream().filter(p -> p.getName().equals("C")).map(e -> (EntityType) e).findFirst().isPresent());
+
+        
     }
 
 
