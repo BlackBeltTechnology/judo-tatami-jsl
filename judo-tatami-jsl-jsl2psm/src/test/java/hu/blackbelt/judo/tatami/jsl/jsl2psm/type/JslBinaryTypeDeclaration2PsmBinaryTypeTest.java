@@ -54,7 +54,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
     void testDeclaration() throws Exception {
         testName = "TestDeclaration";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
@@ -62,9 +62,6 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Set<BinaryType> psmBinaries = psmModelWrapper.getStreamOfPsmTypeBinaryType().collect(Collectors.toSet());
@@ -82,7 +79,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
     void testEntityMember() throws Exception {
         testName = "TestEntityMember";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberModel",
                 List.of("model EntityMemberModel\n" +
                         "\n" +
@@ -94,9 +91,6 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<BinaryType> psmTypePicture = psmModelWrapper.getStreamOfPsmTypeBinaryType().filter(n -> n.getName().equals("Picture")).findFirst();
@@ -113,7 +107,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
     void testEntityMemberRequired() throws Exception {
         testName = "TestEntityMemberRequired";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel\n" +
                         "\n" +
@@ -125,9 +119,6 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmEntityUser = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("User")).findFirst();
@@ -141,7 +132,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
     void testEntityMemberInheritance() throws Exception {
         testName = "TestEntityMemberInheritance";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel\n" +
                         "\n" +
@@ -156,9 +147,6 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmAdminUser = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("AdminUser")).findFirst();
@@ -169,7 +157,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
     
     @Test
     void testEntityMemberIdentifier() throws Exception {
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +
@@ -181,9 +169,6 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("User")).findFirst();
