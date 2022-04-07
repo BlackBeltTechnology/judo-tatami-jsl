@@ -1,5 +1,6 @@
-package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
+package hu.blackbelt.judo.tatami.jsl.jsl2psm.importmodel;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
@@ -8,6 +9,8 @@ import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
+
+import org.eclipse.emf.ecore.resource.Resource;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
-    private static final String TARGET_TEST_CLASSES = "target/test-classes/entity";
+public class JslMultipleJslModelImportTest extends AbstractTest {
+    private static final String TARGET_TEST_CLASSES = "target/test-classes/importmodel";
 
     @Override
     protected String getTargetTestClasses() {
@@ -49,24 +52,36 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
     }
 
     @Test
-    void testCreateEntityType() throws Exception {
-        testName = "TestCreateEntityType";
+    void testImportModel() throws Exception {
+        testName = "TestImportModelTest";
 
-        jslModel = parser.getModelFromStrings(
-                "EntityTypeCreateModel",
-                List.of("model EntityTypeCreateModel\n" +
-                        "\n" +
-                        "entity Test {\n" +
-                        "}\n" +
-                        "entity abstract Person {\n" +
-                        "}\n" +
-                        "entity SalesPerson extends Person, Test {\n" +
-                        "}\n"
-                )
-        );
+        jslModel = parser.getModelFromStrings("ns2::c", ImmutableList.of(
+        		"model ns1::a\n"
+        		+ "\n"
+        		+ "type string String max-length 32",
+        		
+        		"model ns2::b\n"
+        		+ "\n"
+        		+ "import ns1::a as modela\n"
+        		+ "\n"
+        		+ "entity B {\n"
+        		+ "	field modela::String f1 \n"
+        		+ "}",
 
+        		"model ns2::c\n"
+        		+ "\n"
+        		+ "import ns1::a\n"
+        		+ "\n"
+        		+ "entity C {\n"
+        		+ "	field String f1 \n"
+        		+ "}"
+
+        		
+        		));
+        
         transform();
 
+        /*
         final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
         assertEquals(3, psmEntityTypes.size());
 
@@ -84,35 +99,8 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
         final Set<String> psmEntityType3SuperTypeNames = psmEntitySalesPerson.get().getSuperEntityTypes().stream().map(NamedElement::getName).collect(Collectors.toSet());
         final Set<String> jslEntityType3SuperTypeNames = ImmutableSet.of("Person", "Test");
         assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(jslEntityType3SuperTypeNames));
+        */
     }
 
-    @Test
-    void testEntityLocalName() throws Exception {
-        //testName = "TestEntityLocaleName";
 
-        jslModel = parser.getModelFromStrings(
-                "First::Second::EntityLocaleNameModel",
-                List.of("model First::Second::EntityLocaleNameModel\n" +
-                        "\n" +
-                        "entity Test {\n" +
-                        "}"
-                )
-        );
-
-        transform();
-
-        final Set<hu.blackbelt.judo.meta.psm.namespace.Package> psmPackageTypes = psmModelWrapper.getStreamOfPsmNamespacePackage().collect(Collectors.toSet());
-        assertEquals(3, psmPackageTypes.size());
-
-        final Set<String> psmEntityPackageNames = psmPackageTypes.stream().map(NamedElement::getName).collect(Collectors.toSet());
-        final Set<String> jslPackageNames = ImmutableSet.of("First", "Second", "EntityLocaleNameModel");
-        assertThat(psmEntityPackageNames, IsEqual.equalTo(jslPackageNames));
-
-        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
-        assertEquals(1, psmEntityTypes.size());
-
-        final Set<String> psmEntityTypeNames = psmEntityTypes.stream().map(NamedElement::getName).collect(Collectors.toSet());
-        final Set<String> jslEntityTypeDeclarationNames = ImmutableSet.of("Test");
-        assertThat(psmEntityTypeNames, IsEqual.equalTo(jslEntityTypeDeclarationNames));
-    }
 }

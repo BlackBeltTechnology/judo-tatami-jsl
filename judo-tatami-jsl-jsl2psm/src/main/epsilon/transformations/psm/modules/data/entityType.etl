@@ -11,6 +11,6 @@ rule CreateEntityType
         t.superEntityTypes.add(super.getPSMEquivalent());
     }
 
-    s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
+    s.eContainer.getModelRoot().elements.add(t);
     log.debug("Created EntityType: " + t.name);
   }

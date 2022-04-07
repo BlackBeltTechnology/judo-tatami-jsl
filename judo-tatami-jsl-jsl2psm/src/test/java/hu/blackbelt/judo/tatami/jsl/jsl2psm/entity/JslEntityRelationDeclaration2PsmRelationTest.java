@@ -50,7 +50,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
     void testEntityUnidirectionalCompositionRelationType() throws Exception {
         testName = "TestEntityUnidirectionalCompositionRelationType";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityUnidirectionalCompositionRelationTypeModel",
                 List.of("model EntityUnidirectionalCompositionRelationTypeModel\n" +
                         "\n" +
@@ -67,9 +67,6 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
@@ -104,7 +101,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
     void testEntityUnidirectionalCompositionInheritedRelationType() throws Exception {
         testName = "TestEntityUnidirectionalCompositionInheritedRelationType";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityUnidirectionalCompositionInheritedRelationTypeModel",
                 List.of("model EntityUnidirectionalCompositionInheritedRelationTypeModel\n" +
                         "\n" +
@@ -126,9 +123,6 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
