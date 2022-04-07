@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.data.Attribute;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.derived.DataExpressionType;
@@ -56,7 +57,7 @@ public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractT
     void testPrimitiveDerivedDeclarationModel() throws Exception {
         testName = "TestPrimitiveDerivedDeclarationModel";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "PrimitiveDerivedDeclarationModel",
                 List.of("model PrimitiveDerivedDeclarationModel\n" +
                         "\n" +
@@ -71,9 +72,6 @@ public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractT
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Set<DataProperty> dataProperties = psmModelWrapper.getStreamOfPsmDerivedDataProperty().collect(Collectors.toSet());

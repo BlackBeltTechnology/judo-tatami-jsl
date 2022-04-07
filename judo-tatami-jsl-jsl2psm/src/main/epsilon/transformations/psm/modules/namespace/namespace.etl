@@ -1,22 +1,37 @@
 import "../../../../operations/_importAll.eol";
 
-rule CreateModel
-    transform s : JSL!ModelDeclaration
+rule CreateRootModel
+    transform s : String
     to t : JUDOPSM!Model {
-        t.setId("(jsl/" + s.getId() + ")/CreateModel");
-        t.name = s.name.replaceAll("::", "_");
-        log.debug("Created model: " + t.name);
+		log.info("Create root model: " + s);
+	    t.setId("(jsl/" + s + ")/CreateModelPackages");
+	    t.name = s.replaceAll("::", "_");
+}
 
+rule CreateModelPackages
+    transform s : JSL!ModelDeclaration
+    to t : JUDOPSM!Package {
+
+		var psmModel = defaultModelName.equivalent("CreateRootModel");
         var fragments = s.name.split("::");
-        var current : JUDOPSM!Namespace = t;
+		var current : JUDOPSM!Namespace = psmModel;
 
         for (a in fragments) {
-            var newPackage = new JUDOPSM!Package();
-            current.packages.add(newPackage);
-            current = newPackage;
-            newPackage.name = a;
-            newPackage.setId("(jsl/" + s.getId() + "/" + newPackage.name + ")/CreateModel");
-            log.debug("Created Package: " + newPackage.name);
+        	var package : JUDOPSM!Namespace = null;
+			if (not current.packages.exists(p | p.name == a)) {
+	        	if (hasMore) {
+	            	package = new JUDOPSM!Package();
+	        	} else {
+	            	package = t;
+	            }
+	            log.debug("Create Package: " + a + " for " + package);
+	            package.name = a;
+	            package.setId("(jsl/" + s.getId() + "/" + a + ")/CreateModel");
+	
+	            current.packages.add(package);
+	            current = package;
+        	} else {
+        	    current = current.packages.select(p | p.name == a).first();
+        	}
         }
-        t.~modelRoot = current;
     }

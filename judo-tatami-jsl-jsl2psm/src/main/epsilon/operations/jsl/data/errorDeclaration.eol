@@ -1,7 +1,9 @@
+@cached
 operation JSL!ErrorDeclaration getPSMEquivalent(): JUDOPSM!UnmappedTransferObjectType {
 	return self.equivalent("CreateUnmappedTransferObjectType");
 }
 
+@cached
 operation JSL!ErrorDeclaration getId(): String {
 	return (self.eContainer.name + "/" + self.name);
 }
