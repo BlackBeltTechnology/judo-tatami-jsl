@@ -3,7 +3,7 @@ import "../../../../operations/_importAll.eol";
 rule CreateRootModel
     transform s : String
     to t : JUDOPSM!Model {
-		log.info("Create root model: " + s);
+		log.debug("Create root model: " + s);
 	    t.setId("(jsl/" + s + ")/CreateModelPackages");
 	    t.name = s.replaceAll("::", "_");
 }
