@@ -10,7 +10,7 @@ rule CreateNumericType
         t.name = s.name;
         t.precision = s.precision.precision.intValue();
         t.scale = s.scale.scale.intValue();
-        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
         log.debug("Created NumericType: " + t.name);
     }
 
@@ -21,7 +21,7 @@ rule CreateDateType
 
         t.setId("(jsl/" + s.getId() + ")/CreateDateType");
         t.name = s.name;
-        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
         log.debug("Created DateType: " + t.name);
   }
 
@@ -32,7 +32,7 @@ rule CreateTimeType
 
         t.setId("(jsl/" + s.getId() + ")/CreateTimeType");
         t.name = s.name;
-        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
         log.debug("Created TimeType: " + t.name);
   }
 
@@ -43,7 +43,7 @@ rule CreateTimestampType
 
         t.setId("(jsl/" + s.getId() + ")/CreateTimestampType");
         t.name = s.name;
-        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
         log.debug("Created TimestampType: " + t.name);
     }
 
@@ -52,7 +52,7 @@ rule CreateEnumerationType
 	to t: JUDOPSM!EnumerationType {
         t.setId("(jsl/" + s.getId() + ")/CreateEnumerationType");
         t.name = s.name;
-        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
         log.debug("Created EnumerationType: " + t.name);
     }
 
@@ -73,7 +73,7 @@ rule CreateBooleanType
         
         t.setId("(jsl/" + s.getId() + ")/CreateBooleanType");
         t.name = s.name;
-        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
         log.debug("Created BooleanType: " + t.name);
 }
 
@@ -91,7 +91,7 @@ rule CreateStringType
         	t.regExp = s.regex.regex.value;
         }
         
-        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
         log.debug("Created StringType: " + t.name);
 }
 
@@ -114,6 +114,6 @@ rule CreateBinaryType
             t.maxFileSize = s.maxFileSize.maxFileSize.longValue();
         }
          
-        s.eContainer.equivalent("CreateGeneratedTypesPackage").elements.add(t);
+        s.eContainer.getPSMEquivalent().~modelRoot.elements.add(t);
         log.debug("Created BinaryType: " + t.name);
 }
