@@ -1,11 +1,20 @@
+@cached
 operation JSL!EntityDeclaration getPSMEquivalent(): JUDOPSM!EntityType {
 	return self.equivalent("CreateEntityType");
 }
 
+@cached
 operation JSL!EntityDeclaration getId(): String {
 	return (self.eContainer.name + "/" + self.name);
 }
 
+@cached
+operation JSL!EntityDeclaration getModelRoot(): JUDOPSM!Package {
+	return self.getPsmEquivalent().getModelRoot();
+}
+
+
+@cached
 operation JSL!EntityDeclaration getInheritedMembers(): Sequence<EntityMemberDeclaration> {
     var members = new Sequence<EntityMemberDeclaration>();
 

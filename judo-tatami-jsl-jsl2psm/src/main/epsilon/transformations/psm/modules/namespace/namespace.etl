@@ -1,25 +1,24 @@
 import "../../../../operations/_importAll.eol";
 
-pre {
-	var psmModel = new JUDOPSM!Model();
-	log.info("Create model: " + defaultModelName);
-    psmModel.setId("(jsl/" + defaultModelName + ")/CreateModelPackages");
-    psmModel.name = defaultModelName.replaceAll("::", "_");
-	psmModel.~modelRoot = psmModel;
-	JUDOPSM.resource.contents.add(psmModel);
+rule CreateRootModel
+    transform s : String
+    to t : JUDOPSM!Model {
+		log.info("Create root model: " + s);
+	    t.setId("(jsl/" + s + ")/CreateModelPackages");
+	    t.name = s.replaceAll("::", "_");
 }
 
-@greedy
 rule CreateModelPackages
     transform s : JSL!ModelDeclaration
     to t : JUDOPSM!Package {
 
+		var psmModel = defaultModelName.equivalent("CreateRootModel");
         var fragments = s.name.split("::");
-        var current : JUDOPSM!Namespace = psmModel;
+		var current : JUDOPSM!Namespace = psmModel;
 
         for (a in fragments) {
         	var package : JUDOPSM!Namespace = null;
-        	if (not current.packages.exists(p | p.name == a)) {
+			if (not current.packages.exists(p | p.name == a)) {
 	        	if (hasMore) {
 	            	package = new JUDOPSM!Package();
 	        	} else {
@@ -35,7 +34,4 @@ rule CreateModelPackages
         	    current = current.packages.select(p | p.name == a).first();
         	}
         }
-//        if (s.name == defaultModelName) {
-//	        psmModel.~modelRoot = current;
-//        }
     }

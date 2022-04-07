@@ -1,3 +1,4 @@
+@cached
 operation JSL!EntityDerivedDeclaration getId(): String {
 	return (self.eContainer.name + "/" + self.name);
 }
