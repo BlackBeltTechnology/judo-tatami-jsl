@@ -39,15 +39,3 @@ rule CreateModelPackages
 //	        psmModel.~modelRoot = current;
 //        }
     }
-
-@lazy
-rule CreateGeneratedTypesPackage
-    transform s : JSL!ModelDeclaration
-    to t: JUDOPSM!Package {
-        t.setId("(jsl/" + s.getId() + ")/CreateGeneratedTypesPackage");
-        t.name = "_types";
-        //s.equivalent("CreateModel").packages.add(t);
-        psmModel.packages.add(t);
-
-        log.debug("Created TypesPackage: " + t.name);
-    }
