@@ -50,7 +50,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
     void testDeclaration() throws Exception {
         testName = "TestDeclaration";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
@@ -58,9 +58,6 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Set<NumericType> psmNumerics = psmModelWrapper.getStreamOfPsmTypeNumericType().collect(Collectors.toSet());
@@ -77,7 +74,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
     void testEntityMember() throws Exception {
         testName = "TestEntityMember";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberModel",
                 List.of("model EntityMemberModel\n" +
                         "\n" +
@@ -89,9 +86,6 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<NumericType> psmTypeHeight = psmModelWrapper.getStreamOfPsmTypeNumericType().filter(n -> n.getName().equals("Height")).findFirst();
@@ -106,7 +100,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
     void testEntityMemberRequired() throws Exception {
         testName = "TestEntityMemberRequired";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel\n" +
                         "\n" +
@@ -118,9 +112,6 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmEntityPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
@@ -134,7 +125,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
     void testEntityMemberInheritance() throws Exception {
         testName = "TestEntityMemberInheritance";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel\n" +
                         "\n" +
@@ -149,9 +140,6 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmStudentPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("StudentPerson")).findFirst();
@@ -164,7 +152,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
     void testEntityMemberIdentifier() throws Exception {
         testName = "TestEntityMemberIdentifier";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +
@@ -176,9 +164,6 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Person")).findFirst();
