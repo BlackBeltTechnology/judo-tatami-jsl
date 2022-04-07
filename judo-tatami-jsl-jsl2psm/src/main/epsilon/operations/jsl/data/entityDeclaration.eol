@@ -5,3 +5,19 @@ operation JSL!EntityDeclaration getPSMEquivalent(): JUDOPSM!EntityType {
 operation JSL!EntityDeclaration getId(): String {
 	return (self.eContainer.name + "/" + self.name);
 }
+
+operation JSL!EntityDeclaration getInheritedMembers(): Sequence<EntityMemberDeclaration> {
+    var members = new Sequence<EntityMemberDeclaration>();
+
+    for (member in self.members) {
+        members.add(member);
+    }
+
+    for (parent in self.`extends`) {
+        for (m in parent.getInheritedMembers()) {
+            members.add(m);
+        }
+    }
+
+	return members;
+}
