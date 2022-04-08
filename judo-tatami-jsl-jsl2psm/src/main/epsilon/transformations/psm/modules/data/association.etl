@@ -3,7 +3,7 @@ rule CreateUnidirectionalAssociation
     transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!AssociationEnd
     {
-        guard: (s.singleType.isDefined() and s.singleType.isKindOf(JSL!EntityDeclaration)) or s.arrayType.isDefined()
+        guard: (s.singleType.isDefined() and (s.singleType.isKindOf(JSL!EntityDeclaration)) or s.arrayType.isDefined())
         t.setId("(jsl/" + s.getId() + ")/CreateUnidirectionalAssociation");
         t.name = s.name;
 
