@@ -56,7 +56,7 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
     void testCreateErrorType() throws Exception {
         testName = "TestCreateErrorType";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "ErrorTypeCreateModel",
                 List.of("model ErrorTypeCreateModel\n" +
                         "\n" +
@@ -70,9 +70,6 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Set<UnmappedTransferObjectType> psmUnmappedTOTypes = psmModelWrapper.getStreamOfPsmServiceUnmappedTransferObjectType().collect(Collectors.toSet());

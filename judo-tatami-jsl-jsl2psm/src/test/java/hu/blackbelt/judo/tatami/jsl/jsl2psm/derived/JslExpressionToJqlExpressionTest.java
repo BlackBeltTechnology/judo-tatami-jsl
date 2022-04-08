@@ -50,16 +50,12 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
     void testDerivedExpressionModel() throws Exception {
         testName = "TestDerivedExpressionModel";
 
-        Optional<ModelDeclaration> model = parser.getModelFromFiles(
+        jslModel = parser.getModelFromFiles(
                 "TestDerivedExpressionModel",
                 List.of(new File("src/test/resources/derived/TestDerivedExpressionModel.jsl"))
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
-
 
         assertEquals("self.leads!count()",  jql("SalesPerson", "value"));
         assertEquals("self.leads!count()>1", jql("SalesPerson", "t1"));

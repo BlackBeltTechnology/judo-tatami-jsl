@@ -53,7 +53,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
     void testDeclaration() throws Exception {
         testName = "TestDeclaration";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
@@ -61,9 +61,6 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Set<TimeType> psmTimes = psmModelWrapper.getStreamOfPsmTypeTimeType().collect(Collectors.toSet());
@@ -78,7 +75,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
     void testEntityMember() throws Exception {
         testName = "TestEntityMember";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberModel",
                 List.of("model EntityMemberModel\n" +
                         "\n" +
@@ -90,9 +87,6 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<TimeType> psmTypeTime = psmModelWrapper.getStreamOfPsmTypeTimeType().filter(n -> n.getName().equals("MyTime")).findFirst();
@@ -107,7 +101,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
     void testEntityMemberRequired() throws Exception {
         testName = "TestEntityMemberRequired";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel\n" +
                         "\n" +
@@ -119,9 +113,6 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmEntityPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
@@ -135,7 +126,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
     void testEntityMemberInheritance() throws Exception {
         testName = "TestEntityMemberInheritance";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel\n" +
                         "\n" +
@@ -150,9 +141,6 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmStudentPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("StudentPerson")).findFirst();
@@ -165,7 +153,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
     void testEntityMemberIdentifier() throws Exception {
         testName = "TestEntityMemberIdentifier";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +
@@ -177,9 +165,6 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Person")).findFirst();
