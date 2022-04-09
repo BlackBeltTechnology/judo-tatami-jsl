@@ -1,18 +1,14 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm.transferobject;
 
-import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
-import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.meta.psm.type.NumericType;
 import hu.blackbelt.judo.meta.psm.type.StringType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
-import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +20,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -57,7 +52,7 @@ public class JslEntityDeclaration2PsmDefaultTransferObjectTypeTest extends Abstr
     void testCreateDefaultTransferObjectType() throws Exception {
         testName = "TestCreateDefaultTransferObjectType";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "DefaultTransferObjectTypeModel",
                 List.of("model DefaultTransferObjectTypeModel\n" +
                         "\n" +
@@ -78,9 +73,6 @@ public class JslEntityDeclaration2PsmDefaultTransferObjectTypeTest extends Abstr
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<StringType> psmTypeName = psmModelWrapper.getStreamOfPsmTypeStringType().filter(n -> n.getName().equals("Name")).findFirst();

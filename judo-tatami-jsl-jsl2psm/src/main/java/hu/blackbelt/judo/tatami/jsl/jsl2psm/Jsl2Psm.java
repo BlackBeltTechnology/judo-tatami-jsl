@@ -3,9 +3,12 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
+import hu.blackbelt.epsilon.runtime.execution.ExecutionContext.ExecutionContextBuilder;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -21,7 +24,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
@@ -30,7 +37,6 @@ import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.getTransform
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace.JSL_2_PSM_URI_POSTFIX;
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace.resolveJsl2PsmTrace;
 
-@Slf4j
 public class Jsl2Psm {
 
     public static final String SCRIPT_ROOT_TATAMI_JSL_2_PSM = "tatami/jsl2psm/transformations/psm/";
@@ -65,23 +71,28 @@ public class Jsl2Psm {
     public static Jsl2PsmTransformationTrace executeJsl2PsmTransformation(Jsl2PsmParameter parameter) throws Exception {
 
         // Execution context
-        ExecutionContext executionContext = executionContextBuilder()
+        ExecutionContextBuilder executionContextBuilder = executionContextBuilder();
+        
+    	ExecutionContext executionContext = executionContextBuilder
                 .log(parameter.log)
-                .modelContexts(ImmutableList.of(
-                        wrappedEmfModelContextBuilder()
+                .modelContexts(ImmutableList.<ModelContext>builder()
+                		.add(wrappedEmfModelContextBuilder()
                                 .log(parameter.log)
                                 .name("JSL")
                                 .resource(parameter.jslModel.getResource())
-                                .build(),
-                        wrappedEmfModelContextBuilder()
+                                .build()
+                                )
+                		.add(wrappedEmfModelContextBuilder()
                                 .log(parameter.log)
                                 .name("JUDOPSM")
                                 .resource(parameter.psmModel.getResource())
                                 .build()
                         )
-                )
+                		.build()
+        		)
                 .injectContexts(ImmutableMap.of(
 //                        "jslUtils", new JslUtils(),
+                		"defaultModelName", parameter.jslModel.getName(),
                         "expressionUtils", new JslExpressionToJqlExpression(),
                         "psmUtils", new PsmUtils(parameter.psmModel.getResourceSet())
                 ))

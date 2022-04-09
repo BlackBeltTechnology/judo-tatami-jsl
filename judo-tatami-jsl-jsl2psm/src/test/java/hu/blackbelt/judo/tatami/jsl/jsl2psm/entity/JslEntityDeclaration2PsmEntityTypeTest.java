@@ -52,7 +52,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
     void testCreateEntityType() throws Exception {
         testName = "TestCreateEntityType";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityTypeCreateModel",
                 List.of("model EntityTypeCreateModel\n" +
                         "\n" +
@@ -65,9 +65,6 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
@@ -91,9 +88,9 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
 
     @Test
     void testEntityLocalName() throws Exception {
-        testName = "TestEntityLocaleName";
+        //testName = "TestEntityLocaleName";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "First::Second::EntityLocaleNameModel",
                 List.of("model First::Second::EntityLocaleNameModel\n" +
                         "\n" +
@@ -102,9 +99,6 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Set<hu.blackbelt.judo.meta.psm.namespace.Package> psmPackageTypes = psmModelWrapper.getStreamOfPsmNamespacePackage().collect(Collectors.toSet());

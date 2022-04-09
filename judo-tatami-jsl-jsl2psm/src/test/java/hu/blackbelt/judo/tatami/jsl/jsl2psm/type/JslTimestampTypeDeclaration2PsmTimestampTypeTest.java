@@ -53,7 +53,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
     void testDeclaration() throws Exception {
         testName = "TestDeclaration";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
@@ -61,9 +61,6 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Set<TimestampType> psmTimestamps = psmModelWrapper.getStreamOfPsmTypeTimestampType().collect(Collectors.toSet());
@@ -78,7 +75,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
     void testEntityMember() throws Exception {
         testName = "TestEntityMember";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberModel",
                 List.of("model EntityMemberModel\n" +
                         "\n" +
@@ -90,9 +87,6 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<TimestampType> psmTypeReceivedAt = psmModelWrapper.getStreamOfPsmTypeTimestampType().filter(n -> n.getName().equals("Timestamp")).findFirst();
@@ -107,7 +101,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
     void testEntityMemberRequired() throws Exception {
         testName = "TestEntityMemberRequired";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel\n" +
                         "\n" +
@@ -119,9 +113,6 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmEntityEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Email")).findFirst();
@@ -135,7 +126,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
     void testEntityMemberInheritance() throws Exception {
         testName = "TestEntityMemberInheritance";
 
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel\n" +
                         "\n" +
@@ -150,9 +141,6 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmImportantEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("ImportantEmail")).findFirst();
@@ -163,7 +151,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
 
     @Test
     void testEntityMemberIdentifier() throws Exception {
-        Optional<ModelDeclaration> model = parser.getModelFromStrings(
+        jslModel = parser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +
@@ -175,9 +163,6 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
                 )
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> psmEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Email")).findFirst();
