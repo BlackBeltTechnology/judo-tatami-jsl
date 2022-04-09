@@ -1,6 +1,7 @@
 import "dataTypeDeclaration.eol";
 import "entityDeclaration.eol";
 import "entityFieldDeclaration.eol";
+import "entityRelationDeclaration.eol";
 import "entityDerivedDeclaration.eol";
 import "entityIdentifierDeclaration.eol";
 import "primitiveDeclaration.eol";

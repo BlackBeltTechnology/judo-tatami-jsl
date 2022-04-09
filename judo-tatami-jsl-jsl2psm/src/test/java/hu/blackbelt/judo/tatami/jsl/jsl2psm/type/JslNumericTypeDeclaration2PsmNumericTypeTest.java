@@ -2,7 +2,6 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.type;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.psm.data.Attribute;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.type.NumericType;
@@ -17,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static hu.blackbelt.judo.tatami.jsl.jsl2psm.TestUtils.allPsm;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -166,7 +164,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmPerson = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Person")).findFirst();
+        final Optional<EntityType> psmPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
         assertTrue(psmPerson.isPresent());
         final Optional<Attribute> psmPersonHeightAttribute = psmPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
         assertTrue(psmPersonHeightAttribute.isPresent());

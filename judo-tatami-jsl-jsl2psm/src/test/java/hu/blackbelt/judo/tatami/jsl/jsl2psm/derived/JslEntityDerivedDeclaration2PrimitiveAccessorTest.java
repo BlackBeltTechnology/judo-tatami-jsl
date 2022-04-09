@@ -2,14 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
-import hu.blackbelt.judo.meta.psm.data.Attribute;
-import hu.blackbelt.judo.meta.psm.data.EntityType;
-import hu.blackbelt.judo.meta.psm.derived.DataExpressionType;
 import hu.blackbelt.judo.meta.psm.derived.DataProperty;
-import hu.blackbelt.judo.meta.psm.type.NumericType;
-import hu.blackbelt.judo.meta.psm.type.TimestampType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,7 +16,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static hu.blackbelt.judo.tatami.jsl.jsl2psm.TestUtils.allPsm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

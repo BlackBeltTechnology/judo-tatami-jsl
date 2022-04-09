@@ -298,13 +298,14 @@ public class JslExpressionToJqlExpression {
 
     protected static String _getJqlDispacher(final RawStringLiteral it) {
         return it != null
-                ? "\"" + StringEscapeUtils.escapeJava(it.getValue()) + "\""
+                ? "\"" + StringEscapeUtils.escapeJava(it.getValue()
+                		.replaceAll("^r\"|\"$", "")) + "\""
                 : null;
     }
 
     protected static String _getJqlDispacher(final EscapedStringLiteral it) {
         return it != null
-                ? "\"" + it.getValue() + "\""
+                ? "\"" + it.getValue().replaceAll("^\"|\"$", "") + "\""
                 : null;
     }
 

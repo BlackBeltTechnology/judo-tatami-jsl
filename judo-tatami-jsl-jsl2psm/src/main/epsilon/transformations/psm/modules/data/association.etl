@@ -1,12 +1,12 @@
-rule CreateContainmentFromField
-    transform s: JSL!EntityFieldDeclaration
-    to t: JUDOPSM!Containment
+
+rule CreateUnidirectionalAssociation
+    transform s: JSL!EntityRelationDeclaration
+    to t: JUDOPSM!AssociationEnd
     {
         guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
 
-        t.setId("(jsl/" + s.getId() + ")/CreateContainmentFromField");
+        t.setId("(jsl/" + s.getId() + ")/CreateUnidirectionalAssociation");
         t.name = s.name;
-
         t.target = s.referenceType.getPSMEquivalent();
 
         var cardinality = new JUDOPSM!Cardinality();
@@ -14,7 +14,6 @@ rule CreateContainmentFromField
         cardinality.upper = s.isMany ? -1 : 1;
 
         t.cardinality = cardinality;
-
         s.eContainer.getPSMEquivalent().relations.add(t);
-        log.debug("Created Containment: " + t.name);
+        log.debug("Created Unidirectional Association: " + t.name);
     }

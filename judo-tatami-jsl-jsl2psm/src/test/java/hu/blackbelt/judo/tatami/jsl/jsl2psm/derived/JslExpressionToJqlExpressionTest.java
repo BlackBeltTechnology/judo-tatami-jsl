@@ -3,7 +3,6 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.JslExpressionToJqlExpression;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +14,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class JslExpressionToJqlExpressionTest extends AbstractTest {
@@ -64,15 +61,15 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         assertEquals("self.leads(limit=10)", jql("SalesPerson", "leadsOver10"));
         assertEquals("self", jql("SalesPerson", "selfDerived"));
         assertEquals("Customer!any()", jql("SalesPerson", "anyCustomer"));
-//        assertEquals("\"\"+self.value+\"test\"", jql("SalesPerson", "stringConcat"));
+        assertEquals("\"\"+self.value+\"test\"", jql("SalesPerson", "stringConcat"));
         assertEquals("self.leads!count()>0?self.leads!filter(lead|lead.closed)!count()/self.leads!count():0", jql("SalesPerson", "complex"));
         assertEquals("((1+2)*3)/4", jql("SalesPerson", "arithmetic"));
 
-//        assertEquals("`12:12:11.11`", jql("SalesPerson", "timeLiteral"));
+        assertEquals("`12:12:11.11`", jql("SalesPerson", "timeLiteral"));
         assertEquals("`2020-12-01T12:12:11.11Z`", jql("SalesPerson", "timestampLiteral"));
-//        assertEquals("`2020-12-01`", jql("SalesPerson", "dateLiteral"));
-//        assertEquals("String\nString2", jql("SalesPerson", "stringLiteral"));
-//        assertEquals("String\\nString2", jql("SalesPerson", "stringRawLiteral"));
+        assertEquals("`2020-12-01`", jql("SalesPerson", "dateLiteral"));
+        assertEquals("\"String\nString2\"", jql("SalesPerson", "stringLiteral"));
+        assertEquals("\"Raw\\\\n\"", jql("SalesPerson", "stringRawLiteral"));
         assertEquals("100.12", jql("SalesPerson", "decimalLiteral"));
 
     }

@@ -2,7 +2,6 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.type;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.psm.data.Attribute;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.type.BooleanType;
@@ -19,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static hu.blackbelt.judo.tatami.jsl.jsl2psm.TestUtils.allPsm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -151,7 +149,9 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
     
     @Test
     void testEntityMemberIdentifier() throws Exception {
-        jslModel = parser.getModelFromStrings(
+        testName = "TestEntityMemberIdentifier";
+
+    	jslModel = parser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +
@@ -165,7 +165,7 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Patient")).findFirst();
+        final Optional<EntityType> psmEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Patient")).findFirst();
         assertTrue(psmEmail.isPresent());
         final Optional<Attribute> psmPatientVaccinatedAttribute = psmEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("vaccinated")).findFirst();
         assertTrue(psmPatientVaccinatedAttribute.isPresent());
