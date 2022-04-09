@@ -3,7 +3,6 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.JslExpressionToJqlExpression;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +14,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class JslExpressionToJqlExpressionTest extends AbstractTest {

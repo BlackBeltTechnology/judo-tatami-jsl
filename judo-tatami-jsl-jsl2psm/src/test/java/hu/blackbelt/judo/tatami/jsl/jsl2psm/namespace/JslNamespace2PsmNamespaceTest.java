@@ -2,8 +2,6 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.namespace;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static hu.blackbelt.judo.tatami.jsl.jsl2psm.TestUtils.allPsm;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
