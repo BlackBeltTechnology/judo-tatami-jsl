@@ -151,7 +151,9 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
     
     @Test
     void testEntityMemberIdentifier() throws Exception {
-        jslModel = parser.getModelFromStrings(
+        testName = "TestEntityMemberIdentifier";
+
+    	jslModel = parser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +
@@ -165,7 +167,7 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmEmail = allPsm(psmModel, EntityType.class).filter(e -> e.getName().equals("Patient")).findFirst();
+        final Optional<EntityType> psmEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Patient")).findFirst();
         assertTrue(psmEmail.isPresent());
         final Optional<Attribute> psmPatientVaccinatedAttribute = psmEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("vaccinated")).findFirst();
         assertTrue(psmPatientVaccinatedAttribute.isPresent());

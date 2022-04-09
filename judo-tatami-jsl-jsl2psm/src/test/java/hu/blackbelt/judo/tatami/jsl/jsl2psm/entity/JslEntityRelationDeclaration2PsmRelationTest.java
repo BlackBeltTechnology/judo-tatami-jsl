@@ -2,7 +2,6 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.Relation;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
@@ -163,14 +162,11 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
     void testEntityAsssociationRelation() throws Exception {
         testName = "AssociationRelationTest";
 
-        Optional<ModelDeclaration> model = parser.getModelFromFiles(
+        jslModel = parser.getModelFromFiles(
                 "AssociationRelationTestModel",
                 List.of(new File("src/test/resources/entity/AssociationRelationTestModel.jsl"))
         );
 
-        assertTrue(model.isPresent());
-
-        jslModel.addContent(model.get());
         transform();
 
         final Optional<EntityType> lead = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Lead")).findFirst();
@@ -178,16 +174,5 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         
         final Optional<EntityType> customer = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Customer")).findFirst();
         assertTrue(customer.isPresent());
-        
-        
-        
-        /*
-        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
-        assertEquals(5, psmEntityTypes.size());
-
-        final Set<Relation> psmRelations = psmModelWrapper.getStreamOfPsmDataRelation().collect(Collectors.toSet());
-        assertEquals(3, psmRelations.size());
-		*/	
-
     }
 }

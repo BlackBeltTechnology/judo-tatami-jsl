@@ -5,27 +5,27 @@ type string String max-length 128
 
 entity Lead {
 	field Integer value
-	relation Customer namedCustomer1
-	relation Customer[] namedCustomers1
-	relation Customer namedCustomer2
-	relation Customer[] namedCustomers2
+	relation Customer namedCustomer1 opposite leads1
+	relation Customer[] namedCustomers1 opposite leads2
+	relation Customer namedCustomer2 opposite leads3
+	relation Customer[] namedCustomers2 opposite leads4
 
-	relation Customer twoSideNamedCustomer opposite-name twoSideNamedLead
+	relation Customer twoSideNamedCustomer opposite twoSideNamedLead
 }
 
 entity Customer {
 	relation Lead[] leads
 	relation Lead lead
-	relation Lead twoSideNamedLead opposite-name twoSideNamedCustomer
+	relation Lead twoSideNamedLead opposite twoSideNamedCustomer
 
-	relation Lead[] leads1 opposite-name namedCustomer1
-	relation Lead[] leads2 opposite-name namedCustomers1
-	relation Lead[] leads3 opposite-name namedCustomer2
-	relation Lead[] leads4 opposite-name namedCustomers2
+	relation Lead[] leads1 opposite namedCustomer1
+	relation Lead[] leads2 opposite namedCustomers1
+	relation Lead[] leads3 opposite namedCustomer2
+	relation Lead[] leads4 opposite namedCustomers2
 
-//	relation Lead[] leads5 opposite-single injectedCustomer1
-//	relation Lead[] leads6 opposite-many injectedCustomers1
-//	relation Lead lead5 opposite-single injectedCustomer2
-//	relation Lead lead6 opposite-many injectedCustomers2
+//	relation Lead[] leads5 opposite-add injectedCustomer1
+//	relation Lead[] leads6 opposite-add injectedCustomers1[]
+//	relation Lead lead5 opposite-add injectedCustomer2
+//	relation Lead lead6 opposite-add injectedCustomers2[]
 
 }

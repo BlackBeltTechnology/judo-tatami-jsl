@@ -3,28 +3,17 @@ rule CreateUnidirectionalAssociation
     transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!AssociationEnd
     {
-        guard: (s.singleType.isDefined() and (s.singleType.isKindOf(JSL!EntityDeclaration)) or s.arrayType.isDefined())
+        guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+
         t.setId("(jsl/" + s.getId() + ")/CreateUnidirectionalAssociation");
         t.name = s.name;
+        t.target = s.referenceType.getPSMEquivalent();
 
-        if (s.singleType.isDefined()) {
-            t.target = s.singleType.getPSMEquivalent();
+        var cardinality = new JUDOPSM!Cardinality();
+        cardinality.lower = s.isRequired and not s.isMany ? 1 : 0;
+        cardinality.upper = s.isMany ? -1 : 1;
 
-            var cardinality = new JUDOPSM!Cardinality();
-            cardinality.lower = s.isRequired ? 1 : 0;
-            cardinality.upper = 1;
-
-            t.cardinality = cardinality;
-        } else if (s.arrayType.isDefined()) {
-            t.target = s.arrayType.getPSMEquivalent();
-
-            var cardinality = new JUDOPSM!Cardinality();
-            cardinality.lower = 0;
-            cardinality.upper = -1;
-
-            t.cardinality = cardinality;
-        }
-
+        t.cardinality = cardinality;
         s.eContainer.getPSMEquivalent().relations.add(t);
         log.debug("Created Unidirectional Association: " + t.name);
     }
