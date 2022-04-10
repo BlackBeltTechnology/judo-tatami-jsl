@@ -1,0 +1,3 @@
+operation JSL!EntityRelationOpposite getId(): String {
+	return (self.eContainer.getId() + "/opposte-add/" + self.oppositeName);
+}

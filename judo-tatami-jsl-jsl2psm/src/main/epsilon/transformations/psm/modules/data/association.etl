@@ -1,0 +1,47 @@
+
+@lazy
+rule CreateNamedOpposteAssociationEnd
+    transform s: JSL!EntityRelationOpposite
+    to t: JUDOPSM!AssociationEnd
+    {
+    	var relationAddedFrom = s.eContainer;
+    	var entityToAdd = relationAddedFrom.referenceType;
+    
+        t.setId("(jsl/" + s.getId() + ")/CreateNamedOpposteAssociationEnd");
+        t.name = s.oppositeName;
+        t.target = relationAddedFrom.eContainer.getPSMEquivalent();
+        t.cardinality = s.equivalent("CreateCardinalityForOpositeAddedRelation");
+
+		// Reverse cascade delete not supported yet
+		t.reverseCascadeDelete = false;
+		
+		t.partner = relationAddedFrom.equivalent("CreateDeclaredAssociationEnd");
+
+        entityToAdd.getPSMEquivalent().relations.add(t);
+        log.debug("Created Association End (named opposite): " + t.name);
+    }
+
+rule CreateDeclaredAssociationEnd
+    transform s: JSL!EntityRelationDeclaration
+    to t: JUDOPSM!AssociationEnd
+    {
+        guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDeclaredAssociationEnd");
+        t.name = s.name;
+        t.target = s.referenceType.getPSMEquivalent();
+        t.cardinality = s.equivalent("CreateCardinalityForRelationDeclaration");
+
+		// Reverse cascade delete not supported yet
+		t.reverseCascadeDelete = false;
+		
+		if (s.opposite?.oppositeType.isDefined()) {
+			t.partner = s.opposite.oppositeType.equivalent("CreateDeclaredAssociationEnd");
+		}
+		if (s.opposite?.oppositeName.isDefined()) {
+			t.partner = s.opposite.equivalent("CreateNamedOpposteAssociationEnd");
+		}
+
+        s.eContainer.getPSMEquivalent().relations.add(t);
+        log.debug("Created Association End: (declared)" + t.name);
+    }

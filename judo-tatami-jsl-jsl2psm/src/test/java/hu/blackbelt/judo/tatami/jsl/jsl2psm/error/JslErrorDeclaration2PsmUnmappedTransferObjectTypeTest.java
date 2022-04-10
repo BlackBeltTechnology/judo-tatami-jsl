@@ -1,18 +1,13 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm.error;
 
-import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
-import hu.blackbelt.judo.meta.psm.data.Relation;
-import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.meta.psm.service.UnmappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.type.NumericType;
 import hu.blackbelt.judo.meta.psm.type.StringType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
-import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

@@ -1,0 +1,26 @@
+model AssociationRelationTestModel
+
+entity Lead {
+	relation Customer customer
+	relation Customer[] customers
+
+	relation Customer customer1 opposite leads1
+	relation Customer[] customers1 opposite leads2
+	relation Customer customer2 opposite leads3
+	relation Customer[] customers2 opposite leads4
+}
+
+entity Customer {
+	relation Lead[] leads
+	relation Lead lead
+
+	relation Lead[] leads1 opposite customer1
+	relation Lead[] leads2 opposite customers1
+	relation Lead[] leads3 opposite customer2
+	relation Lead[] leads4 opposite customers2
+
+	relation Lead[] leads5 opposite-add injectedCustomer1
+	relation Lead[] leads6 opposite-add injectedCustomers1[]
+	relation Lead lead1 opposite-add injectedCustomer2
+    relation Lead lead2 opposite-add injectedCustomers2[]
+}

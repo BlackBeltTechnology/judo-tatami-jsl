@@ -15,7 +15,7 @@ rule CreateUnmappedTransferObjectType
             attr.setId("(jsl/" + field.getId() + ")/CreateTransferAttribute");
             attr.name = field.name;
             attr.required = field.isRequired;
-            attr.dataType = field.type.getPSMEquivalent();
+            attr.dataType = field.referenceType.getPSMEquivalent();
 
             t.attributes.add(attr);
         }

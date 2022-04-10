@@ -16,13 +16,13 @@ rule CreateEntityDefaultTransferObjectType
             var inheritedMembers = entity.getInheritedMembers();
 
             for (im in inheritedMembers) {
-                if (im.singleType.isDefined() and im.singleType.isKindOf(JSL!PrimitiveDeclaration)) {
+                if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
                     var attr = new JUDOPSM!TransferAttribute();
                     attr.setId("(jsl/" + im.getId() + ")/CreateTransferAttributeFromField");
                     attr.required = im.isRequired;
                     attr.name = im.name;
                     attr.binding = im.equivalent("CreateAttributeFromField");
-                    attr.dataType = im.singleType.getPSMEquivalent();
+                    attr.dataType = im.referenceType.getPSMEquivalent();
 
                     t.attributes.add(attr);
                 }

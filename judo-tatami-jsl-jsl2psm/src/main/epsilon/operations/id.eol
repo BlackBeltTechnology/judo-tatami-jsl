@@ -19,3 +19,14 @@ operation JUDOPSM!ExpressionType setId(id: String) {
 operation JUDOPSM!ExpressionType getId() : String {
      return self.eResource.getId(self);
 }
+
+/////////////////////////////////////////
+// Cardinality
+
+operation JUDOPSM!Cardinality setId(id: String) {
+    self.eResource.setId(self, id);
+}
+
+operation JUDOPSM!Cardinality getId() : String {
+     return self.eResource.getId(self);
+}
