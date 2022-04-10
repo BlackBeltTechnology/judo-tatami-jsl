@@ -6,14 +6,8 @@ rule CreateContainmentFromField
 
         t.setId("(jsl/" + s.getId() + ")/CreateContainmentFromField");
         t.name = s.name;
-
         t.target = s.referenceType.getPSMEquivalent();
-
-        var cardinality = new JUDOPSM!Cardinality();
-        cardinality.lower = s.isRequired and not s.isMany ? 1 : 0;
-        cardinality.upper = s.isMany ? -1 : 1;
-
-        t.cardinality = cardinality;
+        t.cardinality = s.equivalent("CreateCardinalityForFieldDeclaration");
 
         s.eContainer.getPSMEquivalent().relations.add(t);
         log.debug("Created Containment: " + t.name);

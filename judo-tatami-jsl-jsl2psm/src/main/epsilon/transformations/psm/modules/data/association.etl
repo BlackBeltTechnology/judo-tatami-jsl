@@ -1,4 +1,3 @@
-
 rule CreateUnidirectionalAssociation
     transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!AssociationEnd
@@ -8,12 +7,8 @@ rule CreateUnidirectionalAssociation
         t.setId("(jsl/" + s.getId() + ")/CreateUnidirectionalAssociation");
         t.name = s.name;
         t.target = s.referenceType.getPSMEquivalent();
+        t.cardinality = s.equivalent("CreateCardinalityForRelationDeclaration");
 
-        var cardinality = new JUDOPSM!Cardinality();
-        cardinality.lower = s.isRequired and not s.isMany ? 1 : 0;
-        cardinality.upper = s.isMany ? -1 : 1;
-
-        t.cardinality = cardinality;
         s.eContainer.getPSMEquivalent().relations.add(t);
         log.debug("Created Unidirectional Association: " + t.name);
     }

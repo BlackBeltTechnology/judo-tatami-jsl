@@ -1,3 +1,20 @@
+/////////////////////////////////////////
+// Cardinality
+
+operation ESM!Cardinality getId() : String {
+     return self.eResource.getId(self);
+}
+
+operation JUDOPSM!Cardinality setId(id: String) {
+    self.eResource.setId(self, id);
+}
+
+operation JUDOPSM!Cardinality getId() : String {
+     return self.eResource.getId(self);
+}
+
+
+
 //operation ESM!StringType getPSMEquivalent(): JUDOPSM!StringType {
 //	return self.equivalent("CreateStringType");
 //}
