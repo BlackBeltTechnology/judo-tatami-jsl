@@ -74,7 +74,9 @@ abstract public class AbstractTest {
         }
 
         jslModel.saveJslDslModel(jslDslSaveArgumentsBuilder().file(new File(getTargetTestClasses(), testName + "-jsl.model")));
-        psmModel.savePsmModel(psmSaveArgumentsBuilder().file(new File(getTargetTestClasses(), testName + "-psm.model")));
+        psmModel.savePsmModel(psmSaveArgumentsBuilder().validateModel(false).file(new File(getTargetTestClasses(), testName + "-psm.model")));
+        
+        assertTrue(psmModel.isValid());
     }
 
     protected void transform() throws Exception {
