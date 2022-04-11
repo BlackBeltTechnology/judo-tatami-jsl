@@ -5,11 +5,11 @@ rule CreateDataProperty
     transform s : JSL!EntityDerivedDeclaration
     to t : JUDOPSM!DataProperty
     {
-      guard: s.singleType.isDefined() and s.singleType.isKindOf(JSL!PrimitiveDeclaration)
+      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateDataProperty");
       t.getterExpression = s.equivalent("CreateGetterExpressionForDataProperty");
-      t.dataType = s.singleType.getPSMEquivalent();
+      t.dataType = s.referenceType.getPSMEquivalent();
 
       s.eContainer.getPSMEquivalent().dataProperties.add(t);
       log.error("Created Data Property: " + t.name);

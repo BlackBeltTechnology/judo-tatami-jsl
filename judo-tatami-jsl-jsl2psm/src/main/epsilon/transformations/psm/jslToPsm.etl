@@ -3,7 +3,9 @@ import "modules/namespace/namespace.etl";
 import "modules/structure/transferAttribute.etl";
 import "modules/structure/transferObjectType.etl";
 
+import "modules/data/cardinality.etl";
 import "modules/data/containment.etl";
+import "modules/data/association.etl";
 import "modules/data/entityType.etl";
 import "modules/data/errorType.etl";
 import "modules/data/primitiveTypedElement.etl";

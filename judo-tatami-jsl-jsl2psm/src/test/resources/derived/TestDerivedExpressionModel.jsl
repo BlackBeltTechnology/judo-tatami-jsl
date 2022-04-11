@@ -32,5 +32,5 @@ entity SalesPerson {
 
 entity Customer {
 //    identifier required String name
-    relation Lead[] lead opposite-single customer
+    relation Lead[] lead opposite-add customer
 }

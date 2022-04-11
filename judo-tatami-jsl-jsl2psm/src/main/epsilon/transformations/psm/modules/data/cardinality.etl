@@ -1,0 +1,33 @@
+@lazy
+@greedy
+rule CreateCardinalityForRelationDeclaration
+    transform s: JSL!EntityRelationDeclaration
+    to t: JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForRelationDeclaration");
+
+      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = s.isMany ? -1 : 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForFieldDeclaration
+    transform s: JSL!EntityFieldDeclaration
+    to t: JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForFieldDeclaration");
+
+      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = s.isMany ? -1 : 1;
+}
+
+
+@lazy
+@greedy
+rule CreateCardinalityForOppositeAddedRelation
+    transform s: JSL!EntityRelationOpposite
+    to t: JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForOppositeAddedRelation");
+
+      t.lower = 0;
+      t.upper = s.isMany ? -1 : 1;
+}
