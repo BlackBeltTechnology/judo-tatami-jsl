@@ -1,16 +1,16 @@
 
 @lazy
-rule CreateNamedOpposteAssociationEnd
+rule CreateNamedOppositeAssociationEnd
     transform s: JSL!EntityRelationOpposite
     to t: JUDOPSM!AssociationEnd
     {
     	var relationAddedFrom = s.eContainer;
     	var entityToAdd = relationAddedFrom.referenceType;
     
-        t.setId("(jsl/" + s.getId() + ")/CreateNamedOpposteAssociationEnd");
+        t.setId("(jsl/" + s.getId() + ")/CreateNamedOppositeAssociationEnd");
         t.name = s.oppositeName;
         t.target = relationAddedFrom.eContainer.getPSMEquivalent();
-        t.cardinality = s.equivalent("CreateCardinalityForOpositeAddedRelation");
+        t.cardinality = s.equivalent("CreateCardinalityForOppositeAddedRelation");
 
 		// Reverse cascade delete not supported yet
 		t.reverseCascadeDelete = false;
@@ -39,7 +39,7 @@ rule CreateDeclaredAssociationEnd
 			t.partner = s.opposite.oppositeType.equivalent("CreateDeclaredAssociationEnd");
 		}
 		if (s.opposite?.oppositeName.isDefined()) {
-			t.partner = s.opposite.equivalent("CreateNamedOpposteAssociationEnd");
+			t.partner = s.opposite.equivalent("CreateNamedOppositeAssociationEnd");
 		}
 
         s.eContainer.getPSMEquivalent().relations.add(t);
