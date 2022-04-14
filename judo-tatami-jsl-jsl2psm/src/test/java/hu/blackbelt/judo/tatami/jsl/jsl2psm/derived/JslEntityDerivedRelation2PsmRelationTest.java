@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.psm.derived.DataProperty;
+import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -57,11 +58,18 @@ public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
 
         transform();
 
-        final Set<DataProperty> dataProperties = psmModelWrapper.getStreamOfPsmDerivedDataProperty().collect(Collectors.toSet());
-        assertEquals(1, dataProperties.size());
-        final Optional<DataProperty> valueProperty = dataProperties.stream().filter(n -> n.getName().equals("value")).findFirst();
-        assertTrue(valueProperty.isPresent());
-        assertTrue(valueProperty.get().isPrimitive());
-        assertEquals("self.leads!count()", valueProperty.get().getGetterExpression().getExpression());
+        
+        final Set<NavigationProperty> navigationProperties = psmModelWrapper.getStreamOfPsmDerivedNavigationProperty().collect(Collectors.toSet());
+        assertEquals(2, navigationProperties.size());
+        final Optional<NavigationProperty> keyCustomers = navigationProperties.stream().filter(n -> n.getName().equals("keyCustomers")).findFirst();
+        assertTrue(keyCustomers.isPresent());
+        assertTrue(keyCustomers.get().isCollection());
+        assertEquals("self.customers!filter(c|c.isKey)", keyCustomers.get().getGetterExpression().getExpression());
+
+        final Optional<NavigationProperty> keyCustomer = navigationProperties.stream().filter(n -> n.getName().equals("keyCustomer")).findFirst();
+        assertTrue(keyCustomer.isPresent());
+        assertTrue(keyCustomer.get().isCollection());
+        assertEquals("self.customers!filter(c|c.isKey)!any()", keyCustomer.get().getGetterExpression().getExpression());
+
     }
 }
