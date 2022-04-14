@@ -31,3 +31,19 @@ rule CreateCardinalityForOppositeAddedRelation
       t.lower = 0;
       t.upper = s.isMany ? -1 : 1;
 }
+
+
+
+@lazy
+@greedy
+rule CreateCardinalityForDerivedDeclaration
+    transform s : JSL!EntityDerivedDeclaration
+    to t : JUDOPSM!Cardinality
+    {
+      guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForDerivedDeclaration");
+
+      t.lower = 0;
+      t.upper = s.isMany ? -1 : 1;
+}

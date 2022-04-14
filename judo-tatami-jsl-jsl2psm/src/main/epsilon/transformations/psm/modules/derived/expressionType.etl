@@ -1,10 +1,10 @@
 import "../../../../operations/_importAll.eol";
 
 @lazy
-rule CreateGetterExpressionForDataProperty
+rule CreateGetterExpressionForDataType
     transform s : JSL!EntityDerivedDeclaration
     to t: JUDOPSM!DataExpressionType {
-        t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForDataProperty");
+        t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForDataType");
         t.expression = expressionUtils.getJql(s.expression);
 
         // TODO: Handling parameter type later
@@ -13,4 +13,19 @@ rule CreateGetterExpressionForDataProperty
         //}
 
         log.debug("Created Data Expression Type for Data Property: " + s.name);
+}
+
+@lazy
+rule CreateGetterExpressionForReferenceType
+    transform s : JSL!EntityDerivedDeclaration
+    to t: JUDOPSM!ReferenceExpressionType {
+        t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForReferenceType");
+        t.expression = expressionUtils.getJql(s.expression);
+
+        // TODO: Handling parameter type later
+        //if (s.input.isDefined()) {
+        //    t.parameterType = s.input.getPSMTransferObjectTypeEquivalent();
+        //}
+
+        log.debug("Created Reference Expression Type for Reference Type: " + s.name);
 }

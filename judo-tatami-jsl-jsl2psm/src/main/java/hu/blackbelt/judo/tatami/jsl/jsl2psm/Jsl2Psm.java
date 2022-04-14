@@ -10,6 +10,7 @@ import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
+import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.Builder;
@@ -94,6 +95,7 @@ public class Jsl2Psm {
 //                        "jslUtils", new JslUtils(),
                 		"defaultModelName", parameter.jslModel.getName(),
                         "expressionUtils", new JslExpressionToJqlExpression(),
+                        "jslUtils", new JslDslModelExtension(),
                         "psmUtils", new PsmUtils(parameter.psmModel.getResourceSet())
                 ))
                 .build();
