@@ -1,0 +1,17 @@
+model DerivedRelationModel
+
+type numeric Integer precision 9  scale 0
+type boolean Boolean
+
+type string String max-length 128
+
+entity Lead {
+	field Integer value
+	field Customer[] customers
+	derived Customer[] keyCustomers = self.customers!filter(c | c.isKey)
+}
+
+entity Customer {
+	field String name
+	field Boolean iskey
+}
