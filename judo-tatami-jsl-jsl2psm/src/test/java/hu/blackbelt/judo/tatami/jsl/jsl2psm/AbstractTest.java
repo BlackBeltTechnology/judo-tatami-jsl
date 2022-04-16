@@ -4,8 +4,27 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.support.JslDslModelResourceSupport;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
+import hu.blackbelt.judo.meta.psm.data.Attribute;
+import hu.blackbelt.judo.meta.psm.data.EntityType;
+import hu.blackbelt.judo.meta.psm.data.Relation;
+import hu.blackbelt.judo.meta.psm.derived.DataProperty;
+import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
+import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
+import hu.blackbelt.judo.meta.psm.service.UnmappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport;
+import hu.blackbelt.judo.meta.psm.type.BinaryType;
+import hu.blackbelt.judo.meta.psm.type.BooleanType;
+import hu.blackbelt.judo.meta.psm.type.CustomType;
+import hu.blackbelt.judo.meta.psm.type.DateType;
+import hu.blackbelt.judo.meta.psm.type.EnumerationMember;
+import hu.blackbelt.judo.meta.psm.type.EnumerationType;
+import hu.blackbelt.judo.meta.psm.type.NumericType;
+import hu.blackbelt.judo.meta.psm.type.StringType;
+import hu.blackbelt.judo.meta.psm.type.TimeType;
+import hu.blackbelt.judo.meta.psm.type.TimestampType;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.AfterEach;
@@ -14,6 +33,9 @@ import org.junit.jupiter.api.BeforeEach;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.SaveArguments.jslDslSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.PsmEpsilonValidator.calculatePsmValidationScriptURI;
@@ -75,6 +97,9 @@ abstract public class AbstractTest {
 
         jslModel.saveJslDslModel(jslDslSaveArgumentsBuilder().file(new File(getTargetTestClasses(), testName + "-jsl.model")));
         psmModel.savePsmModel(psmSaveArgumentsBuilder().validateModel(false).file(new File(getTargetTestClasses(), testName + "-psm.model")));
+        if (!psmModel.isValid()) {
+            log.error(psmModel.getDiagnosticsAsString());
+        }
         
         assertTrue(psmModel.isValid());
     }
@@ -106,4 +131,146 @@ abstract public class AbstractTest {
     abstract protected String getTest();
 
     abstract protected Log createLog();
+    
+    
+    public Set<EntityType> getEntityTypes() {
+    	return psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
+    }
+
+    public Set<MappedTransferObjectType> getMappedTransferObjectTypes() {
+    	return psmModelWrapper.getStreamOfPsmServiceMappedTransferObjectType().collect(Collectors.toSet());
+    }
+
+    public Set<UnmappedTransferObjectType> getUnmappedTransferObjectTypes() {
+    	return psmModelWrapper.getStreamOfPsmServiceUnmappedTransferObjectType().collect(Collectors.toSet());
+    }
+
+    public MappedTransferObjectType assertMappedTransferObject(String name) {
+        final Optional<MappedTransferObjectType> to = getMappedTransferObjectTypes().stream().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(to.isPresent());    	
+        return to.get();
+    }
+
+    public UnmappedTransferObjectType assertUnmappedTransferObject(String name) {
+        final Optional<UnmappedTransferObjectType> to = getUnmappedTransferObjectTypes().stream().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(to.isPresent());    	
+        return to.get();
+    }
+
+    public TransferAttribute assertMappedTransferObjectAttribute(String toName, String attrName) {
+    	final Optional<TransferAttribute> attr = assertMappedTransferObject(toName).getAttributes().stream().filter(e -> e.getName().equals(attrName)).findAny();
+        assertTrue(attr.isPresent());    	
+        return attr.get();
+    }
+
+
+    public TransferObjectRelation assertMappedTransferObjectRelation(String toName, String relName) {
+    	final Optional<TransferObjectRelation> rel = assertMappedTransferObject(toName).getRelations().stream().filter(e -> e.getName().equals(relName)).findAny();
+        assertTrue(rel.isPresent());    	
+        return rel.get();
+    }
+
+    public TransferAttribute assertUnmappedTransferObjectAttribute(String toName, String attrName) {
+    	final Optional<TransferAttribute> attr = assertUnmappedTransferObject(toName).getAttributes().stream().filter(e -> e.getName().equals(attrName)).findAny();
+        assertTrue(attr.isPresent());    	
+        return attr.get();
+    }
+
+    public TransferObjectRelation assertUnmappedTransferObjectRelation(String toName, String relName) {
+    	final Optional<TransferObjectRelation> rel = assertUnmappedTransferObject(toName).getRelations().stream().filter(e -> e.getName().equals(relName)).findAny();
+        assertTrue(rel.isPresent());    	
+        return rel.get();
+    }
+
+    public EntityType assertEntityType(String name) {
+        final Optional<EntityType> en = getEntityTypes().stream().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(en.isPresent()); 
+        return en.get();
+    }
+
+    public DataProperty assertDataProperty(String entityName, String propName) {
+    	final Optional<DataProperty> attr = assertEntityType(entityName).getAllDataProperties().stream().filter(e -> e.getName().equals(propName)).findAny();
+        assertTrue(attr.isPresent());    	
+        return attr.get();
+    }
+
+    public NavigationProperty assertNavigationProperty(String entityName, String propName) {
+    	final Optional<NavigationProperty> attr = assertEntityType(entityName).getAllNavigationProperties().stream().filter(e -> e.getName().equals(propName)).findAny();
+        assertTrue(attr.isPresent());    	
+        return attr.get();
+    }
+
+    public Attribute assertAttribute(String entityName, String attrName) {
+    	final Optional<Attribute> attr = assertEntityType(entityName).getAllAttributes().stream().filter(e -> e.getName().equals(attrName)).findAny();
+        assertTrue(attr.isPresent());    	
+        return attr.get();
+    }
+
+    public Relation assertRelation(String entityName, String relationName) {
+    	Optional<Relation> rel = assertEntityType(entityName).getAllRelations().stream().filter(r -> r.getName().equals(relationName)).findFirst();
+        assertTrue(rel.isPresent());
+        return rel.get();    	
+    }
+
+    public StringType assertStringType(String name) {
+        final Optional<StringType> t = psmModelWrapper.getStreamOfPsmTypeStringType().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(t.isPresent()); 
+        return t.get();
+    }
+
+    public NumericType assertNumericType(String name) {
+        final Optional<NumericType> t = psmModelWrapper.getStreamOfPsmTypeNumericType().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(t.isPresent()); 
+        return t.get();
+    }
+
+
+    public BinaryType assertBinaryType(String name) {
+        final Optional<BinaryType> t = psmModelWrapper.getStreamOfPsmTypeBinaryType().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(t.isPresent()); 
+        return t.get();
+    }
+    
+    public BooleanType assertBooleanType(String name) {
+        final Optional<BooleanType> t = psmModelWrapper.getStreamOfPsmTypeBooleanType().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(t.isPresent()); 
+        return t.get();
+    }
+
+    public DateType assertDateType(String name) {
+        final Optional<DateType> t = psmModelWrapper.getStreamOfPsmTypeDateType().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(t.isPresent()); 
+        return t.get();
+    }
+
+    public TimeType assertTimeType(String name) {
+        final Optional<TimeType> t = psmModelWrapper.getStreamOfPsmTypeTimeType().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(t.isPresent()); 
+        return t.get();
+    }
+
+    public TimestampType assertTimestampType(String name) {
+        final Optional<TimestampType> t = psmModelWrapper.getStreamOfPsmTypeTimestampType().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(t.isPresent()); 
+        return t.get();
+    }
+
+    public CustomType assertCustomType(String name) {
+        final Optional<CustomType> t = psmModelWrapper.getStreamOfPsmTypeCustomType().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(t.isPresent()); 
+        return t.get();
+    }
+
+    public EnumerationType assertEnumerationType(String name) {
+        final Optional<EnumerationType> t = psmModelWrapper.getStreamOfPsmTypeEnumerationType().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(t.isPresent()); 
+        return t.get();
+    }
+
+    public EnumerationMember assertEnumerationMember(String name, String memberName) {
+    	Optional<EnumerationMember> m = assertEnumerationType(name).getMembers().stream().filter(e -> e.getName().equals(memberName)).findAny();
+        assertTrue(m.isPresent()); 
+        return m.get();
+    }
+
 }

@@ -5,6 +5,8 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.Relation;
+import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,32 +82,36 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
 
         transform();
 
-        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
-        assertEquals(3, psmEntityTypes.size());
+        assertEquals(3, getEntityTypes().size());
 
-        final Set<Relation> psmRelations = psmModelWrapper.getStreamOfPsmDataRelation().collect(Collectors.toSet());
-        assertEquals(2, psmRelations.size());
+        assertEntityType("_Customer");
+        assertEntityType("_Lead");
+        assertEntityType("_SalesPerson");
 
-        final Optional<EntityType> psmEntityCustomer = psmEntityTypes.stream().filter(e -> e.getName().equals("Customer")).findAny();
-        assertTrue(psmEntityCustomer.isPresent());
+        assertMappedTransferObject("Customer");
+        assertMappedTransferObject("Lead");
+        assertMappedTransferObject("SalesPerson");
 
-        final Optional<EntityType> psmEntityLead = psmEntityTypes.stream().filter(e -> e.getName().equals("Lead")).findAny();
-        assertTrue(psmEntityLead.isPresent());
+        assertTrue(assertRelation("_Lead", "customer").isRequired());
+        assertEquals(1, assertRelation("_Lead", "customer").getCardinality().getLower());
+        assertEquals(1, assertRelation("_Lead", "customer").getCardinality().getUpper());
+        assertEquals(assertEntityType("_Customer"), assertRelation("_Lead", "customer").getTarget());
 
-        final Optional<Relation> leadCustomerRelation = psmEntityLead.get().getRelations().stream().filter(r -> r.getName().equals("customer")).findFirst();
-        assertTrue(leadCustomerRelation.isPresent());
-        assertTrue(leadCustomerRelation.get().isRequired());
-        assertEquals(psmEntityCustomer.get(), leadCustomerRelation.get().getTarget());
+        assertTrue(assertMappedTransferObjectRelation("Lead", "customer").isRequired());
+        assertEquals(1, assertMappedTransferObjectRelation("Lead", "customer").getCardinality().getLower());
+        assertEquals(1, assertMappedTransferObjectRelation("Lead", "customer").getCardinality().getUpper());
+        assertEquals(assertMappedTransferObject("Customer"), assertMappedTransferObjectRelation("Lead", "customer").getTarget());
+      
+        assertFalse(assertRelation("_SalesPerson", "leads").isRequired());
+        assertEquals(0, assertRelation("_SalesPerson", "leads").getCardinality().getLower());
+        assertEquals(-1, assertRelation("_SalesPerson", "leads").getCardinality().getUpper());
+        assertEquals(assertEntityType("_Lead"), assertRelation("_SalesPerson", "leads").getTarget());        
 
-        final Optional<EntityType> psmEntitySalesPerson = psmEntityTypes.stream().filter(e -> e.getName().equals("SalesPerson")).findAny();
-        assertTrue(psmEntitySalesPerson.isPresent());
+        assertFalse(assertMappedTransferObjectRelation("SalesPerson", "leads").isRequired());
+        assertEquals(0, assertMappedTransferObjectRelation("SalesPerson", "leads").getCardinality().getLower());
+        assertEquals(-1, assertMappedTransferObjectRelation("SalesPerson", "leads").getCardinality().getUpper());
+        assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SalesPerson", "leads").getTarget());        
 
-        final Optional<Relation> salesPersonLeadsRelation = psmEntitySalesPerson.get().getRelations().stream().filter(r -> r.getName().equals("leads")).findFirst();
-        assertTrue(salesPersonLeadsRelation.isPresent());
-        assertFalse(salesPersonLeadsRelation.get().isRequired());
-        assertEquals(0, salesPersonLeadsRelation.get().getCardinality().getLower());
-        assertEquals(-1, salesPersonLeadsRelation.get().getCardinality().getUpper());
-        assertEquals(psmEntityLead.get(), salesPersonLeadsRelation.get().getTarget());
     }
 
     @Test
@@ -136,37 +142,33 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
 
         transform();
 
-        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
-        assertEquals(5, psmEntityTypes.size());
+        assertEquals(5, getEntityTypes().size());
+      
+        assertEntityType("_Customer");
+        assertEntityType("_Lead");
+        assertEntityType("_SuperSalesPerson");
+        assertEntityType("_LazySalesPerson");
 
-        final Set<Relation> psmRelations = psmModelWrapper.getStreamOfPsmDataRelation().collect(Collectors.toSet());
-        assertEquals(3, psmRelations.size());
+        assertFalse(assertRelation("_SuperSalesPerson", "leads").isRequired());
+        assertEquals(0, assertRelation("_SuperSalesPerson", "leads").getCardinality().getLower());
+        assertEquals(-1, assertRelation("_SuperSalesPerson", "leads").getCardinality().getUpper());
+        assertEquals(assertEntityType("_Lead"), assertRelation("_SuperSalesPerson", "leads").getTarget());
 
-        final Optional<EntityType> psmEntityCustomer = psmEntityTypes.stream().filter(e -> e.getName().equals("Customer")).findAny();
-        assertTrue(psmEntityCustomer.isPresent());
+        assertFalse(assertMappedTransferObjectRelation("SuperSalesPerson", "leads").isRequired());
+        assertEquals(0, assertMappedTransferObjectRelation("SuperSalesPerson", "leads").getCardinality().getLower());
+        assertEquals(-1, assertMappedTransferObjectRelation("SuperSalesPerson", "leads").getCardinality().getUpper());
+        assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SuperSalesPerson", "leads").getTarget());
+        
+        assertFalse(assertRelation("_LazySalesPerson", "leads").isRequired());
+        assertEquals(0, assertRelation("_LazySalesPerson", "leads").getCardinality().getLower());
+        assertEquals(-1, assertRelation("_LazySalesPerson", "leads").getCardinality().getUpper());
+        assertEquals(assertEntityType("_Lead"), assertRelation("_SuperSalesPerson", "leads").getTarget());
 
-        final Optional<EntityType> psmEntityLead = psmEntityTypes.stream().filter(e -> e.getName().equals("Lead")).findAny();
-        assertTrue(psmEntityLead.isPresent());
+        assertFalse(assertMappedTransferObjectRelation("LazySalesPerson", "leads").isRequired());
+        assertEquals(0, assertMappedTransferObjectRelation("LazySalesPerson", "leads").getCardinality().getLower());
+        assertEquals(-1, assertMappedTransferObjectRelation("LazySalesPerson", "leads").getCardinality().getUpper());
+        assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SuperSalesPerson", "leads").getTarget());
 
-        final Optional<EntityType> psmEntitySuperSalesPerson = psmEntityTypes.stream().filter(e -> e.getName().equals("SuperSalesPerson")).findAny();
-        assertTrue(psmEntitySuperSalesPerson.isPresent());
-
-        final Optional<Relation> superSalesPersonLeadsRelation = psmEntitySuperSalesPerson.get().getAllRelations().stream().filter(r -> r.getName().equals("leads")).findFirst();
-        assertTrue(superSalesPersonLeadsRelation.isPresent());
-        assertFalse(superSalesPersonLeadsRelation.get().isRequired());
-        assertEquals(0, superSalesPersonLeadsRelation.get().getCardinality().getLower());
-        assertEquals(-1, superSalesPersonLeadsRelation.get().getCardinality().getUpper());
-        assertEquals(psmEntityLead.get(), superSalesPersonLeadsRelation.get().getTarget());
-
-        final Optional<EntityType> psmEntityLazySalesPerson = psmEntityTypes.stream().filter(e -> e.getName().equals("LazySalesPerson")).findAny();
-        assertTrue(psmEntityLazySalesPerson.isPresent());
-
-        final Optional<Relation> lazySalesPersonLeadsRelation = psmEntityLazySalesPerson.get().getAllRelations().stream().filter(r -> r.getName().equals("leads")).findFirst();
-        assertTrue(lazySalesPersonLeadsRelation.isPresent());
-        assertFalse(lazySalesPersonLeadsRelation.get().isRequired());
-        assertEquals(0, lazySalesPersonLeadsRelation.get().getCardinality().getLower());
-        assertEquals(-1, lazySalesPersonLeadsRelation.get().getCardinality().getUpper());
-        assertEquals(psmEntityLead.get(), lazySalesPersonLeadsRelation.get().getTarget());
     }
     
     @Test
@@ -180,17 +182,16 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
 
         transform();
 
-        final Set<EntityType> entities = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
-
+        EntityType lead = assertEntityType("_Lead");
+        EntityType customer = assertEntityType("_Customer");
         
-        final Optional<EntityType> lead = entities.stream().filter(e -> e.getName().equals("Lead")).findFirst();
-        assertTrue(lead.isPresent());
+        MappedTransferObjectType leadTo = assertMappedTransferObject("Lead");
+        MappedTransferObjectType customerTo = assertMappedTransferObject("Customer");
+ 
+        assertThat(leadTo.getEntityType(), IsEqual.equalTo(lead));
+        assertThat(customerTo.getEntityType(), IsEqual.equalTo(customer));
         
-        final Optional<EntityType> customer = entities.stream().filter(e -> e.getName().equals("Customer")).findFirst();
-        assertTrue(customer.isPresent());
-
-
-        Collection<Relation> leadRelations = lead.get().getRelations();
+        Collection<Relation> leadRelations = lead.getRelations();
         Set<String> leadRelationNames = leadRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
         assertThat(leadRelationNames, 
         		IsEqual.equalTo(ImmutableSet.of("customer", "customers", 
@@ -199,135 +200,289 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         				"injectedCustomer1", "injectedCustomers1", 
         				"injectedCustomer2", "injectedCustomers2")));
 
-        assertThat(getRelation("Lead", "customer").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Lead", "customer").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(((AssociationEnd) getRelation("Lead", "customer")).getTarget(), IsEqual.equalTo(customer.get()));
+        Collection<TransferObjectRelation> leadToRelations = leadTo.getRelations();
+        Set<String> leadToRelationNames = leadToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
+        assertThat(leadToRelationNames, 
+        		IsEqual.equalTo(ImmutableSet.of("customer", "customers", 
+        				"customer1", "customers1", 
+        				"customer2", "customers2", 
+        				"injectedCustomer1", "injectedCustomers1", 
+        				"injectedCustomer2", "injectedCustomers2")));
 
-        assertThat(getRelation("Lead", "customers").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Lead", "customers").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Lead", "customers")).getTarget(), IsEqual.equalTo(customer.get()));
+        Collection<TransferObjectRelation> leadChildToRelations = leadTo.getRelations();
+        Set<String> leadChildToRelationNames = leadChildToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
+        assertThat(leadChildToRelationNames, 
+        		IsEqual.equalTo(ImmutableSet.of("customer", "customers", 
+        				"customer1", "customers1", 
+        				"customer2", "customers2", 
+        				"injectedCustomer1", "injectedCustomers1", 
+        				"injectedCustomer2", "injectedCustomers2")));
 
-        assertThat(getRelation("Lead", "customer1").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Lead", "customer1").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(((AssociationEnd) getRelation("Lead", "customer1")).getTarget(), IsEqual.equalTo(customer.get()));
-        assertThat(((AssociationEnd) getRelation("Lead", "customer1")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Lead", "customer1")).getPartner().getName(), IsEqual.equalTo("leads1"));
+        Collection<TransferObjectRelation> leadGrandChildToRelations = leadTo.getRelations();
+        Set<String> leadGrandChildToRelationNames = leadGrandChildToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
+        assertThat(leadGrandChildToRelationNames, 
+        		IsEqual.equalTo(ImmutableSet.of("customer", "customers", 
+        				"customer1", "customers1", 
+        				"customer2", "customers2", 
+        				"injectedCustomer1", "injectedCustomers1", 
+        				"injectedCustomer2", "injectedCustomers2")));
 
-        assertThat(getRelation("Lead", "customers1").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Lead", "customers1").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Lead", "customers1")).getTarget(), IsEqual.equalTo(customer.get()));
-        assertThat(((AssociationEnd) getRelation("Lead", "customers1")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Lead", "customers1")).getPartner().getName(), IsEqual.equalTo("leads2"));
-
-        assertThat(getRelation("Lead", "customer2").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Lead", "customer2").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(((AssociationEnd) getRelation("Lead", "customer2")).getTarget(), IsEqual.equalTo(customer.get()));
-        assertThat(((AssociationEnd) getRelation("Lead", "customer2")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Lead", "customer2")).getPartner().getName(), IsEqual.equalTo("leads3"));
         
-        assertThat(getRelation("Lead", "customers2").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Lead", "customers2").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Lead", "customers2")).getTarget(), IsEqual.equalTo(customer.get()));
-        assertThat(((AssociationEnd) getRelation("Lead", "customers2")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Lead", "customers2")).getPartner().getName(), IsEqual.equalTo("leads4"));
+        assertThat(assertRelation("_Lead", "customer").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Lead", "customer").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customer")).getTarget(), IsEqual.equalTo(customer));
 
-        assertThat(getRelation("Lead", "injectedCustomer1").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Lead", "injectedCustomer1").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomer1")).getTarget(), IsEqual.equalTo(customer.get()));
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomer1")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomer1")).getPartner().getName(), IsEqual.equalTo("leads5"));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer").getBinding(), IsEqual.equalTo(assertRelation("_Lead", "customer")));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer").getTarget(), IsEqual.equalTo(customerTo));
 
-        assertThat(getRelation("Lead", "injectedCustomers1").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Lead", "injectedCustomers1").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomers1")).getTarget(), IsEqual.equalTo(customer.get()));
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomers1")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomers1")).getPartner().getName(), IsEqual.equalTo("leads6"));
+        assertThat(assertRelation("_Lead", "customers").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Lead", "customers").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customers")).getTarget(), IsEqual.equalTo(customer));
 
-        assertThat(getRelation("Lead", "injectedCustomer2").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Lead", "injectedCustomer2").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomer2")).getTarget(), IsEqual.equalTo(customer.get()));
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomer2")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomer2")).getPartner().getName(), IsEqual.equalTo("lead1"));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers").getBinding(), IsEqual.equalTo(assertRelation("_Lead", "customers")));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers").getTarget(), IsEqual.equalTo(customerTo));
 
-        assertThat(getRelation("Lead", "injectedCustomers2").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Lead", "injectedCustomers2").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomers2")).getTarget(), IsEqual.equalTo(customer.get()));
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomers2")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Lead", "injectedCustomers2")).getPartner().getName(), IsEqual.equalTo("lead2"));
+        
+        assertThat(assertRelation("_Lead", "customer1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Lead", "customer1").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customer1")).getTarget(), IsEqual.equalTo(customer));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customer1")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customer1")).getPartner().getName(), IsEqual.equalTo("leads1"));
 
-        Collection<Relation> customerRelations = customer.get().getRelations();
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer1").getBinding(), IsEqual.equalTo(assertRelation("_Lead", "customer1")));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer1").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer1").getTarget(), IsEqual.equalTo(customerTo));
+ 
+        
+        assertThat(assertRelation("_Lead", "customers1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Lead", "customers1").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customers1")).getTarget(), IsEqual.equalTo(customer));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customers1")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customers1")).getPartner().getName(), IsEqual.equalTo("leads2"));
+
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers1").getBinding(), IsEqual.equalTo(assertRelation("_Lead", "customers1")));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers1").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers1").getTarget(), IsEqual.equalTo(customerTo));
+
+        
+        assertThat(assertRelation("_Lead", "customer2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Lead", "customer2").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customer2")).getTarget(), IsEqual.equalTo(customer));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customer2")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customer2")).getPartner().getName(), IsEqual.equalTo("leads3"));
+
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer2").getBinding(), IsEqual.equalTo(assertRelation("_Lead", "customer2")));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer2").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customer2").getTarget(), IsEqual.equalTo(customerTo));
+
+        
+        assertThat(assertRelation("_Lead", "customers2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Lead", "customers2").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customers2")).getTarget(), IsEqual.equalTo(customer));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customers2")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Lead", "customers2")).getPartner().getName(), IsEqual.equalTo("leads4"));
+
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers2").getBinding(), IsEqual.equalTo(assertRelation("_Lead", "customers2")));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers2").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Lead", "customers2").getTarget(), IsEqual.equalTo(customerTo));
+
+        
+        assertThat(assertRelation("_Lead", "injectedCustomer1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Lead", "injectedCustomer1").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomer1")).getTarget(), IsEqual.equalTo(customer));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomer1")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomer1")).getPartner().getName(), IsEqual.equalTo("leads5"));
+
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer1").getBinding(), IsEqual.equalTo(assertRelation("_Lead", "injectedCustomer1")));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer1").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer1").getTarget(), IsEqual.equalTo(customerTo));
+
+        
+        assertThat(assertRelation("_Lead", "injectedCustomers1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Lead", "injectedCustomers1").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomers1")).getTarget(), IsEqual.equalTo(customer));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomers1")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomers1")).getPartner().getName(), IsEqual.equalTo("leads6"));
+
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers1").getBinding(), IsEqual.equalTo(assertRelation("_Lead", "injectedCustomers1")));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers1").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers1").getTarget(), IsEqual.equalTo(customerTo));
+
+        
+        assertThat(assertRelation("_Lead", "injectedCustomer2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Lead", "injectedCustomer2").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomer2")).getTarget(), IsEqual.equalTo(customer));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomer2")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomer2")).getPartner().getName(), IsEqual.equalTo("lead1"));
+
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer2").getBinding(), IsEqual.equalTo(assertRelation("_Lead", "injectedCustomer2")));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer2").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer2").getTarget(), IsEqual.equalTo(customerTo));
+
+        
+        assertThat(assertRelation("_Lead", "injectedCustomers2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Lead", "injectedCustomers2").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomers2")).getTarget(), IsEqual.equalTo(customer));
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomers2")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomers2")).getPartner().getName(), IsEqual.equalTo("lead2"));
+
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers2").getBinding(), IsEqual.equalTo(assertRelation("_Lead", "injectedCustomers2")));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers2").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers2").getTarget(), IsEqual.equalTo(customerTo));
+
+        
+        Collection<Relation> customerRelations = customer.getRelations();
         Set<String> customerRelationNames = customerRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
         assertThat(customerRelationNames, 
         		IsEqual.equalTo(ImmutableSet.of("lead", "leads", 
         				"leads1", "leads2", "leads3", "leads4", "leads5", "leads6", 
         				"lead1", "lead2")));
 
-        assertThat(getRelation("Customer", "lead").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Customer", "lead").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(((AssociationEnd) getRelation("Customer", "lead")).getTarget(), IsEqual.equalTo(lead.get()));
+        Collection<TransferObjectRelation> customerToRelations = customerTo.getRelations();
+        Set<String> customerToRelationNames = customerToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
+        assertThat(customerToRelationNames, 
+        		IsEqual.equalTo(ImmutableSet.of("lead", "leads", 
+        				"leads1", "leads2", "leads3", "leads4", "leads5", "leads6", 
+        				"lead1", "lead2")));
 
-        assertThat(getRelation("Customer", "leads").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Customer", "leads").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads")).getTarget(), IsEqual.equalTo(lead.get()));
+        Collection<TransferObjectRelation> customerChildToRelations = customerTo.getRelations();
+        Set<String> customerChildToRelationNames = customerChildToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
+        assertThat(customerChildToRelationNames, 
+        		IsEqual.equalTo(ImmutableSet.of("lead", "leads", 
+        				"leads1", "leads2", "leads3", "leads4", "leads5", "leads6", 
+        				"lead1", "lead2")));
 
-        assertThat(getRelation("Customer", "leads1").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Customer", "leads1").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads1")).getTarget(), IsEqual.equalTo(lead.get()));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads1")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Customer", "leads1")).getPartner().getName(), IsEqual.equalTo("customer1"));
 
-        assertThat(getRelation("Customer", "leads2").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Customer", "leads2").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads2")).getTarget(), IsEqual.equalTo(lead.get()));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads2")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Customer", "leads2")).getPartner().getName(), IsEqual.equalTo("customers1"));
+        Collection<TransferObjectRelation> customerGrandChildToRelations = customerTo.getRelations();
+        Set<String> customerGrandChildToRelationNames = customerGrandChildToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
+        assertThat(customerGrandChildToRelationNames, 
+        		IsEqual.equalTo(ImmutableSet.of("lead", "leads", 
+        				"leads1", "leads2", "leads3", "leads4", "leads5", "leads6", 
+        				"lead1", "lead2")));
 
-        assertThat(getRelation("Customer", "leads3").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Customer", "leads3").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads3")).getTarget(), IsEqual.equalTo(lead.get()));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads3")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Customer", "leads3")).getPartner().getName(), IsEqual.equalTo("customer2"));
 
-        assertThat(getRelation("Customer", "leads4").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Customer", "leads4").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads4")).getTarget(), IsEqual.equalTo(lead.get()));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads4")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Customer", "leads4")).getPartner().getName(), IsEqual.equalTo("customers2"));
+        assertThat(assertRelation("_Customer", "lead").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Customer", "lead").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "lead")).getTarget(), IsEqual.equalTo(lead));
 
-        assertThat(getRelation("Customer", "leads5").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Customer", "leads5").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads5")).getTarget(), IsEqual.equalTo(lead.get()));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads5")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Customer", "leads5")).getPartner().getName(), IsEqual.equalTo("injectedCustomer1"));
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead").getBinding(), IsEqual.equalTo(assertRelation("_Customer", "lead")));
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead").getTarget(), IsEqual.equalTo(leadTo));
 
-        assertThat(getRelation("Customer", "leads6").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Customer", "leads6").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads6")).getTarget(), IsEqual.equalTo(lead.get()));
-        assertThat(((AssociationEnd) getRelation("Customer", "leads6")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Customer", "leads6")).getPartner().getName(), IsEqual.equalTo("injectedCustomers1"));
         
-        assertThat(getRelation("Customer", "lead1").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Customer", "lead1").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(((AssociationEnd) getRelation("Customer", "lead1")).getTarget(), IsEqual.equalTo(lead.get()));
-        assertThat(((AssociationEnd) getRelation("Customer", "lead1")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Customer", "lead1")).getPartner().getName(), IsEqual.equalTo("injectedCustomer2"));
+        assertThat(assertRelation("_Customer", "leads").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Customer", "leads").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads")).getTarget(), IsEqual.equalTo(lead));
 
-        assertThat(getRelation("Customer", "lead2").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(getRelation("Customer", "lead2").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(((AssociationEnd) getRelation("Customer", "lead2")).getTarget(), IsEqual.equalTo(lead.get()));
-        assertThat(((AssociationEnd) getRelation("Customer", "lead2")).getPartner(), IsNull.notNullValue());
-        assertThat(((AssociationEnd) getRelation("Customer", "lead2")).getPartner().getName(), IsEqual.equalTo("injectedCustomers2"));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads").getBinding(), IsEqual.equalTo(assertRelation("_Customer", "leads")));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads").getTarget(), IsEqual.equalTo(leadTo));
+
+        
+        assertThat(assertRelation("_Customer", "leads1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Customer", "leads1").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads1")).getTarget(), IsEqual.equalTo(lead));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads1")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads1")).getPartner().getName(), IsEqual.equalTo("customer1"));
+
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads1").getBinding(), IsEqual.equalTo(assertRelation("_Customer", "leads1")));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads1").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads1").getTarget(), IsEqual.equalTo(leadTo));
+
+        assertThat(assertRelation("_Customer", "leads2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Customer", "leads2").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads2")).getTarget(), IsEqual.equalTo(lead));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads2")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads2")).getPartner().getName(), IsEqual.equalTo("customers1"));
+
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads2").getBinding(), IsEqual.equalTo(assertRelation("_Customer", "leads2")));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads2").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads2").getTarget(), IsEqual.equalTo(leadTo));
+
+
+        assertThat(assertRelation("_Customer", "leads3").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Customer", "leads3").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads3")).getTarget(), IsEqual.equalTo(lead));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads3")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads3")).getPartner().getName(), IsEqual.equalTo("customer2"));
+
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads3").getBinding(), IsEqual.equalTo(assertRelation("_Customer", "leads3")));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads3").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads3").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads3").getTarget(), IsEqual.equalTo(leadTo));
+
+        assertThat(assertRelation("_Customer", "leads4").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Customer", "leads4").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads4")).getTarget(), IsEqual.equalTo(lead));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads4")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads4")).getPartner().getName(), IsEqual.equalTo("customers2"));
+
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads4").getBinding(), IsEqual.equalTo(assertRelation("_Customer", "leads4")));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads4").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads4").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads4").getTarget(), IsEqual.equalTo(leadTo));
+
+        assertThat(assertRelation("_Customer", "leads5").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Customer", "leads5").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads5")).getTarget(), IsEqual.equalTo(lead));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads5")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads5")).getPartner().getName(), IsEqual.equalTo("injectedCustomer1"));
+
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads5").getBinding(), IsEqual.equalTo(assertRelation("_Customer", "leads5")));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads5").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads5").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads5").getTarget(), IsEqual.equalTo(leadTo));
+
+        assertThat(assertRelation("_Customer", "leads6").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Customer", "leads6").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads6")).getTarget(), IsEqual.equalTo(lead));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads6")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Customer", "leads6")).getPartner().getName(), IsEqual.equalTo("injectedCustomers1"));
+
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads6").getBinding(), IsEqual.equalTo(assertRelation("_Customer", "leads6")));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads6").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads6").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Customer", "leads6").getTarget(), IsEqual.equalTo(leadTo));
+
+        assertThat(assertRelation("_Customer", "lead1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Customer", "lead1").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "lead1")).getTarget(), IsEqual.equalTo(lead));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "lead1")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Customer", "lead1")).getPartner().getName(), IsEqual.equalTo("injectedCustomer2"));
+
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead1").getBinding(), IsEqual.equalTo(assertRelation("_Customer", "lead1")));
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead1").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead1").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead1").getTarget(), IsEqual.equalTo(leadTo));
+
+        assertThat(assertRelation("_Customer", "lead2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertRelation("_Customer", "lead2").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "lead2")).getTarget(), IsEqual.equalTo(lead));
+        assertThat(((AssociationEnd) assertRelation("_Customer", "lead2")).getPartner(), IsNull.notNullValue());
+        assertThat(((AssociationEnd) assertRelation("_Customer", "lead2")).getPartner().getName(), IsEqual.equalTo("injectedCustomers2"));
+
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead2").getBinding(), IsEqual.equalTo(assertRelation("_Customer", "lead2")));
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead2").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("Customer", "lead2").getTarget(), IsEqual.equalTo(leadTo));
 
     }
     
     
-    private Relation getRelation(String entityName, String relationName) {
-        final Set<EntityType> entities = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
-
-        final Optional<EntityType> entity = entities.stream().filter(e -> e.getName().equals(entityName)).findFirst();
-        assertTrue(entity.isPresent());
-
-    	return entity.get().getRelations().stream().filter(r -> r.getName().equals(relationName)).findFirst().get();
-
-    }
 }

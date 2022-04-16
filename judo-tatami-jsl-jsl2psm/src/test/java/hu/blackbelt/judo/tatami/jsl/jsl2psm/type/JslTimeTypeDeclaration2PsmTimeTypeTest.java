@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -61,12 +62,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
 
         transform();
 
-        final Set<TimeType> psmTimes = psmModelWrapper.getStreamOfPsmTypeTimeType().collect(Collectors.toSet());
-        assertEquals(1, psmTimes.size());
-
-        final Optional<TimeType> myTime = psmTimes.stream().filter(n -> n.getName().equals("MyTime")).findFirst();
-        assertTrue(myTime.isPresent());
-        assertEquals(myTime.get().getName(), "MyTime");
+        assertTimeType("MyTime");
     }
 
     @Test
@@ -87,12 +83,13 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<TimeType> psmTypeTime = psmModelWrapper.getStreamOfPsmTypeTimeType().filter(n -> n.getName().equals("MyTime")).findFirst();
-        assertTrue(psmTypeTime.isPresent());
-        final Optional<EntityType> psmEntityPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
-        assertTrue(psmEntityPerson.isPresent());
-        final Optional<Attribute> psmPersonArrivalTimeAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("arrivalTime")).findFirst();
-        assertTrue(psmPersonArrivalTimeAttribute.isPresent());
+        assertTimeType("MyTime");
+        assertEquals(assertTimeType("MyTime"), assertAttribute("_Person", "arrivalTime").getDataType());
+        assertEquals(assertTimeType("MyTime"), assertMappedTransferObjectAttribute("Person", "arrivalTime").getDataType());
+
+        assertFalse(assertAttribute("_Person", "arrivalTime").isRequired());
+        assertFalse(assertMappedTransferObjectAttribute("Person", "arrivalTime").isRequired());
+
     }
 
     @Test
@@ -113,11 +110,12 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmEntityPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
-        assertTrue(psmEntityPerson.isPresent());
-        final Optional<Attribute> psmPersonArrivalTimeAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("arrivalTime")).findFirst();
-        assertTrue(psmPersonArrivalTimeAttribute.isPresent());
-        assertTrue(psmPersonArrivalTimeAttribute.get().isRequired());
+        assertTimeType("MyTime");
+        assertEquals(assertTimeType("MyTime"), assertAttribute("_Person", "arrivalTime").getDataType());
+        assertEquals(assertTimeType("MyTime"), assertMappedTransferObjectAttribute("Person", "arrivalTime").getDataType());
+
+        assertTrue(assertAttribute("_Person", "arrivalTime").isRequired());
+        assertTrue(assertMappedTransferObjectAttribute("Person", "arrivalTime").isRequired());
     }
 
     @Test
@@ -141,10 +139,12 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmStudentPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("StudentPerson")).findFirst();
-        assertTrue(psmStudentPerson.isPresent());
-        final Optional<Attribute> psmStudentArrivalTimeAttribute = psmStudentPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("arrivalTime")).findFirst();
-        assertTrue(psmStudentArrivalTimeAttribute.isPresent());
+        assertTimeType("MyTime");
+        assertEquals(assertTimeType("MyTime"), assertAttribute("_Person", "arrivalTime").getDataType());
+        assertEquals(assertTimeType("MyTime"), assertMappedTransferObjectAttribute("Person", "arrivalTime").getDataType());
+
+        assertEquals(assertTimeType("MyTime"), assertAttribute("_StudentPerson", "arrivalTime").getDataType());
+        assertEquals(assertTimeType("MyTime"), assertMappedTransferObjectAttribute("StudentPerson", "arrivalTime").getDataType());
     }
 
     @Test
@@ -165,10 +165,9 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
-        assertTrue(psmPerson.isPresent());
-        final Optional<Attribute> psmPersonArrivalTimeAttribute = psmPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("arrivalTime")).findFirst();
-        assertTrue(psmPersonArrivalTimeAttribute.isPresent());
-        assertTrue(psmPersonArrivalTimeAttribute.get().isIdentifier());
+        assertTimeType("MyTime");
+        assertEquals(assertTimeType("MyTime"), assertAttribute("_Person", "arrivalTime").getDataType());
+        assertEquals(assertTimeType("MyTime"), assertMappedTransferObjectAttribute("Person", "arrivalTime").getDataType());
+        assertTrue(assertAttribute("_Person", "arrivalTime").isIdentifier());
     }
 }

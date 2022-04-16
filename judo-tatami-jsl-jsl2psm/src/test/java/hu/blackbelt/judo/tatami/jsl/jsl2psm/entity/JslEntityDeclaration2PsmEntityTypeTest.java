@@ -66,22 +66,18 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
 
         transform();
 
-        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
-        assertEquals(3, psmEntityTypes.size());
+//        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
+        assertEquals(3, getEntityTypes().size());
 
-        final Set<String> psmEntityTypeNames = psmEntityTypes.stream().map(NamedElement::getName).collect(Collectors.toSet());
-        final Set<String> jslEntityTypeDeclarationNames = ImmutableSet.of("Test", "Person", "SalesPerson");
+        final Set<String> psmEntityTypeNames = getEntityTypes().stream().map(NamedElement::getName).collect(Collectors.toSet());
+        final Set<String> jslEntityTypeDeclarationNames = ImmutableSet.of("_Test", "_Person", "_SalesPerson");
         assertThat(psmEntityTypeNames, IsEqual.equalTo(jslEntityTypeDeclarationNames));
 
-        final Optional<EntityType> psmEntityPerson = psmEntityTypes.stream().filter(e -> e.getName().equals("Person")).findAny();
-        assertTrue(psmEntityPerson.isPresent());
-        assertTrue(psmEntityPerson.get().isAbstract());
-
-        final Optional<EntityType> psmEntitySalesPerson = psmEntityTypes.stream().filter(e -> e.getName().equals("SalesPerson")).findAny();
-        assertTrue(psmEntitySalesPerson.isPresent());
-
-        final Set<String> psmEntityType3SuperTypeNames = psmEntitySalesPerson.get().getSuperEntityTypes().stream().map(NamedElement::getName).collect(Collectors.toSet());
-        final Set<String> jslEntityType3SuperTypeNames = ImmutableSet.of("Person", "Test");
+        assertTrue(assertEntityType("_Person").isAbstract());
+        assertEntityType("_SalesPerson");
+                
+        final Set<String> psmEntityType3SuperTypeNames = assertEntityType("_SalesPerson").getSuperEntityTypes().stream().map(NamedElement::getName).collect(Collectors.toSet());
+        final Set<String> jslEntityType3SuperTypeNames = ImmutableSet.of("_Person", "_Test");
         assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(jslEntityType3SuperTypeNames));
     }
 
@@ -107,11 +103,10 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
         final Set<String> jslPackageNames = ImmutableSet.of("First", "Second", "EntityLocaleNameModel");
         assertThat(psmEntityPackageNames, IsEqual.equalTo(jslPackageNames));
 
-        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
-        assertEquals(1, psmEntityTypes.size());
+        assertEquals(1, getEntityTypes().size());
 
-        final Set<String> psmEntityTypeNames = psmEntityTypes.stream().map(NamedElement::getName).collect(Collectors.toSet());
-        final Set<String> jslEntityTypeDeclarationNames = ImmutableSet.of("Test");
+        final Set<String> psmEntityTypeNames = getEntityTypes().stream().map(NamedElement::getName).collect(Collectors.toSet());
+        final Set<String> jslEntityTypeDeclarationNames = ImmutableSet.of("_Test");
         assertThat(psmEntityTypeNames, IsEqual.equalTo(jslEntityTypeDeclarationNames));
     }
 }

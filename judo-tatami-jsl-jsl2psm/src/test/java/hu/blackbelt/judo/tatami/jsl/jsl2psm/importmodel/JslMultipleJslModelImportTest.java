@@ -86,7 +86,7 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
         assertEquals(2, psmEntityTypes.size());
 
         assertThat(psmEntityTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()), 
-        		IsEqual.equalTo(ImmutableSet.of("B", "C")));
+        		IsEqual.equalTo(ImmutableSet.of("_B", "_C")));
 
         final Set<Model> models = psmModelWrapper.getStreamOfPsmNamespaceModel().collect(Collectors.toSet());
         assertEquals(1, models.size());
@@ -111,10 +111,10 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
         		IsEqual.equalTo(ImmutableSet.of("b", "c")));
 
         Package b = ns2.getPackages().stream().filter(p -> p.getName().equals("b")).findFirst().get();        
-        assertTrue(b.getElements().stream().filter(p -> p.getName().equals("B")).map(e -> (EntityType) e).findFirst().isPresent());
+        assertTrue(b.getElements().stream().filter(p -> p.getName().equals("_B")).map(e -> (EntityType) e).findFirst().isPresent());
 
         Package c = ns2.getPackages().stream().filter(p -> p.getName().equals("c")).findFirst().get();        
-        assertTrue(c.getElements().stream().filter(p -> p.getName().equals("C")).map(e -> (EntityType) e).findFirst().isPresent());
+        assertTrue(c.getElements().stream().filter(p -> p.getName().equals("_C")).map(e -> (EntityType) e).findFirst().isPresent());
 
         
     }

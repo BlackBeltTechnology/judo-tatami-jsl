@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.ImmutableSet;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -66,27 +69,16 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
 
         transform();
 
-        final Set<EnumerationType> psmEnumeration = psmModelWrapper.getStreamOfPsmTypeEnumerationType().collect(Collectors.toSet());
-        assertEquals(1, psmEnumeration.size());
+        assertEnumerationType("LeadStatus");
 
-        final Optional<EnumerationType> timestamp = psmEnumeration.stream().filter(n -> n.getName().equals("LeadStatus")).findFirst();
-        assertTrue(timestamp.isPresent());
-        assertEquals(timestamp.get().getName(), "LeadStatus");
+        assertEquals(
+        		ImmutableSet.of("OPPORTUNITY", "LEAD", "PROJECT"), 
+        		assertEnumerationType("LeadStatus").getMembers().stream().map(m -> m.getName()).collect(Collectors.toSet())
+		);
 
-        final List<EnumerationMember> psmTimestampMembers = timestamp.get().getMembers();
-        assertEquals(3, psmTimestampMembers.size());
-
-        final Optional<EnumerationMember> opportunity = psmTimestampMembers.stream().filter(m -> m.getName().equals("OPPORTUNITY")).findFirst();
-        assertTrue(opportunity.isPresent());
-        assertEquals(0, opportunity.get().getOrdinal());
-
-        final Optional<EnumerationMember> lead = psmTimestampMembers.stream().filter(m -> m.getName().equals("LEAD")).findFirst();
-        assertTrue(lead.isPresent());
-        assertEquals(1, lead.get().getOrdinal());
-
-        final Optional<EnumerationMember> project = psmTimestampMembers.stream().filter(m -> m.getName().equals("PROJECT")).findFirst();
-        assertTrue(project.isPresent());
-        assertEquals(2, project.get().getOrdinal());
+        assertEquals(0, assertEnumerationMember("LeadStatus", "OPPORTUNITY").getOrdinal());
+        assertEquals(1, assertEnumerationMember("LeadStatus", "LEAD").getOrdinal());
+        assertEquals(2, assertEnumerationMember("LeadStatus", "PROJECT").getOrdinal());
     }
 
     @Test
@@ -110,13 +102,15 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
         );
 
         transform();
+        
+        assertEnumerationType("LeadStatus");
+        assertEquals(assertEnumerationType("LeadStatus"), assertAttribute("_Lead", "status").getDataType());
+        assertEquals(assertEnumerationType("LeadStatus"), assertMappedTransferObjectAttribute("Lead", "status").getDataType());
 
-        final Optional<EnumerationType> psmTypeLeadStatus = psmModelWrapper.getStreamOfPsmTypeEnumerationType().filter(n -> n.getName().equals("LeadStatus")).findFirst();
-        assertTrue(psmTypeLeadStatus.isPresent());
-        final Optional<EntityType> psmEntityLead = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Lead")).findFirst();
-        assertTrue(psmEntityLead.isPresent());
-        final Optional<Attribute> psmLeadStatusAttribute = psmEntityLead.get().getAllAttributes().stream().filter(a -> a.getName().equals("status")).findFirst();
-        assertTrue(psmLeadStatusAttribute.isPresent());
+        assertFalse(assertAttribute("_Lead", "status").isRequired());
+        assertFalse(assertMappedTransferObjectAttribute("Lead", "status").isRequired());
+
+    
     }
 
     @Test
@@ -141,13 +135,11 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EnumerationType> psmTypeLeadStatus = psmModelWrapper.getStreamOfPsmTypeEnumerationType().filter(n -> n.getName().equals("LeadStatus")).findFirst();
-        assertTrue(psmTypeLeadStatus.isPresent());
-        final Optional<EntityType> psmEntityLead = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Lead")).findFirst();
-        assertTrue(psmEntityLead.isPresent());
-        final Optional<Attribute> psmLeadStatusAttribute = psmEntityLead.get().getAllAttributes().stream().filter(a -> a.getName().equals("status")).findFirst();
-        assertTrue(psmLeadStatusAttribute.isPresent());
-        assertTrue(psmLeadStatusAttribute.get().isRequired());
+        assertEnumerationType("LeadStatus");
+        assertEquals(assertEnumerationType("LeadStatus"), assertAttribute("_Lead", "status").getDataType());
+        assertEquals(assertEnumerationType("LeadStatus"), assertMappedTransferObjectAttribute("Lead", "status").getDataType());
+        assertTrue(assertAttribute("_Lead", "status").isRequired());
+        assertTrue(assertMappedTransferObjectAttribute("Lead", "status").isRequired());
     }
 
     @Test
@@ -174,11 +166,13 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
         );
 
         transform();
+        
+        assertEnumerationType("LeadStatus");
+        assertEquals(assertEnumerationType("LeadStatus"), assertAttribute("_Lead", "status").getDataType());
+        assertEquals(assertEnumerationType("LeadStatus"), assertMappedTransferObjectAttribute("Lead", "status").getDataType());
+        assertEquals(assertEnumerationType("LeadStatus"), assertAttribute("_LeadManager", "status").getDataType());
+        assertEquals(assertEnumerationType("LeadStatus"), assertMappedTransferObjectAttribute("LeadManager", "status").getDataType());
 
-        final Optional<EntityType> psmLeadManager = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("LeadManager")).findFirst();
-        assertTrue(psmLeadManager.isPresent());
-        final Optional<Attribute> psmLeadManagerStatusAttribute = psmLeadManager.get().getAllAttributes().stream().filter(a -> a.getName().equals("status")).findFirst();
-        assertTrue(psmLeadManagerStatusAttribute.isPresent());
     }
 
     @Test
@@ -206,10 +200,9 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmLeadManager = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("LeadManager")).findFirst();
-        assertTrue(psmLeadManager.isPresent());
-        final Optional<Attribute> psmLeadManagerStatusAttribute = psmLeadManager.get().getAllAttributes().stream().filter(a -> a.getName().equals("status")).findFirst();
-        assertTrue(psmLeadManagerStatusAttribute.isPresent());
-        assertTrue(psmLeadManagerStatusAttribute.get().isIdentifier());
+        assertEnumerationType("LeadStatus");
+        assertEquals(assertEnumerationType("LeadStatus"), assertAttribute("_Lead", "status").getDataType());
+        assertEquals(assertEnumerationType("LeadStatus"), assertMappedTransferObjectAttribute("Lead", "status").getDataType());
+        assertTrue(assertAttribute("_Lead", "status").isIdentifier());
     }
 }

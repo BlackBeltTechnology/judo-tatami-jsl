@@ -1,0 +1,15 @@
+
+rule CreateNavigationProperty
+    transform s : JSL!EntityDerivedDeclaration
+    to t : JUDOPSM!NavigationProperty
+    {
+      guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+      t.name = s.name;
+      t.setId("(jsl/" + s.getId() + ")/NavigationProperty");
+      t.getterExpression = s.equivalent("CreateGetterExpressionForReferenceType");
+	  t.cardinality = s.equivalent("CreateCardinalityForDerivedDeclaration");
+      t.target = s.referenceType.getPSMEquivalent();
+
+      s.eContainer.getPSMEquivalent().navigationProperties.add(t);
+      log.error("Created Navigation Property: " + t.name);
+}
