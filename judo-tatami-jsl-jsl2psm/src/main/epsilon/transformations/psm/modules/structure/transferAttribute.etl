@@ -9,7 +9,7 @@ import "../namespace/namespace.etl";
 rule AbstractCreateTransferAttributeForDefaultTransferObjectType
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!TransferAttribute {
-        guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
         t.required = s.isRequired;
         t.name = s.name;
         t.binding = s.equivalent("CreateAttributeFromField");
@@ -22,7 +22,7 @@ rule CreateTransferAttributeForDefaultTransferObjectType
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateTransferAttributeForDefaultTransferObjectType {
-        guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
         t.setId("(jsl/" + s.getId() + ")/CreateTransferAttributeForDefaultTransferObjectType");
         s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
         log.debug("Created TransferAttribute (Field) for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
@@ -48,7 +48,7 @@ rule CloneTransferAttributeForDefaultTransferObjectType
 rule AbstractCreateIdentifierTransferAttributeForDefaultTransferObjectType
     transform s: JSL!EntityIdentifierDeclaration
     to t: JUDOPSM!TransferAttribute {
-        guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
 
         t.required = s.isRequired;
         t.name = s.name;
@@ -60,7 +60,7 @@ rule CreateIdentifierTransferAttributeForDefaultTransferObjectType
     transform s: JSL!EntityIdentifierDeclaration    
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateIdentifierTransferAttributeForDefaultTransferObjectType {
-        guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
         t.setId("(jsl/" + s.getId() + ")/CreateIdentifierTransferAttributeForDefaultTransferObjectType");
 
         s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
@@ -85,7 +85,7 @@ rule CloneIdentifierTransferAttributeForDefaultTransferObjectType
 rule AbstractCreateDerivedTransferAttributeForDefaultTransferObjectType
     transform s : JSL!EntityDerivedDeclaration
     to t : JUDOPSM!TransferAttribute {
-        guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
         t.name = s.name;
         t.binding = s.equivalent("CreateDataProperty");
         t.dataType = s.referenceType.getPSMEquivalent();
@@ -95,7 +95,7 @@ rule CreateDerivedTransferAttributeForDefaultTransferObjectType
     transform s: JSL!EntityDerivedDeclaration    
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateDerivedTransferAttributeForDefaultTransferObjectType {
-        guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
         t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttributeForDefaultTransferObjectType");
 
         s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);

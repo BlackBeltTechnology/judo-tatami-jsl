@@ -25,6 +25,7 @@ import hu.blackbelt.judo.meta.psm.type.NumericType;
 import hu.blackbelt.judo.meta.psm.type.StringType;
 import hu.blackbelt.judo.meta.psm.type.TimeType;
 import hu.blackbelt.judo.meta.psm.type.TimestampType;
+import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.Jsl2PsmParameter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.AfterEach;
@@ -103,7 +104,7 @@ abstract public class AbstractTest {
         
         assertTrue(psmModel.isValid());
     }
-
+    
     protected void transform() throws Exception {
         // Create empty PSM model
         psmModel = buildPsmModel().name(jslModel.getName()).build();
@@ -116,16 +117,20 @@ abstract public class AbstractTest {
 
         
         // Make transformation which returns the trace with the serialized URI's
-        jsl2PsmTransformationTrace = executeJsl2PsmTransformation(jsl2PsmParameter()
+        jsl2PsmTransformationTrace = executeJsl2PsmTransformation(addTransformationParameters(testName, jsl2PsmParameter()
         		.log(slf4jlog)
                 .jslModel(jslModel)
                 .psmModel(psmModel)
-                .createTrace(true));
+                .createTrace(true)));
 
         assertTrue(psmModel.isValid());
         validatePsm(createLog(), psmModel, calculatePsmValidationScriptURI());
     }
 
+    public Jsl2PsmParameter.Jsl2PsmParameterBuilder addTransformationParameters(String testName, Jsl2PsmParameter.Jsl2PsmParameterBuilder parameters) {
+    	return parameters;
+    }
+    
     abstract protected String getTargetTestClasses();
 
     abstract protected String getTest();

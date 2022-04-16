@@ -3,13 +3,13 @@ import "../../../../operations/_importAll.eol";
 rule CreateEntityDefaultTransferObjectType
     transform s : JSL!EntityDeclaration
     to t : JUDOPSM!MappedTransferObjectType {
-
+		guard: generateDefaultTransferObject
         t.setId("(jsl/" + s.getId() + ")/CreateEntityDefaultTransferObjectType");
         t.entityType = s.getPSMEquivalent();
         
         t.entityType.defaultRepresentation = t;
         
-        t.name = s.name;
+        t.name = defaultTransferObjectNamePrefix + s.name + defaultTransferObjectNamePostfix;
         t.optional = false;
         t.queryCustomizer = false;
 

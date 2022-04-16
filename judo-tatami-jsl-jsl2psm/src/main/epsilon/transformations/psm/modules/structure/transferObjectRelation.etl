@@ -6,7 +6,7 @@
 rule AbstractCreateTransferObjectEmbeddedRelationForDefaultTransferObjectType
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!TransferObjectRelation {
-        guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!EntityDeclaration)
 
         t.name = s.name;
         t.target = s.referenceType.equivalent("CreateEntityDefaultTransferObjectType");
@@ -24,7 +24,7 @@ rule CreateTransferObjectEmbeddedRelationForDefaultTransferObjectType
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!TransferObjectRelation 
     extends AbstractCreateTransferObjectEmbeddedRelationForDefaultTransferObjectType {
-        guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!EntityDeclaration)
 
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForFieldDeclaration", t.getId());
@@ -54,7 +54,7 @@ rule CloneTransferObjectEmbeddedRelationForDefaultTransferObjectType
 rule AbstractCreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType
     transform s: JSL!EntityRelationOpposite
     to t: JUDOPSM!TransferObjectRelation {
-        guard: s.oppositeName.isDefined()
+        guard: generateDefaultTransferObject and s.oppositeName.isDefined()
 
     	var relationAddedFrom = s.eContainer;
     	var entityToAdd = relationAddedFrom.referenceType;
@@ -75,7 +75,7 @@ rule CreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType
     transform s: JSL!EntityRelationOpposite
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType {
-        guard: s.oppositeName.isDefined()
+        guard: generateDefaultTransferObject and s.oppositeName.isDefined()
 
     	var relationAddedFrom = s.eContainer;
     	var entityToAdd = relationAddedFrom.referenceType;
@@ -110,7 +110,7 @@ rule CloneTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType
 rule AbstractCreateTransferObjectAssociatedRelationForDefaultTransferObjectType
     transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!TransferObjectRelation {
-        guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!EntityDeclaration)
 
         t.name = s.name;
         t.target = s.referenceType.equivalent("CreateEntityDefaultTransferObjectType");
@@ -129,7 +129,7 @@ rule CreateTransferObjectAssociatedRelationForDefaultTransferObjectType
     transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectAssociatedRelationForDefaultTransferObjectType {
-        guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!EntityDeclaration)
 
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectAssociatedRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForRelationDeclaration", t.getId());
@@ -164,7 +164,7 @@ rule AbstractCreateTransferObjectDerivedRelationForDefaultTransferObjectType
     transform s : JSL!EntityDerivedDeclaration
     to t : JUDOPSM!TransferObjectRelation
     {
-      guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+      guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!EntityDeclaration)
 
       t.name = s.name;
       t.target = s.referenceType.equivalent("CreateEntityDefaultTransferObjectType");
@@ -183,7 +183,7 @@ rule CreateTransferObjectDerivedRelationForDefaultTransferObjectType
     transform s: JSL!EntityDerivedDeclaration
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectDerivedRelationForDefaultTransferObjectType {
-        guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!EntityDeclaration)
 
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectDerivedRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForDerivedDeclaration", t.getId());

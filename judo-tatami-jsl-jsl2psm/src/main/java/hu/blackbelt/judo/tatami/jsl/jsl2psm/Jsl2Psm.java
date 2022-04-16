@@ -63,7 +63,27 @@ public class Jsl2Psm {
 
         @Builder.Default
         Boolean parallel = true;
-    }
+        
+        @Builder.Default
+        @NonNull
+        String entityNamePrefix = "_";
+
+        @Builder.Default
+        @NonNull
+        String entityNamePostfix = "";
+
+        @Builder.Default
+        @NonNull
+        Boolean generateDefaultTransferObject = true;
+
+        @Builder.Default
+        @NonNull
+        String defaultTransferObjectNamePrefix = "";
+
+        @Builder.Default
+        @NonNull
+        String defaultTransferObjectNamePostfix = "";
+}
 
 
     public static Jsl2PsmTransformationTrace executeJsl2PsmTransformation(Jsl2PsmParameter.Jsl2PsmParameterBuilder builder) throws Exception {
@@ -92,14 +112,17 @@ public class Jsl2Psm {
                         )
                 		.build()
         		)
-                .injectContexts(ImmutableMap.of(
-//                        "jslUtils", new JslUtils(),
-                		"defaultModelName", parameter.jslModel.getName(),
-                        "expressionUtils", new JslExpressionToJqlExpression(),
-                        "ecoreUtil", new EcoreUtil(),
-                        "jslUtils", new JslDslModelExtension(),
-                        "psmUtils", new PsmUtils(parameter.psmModel.getResourceSet())
-                ))
+                .injectContexts(ImmutableMap.<String, Object>builder()
+                		.put("entityNamePrefix", parameter.entityNamePrefix)
+        				.put("entityNamePostfix", parameter.entityNamePostfix)
+        				.put("defaultTransferObjectNamePrefix", parameter.defaultTransferObjectNamePrefix)
+						.put("defaultTransferObjectNamePostfix", parameter.defaultTransferObjectNamePostfix)
+						.put("generateDefaultTransferObject", parameter.generateDefaultTransferObject)
+						.put("defaultModelName", parameter.jslModel.getName())
+						.put("expressionUtils", new JslExpressionToJqlExpression())
+						.put("ecoreUtil", new EcoreUtil())
+						.put("jslUtils", new JslDslModelExtension())
+						.put("psmUtils", new PsmUtils(parameter.psmModel.getResourceSet())).build())
                 .build();
 
         // run the model / metadata loading
