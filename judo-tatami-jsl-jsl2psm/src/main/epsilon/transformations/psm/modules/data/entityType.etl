@@ -5,7 +5,7 @@ rule CreateEntityType
   to t : JUDOPSM!EntityType
   {
     t.setId("(jsl/" + s.getId() + ")/CreateEntityType");
-    t.name = s.name;
+    t.name = "_" + s.name;
     t.`abstract` = s.`isAbstract`;
     for (super in s.`extends`) {
         t.superEntityTypes.add(super.getPSMEquivalent());

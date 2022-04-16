@@ -1,0 +1,26 @@
+
+// It makes new instance when equivalent is called. 
+// First time it uses standard equivalent instance, but second call get
+// the original, copy it, added to resource and change the id.
+// CAUTION! When it is called it create instance but not added to a container.
+// Another important thing is, do not call rules which adds the
+// created target to containers, so the best practice to create a special to clone.
+operation Any equivalentWithPrefix(transformation : String, prefix : String) : Any {
+	var f = self.equivalent(transformation);
+	var id = f.getId();
+	var r = f.eResource;
+	if (f.eContainer != null) {
+		f = ecoreUtil.copy(f);
+		r.contents.add(f);
+
+		// Store traceability links
+		for (t in transTrace.transformations) {
+			if (t.source == self and t.rule.name == transformation) {
+				t.targets.add(f);
+			}
+		}
+	}
+	f.setId(prefix + "--" + id);
+
+	return f;
+}

@@ -1,32 +1,8 @@
-/////////////////////////////////////////
-// NamedElement
-
-operation JUDOPSM!NamedElement setId(id: String) {
+operation Any setId(id: String) {
     self.eResource.setId(self, id);
 }
 
-operation JUDOPSM!NamedElement getId() : String {
+operation Any getId() : String {
      return self.eResource.getId(self);
 }
 
-/////////////////////////////////////////
-// ExpressionType
-
-operation JUDOPSM!ExpressionType setId(id: String) {
-    self.eResource.setId(self, id);
-}
-
-operation JUDOPSM!ExpressionType getId() : String {
-     return self.eResource.getId(self);
-}
-
-/////////////////////////////////////////
-// Cardinality
-
-operation JUDOPSM!Cardinality setId(id: String) {
-    self.eResource.setId(self, id);
-}
-
-operation JUDOPSM!Cardinality getId() : String {
-     return self.eResource.getId(self);
-}

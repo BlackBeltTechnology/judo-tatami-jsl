@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -61,15 +62,39 @@ public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
         
         final Set<NavigationProperty> navigationProperties = psmModelWrapper.getStreamOfPsmDerivedNavigationProperty().collect(Collectors.toSet());
         assertEquals(2, navigationProperties.size());
-        final Optional<NavigationProperty> keyCustomers = navigationProperties.stream().filter(n -> n.getName().equals("keyCustomers")).findFirst();
-        assertTrue(keyCustomers.isPresent());
-        assertTrue(keyCustomers.get().isCollection());
-        assertEquals("self.customers!filter(c|c.isKey)", keyCustomers.get().getGetterExpression().getExpression());
 
-        final Optional<NavigationProperty> keyCustomer = navigationProperties.stream().filter(n -> n.getName().equals("keyCustomer")).findFirst();
-        assertTrue(keyCustomer.isPresent());
-        assertTrue(keyCustomer.get().isCollection());
-        assertEquals("self.customers!filter(c|c.isKey)!any()", keyCustomer.get().getGetterExpression().getExpression());
+        assertNavigationProperty("_Lead", "keyCustomers");
+        assertTrue(assertNavigationProperty("_Lead", "keyCustomers").isCollection());
+        assertEquals("self.customers!filter(c|c.isKey)", assertNavigationProperty("_Lead", "keyCustomers").getGetterExpression().getExpression());
+
+        assertMappedTransferObjectRelation("Lead", "keyCustomers");
+        assertTrue(assertMappedTransferObjectRelation("Lead", "keyCustomers").isCollection());
+        assertEquals(assertNavigationProperty("_Lead", "keyCustomers"), assertMappedTransferObjectRelation("Lead", "keyCustomers").getBinding());
+        
+        assertNavigationProperty("_Lead", "keyCustomer");
+        assertFalse(assertNavigationProperty("_Lead", "keyCustomer").isCollection());
+        assertEquals("self.customers!filter(c|c.isKey)!any()", assertNavigationProperty("_Lead", "keyCustomer").getGetterExpression().getExpression());
+
+        assertMappedTransferObjectRelation("Lead", "keyCustomer");
+        assertFalse(assertMappedTransferObjectRelation("Lead", "keyCustomer").isCollection());
+        assertEquals(assertNavigationProperty("_Lead", "keyCustomer"), assertMappedTransferObjectRelation("Lead", "keyCustomer").getBinding());
+
+        
+        assertNavigationProperty("_LeadExtended", "keyCustomers");
+        assertTrue(assertNavigationProperty("_LeadExtended", "keyCustomers").isCollection());
+        assertEquals("self.customers!filter(c|c.isKey)", assertNavigationProperty("_LeadExtended", "keyCustomers").getGetterExpression().getExpression());
+
+        assertMappedTransferObjectRelation("LeadExtended", "keyCustomers");
+        assertTrue(assertMappedTransferObjectRelation("LeadExtended", "keyCustomers").isCollection());
+        assertEquals(assertNavigationProperty("_LeadExtended", "keyCustomers"), assertMappedTransferObjectRelation("LeadExtended", "keyCustomers").getBinding());
+        
+        assertNavigationProperty("_LeadExtended", "keyCustomer");
+        assertFalse(assertNavigationProperty("_LeadExtended", "keyCustomer").isCollection());
+        assertEquals("self.customers!filter(c|c.isKey)!any()", assertNavigationProperty("_LeadExtended", "keyCustomer").getGetterExpression().getExpression());
+
+        assertMappedTransferObjectRelation("LeadExtended", "keyCustomer");
+        assertFalse(assertMappedTransferObjectRelation("LeadExtended", "keyCustomer").isCollection());
+        assertEquals(assertNavigationProperty("_LeadExtended", "keyCustomer"), assertMappedTransferObjectRelation("LeadExtended", "keyCustomer").getBinding());
 
     }
 }

@@ -9,10 +9,13 @@ entity Lead {
 	field Integer value
 	field Customer[] customers
 	derived Customer[] keyCustomers = self.customers!filter(c | c.isKey)
-	derived Customer[] keyCustomer = self.customers!filter(c | c.isKey)!any()
+	derived Customer keyCustomer = self.customers!filter(c | c.isKey)!any()
 }
 
 entity Customer {
 	field String name
 	field Boolean iskey
+}
+
+entity LeadExtended extends Lead {
 }

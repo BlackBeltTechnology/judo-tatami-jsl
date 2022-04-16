@@ -58,14 +58,9 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
         transform();
 
-        final Set<NumericType> psmNumerics = psmModelWrapper.getStreamOfPsmTypeNumericType().collect(Collectors.toSet());
-        assertEquals(1, psmNumerics.size());
-
-        final Optional<NumericType> myNumber = psmNumerics.stream().filter(n -> n.getName().equals("MyNumber")).findFirst();
-        assertTrue(myNumber.isPresent());
-        assertEquals(myNumber.get().getName(), "MyNumber");
-        assertEquals(myNumber.get().getPrecision(), 12);
-        assertEquals(myNumber.get().getScale(), 5);
+        assertNumericType("MyNumber");        
+        assertEquals(12, assertNumericType("MyNumber").getPrecision());
+        assertEquals(5, assertNumericType("MyNumber").getScale());
     }
 
     @Test
@@ -86,12 +81,13 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<NumericType> psmTypeHeight = psmModelWrapper.getStreamOfPsmTypeNumericType().filter(n -> n.getName().equals("Height")).findFirst();
-        assertTrue(psmTypeHeight.isPresent());
-        final Optional<EntityType> psmEntityPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
-        assertTrue(psmEntityPerson.isPresent());
-        final Optional<Attribute> psmPersonHeightAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
-        assertTrue(psmPersonHeightAttribute.isPresent());
+        assertNumericType("Height");
+        assertEquals(assertNumericType("Height"), assertAttribute("_Person", "height").getDataType());
+        assertEquals(assertNumericType("Height"), assertMappedTransferObjectAttribute("Person", "height").getDataType());
+
+        assertFalse(assertAttribute("_Person", "height").isRequired());
+        assertFalse(assertMappedTransferObjectAttribute("Person", "height").isRequired());
+
     }
 
     @Test
@@ -112,11 +108,13 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmEntityPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
-        assertTrue(psmEntityPerson.isPresent());
-        final Optional<Attribute> psmPersonHeightAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
-        assertTrue(psmPersonHeightAttribute.isPresent());
-        assertTrue(psmPersonHeightAttribute.get().isRequired());
+        assertNumericType("Height");
+        assertEquals(assertNumericType("Height"), assertAttribute("_Person", "height").getDataType());
+        assertEquals(assertNumericType("Height"), assertMappedTransferObjectAttribute("Person", "height").getDataType());
+
+        assertTrue(assertAttribute("_Person", "height").isRequired());
+        assertTrue(assertMappedTransferObjectAttribute("Person", "height").isRequired());
+
     }
 
     @Test
@@ -140,10 +138,13 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmStudentPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("StudentPerson")).findFirst();
-        assertTrue(psmStudentPerson.isPresent());
-        final Optional<Attribute> psmStudentHeightAttribute = psmStudentPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
-        assertTrue(psmStudentHeightAttribute.isPresent());
+        assertNumericType("Height");
+        assertEquals(assertNumericType("Height"), assertAttribute("_Person", "height").getDataType());
+        assertEquals(assertNumericType("Height"), assertMappedTransferObjectAttribute("Person", "height").getDataType());
+
+        assertEquals(assertNumericType("Height"), assertAttribute("_StudentPerson", "height").getDataType());
+        assertEquals(assertNumericType("Height"), assertMappedTransferObjectAttribute("StudentPerson", "height").getDataType());
+
     }
 
     @Test
@@ -164,10 +165,10 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
-        assertTrue(psmPerson.isPresent());
-        final Optional<Attribute> psmPersonHeightAttribute = psmPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("height")).findFirst();
-        assertTrue(psmPersonHeightAttribute.isPresent());
-        assertTrue(psmPersonHeightAttribute.get().isIdentifier());
+        assertNumericType("Height");
+        assertEquals(assertNumericType("Height"), assertAttribute("_Person", "height").getDataType());
+        assertEquals(assertNumericType("Height"), assertMappedTransferObjectAttribute("Person", "height").getDataType());
+
+        assertTrue(assertAttribute("_Person", "height").isIdentifier());
     }
 }

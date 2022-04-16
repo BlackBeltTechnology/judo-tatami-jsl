@@ -18,6 +18,7 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.epsilon.common.util.UriUtil;
 import org.slf4j.LoggerFactory;
 
@@ -95,6 +96,7 @@ public class Jsl2Psm {
 //                        "jslUtils", new JslUtils(),
                 		"defaultModelName", parameter.jslModel.getName(),
                         "expressionUtils", new JslExpressionToJqlExpression(),
+                        "ecoreUtil", new EcoreUtil(),
                         "jslUtils", new JslDslModelExtension(),
                         "psmUtils", new PsmUtils(parameter.psmModel.getResourceSet())
                 ))
