@@ -67,26 +67,17 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
 
         transform();
 
-        final Set<UnmappedTransferObjectType> psmUnmappedTOTypes = psmModelWrapper.getStreamOfPsmServiceUnmappedTransferObjectType().collect(Collectors.toSet());
-        assertEquals(1, psmUnmappedTOTypes.size());
+        assertEquals(1, getUnmappedTransferObjectTypes().size());
 
-        final Optional<UnmappedTransferObjectType> psmUnmappedTOMyError = psmUnmappedTOTypes.stream().filter(e -> e.getName().equals("MyError")).findAny();
-        assertTrue(psmUnmappedTOMyError.isPresent());
+        assertUnmappedTransferObject("MyError");
 
-        final Optional<NumericType> psmTypeInteger = psmModelWrapper.getStreamOfPsmTypeNumericType().filter(n -> n.getName().equals("Integer")).findFirst();
-        assertTrue(psmTypeInteger.isPresent());
+        assertUnmappedTransferObjectAttribute("MyError", "code");
+        assertTrue(assertUnmappedTransferObjectAttribute("MyError", "code").isRequired());
+        assertEquals(assertNumericType("Integer"), assertUnmappedTransferObjectAttribute("MyError", "code").getDataType());
 
-        final Optional<TransferAttribute> myErrorCode = psmUnmappedTOMyError.get().getAttributes().stream().filter(r -> r.getName().equals("code")).findFirst();
-        assertTrue(myErrorCode.isPresent());
-        assertTrue(myErrorCode.get().isRequired());
-        assertEquals(psmTypeInteger.get(), myErrorCode.get().getDataType());
+        assertUnmappedTransferObjectAttribute("MyError", "msg");
+        assertFalse(assertUnmappedTransferObjectAttribute("MyError", "msg").isRequired());
+        assertEquals(assertStringType("String"), assertUnmappedTransferObjectAttribute("MyError", "msg").getDataType());
 
-        final Optional<StringType> psmTypeString = psmModelWrapper.getStreamOfPsmTypeStringType().filter(n -> n.getName().equals("String")).findFirst();
-        assertTrue(psmTypeString.isPresent());
-
-        final Optional<TransferAttribute> myMsg = psmUnmappedTOMyError.get().getAttributes().stream().filter(r -> r.getName().equals("msg")).findFirst();
-        assertTrue(myMsg.isPresent());
-        assertFalse(myMsg.get().isRequired());
-        assertEquals(psmTypeString.get(), myMsg.get().getDataType());
     }
 }

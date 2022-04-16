@@ -24,3 +24,15 @@ entity Customer {
 	relation Lead lead1 opposite-add injectedCustomer2
     relation Lead lead2 opposite-add injectedCustomers2[]
 }
+
+entity CustomerChild extends Customer {
+}
+
+entity LeadChild extends Lead {
+}
+
+entity CustomerGrandChild extends CustomerChild {
+}
+
+entity LeadGrandChild extends LeadChild {
+}

@@ -60,17 +60,23 @@ public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractT
                         "entity Test {\n" +
                         "  relation Lead[] leads\n" +
                         "  derived Integer value = self.leads!count()\n" +
+                        "}\n" +
+                        "entity TestExtended extends Test {\n" +
                         "}\n"
-                )
+                		)
         );
 
         transform();
 
-        final Set<DataProperty> dataProperties = psmModelWrapper.getStreamOfPsmDerivedDataProperty().collect(Collectors.toSet());
-        assertEquals(1, dataProperties.size());
-        final Optional<DataProperty> valueProperty = dataProperties.stream().filter(n -> n.getName().equals("value")).findFirst();
-        assertTrue(valueProperty.isPresent());
-        assertTrue(valueProperty.get().isPrimitive());
-        assertEquals("self.leads!count()", valueProperty.get().getGetterExpression().getExpression());
+        assertDataProperty("_Test", "value");
+        assertTrue(assertDataProperty("_Test", "value").isPrimitive());
+        assertEquals("self.leads!count()", assertDataProperty("_Test", "value").getGetterExpression().getExpression());
+        
+        assertMappedTransferObjectAttribute("Test", "value");
+        assertEquals(assertDataProperty("_Test", "value"), assertMappedTransferObjectAttribute("Test", "value").getBinding());
+
+        assertMappedTransferObjectAttribute("TestExtended", "value");
+        assertEquals(assertDataProperty("_TestExtended", "value"), assertMappedTransferObjectAttribute("Test", "value").getBinding());
+
     }
 }
