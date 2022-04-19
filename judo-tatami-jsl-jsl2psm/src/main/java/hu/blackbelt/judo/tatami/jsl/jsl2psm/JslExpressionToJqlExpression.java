@@ -5,6 +5,8 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.BooleanLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.CreateExpression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.DateLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.DecimalLiteral;
+import hu.blackbelt.judo.meta.jsl.jsldsl.DerivedParameter;
+import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDerivedDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EscapedStringLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Feature;
@@ -24,13 +26,80 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.TimeLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TimeStampLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.UnaryOperation;
 import org.apache.commons.text.StringEscapeUtils;
+import org.eclipse.emf.ecore.EObject;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("all")
 public class JslExpressionToJqlExpression {
-    /**
+
+	/**
+
+    derived Lead[] leadsBetween(Integer min = 10, Integer max = 100) = self.leads!filter(lead | lead.value > min and lead.value < max)
+    
+    <members xsi:type="jsldsl:EntityDerivedDeclaration" xmi:id="_Ptfn-sAmEeysieWAZJU24w" referenceType="_PtgPD8AmEeysieWAZJU24w" isMany="true" name="leadsBetween">
+      <parameters xmi:id="_Ptfn-8AmEeysieWAZJU24w" referenceType="_Ptfn8sAmEeysieWAZJU24w" name="min">
+        <default xsi:type="jsldsl:IntegerLiteral" xmi:id="_Ptfn_MAmEeysieWAZJU24w" value="10"/>
+      </parameters>
+      <parameters xmi:id="_Ptfn_cAmEeysieWAZJU24w" referenceType="_Ptfn8sAmEeysieWAZJU24w" name="max">
+        <default xsi:type="jsldsl:IntegerLiteral" xmi:id="_Ptfn_sAmEeysieWAZJU24w" value="100"/>
+      </parameters>
+      <expression xsi:type="jsldsl:FunctionedExpression" xmi:id="_Ptfn_8AmEeysieWAZJU24w">
+        <operand xsi:type="jsldsl:NavigationExpression" xmi:id="_PtfoAMAmEeysieWAZJU24w">
+          <base xsi:type="jsldsl:Self" xmi:id="_PtfoAcAmEeysieWAZJU24w"/>
+          <features xmi:id="_PtfoAsAmEeysieWAZJU24w" name="leads"/>
+        </operand>
+        <functionCall xmi:id="_PtfoA8AmEeysieWAZJU24w">
+          <function xmi:id="_PtfoBMAmEeysieWAZJU24w" name="filter" lambdaArgument="lead">
+            <parameters xmi:id="_PtfoBcAmEeysieWAZJU24w">
+              <expression xsi:type="jsldsl:BinaryOperation" xmi:id="_PtfoBsAmEeysieWAZJU24w" operator="and">
+                <leftOperand xsi:type="jsldsl:BinaryOperation" xmi:id="_PtfoB8AmEeysieWAZJU24w" operator=">">
+                  <leftOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_PtfoCMAmEeysieWAZJU24w" qName="lead">
+                    <features xmi:id="_PtfoCcAmEeysieWAZJU24w" name="value"/>
+                  </leftOperand>
+                  <rightOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_PtfoCsAmEeysieWAZJU24w" qName="min"/>
+                </leftOperand>
+                <rightOperand xsi:type="jsldsl:BinaryOperation" xmi:id="_PtfoC8AmEeysieWAZJU24w" operator="&lt;">
+                  <leftOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_PtfoDMAmEeysieWAZJU24w" qName="lead">
+                    <features xmi:id="_PtfoDcAmEeysieWAZJU24w" name="value"/>
+                  </leftOperand>
+                  <rightOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_PtfoDsAmEeysieWAZJU24w" qName="max"/>
+                </rightOperand>
+              </expression>
+            </parameters>
+          </function>
+        </functionCall>
+      </expression>
+    </members>
+	 */
+	
+	
+	public static EntityDerivedDeclaration getDerivedDeclaration(EObject from) {
+		EntityDerivedDeclaration founded = null;
+		EObject current = from;
+		while (founded == null && current != null) {
+			if (current instanceof EntityDerivedDeclaration) {
+				founded = (EntityDerivedDeclaration) current;
+			}
+			if (from.eContainer() != null) {
+				current = current.eContainer();
+			} else {
+				current = null;
+			}
+		}
+		return founded;
+	}
+
+	/*
+	public static EntityDerivedDeclaration getDerivedDeclaration(EntityDerivedDeclaration d) {
+		d.getParameters()
+	}
+	*/
+
+	
+	/**
      * Expression returns Expression hidden(WS, CONT_NL, SL_COMMENT, ML_COMMENT)
      * : SwitchExpression
      * ;
@@ -92,7 +161,7 @@ public class JslExpressionToJqlExpression {
      */
     protected static String _getJqlDispacher(final BinaryOperation it) {
         return it != null
-                ? getJql(it.getLeftOperand()) + it.getOperator() + getJql(it.getRightOperand())
+                ? getJql(it.getLeftOperand()) + " " + it.getOperator() + " " + getJql(it.getRightOperand())
                 : null;
     }
 
@@ -142,6 +211,30 @@ public class JslExpressionToJqlExpression {
      * ;
      */
     protected static String _getJqlDispacher(final NavigationExpression it) {
+    	if (it == null) {
+    		return "";
+    	}
+    	if (it.getBase() != null) {
+    		return getJql(it.getBase()) + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
+    	}
+    	if (it.getEnumValue() != null) {
+    		return it.getQName() + "#" + it.getEnumValue();
+    	}
+    	if (it.getFeatures().size() > 0) {
+    		return it.getQName() + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
+    	}
+    	// Check the navigation name matches with declared parameter
+    	Optional<DerivedParameter> parameter = getDerivedDeclaration(it).getParameters().stream()
+    			.filter(p -> p.getName().equals(it.getQName())).findFirst();
+    	
+    	if (parameter.isPresent()) {
+    		return "input." + it.getQName();
+    	}
+    	
+    	return it.getQName();
+    	
+
+    	/*
         return it != null
                 ? it.getBase() != null
                 ? getJql(it.getBase()) + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining())
@@ -149,6 +242,7 @@ public class JslExpressionToJqlExpression {
                 ? "#" + it.getEnumValue()
                 : it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining()))
                 : "";
+        */
     }
 
     /**
