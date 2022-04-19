@@ -7,7 +7,7 @@ rule CreateContainmentFromField
         t.setId("(jsl/" + s.getId() + ")/CreateContainmentFromField");
         t.name = s.name;
         t.target = s.referenceType.getPSMEquivalent();
-        t.cardinality = s.equivalent("CreateCardinalityForFieldDeclaration");
+        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForFieldDeclaration", t.getId());
 
         s.eContainer.getPSMEquivalent().relations.add(t);
         log.debug("Created Containment: " + t.name);

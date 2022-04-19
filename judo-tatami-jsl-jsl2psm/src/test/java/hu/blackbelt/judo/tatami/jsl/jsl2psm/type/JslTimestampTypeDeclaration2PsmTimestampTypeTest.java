@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -61,12 +62,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
 
         transform();
 
-        final Set<TimestampType> psmTimestamps = psmModelWrapper.getStreamOfPsmTypeTimestampType().collect(Collectors.toSet());
-        assertEquals(1, psmTimestamps.size());
-
-        final Optional<TimestampType> timestamp = psmTimestamps.stream().filter(n -> n.getName().equals("Timestamp")).findFirst();
-        assertTrue(timestamp.isPresent());
-        assertEquals(timestamp.get().getName(), "Timestamp");
+        assertTimestampType("Timestamp");        
     }
 
     @Test
@@ -86,13 +82,14 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
         );
 
         transform();
+        
+        assertTimestampType("Timestamp");
+        assertEquals(assertTimestampType("Timestamp"), assertAttribute("_Email", "receivedAt").getDataType());
+        assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("Email", "receivedAt").getDataType());
 
-        final Optional<TimestampType> psmTypeReceivedAt = psmModelWrapper.getStreamOfPsmTypeTimestampType().filter(n -> n.getName().equals("Timestamp")).findFirst();
-        assertTrue(psmTypeReceivedAt.isPresent());
-        final Optional<EntityType> psmEntityEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Email")).findFirst();
-        assertTrue(psmEntityEmail.isPresent());
-        final Optional<Attribute> psmEmailReceivedAtAttribute = psmEntityEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
-        assertTrue(psmEmailReceivedAtAttribute.isPresent());
+        assertFalse(assertAttribute("_Email", "receivedAt").isRequired());
+        assertFalse(assertMappedTransferObjectAttribute("Email", "receivedAt").isRequired());
+
     }
 
     @Test
@@ -113,11 +110,12 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
 
         transform();
 
-        final Optional<EntityType> psmEntityEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Email")).findFirst();
-        assertTrue(psmEntityEmail.isPresent());
-        final Optional<Attribute> psmEmailReceivedAtAttribute = psmEntityEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
-        assertTrue(psmEmailReceivedAtAttribute.isPresent());
-        assertTrue(psmEmailReceivedAtAttribute.get().isRequired());
+        assertTimestampType("Timestamp");
+        assertEquals(assertTimestampType("Timestamp"), assertAttribute("_Email", "receivedAt").getDataType());
+        assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("Email", "receivedAt").getDataType());
+
+        assertTrue(assertAttribute("_Email", "receivedAt").isRequired());        
+        assertTrue(assertMappedTransferObjectAttribute("Email", "receivedAt").isRequired());
     }
 
     @Test
@@ -141,10 +139,11 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
 
         transform();
 
-        final Optional<EntityType> psmImportantEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("ImportantEmail")).findFirst();
-        assertTrue(psmImportantEmail.isPresent());
-        final Optional<Attribute> psmImportantEmailReceivedAtAttribute = psmImportantEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
-        assertTrue(psmImportantEmailReceivedAtAttribute.isPresent());
+        assertTimestampType("Timestamp");
+        assertEquals(assertTimestampType("Timestamp"), assertAttribute("_Email", "receivedAt").getDataType());
+        assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("Email", "receivedAt").getDataType());        
+        assertEquals(assertTimestampType("Timestamp"), assertAttribute("_ImportantEmail", "receivedAt").getDataType());
+        assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("ImportantEmail", "receivedAt").getDataType());
     }
 
     @Test
@@ -165,10 +164,9 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
 
         transform();
 
-        final Optional<EntityType> psmEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Email")).findFirst();
-        assertTrue(psmEmail.isPresent());
-        final Optional<Attribute> psmImportantEmailReceivedAtAttribute = psmEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("receivedAt")).findFirst();
-        assertTrue(psmImportantEmailReceivedAtAttribute.isPresent());
-        assertTrue(psmImportantEmailReceivedAtAttribute.get().isIdentifier());
+        assertTimestampType("Timestamp");
+        assertEquals(assertTimestampType("Timestamp"), assertAttribute("_Email", "receivedAt").getDataType());
+        assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("Email", "receivedAt").getDataType());        
+        assertTrue(assertAttribute("_Email", "receivedAt").isIdentifier());
     }
 }

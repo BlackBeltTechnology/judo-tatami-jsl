@@ -1,3 +1,4 @@
+@cached
 operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
     if (self.primitive.isDefined()) {
         switch (self.primitive) {

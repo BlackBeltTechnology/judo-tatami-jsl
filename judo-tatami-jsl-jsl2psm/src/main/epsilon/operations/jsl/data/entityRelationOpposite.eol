@@ -1,3 +1,4 @@
+@cached
 operation JSL!EntityRelationOpposite getId(): String {
 	return (self.eContainer.getId() + "/opposite-add/" + self.oppositeName);
 }

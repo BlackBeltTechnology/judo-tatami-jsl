@@ -58,15 +58,9 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
 
         transform();
 
-        final Set<StringType> psmStrings = psmModelWrapper.getStreamOfPsmTypeStringType().collect(Collectors.toSet());
-        assertEquals(1, psmStrings.size());
-
-        final Optional<StringType> myName = psmStrings.stream().filter(n -> n.getName().equals("Name")).findFirst();
-        assertTrue(myName.isPresent());
-        assertEquals(myName.get().getName(), "Name");
-        assertEquals(myName.get().getMaxLength(), 32);
-        String regExp = "/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g";
-        assertEquals(myName.get().getRegExp(), regExp);
+        assertStringType("Name");        
+        assertEquals(32, assertStringType("Name").getMaxLength());
+        assertEquals("/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g", assertStringType("Name").getRegExp());
     }
 
     @Test
@@ -87,12 +81,13 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<StringType> psmTypeName = psmModelWrapper.getStreamOfPsmTypeStringType().filter(n -> n.getName().equals("Name")).findFirst();
-        assertTrue(psmTypeName.isPresent());
-        final Optional<EntityType> psmEntityPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
-        assertTrue(psmEntityPerson.isPresent());
-        final Optional<Attribute> psmPersonNameAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("name")).findFirst();
-        assertTrue(psmPersonNameAttribute.isPresent());
+        assertStringType("Name");
+        assertEquals(assertStringType("Name"), assertAttribute("_Person", "name").getDataType());
+        assertEquals(assertStringType("Name"), assertMappedTransferObjectAttribute("Person", "name").getDataType());
+
+        assertFalse(assertAttribute("_Person", "name").isRequired());
+        assertFalse(assertMappedTransferObjectAttribute("Person", "name").isRequired());
+
     }
 
     @Test
@@ -113,11 +108,13 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmEntityPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
-        assertTrue(psmEntityPerson.isPresent());
-        final Optional<Attribute> psmPersonNameAttribute = psmEntityPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("name")).findFirst();
-        assertTrue(psmPersonNameAttribute.isPresent());
-        assertTrue(psmPersonNameAttribute.get().isRequired());
+        assertStringType("Name");
+        assertEquals(assertStringType("Name"), assertAttribute("_Person", "name").getDataType());
+        assertEquals(assertStringType("Name"), assertMappedTransferObjectAttribute("Person", "name").getDataType());
+
+        assertTrue(assertAttribute("_Person", "name").isRequired());
+        assertTrue(assertMappedTransferObjectAttribute("Person", "name").isRequired());
+
     }
 
     @Test
@@ -141,10 +138,13 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmStudentPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("StudentPerson")).findFirst();
-        assertTrue(psmStudentPerson.isPresent());
-        final Optional<Attribute> psmStudentNameAttribute = psmStudentPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("name")).findFirst();
-        assertTrue(psmStudentNameAttribute.isPresent());
+        assertStringType("Name");
+        assertEquals(assertStringType("Name"), assertAttribute("_Person", "name").getDataType());
+        assertEquals(assertStringType("Name"), assertMappedTransferObjectAttribute("Person", "name").getDataType());
+
+        assertEquals(assertStringType("Name"), assertAttribute("_StudentPerson", "name").getDataType());
+        assertEquals(assertStringType("Name"), assertMappedTransferObjectAttribute("StudentPerson", "name").getDataType());
+
     }
 
     @Test
@@ -165,10 +165,9 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmPerson = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Person")).findFirst();
-        assertTrue(psmPerson.isPresent());
-        final Optional<Attribute> psmPersonNameAttribute = psmPerson.get().getAllAttributes().stream().filter(a -> a.getName().equals("name")).findFirst();
-        assertTrue(psmPersonNameAttribute.isPresent());
-        assertTrue(psmPersonNameAttribute.get().isIdentifier());
+        assertStringType("Name");
+        assertEquals(assertStringType("Name"), assertAttribute("_Person", "name").getDataType());
+        assertEquals(assertStringType("Name"), assertMappedTransferObjectAttribute("Person", "name").getDataType());        
+        assertTrue(assertAttribute("_Person", "name").isIdentifier());
     }
 }

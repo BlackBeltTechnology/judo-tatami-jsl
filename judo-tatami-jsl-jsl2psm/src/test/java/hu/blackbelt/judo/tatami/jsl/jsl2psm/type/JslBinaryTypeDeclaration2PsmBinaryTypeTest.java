@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -62,15 +63,11 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         transform();
 
-        final Set<BinaryType> psmBinaries = psmModelWrapper.getStreamOfPsmTypeBinaryType().collect(Collectors.toSet());
-        assertEquals(1, psmBinaries.size());
-
-        final Optional<BinaryType> binary = psmBinaries.stream().filter(n -> n.getName().equals("Picture")).findFirst();
-        assertTrue(binary.isPresent());
-        assertEquals(binary.get().getName(), "Picture");
-        assertEquals(binary.get().getMimeTypes().size(), 2);
-        assertEquals(binary.get().getMimeTypes(), Arrays.asList("m\"image/png\"", "m\"image/*\""));
-        assertEquals(binary.get().getMaxFileSize(), 1024);
+        assertBinaryType("Picture");
+        assertEquals(assertBinaryType("Picture").getName(), "Picture");
+        assertEquals(assertBinaryType("Picture").getMimeTypes().size(), 2);
+        assertEquals(assertBinaryType("Picture").getMimeTypes(), Arrays.asList("m\"image/png\"", "m\"image/*\""));
+        assertEquals(assertBinaryType("Picture").getMaxFileSize(), 1024);
     }
 
     @Test
@@ -91,14 +88,14 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<BinaryType> psmTypePicture = psmModelWrapper.getStreamOfPsmTypeBinaryType().filter(n -> n.getName().equals("Picture")).findFirst();
-        assertTrue(psmTypePicture.isPresent());
-        assertTrue(psmTypePicture.get().getMimeTypes().isEmpty());
-        assertEquals(psmTypePicture.get().getMaxFileSize(), 0);
-        final Optional<EntityType> psmEntityUser = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("User")).findFirst();
-        assertTrue(psmEntityUser.isPresent());
-        final Optional<Attribute> psmUserPictureAttribute = psmEntityUser.get().getAllAttributes().stream().filter(a -> a.getName().equals("profilePicture")).findFirst();
-        assertTrue(psmUserPictureAttribute.isPresent());
+        assertTrue(assertBinaryType("Picture").getMimeTypes().isEmpty());       
+        assertBinaryType("Picture");        
+        assertEquals(assertBinaryType("Picture").getMaxFileSize(), 0);
+        assertEquals(assertBinaryType("Picture"), assertAttribute("_User", "profilePicture").getDataType());
+        assertEquals(assertBinaryType("Picture"), assertMappedTransferObjectAttribute("User", "profilePicture").getDataType());        
+        assertFalse(assertAttribute("_User", "profilePicture").isRequired());
+        assertFalse(assertMappedTransferObjectAttribute("User", "profilePicture").isRequired());
+        
     }
 
     @Test
@@ -119,11 +116,13 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmEntityUser = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("User")).findFirst();
-        assertTrue(psmEntityUser.isPresent());
-        final Optional<Attribute> psmUserPictureAttribute = psmEntityUser.get().getAllAttributes().stream().filter(a -> a.getName().equals("profilePicture")).findFirst();
-        assertTrue(psmUserPictureAttribute.isPresent());
-        assertTrue(psmUserPictureAttribute.get().isRequired());
+        assertBinaryType("Picture");        
+        assertEquals(assertBinaryType("Picture").getMaxFileSize(), 0);
+        assertEquals(assertBinaryType("Picture"), assertAttribute("_User", "profilePicture").getDataType());
+        assertEquals(assertBinaryType("Picture"), assertMappedTransferObjectAttribute("User", "profilePicture").getDataType());
+        assertTrue(assertAttribute("_User", "profilePicture").isRequired());
+        assertTrue(assertMappedTransferObjectAttribute("User", "profilePicture").isRequired());
+
     }
 
     @Test
@@ -147,10 +146,13 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmAdminUser = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("AdminUser")).findFirst();
-        assertTrue(psmAdminUser.isPresent());
-        final Optional<Attribute> psmAdminUserProfilePictureAttribute = psmAdminUser.get().getAllAttributes().stream().filter(a -> a.getName().equals("profilePicture")).findFirst();
-        assertTrue(psmAdminUserProfilePictureAttribute.isPresent());
+        assertBinaryType("Picture");        
+        assertEquals(assertBinaryType("Picture"), assertAttribute("_User", "profilePicture").getDataType());
+        assertEquals(assertBinaryType("Picture"), assertAttribute("_AdminUser", "profilePicture").getDataType());
+        
+        assertEquals(assertBinaryType("Picture"), assertMappedTransferObjectAttribute("User", "profilePicture").getDataType());
+        assertEquals(assertBinaryType("Picture"), assertMappedTransferObjectAttribute("AdminUser", "profilePicture").getDataType());
+        
     }
     
     @Test
@@ -171,10 +173,11 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("User")).findFirst();
-        assertTrue(psmEmail.isPresent());
-        final Optional<Attribute> psmUserPictureAttribute = psmEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("profilePicture")).findFirst();
-        assertTrue(psmUserPictureAttribute.isPresent());
-        assertTrue(psmUserPictureAttribute.get().isIdentifier());
+        assertBinaryType("Picture");        
+        assertEquals(assertBinaryType("Picture"), assertAttribute("_User", "profilePicture").getDataType());
+        assertEquals(assertBinaryType("Picture"), assertMappedTransferObjectAttribute("User", "profilePicture").getDataType());        
+
+        assertTrue(assertAttribute("_User", "profilePicture").isIdentifier());
+
     }
 }

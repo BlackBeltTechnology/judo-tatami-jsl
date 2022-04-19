@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -61,12 +62,7 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
 
         transform();
 
-        final Set<DateType> psmDates = psmModelWrapper.getStreamOfPsmTypeDateType().collect(Collectors.toSet());
-        assertEquals(1, psmDates.size());
-
-        final Optional<DateType> date = psmDates.stream().filter(n -> n.getName().equals("Date")).findFirst();
-        assertTrue(date.isPresent());
-        assertEquals(date.get().getName(), "Date");
+        assertDateType("Date");
     }
 
     @Test
@@ -87,12 +83,13 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<DateType> psmTypeDate = psmModelWrapper.getStreamOfPsmTypeDateType().filter(n -> n.getName().equals("Date")).findFirst();
-        assertTrue(psmTypeDate.isPresent());
-        final Optional<EntityType> psmEntityPatient = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Patient")).findFirst();
-        assertTrue(psmEntityPatient.isPresent());
-        final Optional<Attribute> psmPatientBirthDateAttribute = psmEntityPatient.get().getAllAttributes().stream().filter(a -> a.getName().equals("birthDate")).findFirst();
-        assertTrue(psmPatientBirthDateAttribute.isPresent());
+        assertDateType("Date");
+        assertEquals(assertDateType("Date"), assertAttribute("_Patient", "birthDate").getDataType());
+        assertEquals(assertDateType("Date"), assertMappedTransferObjectAttribute("Patient", "birthDate").getDataType());
+
+        assertFalse(assertAttribute("_Patient", "birthDate").isRequired());
+        assertFalse(assertMappedTransferObjectAttribute("Patient", "birthDate").isRequired());
+
     }
 
     @Test
@@ -113,11 +110,13 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmEntityPatient = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Patient")).findFirst();
-        assertTrue(psmEntityPatient.isPresent());
-        final Optional<Attribute> psmPatientBirthDateAttribute = psmEntityPatient.get().getAllAttributes().stream().filter(a -> a.getName().equals("birthDate")).findFirst();
-        assertTrue(psmPatientBirthDateAttribute.isPresent());
-        assertTrue(psmPatientBirthDateAttribute.get().isRequired());
+        assertDateType("Date");
+        assertEquals(assertDateType("Date"), assertAttribute("_Patient", "birthDate").getDataType());
+        assertEquals(assertDateType("Date"), assertMappedTransferObjectAttribute("Patient", "birthDate").getDataType());
+
+        assertTrue(assertAttribute("_Patient", "birthDate").isRequired());
+        assertTrue(assertMappedTransferObjectAttribute("Patient", "birthDate").isRequired());
+
     }
 
     @Test
@@ -141,10 +140,12 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmSurgentPatient = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("SurgentPatient")).findFirst();
-        assertTrue(psmSurgentPatient.isPresent());
-        final Optional<Attribute> psmSurgentPatientBirthDateAttribute = psmSurgentPatient.get().getAllAttributes().stream().filter(a -> a.getName().equals("birthDate")).findFirst();
-        assertTrue(psmSurgentPatientBirthDateAttribute.isPresent());
+        assertDateType("Date");
+        assertEquals(assertDateType("Date"), assertAttribute("_Patient", "birthDate").getDataType());
+        assertEquals(assertDateType("Date"), assertAttribute("_SurgentPatient", "birthDate").getDataType());
+        assertEquals(assertDateType("Date"), assertMappedTransferObjectAttribute("Patient", "birthDate").getDataType());
+        assertEquals(assertDateType("Date"), assertMappedTransferObjectAttribute("SurgentPatient", "birthDate").getDataType());
+
     }
 
     @Test
@@ -165,10 +166,10 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
 
         transform();
 
-        final Optional<EntityType> psmEmail = psmModelWrapper.getStreamOfPsmDataEntityType().filter(e -> e.getName().equals("Patient")).findFirst();
-        assertTrue(psmEmail.isPresent());
-        final Optional<Attribute> psmPatientBirthDateAttribute = psmEmail.get().getAllAttributes().stream().filter(a -> a.getName().equals("birthDate")).findFirst();
-        assertTrue(psmPatientBirthDateAttribute.isPresent());
-        assertTrue(psmPatientBirthDateAttribute.get().isIdentifier());
+        assertDateType("Date");
+        assertEquals(assertDateType("Date"), assertAttribute("_Patient", "birthDate").getDataType());
+        assertEquals(assertDateType("Date"), assertMappedTransferObjectAttribute("Patient", "birthDate").getDataType());
+        assertTrue(assertAttribute("_Patient", "birthDate").isIdentifier());
+
     }
 }

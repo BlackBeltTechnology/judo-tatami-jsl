@@ -8,7 +8,7 @@ rule CreateDataProperty
       guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateDataProperty");
-      t.getterExpression = s.equivalent("CreateGetterExpressionForDataProperty");
+      t.getterExpression = s.equivalent("CreateGetterExpressionForDataType");
       t.dataType = s.referenceType.getPSMEquivalent();
 
       s.eContainer.getPSMEquivalent().dataProperties.add(t);
