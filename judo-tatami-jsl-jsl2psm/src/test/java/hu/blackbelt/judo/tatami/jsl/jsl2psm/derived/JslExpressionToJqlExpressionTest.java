@@ -58,7 +58,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         assertEquals("self.leads!count()>1", jql("SalesPerson", "t1"));
 
         assertEquals("self.leads!filter(lead|lead.value>limit)", jql("SalesPerson", "leadsOver"));
-        assertEquals("self.leads(limit=10)", jql("SalesPerson", "leadsOver10"));
+        assertEquals("self.leadsOver", jql("SalesPerson", "leadsOver10"));
         assertEquals("self", jql("SalesPerson", "selfDerived"));
         assertEquals("Customer!any()", jql("SalesPerson", "anyCustomer"));
         assertEquals("\"\"+self.value+\"test\"", jql("SalesPerson", "stringConcat"));
