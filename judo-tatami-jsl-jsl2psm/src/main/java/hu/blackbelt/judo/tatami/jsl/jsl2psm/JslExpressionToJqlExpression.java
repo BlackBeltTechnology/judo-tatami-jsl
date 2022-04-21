@@ -73,6 +73,39 @@ public class JslExpressionToJqlExpression {
         </functionCall>
       </expression>
     </members>
+
+	derived Lead[] leadsOverMin(Integer min = 10) = self.leadsBetween(min = min, max = 100)
+
+    <members xsi:type="jsldsl:EntityDerivedDeclaration" xmi:id="_79axXsCJEey6zuOa67vnRw" referenceType="_79axlcCJEey6zuOa67vnRw" isMany="true" name="leadsOverMin">
+      <parameters xmi:id="_79axX8CJEey6zuOa67vnRw" referenceType="_79axQcCJEey6zuOa67vnRw" name="min">
+        <default xsi:type="jsldsl:IntegerLiteral" xmi:id="_79axYMCJEey6zuOa67vnRw" value="10"/>
+      </parameters>
+      <expression xsi:type="jsldsl:NavigationExpression" xmi:id="_79axYcCJEey6zuOa67vnRw">
+        <base xsi:type="jsldsl:Self" xmi:id="_79axYsCJEey6zuOa67vnRw"/>
+        <features xmi:id="_79axY8CJEey6zuOa67vnRw" name="leadsBetween">
+          <parameters xmi:id="_79axZMCJEey6zuOa67vnRw" name="min">
+            <expression xsi:type="jsldsl:NavigationExpression" xmi:id="_79axZcCJEey6zuOa67vnRw" qName="min"/>
+          </parameters>
+          <parameters xmi:id="_79axZsCJEey6zuOa67vnRw" name="max">
+            <expression xsi:type="jsldsl:IntegerLiteral" xmi:id="_79axZ8CJEey6zuOa67vnRw" value="100"/>
+          </parameters>
+        </features>
+      </expression>
+    </members>
+
+	derived Lead[] leadsOver10 = self.leadsOverMin(min = 20)
+
+    <members xsi:type="jsldsl:EntityDerivedDeclaration" xmi:id="_79axaMCJEey6zuOa67vnRw" referenceType="_79axlcCJEey6zuOa67vnRw" isMany="true" name="leadsOver10">
+      <expression xsi:type="jsldsl:NavigationExpression" xmi:id="_79axacCJEey6zuOa67vnRw">
+        <base xsi:type="jsldsl:Self" xmi:id="_79axasCJEey6zuOa67vnRw"/>
+        <features xmi:id="_79axa8CJEey6zuOa67vnRw" name="leadsOverMin">
+          <parameters xmi:id="_79axbMCJEey6zuOa67vnRw" name="min">
+            <expression xsi:type="jsldsl:IntegerLiteral" xmi:id="_79axbcCJEey6zuOa67vnRw" value="20"/>
+          </parameters>
+        </features>
+      </expression>
+    </members>
+
 	 */
 	
 	
