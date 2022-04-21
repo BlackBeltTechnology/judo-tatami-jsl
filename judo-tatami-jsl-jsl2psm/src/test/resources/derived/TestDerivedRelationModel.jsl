@@ -8,8 +8,8 @@ type string String max-length 128
 entity Lead {
 	field Integer value
 	field Customer[] customers
-	derived Customer[] keyCustomers = self.customers!filter(c | c.isKey)
-	derived Customer keyCustomer = self.customers!filter(c | c.isKey)!any()
+	derived Customer[] keyCustomers = self.customers!filter(c | c.iskey)
+	derived Customer keyCustomer = self.customers!filter(c | c.iskey)!any()
 }
 
 entity Customer {
