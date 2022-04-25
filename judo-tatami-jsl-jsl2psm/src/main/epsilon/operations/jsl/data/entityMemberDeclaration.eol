@@ -1,0 +1,8 @@
+operation JSL!EntityMemberDeclaration isPrimitive() : Boolean {
+    return self.isKindOf(JSL!EntityFieldDeclaration) or self.isKindOf(JSL!EntityDerivedDeclaration) and
+        self.referenceType.isKindOf(JSL!PrimitiveDeclaration);
+}
+
+operation JSL!EntityMemberDeclaration isSortable() : Boolean {
+    return self.isPrimitive() and self.referenceType.isSortable();
+}

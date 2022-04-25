@@ -11,3 +11,4 @@ import "enumLiteral.eol";
 import "errorDeclaration.eol";
 import "errorField.eol";
 import "modelDeclaration.eol";
+import "entityMemberDeclaration.eol";

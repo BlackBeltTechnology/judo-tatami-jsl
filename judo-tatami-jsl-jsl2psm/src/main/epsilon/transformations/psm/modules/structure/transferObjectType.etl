@@ -54,3 +54,303 @@ rule CreateEntityDefaultTransferObjectType
         s.eContainer.getModelRoot().elements.add(t);
         log.debug("Created MappedTransferObjectType: " + t.name);
 }
+
+@greedy
+rule CreateQueryCustomizerType
+    transform s: JSL!EntityDeclaration
+    to t : JUDOPSM!UnmappedTransferObjectType {
+        t.setId("(jsl/" + s.getId() + ")/QueryCustomizerType");
+
+        t.name = "_QueryCustomizer" + s.name;
+        t.queryCustomizer = true;
+
+        var orderByTarget = s.equivalent("CreateQueryOrderingType");
+        // do not add _orderBy relation if there is no attribute used by order by clause
+        if (orderByTarget.isDefined()) {
+            var orderBy = new JUDOPSM!TransferObjectRelation;
+            orderBy.setId("(jsl/" + s.getId() + ")/QueryCustomizerType/OrderBy");
+
+            orderBy.name = "_orderBy";
+            orderBy.target = orderByTarget;
+            orderBy.embedded = true;
+            orderBy.cardinality = new JUDOPSM!Cardinality;
+            orderBy.cardinality.setId("(jsl/" + s.getId() + ")/QueryCustomizerType/OrderBy/Cardinality");
+            orderBy.cardinality.lower = 0;
+            orderBy.cardinality.upper = -1;
+
+            t.relations.add(orderBy);
+        }
+
+        s.eContainer.getModelRoot().elements.add(t);
+        log.debug("Query customizer type created: " + t.name);
+}
+
+@lazy
+rule CreateStringOperationEnumeration
+  transform s : JSL!ModelDeclaration
+  to t : JUDOPSM!EnumerationType {
+    t.name = "_StringOperation";
+
+    t.setId("(jsl/" + s.getId() + ")/StringOperationEnumeration");
+
+    var lessThan = new JUDOPSM!EnumerationMember;
+    lessThan.setId("(jsl/" + s.getId() + ")/StringOperationEnumeration/LessThan");
+    lessThan.ordinal = 0;
+    lessThan.name = "lessThan";
+    t.members.add(lessThan);
+
+    var greaterThan = new JUDOPSM!EnumerationMember;
+    greaterThan.setId("(jsl/" + s.getId() + ")/StringOperationEnumeration/GreaterThan");
+    greaterThan.ordinal = 1;
+    greaterThan.name = "greaterThan";
+    t.members.add(greaterThan);
+
+    var lessOrEqual = new JUDOPSM!EnumerationMember;
+    lessOrEqual.setId("(jsl/" + s.getId() + ")/StringOperationEnumeration/LessOrEqual");
+    lessOrEqual.ordinal = 2;
+    lessOrEqual.name = "lessOrEqual";
+    t.members.add(lessOrEqual);
+
+    var greaterOrEqual = new JUDOPSM!EnumerationMember;
+    greaterOrEqual.setId("(jsl/" + s.getId() + ")/StringOperationEnumeration/GreaterOrEqual");
+    greaterOrEqual.ordinal = 3;
+    greaterOrEqual.name = "greaterOrEqual";
+    t.members.add(greaterOrEqual);
+
+    var equal = new JUDOPSM!EnumerationMember;
+    equal.setId("(jsl/" + s.getId() + ")/StringOperationEnumeration/Equal");
+    equal.ordinal = 4;
+    equal.name = "equal";
+    t.members.add(equal);
+
+    var notEqual = new JUDOPSM!EnumerationMember;
+    notEqual.setId("(jsl/" + s.getId() + ")/StringOperationEnumeration/NotEqual");
+    notEqual.ordinal = 5;
+    notEqual.name = "notEqual";
+    t.members.add(notEqual);
+
+    var matches = new JUDOPSM!EnumerationMember;
+    matches.setId("(jsl/" + s.getId() + ")/StringOperationEnumeration/Matches");
+    matches.ordinal = 6;
+    matches.name = "matches";
+    t.members.add(matches);
+
+    var like = new JUDOPSM!EnumerationMember;
+    like.setId("(jsl/" + s.getId() + ")/StringOperationEnumeration/Like");
+    like.ordinal = 7;
+    like.name = "like";
+    t.members.add(like);
+
+    s.getModelRoot().elements.add(t);
+    log.debug("Created enumeration of String operations: " + t.name);
+}
+
+@lazy
+rule CreateNumericOperationEnumeration
+  transform s : JSL!ModelDeclaration
+  to t: JUDOPSM!EnumerationType {
+    t.name = "_NumericOperation";
+
+    t.setId("(jsl/" + s.getId() + ")/NumericOperationEnumeration");
+
+    var lessThan = new JUDOPSM!EnumerationMember;
+    lessThan.setId("(jsl/" + s.getId() + ")/NumericOperationEnumeration/LessThan");
+    lessThan.ordinal = 0;
+    lessThan.name = "lessThan";
+    t.members.add(lessThan);
+
+    var greaterThan = new JUDOPSM!EnumerationMember;
+    greaterThan.setId("(jsl/" + s.getId() + ")/NumericOperationEnumeration/GreaterThan");
+    greaterThan.ordinal = 1;
+    greaterThan.name = "greaterThan";
+    t.members.add(greaterThan);
+
+    var lessOrEqual = new JUDOPSM!EnumerationMember;
+    lessOrEqual.setId("(jsl/" + s.getId() + ")/NumericOperationEnumeration/LessOrEqual");
+    lessOrEqual.ordinal = 2;
+    lessOrEqual.name = "lessOrEqual";
+    t.members.add(lessOrEqual);
+
+    var greaterOrEqual = new JUDOPSM!EnumerationMember;
+    greaterOrEqual.setId("(jsl/" + s.getId() + ")/NumericOperationEnumeration/GreaterOrEqual");
+    greaterOrEqual.ordinal = 3;
+    greaterOrEqual.name = "greaterOrEqual";
+    t.members.add(greaterOrEqual);
+
+    var equal = new JUDOPSM!EnumerationMember;
+    equal.setId("(jsl/" + s.getId() + ")/NumericOperationEnumeration/Equal");
+    equal.ordinal = 4;
+    equal.name = "equal";
+    t.members.add(equal);
+
+    var notEqual = new JUDOPSM!EnumerationMember;
+    notEqual.setId("(jsl/" + s.getId() + ")/NumericOperationEnumeration/NotEqual");
+    notEqual.ordinal = 5;
+    notEqual.name = "notEqual";
+    t.members.add(notEqual);
+
+    s.getModelRoot().elements.add(t);
+    log.debug("Created enumeration of Numeric operations: " + t.name);
+}
+
+@lazy
+rule CreateBooleanOperationEnumeration
+  transform s : JSL!ModelDeclaration
+  to t: JUDOPSM!EnumerationType {
+    t.name = "_BooleanOperation";
+
+    t.setId("(jsl/" + s.getId() + ")/BooleanOperationEnumeration");
+
+    var equals = new JUDOPSM!EnumerationMember;
+    equals.setId("(jsl/" + s.getId() + ")/BooleanOperationEnumeration/Equals");
+    equals.ordinal = 0;
+    equals.name = "equals";
+    t.members.add(equals);
+
+    s.getModelRoot().elements.add(t);
+    log.debug("Created enumeration of Boolean operations: " + t.name);
+}
+
+@lazy
+rule CreateEnumerationOperationEnumeration
+  transform s : JSL!ModelDeclaration
+  to t: JUDOPSM!EnumerationType {
+    t.name = "_EnumerationOperation";
+
+    t.setId("(jsl/" + s.getId() + ")/EnumerationOperationEnumeration");
+
+    var equals = new JUDOPSM!EnumerationMember;
+    equals.setId("(jsl/" + s.getId() + ")/EnumerationOperationEnumeration/Equals");
+    equals.ordinal = 0;
+    equals.name = "equals";
+    t.members.add(equals);
+
+    var notEquals = new JUDOPSM!EnumerationMember;
+    notEquals.setId("(jsl/" + s.getId() + ")/EnumerationOperationEnumeration/NotEquals");
+    notEquals.ordinal = 1;
+    notEquals.name = "notEquals";
+    t.members.add(notEquals);
+
+    s.getModelRoot().elements.add(t);
+    log.debug("Created enumeration of Enumeration operations: " + t.name);
+}
+
+@greedy
+@lazy
+rule CreateQueryOrderingType
+    transform s: JSL!EntityDeclaration
+	to t: JUDOPSM!UnmappedTransferObjectType {
+	guard: s.getAllPrimitives().exists(attr | attr.isSortable())
+
+      t.setId("(jsl/" + s.getId() + ")/QueryOrderingType");
+
+	  t.name = "_OrderingType" + s.name;
+	  t.queryCustomizer = true;
+
+	  var attribute = new JUDOPSM!TransferAttribute;
+      attribute.setId("(jsl/" + s.getId() + ")/QueryOrderingType/Attribute");
+	  attribute.name = "attribute";
+	  attribute.required = true;
+	  attribute.dataType = s.equivalent("CreateQueryOrderingEnumeration");
+	  t.attributes.add(attribute);
+
+      var m : JSL!ModelDeclaration = JSL!ModelDeclaration.all.first();
+	  var descending = new JUDOPSM!TransferAttribute;
+      descending.setId("(jsl/" + s.getId() + ")/QueryOrderingType/Descending");
+      descending.name = "descending";
+      descending.required = false;
+      descending.dataType = m.equivalent("CreateAutoGeneratedBooleanType");
+      t.attributes.add(descending);
+
+	  s.eContainer.getModelRoot().elements.add(t);
+	  log.debug("Query ordering type created: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateQueryFilterType
+  transform s : JSL!PrimitiveDeclaration
+  to t: JUDOPSM!UnmappedTransferObjectType {
+
+    t.name = "_FilterBy" + s.name;
+    t.queryCustomizer = true;
+
+    t.setId("(jsl/" + s.getId() + ")/QueryFilterType");
+
+    var m : JSL!ModelDeclaration = JSL!ModelDeclaration.all.first();
+
+    var operator = new JUDOPSM!TransferAttribute;
+    operator.setId("(jsl/" + s.getId() + ")/QueryFilterType/Operator");
+    operator.name = "operator";
+
+    if (s.isString()) {
+        operator.required = true;
+        operator.dataType = m.equivalent("CreateStringOperationEnumeration");
+        t.attributes.add(operator);
+    } else if (s.isNumeric()) {
+        operator.required = true;
+        operator.dataType = m.equivalent("CreateNumericOperationEnumeration");
+        t.attributes.add(operator);
+    } else if (s.isBoolean()) {
+        operator.required = true;
+        operator.dataType = m.equivalent("CreateBooleanOperationEnumeration");
+        t.attributes.add(operator);
+    } else if (s.isDate()) {
+        operator.required = true;
+        operator.dataType = m.equivalent("CreateNumericOperationEnumeration");
+        t.attributes.add(operator);
+    } else if (s.isTimestamp()) {
+        operator.required = true;
+        operator.dataType = m.equivalent("CreateNumericOperationEnumeration");
+        t.attributes.add(operator);
+    } else if (s.isTime()) {
+        operator.required = true;
+        operator.dataType = m.equivalent("CreateNumericOperationEnumeration");
+        t.attributes.add(operator);
+    } else if (s.isEnumeration()) {
+        operator.required = true;
+        operator.dataType = m.equivalent("CreateEnumerationOperationEnumeration");
+        t.attributes.add(operator);
+    } else {
+        throw "No primitive operation supported for: " + s.name;
+    }
+
+    var value = new JUDOPSM!TransferAttribute;
+    value.setId("(jsl/" + s.getId() + ")/QueryFilterType/Value");
+    value.name = "value";
+    value.required = true;
+    value.dataType = s.getPSMEquivalent();
+    t.attributes.add(value);
+
+    m.getModelRoot().elements.add(t);
+    log.debug("Created String query filter type: " + t.name);
+}
+
+@greedy
+rule CreateQueryOrderingEnumeration
+	transform s: JSL!EntityDeclaration
+	to t: JUDOPSM!EnumerationType {
+	guard: s.getAllPrimitives().exists(attr | attr.isSortable())
+
+      t.setId("(jsl/" + s.getId() + ")/QueryOrderingEnumeration");
+
+	  t.name = "_OrderingAttribute" + s.name;
+
+	  s.eContainer.getModelRoot().elements.add(t);
+	  log.debug("Query ordering enumeration created: " + t.name);
+}
+
+@greedy
+rule CreateQueryOrderingEnumerationMember
+    transform s : JSL!EntityMemberDeclaration
+    to t : JUDOPSM!EnumerationMember {
+    guard: s.isSortable()
+
+      t.setId("(jsl/" + s.getId() + ")/QueryOrderingEnumerationMember");
+
+      t.name = s.name;
+      t.ordinal = -1; // will be calculated by post operation
+
+      s.eContainer.equivalent("CreateQueryOrderingEnumeration").members.add(t);
+      log.debug("Query ordering enumeration member created: " + t.name);
+}

@@ -30,3 +30,24 @@ operation JSL!EntityDeclaration getInheritedMembers(): Sequence<EntityMemberDecl
 
 	return members;
 }
+
+@cached
+operation JSL!EntityDeclaration getAllPrimitives(): Sequence<EntityMemberDeclaration> {
+    var members = new Sequence<EntityMemberDeclaration>();
+
+    for (member in self.members) {
+        if (member.isPrimitive()) {
+            members.add(member);
+        }
+    }
+
+    for (parent in self.`extends`) {
+        for (m in parent.getInheritedMembers()) {
+            if (m.isPrimitive()) {
+                members.add(m);
+            }
+        }
+    }
+
+	return members;
+}

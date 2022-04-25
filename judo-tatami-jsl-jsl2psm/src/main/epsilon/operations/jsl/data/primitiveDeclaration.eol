@@ -24,3 +24,39 @@ operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
         return self.equivalent("CreateEnumerationType");
     }
 }
+
+operation JSL!PrimitiveDeclaration isNumeric() : Boolean {
+    return self.primitive == "numeric";
+}
+
+operation JSL!PrimitiveDeclaration isDate() : Boolean {
+    return self.primitive == "date";
+}
+
+operation JSL!PrimitiveDeclaration isTimestamp() : Boolean {
+    return self.primitive == "timestamp";
+}
+
+operation JSL!PrimitiveDeclaration isBoolean() : Boolean {
+    return self.primitive == "boolean";
+}
+
+operation JSL!PrimitiveDeclaration isTime() : Boolean {
+    return self.primitive == "time";
+}
+
+operation JSL!PrimitiveDeclaration isString() : Boolean {
+    return self.primitive == "string";
+}
+
+operation JSL!PrimitiveDeclaration isBinary() : Boolean {
+    return self.primitive == "binary";
+}
+
+operation JSL!PrimitiveDeclaration isEnumeration() : Boolean {
+    return self.instanceOf(JSL!EnumDeclaration);
+}
+
+operation JSL!PrimitiveDeclaration isSortable() : Boolean {
+    return not self.isEnumeration() and not self.isBinary();
+}

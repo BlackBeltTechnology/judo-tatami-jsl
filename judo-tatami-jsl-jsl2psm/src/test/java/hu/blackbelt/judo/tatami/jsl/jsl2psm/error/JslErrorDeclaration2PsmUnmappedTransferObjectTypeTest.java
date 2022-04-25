@@ -59,7 +59,7 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
                         "type string String max-length 128\n" +
                         "\n" +
                         "error MyError {\n" +
-                        "\tfield required Integer code\n" +
+                        "\tfield Integer code\n" +
                         "\tfield String msg\n" +
                         "}"
                 )

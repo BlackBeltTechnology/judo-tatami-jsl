@@ -2,3 +2,8 @@
 operation JSL!DataTypeDeclaration getId(): String {
 	return (self.eContainer.getId() + "/" + self.name);
 }
+
+operation JSL!DataTypeDeclaration isPrimitive() : Boolean {
+    return self.isKindOf(JSL!EntityFieldDeclaration) or self.isKindOf(JSL!EntityDerivedDeclaration) and
+        self.referenceType.isKindOf(JSL!PrimitiveDeclaration);
+}
