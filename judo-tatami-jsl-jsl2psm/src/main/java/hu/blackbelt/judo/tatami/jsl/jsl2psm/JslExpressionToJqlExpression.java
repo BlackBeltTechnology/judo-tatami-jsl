@@ -7,6 +7,7 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.DateLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.DecimalLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.DerivedParameter;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDerivedDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.EntityMemberDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EscapedStringLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Feature;
@@ -25,6 +26,8 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.TernaryOperation;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TimeLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TimeStampLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.UnaryOperation;
+import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
+
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.emf.ecore.EObject;
 
@@ -108,6 +111,8 @@ public class JslExpressionToJqlExpression {
 
 	 */
 	
+	static JslDslModelExtension modelExtension = new JslDslModelExtension();
+
 	
 	public static EntityDerivedDeclaration getDerivedDeclaration(EObject from) {
 		EntityDerivedDeclaration founded = null;
@@ -131,8 +136,8 @@ public class JslExpressionToJqlExpression {
 	}
 	*/
 
-	
-	/**
+
+    /**
      * Expression returns Expression hidden(WS, CONT_NL, SL_COMMENT, ML_COMMENT)
      * : SwitchExpression
      * ;
@@ -194,7 +199,7 @@ public class JslExpressionToJqlExpression {
      */
     protected static String _getJqlDispacher(final BinaryOperation it) {
         return it != null
-                ? getJql(it.getLeftOperand()) + " " + it.getOperator() + " " + getJql(it.getRightOperand())
+                ? getJql(it.getLeftOperand()) + it.getOperator() + getJql(it.getRightOperand())
                 : null;
     }
 
@@ -296,12 +301,16 @@ public class JslExpressionToJqlExpression {
 
     /**
      * Feature
-     * : {Feature} '.' name=ID ('(' parameters+=QueryParameter (',' parameters+=QueryParameter)* ')')?
+     * : {Feature} '.' member = EntityMemberDeclarationFeature
      * ;
-     */
+     *
+     * EntityMemberDeclarationFeature returns Feature
+	 * : entityMemberDeclarationType = [EntityMemberDeclaration | LocalName ] ('(' (parameters+=QueryParameter (',' parameters+=QueryParameter)*)? ')')?
+	 * ;
+	 */
     public static String getJql(final Feature it) {
         return it != null
-                ? '.' + it.getName() +
+                ? '.' + modelExtension.getNameForEntityMemberDeclaration((EntityMemberDeclaration) it.getMember().getEntityMemberDeclarationType()) +
                 (
                         it.getParameters().size() > 0
                                 ? "(" +  it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")"
@@ -312,12 +321,15 @@ public class JslExpressionToJqlExpression {
 
     /**
      * QueryParameter
-     * : name = ID '=' expression=Expression
-     * ;
-     */
+	 * :  derivedParameterType=[DerivedParameter | LocalName] '=' (literal = Literal | parameter = [DerivedParameter | LocalName])     // expression=MultilineExpression
+	 * ;
+	 */
     public static String getJql(final QueryParameter it) {
         return it != null
-                ? it.getName() + "=" + getJql(it.getExpression())
+                ? it.getDerivedParameterType().getName() + "=" + 
+        			(it.getLiteral() != null 
+        			? getJql(it.getLiteral())
+        			: it.getDerivedParameterType().getName())
                 : null;
     }
 

@@ -6,17 +6,20 @@ type timestamp Timestamp
 type time Time
 type string String max-length 32
 type numeric Decimal precision 9  scale 2
+type boolean Boolean
 
 entity Lead {
     field Integer value = 100000
+    field Boolean closed
 }
 
 entity SalesPerson {
+    relation Lead lead
     relation Lead[] leads
     derived Integer value = self.leads!count()
     derived Integer t1 = self.leads!count() > 1
     derived Customer[] leadsOver(Integer limit = 100) = self.leads!filter(lead | lead.value > limit)
-    derived Customer[] leadsOver10 = self.leads(limit = 10)
+    derived Customer[] leadsOver10 = self.leadsOver(limit = 10)
     derived Customer selfDerived = self
     derived Customer anyCustomer = Customer!any()
     derived Customer stringConcat = "" + self.value + "test"
