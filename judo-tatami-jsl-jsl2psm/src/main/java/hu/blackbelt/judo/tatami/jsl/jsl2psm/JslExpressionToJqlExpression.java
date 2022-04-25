@@ -40,35 +40,41 @@ public class JslExpressionToJqlExpression {
 
 	/**
 
-    derived Lead[] leadsBetween(Integer min = 10, Integer max = 100) = self.leads!filter(lead | lead.value > min and lead.value < max)
+	derived Lead[] leadsBetween(Integer min = 10, Integer max = 100) = self.leads!filter(lead | lead.value > min and lead.value < max)
     
-    <members xsi:type="jsldsl:EntityDerivedDeclaration" xmi:id="_Ptfn-sAmEeysieWAZJU24w" referenceType="_PtgPD8AmEeysieWAZJU24w" isMany="true" name="leadsBetween">
-      <parameters xmi:id="_Ptfn-8AmEeysieWAZJU24w" referenceType="_Ptfn8sAmEeysieWAZJU24w" name="min">
-        <default xsi:type="jsldsl:IntegerLiteral" xmi:id="_Ptfn_MAmEeysieWAZJU24w" value="10"/>
+    <members xsi:type="jsldsl:EntityDerivedDeclaration" xmi:id="_RnJBGcTPEeyflOnu-n2AYw" referenceType="_RnJBbcTPEeyflOnu-n2AYw" isMany="true" name="leadsBetween">
+      <parameters xmi:id="_RnJBGsTPEeyflOnu-n2AYw" referenceType="_RnJBEcTPEeyflOnu-n2AYw" name="min">
+        <default xsi:type="jsldsl:IntegerLiteral" xmi:id="_RnJBG8TPEeyflOnu-n2AYw" value="10"/>
       </parameters>
-      <parameters xmi:id="_Ptfn_cAmEeysieWAZJU24w" referenceType="_Ptfn8sAmEeysieWAZJU24w" name="max">
-        <default xsi:type="jsldsl:IntegerLiteral" xmi:id="_Ptfn_sAmEeysieWAZJU24w" value="100"/>
+      <parameters xmi:id="_RnJBHMTPEeyflOnu-n2AYw" referenceType="_RnJBEcTPEeyflOnu-n2AYw" name="max">
+        <default xsi:type="jsldsl:IntegerLiteral" xmi:id="_RnJBHcTPEeyflOnu-n2AYw" value="100"/>
       </parameters>
-      <expression xsi:type="jsldsl:FunctionedExpression" xmi:id="_Ptfn_8AmEeysieWAZJU24w">
-        <operand xsi:type="jsldsl:NavigationExpression" xmi:id="_PtfoAMAmEeysieWAZJU24w">
-          <base xsi:type="jsldsl:Self" xmi:id="_PtfoAcAmEeysieWAZJU24w"/>
-          <features xmi:id="_PtfoAsAmEeysieWAZJU24w" name="leads"/>
+      <expression xsi:type="jsldsl:FunctionedExpression" xmi:id="_RnJBHsTPEeyflOnu-n2AYw">
+        <operand xsi:type="jsldsl:NavigationExpression" xmi:id="_RnJBH8TPEeyflOnu-n2AYw">
+          <base xsi:type="jsldsl:Self" xmi:id="_RnJBIMTPEeyflOnu-n2AYw"/>
+          <features xmi:id="_RnJBIcTPEeyflOnu-n2AYw">
+            <member xmi:id="_RnJBIsTPEeyflOnu-n2AYw" entityMemberDeclarationType="_RnJBF8TPEeyflOnu-n2AYw"/>
+          </features>
         </operand>
-        <functionCall xmi:id="_PtfoA8AmEeysieWAZJU24w">
-          <function xmi:id="_PtfoBMAmEeysieWAZJU24w" name="filter" lambdaArgument="lead">
-            <parameters xmi:id="_PtfoBcAmEeysieWAZJU24w">
-              <expression xsi:type="jsldsl:BinaryOperation" xmi:id="_PtfoBsAmEeysieWAZJU24w" operator="and">
-                <leftOperand xsi:type="jsldsl:BinaryOperation" xmi:id="_PtfoB8AmEeysieWAZJU24w" operator=">">
-                  <leftOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_PtfoCMAmEeysieWAZJU24w" qName="lead">
-                    <features xmi:id="_PtfoCcAmEeysieWAZJU24w" name="value"/>
+        <functionCall xmi:id="_RnJBI8TPEeyflOnu-n2AYw">
+          <function xmi:id="_RnJBJMTPEeyflOnu-n2AYw" name="filter" lambdaArgument="lead">
+            <parameters xmi:id="_RnJBJcTPEeyflOnu-n2AYw">
+              <expression xsi:type="jsldsl:BinaryOperation" xmi:id="_RnJBJsTPEeyflOnu-n2AYw" operator="and">
+                <leftOperand xsi:type="jsldsl:BinaryOperation" xmi:id="_RnJBJ8TPEeyflOnu-n2AYw" operator=">">
+                  <leftOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_RnJBKMTPEeyflOnu-n2AYw" qName="lead">
+                    <features xmi:id="_RnJBKcTPEeyflOnu-n2AYw">
+                      <member xmi:id="_RnJBKsTPEeyflOnu-n2AYw" entityMemberDeclarationType="_RnJBbsTPEeyflOnu-n2AYw"/>
+                    </features>
                   </leftOperand>
-                  <rightOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_PtfoCsAmEeysieWAZJU24w" qName="min"/>
+                  <rightOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_RnJBK8TPEeyflOnu-n2AYw" qName="min"/>
                 </leftOperand>
-                <rightOperand xsi:type="jsldsl:BinaryOperation" xmi:id="_PtfoC8AmEeysieWAZJU24w" operator="&lt;">
-                  <leftOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_PtfoDMAmEeysieWAZJU24w" qName="lead">
-                    <features xmi:id="_PtfoDcAmEeysieWAZJU24w" name="value"/>
+                <rightOperand xsi:type="jsldsl:BinaryOperation" xmi:id="_RnJBLMTPEeyflOnu-n2AYw" operator="&lt;">
+                  <leftOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_RnJBLcTPEeyflOnu-n2AYw" qName="lead">
+                    <features xmi:id="_RnJBLsTPEeyflOnu-n2AYw">
+                      <member xmi:id="_RnJBL8TPEeyflOnu-n2AYw" entityMemberDeclarationType="_RnJBbsTPEeyflOnu-n2AYw"/>
+                    </features>
                   </leftOperand>
-                  <rightOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_PtfoDsAmEeysieWAZJU24w" qName="max"/>
+                  <rightOperand xsi:type="jsldsl:NavigationExpression" xmi:id="_RnJBMMTPEeyflOnu-n2AYw" qName="max"/>
                 </rightOperand>
               </expression>
             </parameters>
@@ -79,32 +85,34 @@ public class JslExpressionToJqlExpression {
 
 	derived Lead[] leadsOverMin(Integer min = 10) = self.leadsBetween(min = min, max = 100)
 
-    <members xsi:type="jsldsl:EntityDerivedDeclaration" xmi:id="_79axXsCJEey6zuOa67vnRw" referenceType="_79axlcCJEey6zuOa67vnRw" isMany="true" name="leadsOverMin">
-      <parameters xmi:id="_79axX8CJEey6zuOa67vnRw" referenceType="_79axQcCJEey6zuOa67vnRw" name="min">
-        <default xsi:type="jsldsl:IntegerLiteral" xmi:id="_79axYMCJEey6zuOa67vnRw" value="10"/>
+    <members xsi:type="jsldsl:EntityDerivedDeclaration" xmi:id="_RnJBMcTPEeyflOnu-n2AYw" referenceType="_RnJBbcTPEeyflOnu-n2AYw" isMany="true" name="leadsOverMin">
+      <parameters xmi:id="_RnJBMsTPEeyflOnu-n2AYw" referenceType="_RnJBEcTPEeyflOnu-n2AYw" name="min">
+        <default xsi:type="jsldsl:IntegerLiteral" xmi:id="_RnJBM8TPEeyflOnu-n2AYw" value="10"/>
       </parameters>
-      <expression xsi:type="jsldsl:NavigationExpression" xmi:id="_79axYcCJEey6zuOa67vnRw">
-        <base xsi:type="jsldsl:Self" xmi:id="_79axYsCJEey6zuOa67vnRw"/>
-        <features xmi:id="_79axY8CJEey6zuOa67vnRw" name="leadsBetween">
-          <parameters xmi:id="_79axZMCJEey6zuOa67vnRw" name="min">
-            <expression xsi:type="jsldsl:NavigationExpression" xmi:id="_79axZcCJEey6zuOa67vnRw" qName="min"/>
-          </parameters>
-          <parameters xmi:id="_79axZsCJEey6zuOa67vnRw" name="max">
-            <expression xsi:type="jsldsl:IntegerLiteral" xmi:id="_79axZ8CJEey6zuOa67vnRw" value="100"/>
-          </parameters>
+      <expression xsi:type="jsldsl:NavigationExpression" xmi:id="_RnJBNMTPEeyflOnu-n2AYw">
+        <base xsi:type="jsldsl:Self" xmi:id="_RnJBNcTPEeyflOnu-n2AYw"/>
+        <features xmi:id="_RnJBNsTPEeyflOnu-n2AYw">
+          <member xmi:id="_RnJBN8TPEeyflOnu-n2AYw" entityMemberDeclarationType="_RnJBGcTPEeyflOnu-n2AYw">
+            <parameters xmi:id="_RnJBOMTPEeyflOnu-n2AYw" derivedParameterType="_RnJBGsTPEeyflOnu-n2AYw" parameter="_RnJBMsTPEeyflOnu-n2AYw"/>
+            <parameters xmi:id="_RnJBOcTPEeyflOnu-n2AYw" derivedParameterType="_RnJBHMTPEeyflOnu-n2AYw">
+              <literal xsi:type="jsldsl:IntegerLiteral" xmi:id="_RnJBOsTPEeyflOnu-n2AYw" value="100"/>
+            </parameters>
+          </member>
         </features>
       </expression>
     </members>
 
 	derived Lead[] leadsOver10 = self.leadsOverMin(min = 20)
 
-    <members xsi:type="jsldsl:EntityDerivedDeclaration" xmi:id="_79axaMCJEey6zuOa67vnRw" referenceType="_79axlcCJEey6zuOa67vnRw" isMany="true" name="leadsOver10">
-      <expression xsi:type="jsldsl:NavigationExpression" xmi:id="_79axacCJEey6zuOa67vnRw">
-        <base xsi:type="jsldsl:Self" xmi:id="_79axasCJEey6zuOa67vnRw"/>
-        <features xmi:id="_79axa8CJEey6zuOa67vnRw" name="leadsOverMin">
-          <parameters xmi:id="_79axbMCJEey6zuOa67vnRw" name="min">
-            <expression xsi:type="jsldsl:IntegerLiteral" xmi:id="_79axbcCJEey6zuOa67vnRw" value="20"/>
-          </parameters>
+    <members xsi:type="jsldsl:EntityDerivedDeclaration" xmi:id="_RnJBO8TPEeyflOnu-n2AYw" referenceType="_RnJBbcTPEeyflOnu-n2AYw" isMany="true" name="leadsOver10">
+      <expression xsi:type="jsldsl:NavigationExpression" xmi:id="_RnJBPMTPEeyflOnu-n2AYw">
+        <base xsi:type="jsldsl:Self" xmi:id="_RnJBPcTPEeyflOnu-n2AYw"/>
+        <features xmi:id="_RnJBPsTPEeyflOnu-n2AYw">
+          <member xmi:id="_RnJBP8TPEeyflOnu-n2AYw" entityMemberDeclarationType="_RnJBMcTPEeyflOnu-n2AYw">
+            <parameters xmi:id="_RnJBQMTPEeyflOnu-n2AYw" derivedParameterType="_RnJBMsTPEeyflOnu-n2AYw">
+              <literal xsi:type="jsldsl:IntegerLiteral" xmi:id="_RnJBQcTPEeyflOnu-n2AYw" value="20"/>
+            </parameters>
+          </member>
         </features>
       </expression>
     </members>
