@@ -56,11 +56,11 @@
         <epsilon-runtime-version>1.4.0.20220316_214617_dcae201c_develop</epsilon-runtime-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.0.20220421_022715_5264143e_feature_JNG_3713_FixTypeCodeCompletion</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.0.20220427_093101_bc50729e_develop</judo-meta-jsl-version>
 
         <judo-meta-rdbms-version>1.0.0.20220405_162243_a599d313_develop</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.1.20220405_161348_f273cd5a_develop</judo-meta-jql-version>
-        <judo-meta-psm-version>1.1.0.20220316_215604_2f3c646e_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.1.0.20220405_162250_fee181a8_develop</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.0.20220405_162156_c69f1a74_develop</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.1.20220405_162647_f55885a1_develop</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.0.20220405_162206_0ac0daa1_develop</judo-meta-liquibase-version>
@@ -70,8 +70,8 @@
         <judo-operation-utils-version>1.1.0.20220405_162650_6298bb1f_develop</judo-operation-utils-version>
         <structured-map-proxy-version>1.0.6.20220301_160543_e228df4d_develop</structured-map-proxy-version>
 
-        <judo-tatami-version>1.1.0.20220401_140548_fea34851_develop</judo-tatami-version>
-        <judo-tatami-core-version>1.1.0.20220316_214956_d70a50f5_develop</judo-tatami-core-version>
+        <judo-tatami-version>1.1.0.20220411_100226_8bf5bb27_develop</judo-tatami-version>
+        <judo-tatami-core-version>1.1.0.20220405_161751_7fec76d0_develop</judo-tatami-core-version>
 
         <!-- Xtend / Xcore -->
         <emf-version>2.21.0</emf-version>
