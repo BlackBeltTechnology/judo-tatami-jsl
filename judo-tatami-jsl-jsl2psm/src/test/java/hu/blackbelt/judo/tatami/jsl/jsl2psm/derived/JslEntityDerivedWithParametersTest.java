@@ -60,9 +60,8 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         transform();
 
         
-        /*
         final Set<NavigationProperty> navigationProperties = psmModelWrapper.getStreamOfPsmDerivedNavigationProperty().collect(Collectors.toSet());
-        assertEquals(2, navigationProperties.size());
+        assertEquals(4, navigationProperties.size());
 
         assertNavigationProperty("_Lead", "keyCustomers");
         assertTrue(assertNavigationProperty("_Lead", "keyCustomers").isCollection());
@@ -96,7 +95,6 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         assertMappedTransferObjectRelation("LeadExtended", "keyCustomer");
         assertFalse(assertMappedTransferObjectRelation("LeadExtended", "keyCustomer").isCollection());
         assertEquals(assertNavigationProperty("_LeadExtended", "keyCustomer"), assertMappedTransferObjectRelation("LeadExtended", "keyCustomer").getBinding());
-        */
 
     }
 }

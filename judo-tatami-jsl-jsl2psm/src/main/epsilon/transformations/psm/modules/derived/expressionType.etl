@@ -5,7 +5,7 @@ rule CreateGetterExpressionForDataType
     transform s : JSL!EntityDerivedDeclaration
     to t: JUDOPSM!DataExpressionType {
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForDataType");
-        t.expression = expressionUtils.getJql(s.expression);
+        t.expression = expressionUtils.getJql(s);
 
         // TODO: Handling parameter type later
         //if (s.input.isDefined()) {
@@ -20,7 +20,7 @@ rule CreateGetterExpressionForReferenceType
     transform s : JSL!EntityDerivedDeclaration
     to t: JUDOPSM!ReferenceExpressionType {
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForReferenceType");
-        t.expression = expressionUtils.getJql(s.expression);
+        t.expression = expressionUtils.getJql(s);
 
         // TODO: Handling parameter type later
         //if (s.input.isDefined()) {

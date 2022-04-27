@@ -7,13 +7,30 @@ type string String max-length 128
 entity SalesPerson {
 	relation Lead[] leads opposite salesPerson
 
-	derived Lead[] leadsBetween(Integer min = 10, Integer max = 100) = self.leads!filter(lead | lead.value > min and lead.value < max)
-	derived Lead[] leadsOverMin(Integer min = 10) = self.leadsBetween(min = min, max = 100)
-	derived Lead[] leadsOver10 = self.leadsOverMin(min = 20)
+	derived Lead[] leadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) = self.leads!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)
+    // self.leads!filter(lead|lead.value > input.minLeadsBetween and lead.value < input.maxLeadsBetween)
+	
+	derived Lead[] leadsOverWithMin(Integer minLeadsOverMin = 5) = self.leadsBetween(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100)
+    // self.leads!filter(lead|lead.value > input.minLeadsOverMin and lead.value < 100)
+	
+	derived Lead[] leadsOver10 = self.leadsOverWithMin(minLeadsOverMin = 10)
+    // self.leads!filter(lead|lead.value > 10 and lead.value < 100)
 
-	derived Integer leadsBetweenCount(Integer min = 10, Integer max = 100) = self.leads!filter(lead | lead.value > min and lead.value < max)!count()
-	derived Integer leadsOverMinCount(Integer min = 10) = self.leadsBetweenCount(min = min, max = 100)
-	derived Integer leadsOver10Count = self.leadsOverMinCount(min = 20)
+	derived Lead[] leadsOver20 = self.leadsBetween(minLeadsBetween = 20)
+    // self.leads!filter(lead|lead.value > 20 and lead.value < 50)
+    
+
+	derived Integer leadsBetweenCount(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) = self.leads!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)!count()
+    // self.leads!filter(lead|lead.value > input.minLeadsBetweenCount and lead.value < input.maxLeadsBetween)!count()
+	
+	derived Integer leadsOverWithMinCount(Integer minLeadsOverMin = 5) = self.leadsBetweenCount(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100)
+    // self.leads!filter(lead|lead.value > input.minLeadsOverMin and lead.value < 100)!count()
+	
+	derived Integer leadsOver10Count = self.leadsOverWithMinCount(minLeadsOverMin = 10)
+    // self.leads!filter(lead|lead.value > 10 and lead.value < 100)!count()
+
+	derived Integer leadsOver20Count = self.leadsBetweenCount(minLeadsBetween = 20)
+    // self.leads!filter(lead|lead.value > 20 and lead.value < 50)!count()
 }
 
 entity Lead {
