@@ -55,15 +55,15 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         transform();
 
         assertEquals("self.leads!count()",  jql("SalesPerson", "value"));
-        assertEquals("self.leads!count()>1", jql("SalesPerson", "t1"));
+        assertEquals("self.leads!count() > 1", jql("SalesPerson", "t1"));
 
-        assertEquals("self.leads!filter(lead|lead.value>limit)", jql("SalesPerson", "leadsOver"));
-        assertEquals("self.leadsOver", jql("SalesPerson", "leadsOver10"));
+        assertEquals("self.leads!filter(lead | lead.value > input.limit!isDefined() ? input.limit : 100)", jql("SalesPerson", "leadsOver"));
+        assertEquals("self.leads!filter(lead | lead.value > 10)", jql("SalesPerson", "leadsOver10"));
         assertEquals("self", jql("SalesPerson", "selfDerived"));
         assertEquals("Customer!any()", jql("SalesPerson", "anyCustomer"));
-        assertEquals("\"\"+self.value+\"test\"", jql("SalesPerson", "stringConcat"));
-        assertEquals("self.leads!count()>0?self.leads!filter(lead|lead.closed)!count()/self.leads!count():0", jql("SalesPerson", "complex"));
-        assertEquals("((1+2)*3)/4", jql("SalesPerson", "arithmetic"));
+        assertEquals("\"\" + self.value + \"test\"", jql("SalesPerson", "stringConcat"));
+        assertEquals("self.leads!count() > 0 ? self.leads!filter(lead | lead.closed)!count() / self.leads!count() : 0", jql("SalesPerson", "complex"));
+        assertEquals("((1 + 2) * 3) / 4", jql("SalesPerson", "arithmetic"));
 
         assertEquals("`12:12:11.11`", jql("SalesPerson", "timeLiteral"));
         assertEquals("`2020-12-01T12:12:11.11Z`", jql("SalesPerson", "timestampLiteral"));
@@ -81,7 +81,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
                                 ((EntityDeclaration) d.eContainer()).getName().equals(entity))
                         .findFirst()
                         .orElseThrow(() -> new IllegalArgumentException("Could not find entity: " + entity + " and field: " + field))
-                        .getExpression());
+                        );
     }
 
 }
