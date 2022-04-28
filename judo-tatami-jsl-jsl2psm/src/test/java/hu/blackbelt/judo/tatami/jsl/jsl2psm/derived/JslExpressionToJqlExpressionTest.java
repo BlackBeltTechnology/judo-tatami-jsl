@@ -4,7 +4,7 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
-import hu.blackbelt.judo.tatami.jsl.jsl2psm.JslDerivedExpressionToJqlExpression;
+import hu.blackbelt.judo.tatami.jsl.jsl2psm.JslExpressionToJqlExpression;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -57,12 +57,12 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         assertEquals("self.leads!count()",  jql("SalesPerson", "value"));
         assertEquals("self.leads!count() > 1", jql("SalesPerson", "t1"));
 
-        assertEquals("self.leads!filter(lead|lead.value > input.limit)", jql("SalesPerson", "leadsOver"));
-        assertEquals("self.leads!filter(lead|lead.value > 10)", jql("SalesPerson", "leadsOver10"));
+        assertEquals("self.leads!filter(lead | lead.value > input.limit!isDefined() ? input.limit : 100)", jql("SalesPerson", "leadsOver"));
+        assertEquals("self.leads!filter(lead | lead.value > 10)", jql("SalesPerson", "leadsOver10"));
         assertEquals("self", jql("SalesPerson", "selfDerived"));
         assertEquals("Customer!any()", jql("SalesPerson", "anyCustomer"));
         assertEquals("\"\" + self.value + \"test\"", jql("SalesPerson", "stringConcat"));
-        assertEquals("self.leads!count() > 0 ? self.leads!filter(lead|lead.closed)!count() / self.leads!count() : 0", jql("SalesPerson", "complex"));
+        assertEquals("self.leads!count() > 0 ? self.leads!filter(lead | lead.closed)!count() / self.leads!count() : 0", jql("SalesPerson", "complex"));
         assertEquals("((1 + 2) * 3) / 4", jql("SalesPerson", "arithmetic"));
 
         assertEquals("`12:12:11.11`", jql("SalesPerson", "timeLiteral"));
@@ -75,7 +75,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
     }
 
     private String jql(String entity, String field) {
-        return JslDerivedExpressionToJqlExpression.getJql(
+        return JslExpressionToJqlExpression.getJql(
                 jslModelWrapper.getStreamOfJsldslEntityDerivedDeclaration()
                         .filter(d -> d.getName().equals(field) &&
                                 ((EntityDeclaration) d.eContainer()).getName().equals(entity))

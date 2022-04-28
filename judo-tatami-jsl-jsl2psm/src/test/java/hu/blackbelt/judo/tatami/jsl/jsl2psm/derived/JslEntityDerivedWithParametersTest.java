@@ -69,7 +69,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SalesPerson", "leadsBetween").getTarget());
         assertEquals(assertNavigationProperty("_SalesPerson", "leadsBetween"), assertMappedTransferObjectRelation("SalesPerson", "leadsBetween").getBinding());
         
-        assertEquals("self.leads!filter(lead|lead.value > input.minLeadsBetween and lead.value < input.maxLeadsBetween)", 
+        assertEquals("self.leads!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)", 
         		assertNavigationProperty("_SalesPerson", "leadsBetween").getGetterExpression().getExpression());
 
         
@@ -81,7 +81,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SalesPerson", "leadsOverWithMin").getTarget());
         assertEquals(assertNavigationProperty("_SalesPerson", "leadsOverWithMin"), assertMappedTransferObjectRelation("SalesPerson", "leadsOverWithMin").getBinding());
         
-        assertEquals("self.leads!filter(lead|lead.value > input.minLeadsOverMin and lead.value < 100)", 
+        assertEquals("self.leads!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)", 
         		assertNavigationProperty("_SalesPerson", "leadsOverWithMin").getGetterExpression().getExpression());
 
         
@@ -93,7 +93,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SalesPerson", "leadsOver10").getTarget());
         assertEquals(assertNavigationProperty("_SalesPerson", "leadsOver10"), assertMappedTransferObjectRelation("SalesPerson", "leadsOver10").getBinding());
         
-        assertEquals("self.leads!filter(lead|lead.value > 10 and lead.value < 100)", 
+        assertEquals("self.leads!filter(lead | lead.value > 10 and lead.value < 100)", 
         		assertNavigationProperty("_SalesPerson", "leadsOver10").getGetterExpression().getExpression());
 
 
@@ -105,7 +105,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SalesPerson", "leadsOver20").getTarget());
         assertEquals(assertNavigationProperty("_SalesPerson", "leadsOver20"), assertMappedTransferObjectRelation("SalesPerson", "leadsOver20").getBinding());
         
-        assertEquals("self.leads!filter(lead|lead.value > 20 and lead.value < 50)", 
+        assertEquals("self.leads!filter(lead | lead.value > 20 and lead.value < 50)", 
         		assertNavigationProperty("_SalesPerson", "leadsOver20").getGetterExpression().getExpression());
 
 
@@ -118,7 +118,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("SalesPerson", "leadsBetweenCount").getDataType());
         assertEquals(assertDataProperty("_SalesPerson", "leadsBetweenCount"), assertMappedTransferObjectAttribute("SalesPerson", "leadsBetweenCount").getBinding());
         
-        assertEquals("self.leads!filter(lead|lead.value > input.minLeadsBetween and lead.value < input.maxLeadsBetween)!count()", 
+        assertEquals("self.leads!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)!count()", 
         		assertDataProperty("_SalesPerson", "leadsBetweenCount").getGetterExpression().getExpression());
 
 
@@ -128,7 +128,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("SalesPerson", "leadsOverWithMinCount").getDataType());
         assertEquals(assertDataProperty("_SalesPerson", "leadsOverWithMinCount"), assertMappedTransferObjectAttribute("SalesPerson", "leadsOverWithMinCount").getBinding());
         
-        assertEquals("self.leads!filter(lead|lead.value > input.minLeadsOverMin and lead.value < 100)!count()", 
+        assertEquals("self.leads!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)!count()", 
         		assertDataProperty("_SalesPerson", "leadsOverWithMinCount").getGetterExpression().getExpression());
 
 
@@ -138,7 +138,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("SalesPerson", "leadsOver10Count").getDataType());
         assertEquals(assertDataProperty("_SalesPerson", "leadsOver10Count"), assertMappedTransferObjectAttribute("SalesPerson", "leadsOver10Count").getBinding());
         
-        assertEquals("self.leads!filter(lead|lead.value > 10 and lead.value < 100)!count()", 
+        assertEquals("self.leads!filter(lead | lead.value > 10 and lead.value < 100)!count()", 
         		assertDataProperty("_SalesPerson", "leadsOver10Count").getGetterExpression().getExpression());
 
         assertDataProperty("_SalesPerson", "leadsOver20Count");
@@ -147,7 +147,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("SalesPerson", "leadsOver20Count").getDataType());
         assertEquals(assertDataProperty("_SalesPerson", "leadsOver20Count"), assertMappedTransferObjectAttribute("SalesPerson", "leadsOver20Count").getBinding());
         
-        assertEquals("self.leads!filter(lead|lead.value > 20 and lead.value < 50)!count()", 
+        assertEquals("self.leads!filter(lead | lead.value > 20 and lead.value < 50)!count()", 
         		assertDataProperty("_SalesPerson", "leadsOver20Count").getGetterExpression().getExpression());
 
 
