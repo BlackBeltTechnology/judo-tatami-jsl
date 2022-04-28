@@ -119,7 +119,7 @@ public class Jsl2Psm {
 						.put("defaultTransferObjectNamePostfix", parameter.defaultTransferObjectNamePostfix)
 						.put("generateDefaultTransferObject", parameter.generateDefaultTransferObject)
 						.put("defaultModelName", parameter.jslModel.getName())
-						.put("expressionUtils", new JslExpressionToJqlExpression())
+						.put("expressionUtils", new JslDerivedExpressionToJqlExpression())
 						.put("ecoreUtil", new EcoreUtil())
 						.put("jslUtils", new JslDslModelExtension())
 						.put("psmUtils", new PsmUtils(parameter.psmModel.getResourceSet())).build())
