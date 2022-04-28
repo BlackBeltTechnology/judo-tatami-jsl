@@ -21,7 +21,7 @@ entity SalesPerson {
     
 
 	derived Integer leadsBetweenCount(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) = self.leads!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)!count()
-    // self.leads!filter(lead|lead.value > input.minLeadsBetweenCount and lead.value < input.maxLeadsBetween)!count()
+    // self.leads!filter(lead|lead.value > input.minLeadsBetween and lead.value < input.maxLeadsBetween)!count()
 	
 	derived Integer leadsOverWithMinCount(Integer minLeadsOverMin = 5) = self.leadsBetweenCount(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100)
     // self.leads!filter(lead|lead.value > input.minLeadsOverMin and lead.value < 100)!count()

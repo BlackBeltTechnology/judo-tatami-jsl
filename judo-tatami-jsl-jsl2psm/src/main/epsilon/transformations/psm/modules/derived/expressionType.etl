@@ -7,10 +7,9 @@ rule CreateGetterExpressionForDataType
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForDataType");
         t.expression = expressionUtils.getJql(s);
 
-        // TODO: Handling parameter type later
-        //if (s.input.isDefined()) {
-        //    t.parameterType = s.input.getPSMTransferObjectTypeEquivalent();
-        //}
+		if (s.parameters.size() > 0) {
+			t.parameterType = s.equivalent("CreateUnmappedTransferObjectForQuery");
+		}
 
         log.debug("Created Data Expression Type for Data Property: " + s.name);
 }
@@ -22,10 +21,11 @@ rule CreateGetterExpressionForReferenceType
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForReferenceType");
         t.expression = expressionUtils.getJql(s);
 
-        // TODO: Handling parameter type later
-        //if (s.input.isDefined()) {
-        //    t.parameterType = s.input.getPSMTransferObjectTypeEquivalent();
-        //}
+		if (s.parameters.size() > 0) {
+			t.parameterType = s.equivalent("CreateUnmappedTransferObjectForQuery");
+		}
 
         log.debug("Created Reference Expression Type for Reference Type: " + s.name);
 }
+
+

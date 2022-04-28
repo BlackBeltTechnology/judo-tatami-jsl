@@ -1,0 +1,25 @@
+
+rule CreateUnmappedTransferObjectForQuery
+    transform s : JSL!EntityDerivedDeclaration
+    to t : JUDOPSM!UnmappedTransferObjectType {
+		guard: s.parameters.size() > 0
+		
+        t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectForQuery");
+        t.name = "defaultParametertNamePostfix_" + s.name + "_defaultParametertNamePostfix";
+		s.eContainer.eContainer.getModelRoot().elements.add(t);
+		log.debug("Created UnmappedTransferObjectType: " + t.name);
+}
+
+rule CreatedTransferObjectForDerivedParameter
+    transform s : JSL!DerivedParameter
+    to t: JUDOPSM!TransferAttribute {
+        guard: s.eContainer.isKindOf(JSL!EntityDerivedDeclaration)
+        
+        t.setId("(jsl/" + s.getId() + ")/CreatedTransferObjectForDerivedParameter");
+
+        t.name = s.name;
+        t.dataType = s.referenceType.getPSMEquivalent();
+        
+		s.eContainer.equivalent("CreateUnmappedTransferObjectForQuery").attributes.add(t);
+        log.debug("Created Transfer Attribute for Entity Derived Declaration: " + s.name);
+}

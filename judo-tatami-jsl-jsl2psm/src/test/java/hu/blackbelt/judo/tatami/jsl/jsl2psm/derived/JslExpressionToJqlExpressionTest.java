@@ -58,11 +58,11 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         assertEquals("self.leads!count() > 1", jql("SalesPerson", "t1"));
 
         assertEquals("self.leads!filter(lead|lead.value > input.limit)", jql("SalesPerson", "leadsOver"));
-        assertEquals("self.leadsOver", jql("SalesPerson", "leadsOver10"));
+        assertEquals("self.leads!filter(lead|lead.value > 10)", jql("SalesPerson", "leadsOver10"));
         assertEquals("self", jql("SalesPerson", "selfDerived"));
         assertEquals("Customer!any()", jql("SalesPerson", "anyCustomer"));
         assertEquals("\"\" + self.value + \"test\"", jql("SalesPerson", "stringConcat"));
-        assertEquals("self.leads!count() > 0?self.leads!filter(lead|lead.closed)!count() / self.leads!count():0", jql("SalesPerson", "complex"));
+        assertEquals("self.leads!count() > 0 ? self.leads!filter(lead|lead.closed)!count() / self.leads!count() : 0", jql("SalesPerson", "complex"));
         assertEquals("((1 + 2) * 3) / 4", jql("SalesPerson", "arithmetic"));
 
         assertEquals("`12:12:11.11`", jql("SalesPerson", "timeLiteral"));
