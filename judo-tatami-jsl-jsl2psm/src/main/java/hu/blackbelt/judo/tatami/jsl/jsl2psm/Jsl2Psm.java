@@ -8,7 +8,6 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
@@ -16,7 +15,6 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.epsilon.common.util.UriUtil;
@@ -26,11 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
@@ -83,7 +77,20 @@ public class Jsl2Psm {
         @Builder.Default
         @NonNull
         String defaultTransferObjectNamePostfix = "";
-}
+
+        @Builder.Default
+        @NonNull
+        String defaultParametertNamePrefix = "_";
+
+        @Builder.Default
+        @NonNull
+        String defaultParametertNamePostfix = "_Parameters";
+
+        @Builder.Default
+        @NonNull
+        String defaultParametertNameMidfix = "_";
+
+    }
 
 
     public static Jsl2PsmTransformationTrace executeJsl2PsmTransformation(Jsl2PsmParameter.Jsl2PsmParameterBuilder builder) throws Exception {
@@ -118,6 +125,9 @@ public class Jsl2Psm {
         				.put("defaultTransferObjectNamePrefix", parameter.defaultTransferObjectNamePrefix)
 						.put("defaultTransferObjectNamePostfix", parameter.defaultTransferObjectNamePostfix)
 						.put("generateDefaultTransferObject", parameter.generateDefaultTransferObject)
+						.put("defaultParametertNamePrefix", parameter.defaultTransferObjectNamePrefix)
+						.put("defaultParametertNamePostfix", parameter.defaultParametertNamePostfix)
+						.put("defaultParametertNameMidfix", parameter.defaultParametertNameMidfix)
 						.put("defaultModelName", parameter.jslModel.getName())
 						.put("expressionUtils", new JslExpressionToJqlExpression())
 						.put("ecoreUtil", new EcoreUtil())
