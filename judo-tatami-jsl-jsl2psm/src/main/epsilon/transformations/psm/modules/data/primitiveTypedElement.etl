@@ -20,6 +20,50 @@ rule CreateAttributeFromField
         log.debug("Created Attribute (Field): " + t.name);
     }
 
+/*
+rule CreatePrimitiveAccessorForExpression
+    transform s : JSL!BinaryOperation
+    to t: JUDOPSM!StaticData {
+        guard: (s.eContainer.isKindOf(JSL!EntityIdentifierDeclaration) or s.eContainer.isKindOf(JSL!EntityFieldDeclaration)) and s.eContainer.`default` == s
+
+        t.setId("(jsl/" + s.getId() + ")/CreatePrimitiveAccessorForExpression");
+        t.name = "_" + s.eContainer.name + "_default_" + s.eContainer.eContainer.name;
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+        t.required = false;
+
+        var det = new JUDOPSM!DataExpressionType();
+        det.expression = expressionUtils.getJql(s);
+
+        t.getterExpression = det;
+
+        s.eContainer.equivalent("CreateTransferAttributeForDefaultTransferObjectType").defaultValue = t;
+        s.eContainer.eContainer.eContainer.getPSMEquivalent().elements.add(t);
+
+        log.debug("Created PrimitiveAccessor for Default Value: " + s);
+    }
+*/
+
+rule CreatePrimitiveAccessorForExpression
+    transform s : JSL!BinaryOperation
+    to t: JUDOPSM!DataProperty {
+        guard: (s.eContainer.isKindOf(JSL!EntityIdentifierDeclaration) or s.eContainer.isKindOf(JSL!EntityFieldDeclaration)) and s.eContainer.`default` == s
+
+        t.setId("(jsl/" + s.getId() + ")/CreatePrimitiveAccessorForExpression");
+        t.name = "_" + s.eContainer.name + "_default_" + s.eContainer.eContainer.name;
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+        t.required = false;
+
+        var det = new JUDOPSM!DataExpressionType();
+        det.expression = expressionUtils.getJql(s);
+
+        t.getterExpression = det;
+
+        s.eContainer.equivalent("CreateTransferAttributeForDefaultTransferObjectType").defaultValue = t;
+        s.eContainer.eContainer.getPSMEquivalent().dataProperties.add(t);
+
+        log.debug("Created PrimitiveAccessor for Default Value: " + s);
+    }
+
 rule CreateAttributeFromIdentifier
     transform s: JSL!EntityIdentifierDeclaration
     to t: JUDOPSM!Attribute

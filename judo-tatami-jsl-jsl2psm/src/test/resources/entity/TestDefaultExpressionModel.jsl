@@ -1,0 +1,23 @@
+model TestDefaultExpressionModel
+
+type numeric Integer precision 9  scale 0
+type date Date
+type timestamp Timestamp
+type time Time
+type string String max-length 32
+type numeric Decimal precision 9  scale 2
+type boolean Boolean
+
+entity SalesPerson {
+    field Integer value = 1 + 2
+    field Integer t1 = self.value > 1
+    field String stringConcat = "" + self.value + "test"
+    field Time timeLiteral = `12:12:11.11`
+    field Timestamp timestampLiteral = `2020-12-01T12:12:11.11Z`
+    field Date dateLiteral = `2020-12-01`
+    field String ternaryString = 1 < 2 ? "hello" : "goodbye"
+    field String stringLiteral = "String\nString2"
+    field String stringRawLiteral = r"Raw\n"
+    field Decimal decimalLiteral = 100.12
+}
+
