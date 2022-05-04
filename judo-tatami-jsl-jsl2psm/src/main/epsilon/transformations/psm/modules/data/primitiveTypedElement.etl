@@ -20,33 +20,13 @@ rule CreateAttributeFromField
         log.debug("Created Attribute (Field): " + t.name);
     }
 
-rule CreateStaticDataDefaultValueForBinaryOperation
-    transform s : JSL!BinaryOperation
-    to t: JUDOPSM!StaticData {
-        guard: s.isStaticDataDefaultValue()
-
-        t.setId("(jsl/" + s.getId() + ")/CreateStaticDataDefaultValueForBinaryOperation");
-        t.name = "_" + s.eContainer.name + "_default_" + s.eContainer.eContainer.name;
-        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
-        t.required = false;
-
-        var det = new JUDOPSM!DataExpressionType();
-        det.expression = expressionUtils.getJql(s);
-
-        t.getterExpression = det;
-
-        s.eContainer.equivalent("CreateTransferAttributeForDefaultTransferObjectType").defaultValue = t;
-        s.eContainer.eContainer.eContainer.getPSMEquivalent().elements.add(t);
-
-        log.debug("Created StaticData for Default Value: " + det.expression);
-    }
-
-rule CreateDataPropertyDefaultValueForBinaryOperation
-    transform s : JSL!BinaryOperation
+@greedy
+rule CreateDefaultValueForPrimitiveEntityMember
+    transform s : JSL!Expression
     to t: JUDOPSM!DataProperty {
-        guard: s.isDataPropertyDefaultValue()
+        guard: s.isDefaultValue() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
 
-        t.setId("(jsl/" + s.getId() + ")/CreateDataPropertyDefaultValueForBinaryOperation");
+        t.setId("(jsl/" + s.getId() + ")/CreateDefaultValueForPrimitiveEntityMember");
         t.name = "_" + s.eContainer.name + "_default_" + s.eContainer.eContainer.name;
         t.dataType = s.eContainer.referenceType.getPSMEquivalent();
         t.required = false;
@@ -56,7 +36,12 @@ rule CreateDataPropertyDefaultValueForBinaryOperation
 
         t.getterExpression = det;
 
-        s.eContainer.equivalent("CreateTransferAttributeForDefaultTransferObjectType").defaultValue = t;
+        if (s.eContainer.isKindOf(JSL!EntityFieldDeclaration)) {
+            s.eContainer.equivalent("CreateTransferAttributeForDefaultTransferObjectType").defaultValue = t;
+        } else if (s.eContainer.isKindOf(JSL!EntityIdentifierDeclaration)) {
+            s.eContainer.equivalent("CreateIdentifierTransferAttributeForDefaultTransferObjectType").defaultValue = t;
+        }
+
         s.eContainer.eContainer.getPSMEquivalent().dataProperties.add(t);
 
         log.debug("Created DataProperty for Default Value: " + det.expression);

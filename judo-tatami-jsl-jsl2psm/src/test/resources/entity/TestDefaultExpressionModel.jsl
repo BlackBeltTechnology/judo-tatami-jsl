@@ -8,16 +8,38 @@ type string String max-length 32
 type numeric Decimal precision 9  scale 2
 type boolean Boolean
 
-entity SalesPerson {
-    field Integer value = 1 + 2
-    field Integer t1 = self.value > 1
-    field String stringConcat = "" + self.value + "test"
-    field Time timeLiteral = `12:12:11.11`
-    field Timestamp timestampLiteral = `2020-12-01T12:12:11.11Z`
-    field Date dateLiteral = `2020-12-01`
-    field String ternaryString = 1 < 2 ? "hello" : "goodbye"
-    field String stringLiteral = "String\nString2"
-    field String stringRawLiteral = r"Raw\n"
-    field Decimal decimalLiteral = 100.12
+entity LiteralEntity {
+    field Boolean booleanLiteral = true
+    field Integer intLiteral = 1
+    field Decimal decimalLiteral = 1.23
+    field String escapedStringLiteral = "escaped\nstring"
+    field String rawStringLiteral = r"raw\nstring"
+    field Date dateLiteral = `2020-02-18`
+    field Timestamp timeStampLiteral = `2020-02-18T10:11:12Z`
+    field Time timeLiteral = `23:59:59`
 }
 
+entity LiteralEntityWithIdentifiers {
+    identifier Boolean idBooleanLiteral = true
+    identifier Integer idIntLiteral = 1
+    identifier Decimal idDecimalLiteral = 1.23
+    identifier String idEscapedStringLiteral = "escaped\nstring"
+    identifier String idRawStringLiteral = r"raw\nstring"
+    identifier Date idDateLiteral = `2020-02-18`
+    identifier Timestamp idTimeStampLiteral = `2020-02-18T10:11:12Z`
+    identifier Time idTimeLiteral = `23:59:59`
+}
+
+entity ComplexDefaultsEntity {
+    field Decimal parenthesizedField = (
+        (1 + 2) * 3
+    ) / 4
+    field String ternaryField = 1 < 2 ? "yes" : "no"
+    field Boolean unaryField = not true
+    field Integer binaryField = 1 + 2
+}
+
+entity CompositionsDefaultsEntity {
+    field LiteralEntity defaultSingleLiteral = LiteralEntity!any()
+    field LiteralEntity[] defaultMultipleLiteral = LiteralEntity!filter(e | e.intLiteral > 15)
+}
