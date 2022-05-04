@@ -20,13 +20,12 @@ rule CreateAttributeFromField
         log.debug("Created Attribute (Field): " + t.name);
     }
 
-/*
-rule CreatePrimitiveAccessorForExpression
+rule CreateStaticDataDefaultValueForBinaryOperation
     transform s : JSL!BinaryOperation
     to t: JUDOPSM!StaticData {
-        guard: (s.eContainer.isKindOf(JSL!EntityIdentifierDeclaration) or s.eContainer.isKindOf(JSL!EntityFieldDeclaration)) and s.eContainer.`default` == s
+        guard: s.isStaticDataDefaultValue()
 
-        t.setId("(jsl/" + s.getId() + ")/CreatePrimitiveAccessorForExpression");
+        t.setId("(jsl/" + s.getId() + ")/CreateStaticDataDefaultValueForBinaryOperation");
         t.name = "_" + s.eContainer.name + "_default_" + s.eContainer.eContainer.name;
         t.dataType = s.eContainer.referenceType.getPSMEquivalent();
         t.required = false;
@@ -39,16 +38,15 @@ rule CreatePrimitiveAccessorForExpression
         s.eContainer.equivalent("CreateTransferAttributeForDefaultTransferObjectType").defaultValue = t;
         s.eContainer.eContainer.eContainer.getPSMEquivalent().elements.add(t);
 
-        log.debug("Created PrimitiveAccessor for Default Value: " + s);
+        log.debug("Created StaticData for Default Value: " + det.expression);
     }
-*/
 
-rule CreatePrimitiveAccessorForExpression
+rule CreateDataPropertyDefaultValueForBinaryOperation
     transform s : JSL!BinaryOperation
     to t: JUDOPSM!DataProperty {
-        guard: (s.eContainer.isKindOf(JSL!EntityIdentifierDeclaration) or s.eContainer.isKindOf(JSL!EntityFieldDeclaration)) and s.eContainer.`default` == s
+        guard: s.isDataPropertyDefaultValue()
 
-        t.setId("(jsl/" + s.getId() + ")/CreatePrimitiveAccessorForExpression");
+        t.setId("(jsl/" + s.getId() + ")/CreateDataPropertyDefaultValueForBinaryOperation");
         t.name = "_" + s.eContainer.name + "_default_" + s.eContainer.eContainer.name;
         t.dataType = s.eContainer.referenceType.getPSMEquivalent();
         t.required = false;
@@ -61,7 +59,7 @@ rule CreatePrimitiveAccessorForExpression
         s.eContainer.equivalent("CreateTransferAttributeForDefaultTransferObjectType").defaultValue = t;
         s.eContainer.eContainer.getPSMEquivalent().dataProperties.add(t);
 
-        log.debug("Created PrimitiveAccessor for Default Value: " + s);
+        log.debug("Created DataProperty for Default Value: " + det.expression);
     }
 
 rule CreateAttributeFromIdentifier

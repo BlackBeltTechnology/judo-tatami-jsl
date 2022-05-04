@@ -1,0 +1,14 @@
+@cached
+operation JSL!Expression isDefaultValue(): Boolean {
+	return (self.eContainer.isKindOf(JSL!EntityIdentifierDeclaration) or self.eContainer.isKindOf(JSL!EntityFieldDeclaration)) and self.eContainer.`default` == self;
+}
+
+@cached
+operation JSL!Expression isStaticDataDefaultValue(): Boolean {
+	return self.isDefaultValue() and not expressionUtils.getJql(self).matches(".*self\\..*");
+}
+
+@cached
+operation JSL!Expression isDataPropertyDefaultValue(): Boolean {
+	return self.isDefaultValue() and expressionUtils.getJql(self).matches(".*self\\..*");
+}

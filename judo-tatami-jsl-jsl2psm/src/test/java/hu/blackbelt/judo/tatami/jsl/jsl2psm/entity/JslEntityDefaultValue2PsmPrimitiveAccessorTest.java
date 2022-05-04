@@ -3,7 +3,11 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.psm.data.EntityType;
+import hu.blackbelt.judo.meta.psm.derived.DataProperty;
+import hu.blackbelt.judo.meta.psm.derived.PrimitiveAccessor;
 import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
+import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.core.IsEqual;
@@ -15,11 +19,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest {
@@ -58,15 +64,16 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
 
         transform();
 
-//        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
-        assertEquals(1, getEntityTypes().size());
+        final DataProperty t1DataProperty = assertDataProperty("_SalesPerson", "_t1_default_SalesPerson");
+        final DataProperty stringConcatDataProperty = assertDataProperty("_SalesPerson", "_stringConcat_default_SalesPerson");
+        final PrimitiveAccessor valueDefaultValue = assertMappedTransferObjectAttribute("SalesPerson", "value").getDefaultValue();
 
-        final Set<String> psmEntityTypeNames = getEntityTypes().stream().map(NamedElement::getName).collect(Collectors.toSet());
-        final Set<String> jslEntityTypeDeclarationNames = ImmutableSet.of("_SalesPerson");
-        assertThat(psmEntityTypeNames, IsEqual.equalTo(jslEntityTypeDeclarationNames));
+        assertEquals("self.value > 1", t1DataProperty.getGetterExpression().getExpression());
+        assertEquals("\"\" + self.value + \"test\"", stringConcatDataProperty.getGetterExpression().getExpression());
+        assertEquals("1 + 2", valueDefaultValue.getGetterExpression().getExpression());
 
-        assertEquals("self.value > 1", assertDataProperty("_SalesPerson", "_t1_default_SalesPerson").getGetterExpression().getExpression());
-        assertEquals("1 + 2", assertDataProperty("_SalesPerson", "_value_default_SalesPerson").getGetterExpression().getExpression());
-        assertEquals("\"\" + self.value + \"test\"", assertDataProperty("_SalesPerson", "_stringConcat_default_SalesPerson").getGetterExpression().getExpression());
+        assertEquals(assertNumericType("Integer"), valueDefaultValue.getDataType());
+        assertEquals(assertNumericType("Integer"), t1DataProperty.getDataType());
+        assertEquals(assertStringType("String"), stringConcatDataProperty.getDataType());
     }
 }
