@@ -13,6 +13,7 @@ import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.eclipse.emf.ecore.EObject;
@@ -38,6 +39,7 @@ public class Jsl2Psm {
     public static final String SCRIPT_ROOT_TATAMI_JSL_2_PSM = "tatami/jsl2psm/transformations/psm/";
 
     @Builder(builderMethodName = "jsl2PsmParameter")
+    @Getter
     public static class Jsl2PsmParameter {
 
         @NonNull
@@ -80,16 +82,27 @@ public class Jsl2Psm {
 
         @Builder.Default
         @NonNull
-        String defaultParametertNamePrefix = "_";
+        String defaultParameterNamePrefix = "_";
 
         @Builder.Default
         @NonNull
-        String defaultParametertNamePostfix = "_Parameters";
+        String defaultParameterNamePostfix = "_Parameters";
 
         @Builder.Default
         @NonNull
-        String defaultParametertNameMidfix = "_";
+        String defaultParameterNameMidfix = "_";
 
+        @Builder.Default
+        @NonNull
+        String defaultDefaultNamePrefix = "_";
+
+        @Builder.Default
+        @NonNull
+        String defaultDefaultNamePostfix = "";
+
+        @Builder.Default
+        @NonNull
+        String defaultDefaultNameMidfix = "_Default_";
     }
 
 
@@ -125,9 +138,12 @@ public class Jsl2Psm {
         				.put("defaultTransferObjectNamePrefix", parameter.defaultTransferObjectNamePrefix)
 						.put("defaultTransferObjectNamePostfix", parameter.defaultTransferObjectNamePostfix)
 						.put("generateDefaultTransferObject", parameter.generateDefaultTransferObject)
-						.put("defaultParametertNamePrefix", parameter.defaultTransferObjectNamePrefix)
-						.put("defaultParametertNamePostfix", parameter.defaultParametertNamePostfix)
-						.put("defaultParametertNameMidfix", parameter.defaultParametertNameMidfix)
+						.put("defaultParameterNamePrefix", parameter.defaultParameterNamePrefix)
+						.put("defaultParameterNamePostfix", parameter.defaultParameterNamePostfix)
+						.put("defaultParameterNameMidfix", parameter.defaultParameterNameMidfix)
+                        .put("defaultDefaultNamePrefix", parameter.defaultDefaultNamePrefix)
+                        .put("defaultDefaultNamePostfix", parameter.defaultDefaultNamePostfix)
+                        .put("defaultDefaultNameMidfix", parameter.defaultDefaultNameMidfix)
 						.put("defaultModelName", parameter.jslModel.getName())
 						.put("expressionUtils", new JslExpressionToJqlExpression())
 						.put("ecoreUtil", new EcoreUtil())
