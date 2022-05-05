@@ -1,25 +1,27 @@
 import "../../../../operations/_importAll.eol";
 
-rule CreateUnmappedTransferObjectType
+rule CreateUnmappedErrorTransferObjectType
     transform s : JSL!ErrorDeclaration
     to t : JUDOPSM!UnmappedTransferObjectType
     {
-        t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectType");
+        t.setId("(jsl/" + s.getId() + ")/CreateUnmappedErrorTransferObjectType");
         t.name = s.name;
         t.optional = false;
         t.queryCustomizer = false;
 
-        // TODO: implement inheritance JNG-3684
-        for (field in s.fields) {
-            var attr = new JUDOPSM!TransferAttribute();
-            attr.setId("(jsl/" + field.getId() + ")/CreateTransferAttribute");
-            attr.name = field.name;
-            attr.required = field.isRequired;
-            attr.dataType = field.referenceType.getPSMEquivalent();
-
-            t.attributes.add(attr);
-        }
-
         s.eContainer.getModelRoot().elements.add(t);
         log.debug("Created ErrorType: " + t.name);
+    }
+
+rule CreateErrorFieldTransferAttribute
+    transform s : JSL!ErrorField
+    to t : JUDOPSM!TransferAttribute
+    {
+        t.name = s.name;
+        t.required = s.isRequired;
+        t.dataType = s.referenceType.getPSMEquivalent();
+
+        s.eContainer.equivalent('CreateUnmappedErrorTransferObjectType').attributes.add(t);
+
+        log.debug("Created TransferAttribute for ErrorField: " + t.name);
     }
