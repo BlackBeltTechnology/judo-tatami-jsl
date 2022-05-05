@@ -169,7 +169,7 @@ public class JslExpressionToJqlExpression {
      * : SwitchExpression
      * ;
      */
-    private String getJql(final Expression it) {
+    public String getJql(final Expression it) {
         return getJqlDispacher(it);
     }
 
