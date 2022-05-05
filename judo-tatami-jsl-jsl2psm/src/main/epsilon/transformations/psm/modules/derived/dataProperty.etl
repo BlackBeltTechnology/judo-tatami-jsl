@@ -12,5 +12,5 @@ rule CreateDataProperty
       t.dataType = s.referenceType.getPSMEquivalent();
 
       s.eContainer.getPSMEquivalent().dataProperties.add(t);
-      log.error("Created Data Property: " + t.name);
+      log.debug("Created Data Property: " + t.name);
 }

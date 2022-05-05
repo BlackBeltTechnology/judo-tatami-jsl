@@ -20,6 +20,56 @@ rule CreateAttributeFromField
         log.debug("Created Attribute (Field): " + t.name);
     }
 
+@greedy
+rule CreateDefaultValueForPrimitiveEntityMember
+    transform s : JSL!Expression
+    to t: JUDOPSM!DataProperty {
+        guard: s.isDefaultValueForEntity() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDefaultValueForPrimitiveEntityMember");
+        t.name = "_" + s.eContainer.name + "_default_" + s.eContainer.eContainer.name;
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+        t.required = false;
+
+        var det = new JUDOPSM!DataExpressionType();
+        det.expression = expressionUtils.getJql(s);
+
+        t.getterExpression = det;
+
+        if (s.eContainer.isKindOf(JSL!EntityFieldDeclaration)) {
+            s.eContainer.equivalent("CreateTransferAttributeForDefaultTransferObjectType").defaultValue = t;
+        } else if (s.eContainer.isKindOf(JSL!EntityIdentifierDeclaration)) {
+            s.eContainer.equivalent("CreateIdentifierTransferAttributeForDefaultTransferObjectType").defaultValue = t;
+        }
+
+        s.eContainer.eContainer.getPSMEquivalent().dataProperties.add(t);
+
+        log.debug("Created DataProperty for Default Value: " + det.expression);
+    }
+
+@greedy
+rule CreateDefaultValueForPrimitiveErrorField
+    transform s : JSL!Expression
+    to t: JUDOPSM!StaticData {
+        guard: s.isDefaultValueForError() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDefaultValueForPrimitiveErrorField");
+        t.name = "_" + s.eContainer.name + "_default_" + s.eContainer.eContainer.name;
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+        t.required = false;
+
+        var det = new JUDOPSM!DataExpressionType();
+        det.expression = expressionUtils.getJql(s);
+
+        t.getterExpression = det;
+
+        s.eContainer.equivalent('CreateErrorFieldTransferAttribute').defaultValue = t;
+
+        s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
+
+        log.debug("Created StaticData for Default Value: " + det.expression);
+    }
+
 rule CreateAttributeFromIdentifier
     transform s: JSL!EntityIdentifierDeclaration
     to t: JUDOPSM!Attribute
