@@ -5,5 +5,5 @@ operation JSL!Expression isDefaultValueForEntity(): Boolean {
 
 @cached
 operation JSL!Expression isDefaultValueForError(): Boolean {
-	return self.eContainer.isKindOf(JSL!ErrorField);
+	return self.eContainer.isKindOf(JSL!ErrorField) and self.eContainer.`default` == self;
 }
