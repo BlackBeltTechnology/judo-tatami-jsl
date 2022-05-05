@@ -1,25 +1,30 @@
 import "../../../../operations/_importAll.eol";
 
-rule CreateUnmappedTransferObjectType
+rule CreateUnmappedErrorTransferObjectType
     transform s : JSL!ErrorDeclaration
     to t : JUDOPSM!UnmappedTransferObjectType
     {
-        t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectType");
+        t.setId("(jsl/" + s.getId() + ")/CreateUnmappedErrorTransferObjectType");
         t.name = s.name;
         t.optional = false;
         t.queryCustomizer = false;
 
-        // TODO: implement inheritance JNG-3684
-        for (field in s.fields) {
-            var attr = new JUDOPSM!TransferAttribute();
-            attr.setId("(jsl/" + field.getId() + ")/CreateTransferAttribute");
-            attr.name = field.name;
-            attr.required = field.isRequired;
-            attr.dataType = field.referenceType.getPSMEquivalent();
+        s.eContainer.getModelRoot().elements.add(t);
 
-            t.attributes.add(attr);
+        // By default owned attributes are transformed in `transferAttribute.etl`, therefore we only transform inherited
+        // members by calling the flattened member list from `s.getInheritedFields()`
+        if (s.`extends`.isDefined()) {
+            var inheritedFields = s.getInheritedFields();
+
+            for (inheritedField in inheritedFields) {
+                if (inheritedField.isKindOf(JSL!ErrorField)) {
+                    t.attributes.add(inheritedField.equivalentWithPrefix("CreateTransferAttributeForErrorTransferObjectType", t.getId()));
+                } else {
+                    throw "Unsupported Error Field Type: " + inheritedField.name;
+                }
+            }
         }
 
-        s.eContainer.getModelRoot().elements.add(t);
         log.debug("Created ErrorType: " + t.name);
     }
+

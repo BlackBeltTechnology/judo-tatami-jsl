@@ -2,12 +2,10 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.psm.derived.DataProperty;
-import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
+import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.Jsl2PsmParameter.Jsl2PsmParameterBuilder;
 import lombok.extern.slf4j.Slf4j;
 
-import org.eclipse.epsilon.ecl.parse.Ecl_EolParserRules.returnStatement_return;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +13,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class TransformationParametersTest extends AbstractTest {
@@ -62,7 +56,13 @@ public class TransformationParametersTest extends AbstractTest {
     		return parameters.defaultTransferObjectNamePrefix("_DefaultTransferObject");
     	} else if (testName.equals("TestTransferObjectPostfix")) {
     		return parameters.defaultTransferObjectNamePostfix("_DefaultTransferObject");
-    	}
+    	} else if (testName.equals("TestDefaultDefaultNamePrefix")) {
+            return parameters.defaultDefaultNamePrefix("_pre_");
+        } else if (testName.equals("TestDefaultDefaultNameMidfix")) {
+            return parameters.defaultDefaultNameMidfix("_Default_Mid_");
+        } else if (testName.equals("TestDefaultDefaultNamePostfix")) {
+            return parameters.defaultDefaultNamePostfix("_post");
+        }
     	
     	return parameters;
     }
@@ -167,5 +167,75 @@ public class TransformationParametersTest extends AbstractTest {
         assertMappedTransferObject("T_DefaultTransferObject");
     }
 
+    @Test
+    void testDefaultDefaultNamePrefix() throws Exception {
+        testName = "TestDefaultDefaultNamePrefix";
 
+        jslModel = parser.getModelFromStrings(
+                "Test",
+                List.of("model Test\n" +
+                        "\n" +
+                        "type string String max-length 32\n" +
+                        "\n" +
+                        "entity T {\n" +
+                        "\tfield String strField = \"hello\"" +
+                        "}\n"
+                )
+        );
+
+        transform();
+
+        assertEntityType("_T");
+        assertEquals(1, getMappedTransferObjectTypes().size());
+        final TransferAttribute strField = assertMappedTransferObjectAttribute("T", "strField");
+        assertEquals("_pre_strField_Default_T", strField.getDefaultValue().getName());
+    }
+
+    @Test
+    void testDefaultDefaultNameMidfix() throws Exception {
+        testName = "TestDefaultDefaultNameMidfix";
+
+        jslModel = parser.getModelFromStrings(
+                "Test",
+                List.of("model Test\n" +
+                        "\n" +
+                        "type string String max-length 32\n" +
+                        "\n" +
+                        "entity T {\n" +
+                        "\tfield String strField = \"hello\"" +
+                        "}\n"
+                )
+        );
+
+        transform();
+
+        assertEntityType("_T");
+        assertEquals(1, getMappedTransferObjectTypes().size());
+        final TransferAttribute strField = assertMappedTransferObjectAttribute("T", "strField");
+        assertEquals("_strField_Default_Mid_T", strField.getDefaultValue().getName());
+    }
+
+    @Test
+    void testDefaultDefaultNamePostfix() throws Exception {
+        testName = "TestDefaultDefaultNamePostfix";
+
+        jslModel = parser.getModelFromStrings(
+                "Test",
+                List.of("model Test\n" +
+                        "\n" +
+                        "type string String max-length 32\n" +
+                        "\n" +
+                        "entity T {\n" +
+                        "\tfield String strField = \"hello\"" +
+                        "}\n"
+                )
+        );
+
+        transform();
+
+        assertEntityType("_T");
+        assertEquals(1, getMappedTransferObjectTypes().size());
+        final TransferAttribute strField = assertMappedTransferObjectAttribute("T", "strField");
+        assertEquals("_strField_Default_T_post", strField.getDefaultValue().getName());
+    }
 }

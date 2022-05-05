@@ -110,7 +110,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
 
 
         final Set<DataProperty> dataProperties = psmModelWrapper.getStreamOfPsmDerivedDataProperty().collect(Collectors.toSet());
-        assertEquals(4, dataProperties.size());
+        assertEquals(5, dataProperties.size());
         
         assertDataProperty("_SalesPerson", "leadsBetweenCount");
         assertEquals(assertNumericType("Integer"), assertDataProperty("_SalesPerson", "leadsBetweenCount").getDataType());
@@ -150,6 +150,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         assertEquals("self.leads!filter(lead | lead.value > 20 and lead.value < 50)!count()", 
         		assertDataProperty("_SalesPerson", "leadsOver20Count").getGetterExpression().getExpression());
 
-
+        assertEquals("100000",
+                assertMappedTransferObjectAttribute("Lead", "value").getDefaultValue().getGetterExpression().getExpression());
     }
 }
