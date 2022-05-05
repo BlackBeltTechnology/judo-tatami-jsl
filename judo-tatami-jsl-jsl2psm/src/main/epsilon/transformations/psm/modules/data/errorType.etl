@@ -10,19 +10,21 @@ rule CreateUnmappedErrorTransferObjectType
         t.queryCustomizer = false;
 
         s.eContainer.getModelRoot().elements.add(t);
+
+        // By default owned attributes are transformed in `transferAttribute.etl`, therefore we only transform inherited
+        // members by calling the flattened member list from `s.getInheritedFields()`
+        if (s.`extends`.isDefined()) {
+            var inheritedFields = s.getInheritedFields();
+
+            for (inheritedField in inheritedFields) {
+                if (inheritedField.isKindOf(JSL!ErrorField)) {
+                    t.attributes.add(inheritedField.equivalentWithPrefix("CreateTransferAttributeForErrorTransferObjectType", t.getId()));
+                } else {
+                    throw "Unsupported Error Field Type: " + inheritedField.name;
+                }
+            }
+        }
+
         log.debug("Created ErrorType: " + t.name);
     }
 
-rule CreateErrorFieldTransferAttribute
-    transform s : JSL!ErrorField
-    to t : JUDOPSM!TransferAttribute
-    {
-        t.setId("(jsl/" + s.getId() + ")/CreateErrorFieldTransferAttribute");
-        t.name = s.name;
-        t.required = s.isRequired;
-        t.dataType = s.referenceType.getPSMEquivalent();
-
-        s.eContainer.equivalent('CreateUnmappedErrorTransferObjectType').attributes.add(t);
-
-        log.debug("Created TransferAttribute for ErrorField: " + t.name);
-    }

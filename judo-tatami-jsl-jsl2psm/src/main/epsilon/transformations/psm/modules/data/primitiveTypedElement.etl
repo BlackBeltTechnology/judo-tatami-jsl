@@ -63,7 +63,7 @@ rule CreateDefaultValueForPrimitiveErrorField
 
         t.getterExpression = det;
 
-        s.eContainer.equivalent('CreateErrorFieldTransferAttribute').defaultValue = t;
+        s.eContainer.equivalent('CreateTransferAttributeForErrorTransferObjectType').defaultValue = t;
 
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
 

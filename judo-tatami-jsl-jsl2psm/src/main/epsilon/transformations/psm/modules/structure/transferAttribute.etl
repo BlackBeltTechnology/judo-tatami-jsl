@@ -111,4 +111,39 @@ rule CloneDerivedTransferAttributeForDefaultTransferObjectType
         log.debug("Clone TransferAttribute (Derived) for DefaultTransferObjectType: [" + t.name + "]");
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+// Error Field
+////////////////////////////////////////////////////////////////////////////////////////////
 
+@abstract
+rule AbstractCreateTransferAttributeForErrorTransferObjectType
+    transform s: JSL!ErrorField
+    to t: JUDOPSM!TransferAttribute {
+        guard: generateDefaultTransferObject
+        t.required = s.isRequired;
+        t.name = s.name;
+        t.dataType = s.referenceType.getPSMEquivalent();
+}
+
+// Create error transfer object attribute and add it to default transfer object
+rule CreateTransferAttributeForErrorTransferObjectType
+    transform s: JSL!ErrorField
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForErrorTransferObjectType {
+        guard: generateDefaultTransferObject
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferAttributeForErrorTransferObjectType");
+        s.eContainer.equivalent('CreateUnmappedErrorTransferObjectType').attributes.add(t);
+        log.debug("Created TransferAttribute (Field) for ErrorTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+// Create error transfer object attribute clone. It creates the attribute on the resource root,
+// the caller code have to add it to the corresponding transfer object
+// This method can be used to make clone attributes to inherited transfer objects
+@lazy
+rule CloneTransferAttributeForErrorTransferObjectType
+    transform s: JSL!ErrorField
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForErrorTransferObjectType {
+        t.setId("(jsl/" + s.getId() + ")/CloneTransferAttributeForErrorTransferObjectType");
+        log.debug("Clone TransferAttribute (Field) for DefaultTransferObjectType: [" + t.name + "]");
+}
