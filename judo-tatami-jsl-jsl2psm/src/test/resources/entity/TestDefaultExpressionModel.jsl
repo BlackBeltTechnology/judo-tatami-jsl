@@ -1,12 +1,16 @@
 model TestDefaultExpressionModel
 
-type numeric Integer precision 9  scale 0
+type numeric Integer precision 9 scale 0
 type date Date
 type timestamp Timestamp
 type time Time
 type string String max-length 32
-type numeric Decimal precision 9  scale 2
+type numeric Decimal precision 9 scale 2
 type boolean Boolean
+
+error ErrorWithDefaults {
+    field String withDefault = "Hello!"
+}
 
 entity LiteralEntity {
     field Boolean booleanLiteral = true
@@ -37,9 +41,4 @@ entity ComplexDefaultsEntity {
     field String ternaryField = 1 < 2 ? "yes" : "no"
     field Boolean unaryField = not true
     field Integer binaryField = 1 + 2
-}
-
-entity CompositionsDefaultsEntity {
-    field LiteralEntity defaultSingleLiteral = LiteralEntity!any()
-    field LiteralEntity[] defaultMultipleLiteral = LiteralEntity!filter(e | e.intLiteral > 15)
 }

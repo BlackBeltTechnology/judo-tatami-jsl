@@ -75,6 +75,10 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
         assertStringDefault("String", "ComplexDefaultsEntity", "ternaryField", "1 < 2 ? \"yes\" : \"no\"");
         assertBooleanDefault("Boolean", "ComplexDefaultsEntity", "unaryField", "not true");
         assertNumericDefault("Integer", "ComplexDefaultsEntity", "binaryField", "1 + 2");
+
+        final PrimitiveAccessor withDefaultErrorField = assertUnmappedTransferObjectAttribute("ErrorWithDefaults", "withDefault").getDefaultValue();
+        assertEquals(assertStringType("String"), withDefaultErrorField.getDataType());
+        assertEquals("\"Hello!\"", withDefaultErrorField.getGetterExpression().getExpression());
     }
 
     private void assertBooleanDefault(String type, String toName, String attrName, String defaultValue) {
