@@ -17,6 +17,7 @@ rule CreateErrorFieldTransferAttribute
     transform s : JSL!ErrorField
     to t : JUDOPSM!TransferAttribute
     {
+        t.setId("(jsl/" + s.getId() + ")/CreateErrorFieldTransferAttribute");
         t.name = s.name;
         t.required = s.isRequired;
         t.dataType = s.referenceType.getPSMEquivalent();
