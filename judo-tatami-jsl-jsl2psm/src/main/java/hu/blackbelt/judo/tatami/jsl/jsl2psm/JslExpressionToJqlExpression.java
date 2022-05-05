@@ -27,25 +27,16 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.TimeLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TimeStampLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.UnaryOperation;
 import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
-import lombok.AllArgsConstructor;
-import lombok.Setter;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.epsilon.ecl.parse.Ecl_EolParserRules.returnStatement_return;
-
-import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.Stack;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("all")
@@ -113,6 +104,15 @@ public class JslExpressionToJqlExpression {
         transformer.collectedParameterValues = transformer.collectParameterValues();
         return transformer.getJql(transformer.baseDerivedDeclaration.getExpression());
     }
+    
+    public static String getJqlForExpression(Expression expression) {
+        JslExpressionToJqlExpression transformer = new JslExpressionToJqlExpression();
+        transformer.originalDerivedDeclaration = null;
+        transformer.entityDerivedDeclarationCallStack = new ArrayDeque<>();        
+        transformer.baseDerivedDeclaration = null;
+        transformer.collectedParameterValues = new HashMap<>();
+        return transformer.getJql(expression);
+    }
 
     private Map<DerivedParameter, EObject> collectParameterValues() {
         Map<DerivedParameter, EObject> derivedValueOrParameter = new HashMap();
@@ -169,7 +169,7 @@ public class JslExpressionToJqlExpression {
      * : SwitchExpression
      * ;
      */
-    public String getJql(final Expression it) {
+    private String getJql(final Expression it) {
         return getJqlDispacher(it);
     }
 
