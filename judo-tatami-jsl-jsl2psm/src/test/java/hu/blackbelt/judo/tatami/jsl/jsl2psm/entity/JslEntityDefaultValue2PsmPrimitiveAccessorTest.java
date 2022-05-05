@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.psm.derived.PrimitiveAccessor;
+import hu.blackbelt.judo.meta.psm.derived.StaticData;
 import hu.blackbelt.judo.meta.psm.type.FlatPrimitiveType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm;
@@ -79,9 +80,7 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
         assertDefault("ComplexDefaultsEntity", "unaryField", "not true", () -> assertBooleanType("Boolean"));
         assertDefault("ComplexDefaultsEntity", "binaryField", "1 + 2", () -> assertNumericType("Integer"));
 
-        final PrimitiveAccessor withDefaultErrorField = assertUnmappedTransferObjectAttribute("ErrorWithDefaults", "withDefault").getDefaultValue();
-        assertEquals(assertStringType("String"), withDefaultErrorField.getDataType());
-        assertEquals("\"Hello!\"", withDefaultErrorField.getGetterExpression().getExpression());
+        assertErrorDefault("ErrorWithDefaults", "withDefault", "\"Hello!\"", () -> assertStringType("String"));
     }
 
     private void assertDefault(String toName, String attrName, String defaultValue, Supplier<? extends FlatPrimitiveType> call) {
@@ -97,5 +96,20 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
         final PrimitiveAccessor literal = assertMappedTransferObjectAttribute(toName, attrName).getDefaultValue();
         assertEquals(call.get(), literal.getDataType());
         assertEquals(defaultValue, literal.getGetterExpression().getExpression());
+    }
+
+    private void assertErrorDefault(String errorName, String attrName, String defaultValue, Supplier<? extends FlatPrimitiveType> call) {
+        Jsl2Psm.Jsl2PsmParameter params = Jsl2Psm.Jsl2PsmParameter
+                .jsl2PsmParameter()
+                .jslModel(jslModel)
+                .psmModel(psmModel)
+                .build();
+        final PrimitiveAccessor withDefaultErrorField = assertUnmappedTransferObjectAttribute("ErrorWithDefaults", "withDefault").getDefaultValue();
+        final String propName = params.getDefaultDefaultNamePrefix() + attrName + params.getDefaultDefaultNameMidfix() + errorName + params.getDefaultDefaultNamePostfix();
+        final StaticData withDefaultStatic = assertStaticData(propName);
+
+        assertEquals(call.get(), withDefaultErrorField.getDataType());
+        assertEquals(defaultValue, withDefaultErrorField.getGetterExpression().getExpression());
+        assertEquals(defaultValue, withDefaultStatic.getGetterExpression().getExpression());
     }
 }
