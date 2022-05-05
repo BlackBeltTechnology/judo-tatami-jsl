@@ -27,7 +27,7 @@ rule CreateDefaultValueForPrimitiveEntityMember
         guard: s.isDefaultValueForEntity() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
 
         t.setId("(jsl/" + s.getId() + ")/CreateDefaultValueForPrimitiveEntityMember");
-        t.name = "_" + s.eContainer.name + "_default_" + s.eContainer.eContainer.name;
+        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.dataType = s.eContainer.referenceType.getPSMEquivalent();
         t.required = false;
 
@@ -54,7 +54,7 @@ rule CreateDefaultValueForPrimitiveErrorField
         guard: s.isDefaultValueForError() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
 
         t.setId("(jsl/" + s.getId() + ")/CreateDefaultValueForPrimitiveErrorField");
-        t.name = "_" + s.eContainer.name + "_default_" + s.eContainer.eContainer.name;
+        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.dataType = s.eContainer.referenceType.getPSMEquivalent();
         t.required = false;
 

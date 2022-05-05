@@ -5,6 +5,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.psm.derived.PrimitiveAccessor;
 import hu.blackbelt.judo.meta.psm.type.FlatPrimitiveType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
+import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -84,11 +85,17 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
     }
 
     private void assertDefault(String toName, String attrName, String defaultValue, Supplier<? extends FlatPrimitiveType> call) {
-        assertDataProperty("_" + toName, "_" + attrName + "_default_" + toName);
-        assertEquals(call.get(), assertDataProperty("_" + toName, "_" + attrName + "_default_" + toName).getDataType());
+        Jsl2Psm.Jsl2PsmParameter params = Jsl2Psm.Jsl2PsmParameter
+                .jsl2PsmParameter()
+                .jslModel(jslModel)
+                .psmModel(psmModel)
+                .build();
+        String propName = params.getDefaultDefaultNamePrefix() + attrName + params.getDefaultDefaultNameMidfix() + toName + params.getDefaultDefaultNamePostfix();
+
+        assertDataProperty(params.getEntityNamePrefix() + toName, propName);
+        assertEquals(call.get(), assertDataProperty(params.getEntityNamePrefix() + toName, propName).getDataType());
         final PrimitiveAccessor literal = assertMappedTransferObjectAttribute(toName, attrName).getDefaultValue();
         assertEquals(call.get(), literal.getDataType());
         assertEquals(defaultValue, literal.getGetterExpression().getExpression());
     }
-
 }
