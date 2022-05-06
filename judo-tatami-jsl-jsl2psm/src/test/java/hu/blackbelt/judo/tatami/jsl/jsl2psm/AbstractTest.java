@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.Relation;
 import hu.blackbelt.judo.meta.psm.derived.DataProperty;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
+import hu.blackbelt.judo.meta.psm.derived.StaticData;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
@@ -197,6 +198,12 @@ abstract public class AbstractTest {
     	final Optional<DataProperty> attr = assertEntityType(entityName).getAllDataProperties().stream().filter(e -> e.getName().equals(propName)).findAny();
         assertTrue(attr.isPresent());    	
         return attr.get();
+    }
+
+    public StaticData assertStaticData(String name) {
+        final Optional<StaticData> staticData = psmModelWrapper.getStreamOfPsmDerivedStaticData().filter(s -> s.getName().equals(name)).findAny();
+        assertTrue(staticData.isPresent());
+        return staticData.get();
     }
 
     public NavigationProperty assertNavigationProperty(String entityName, String propName) {
