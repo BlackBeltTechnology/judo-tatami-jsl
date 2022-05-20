@@ -5,6 +5,7 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.support.RdbmsModelResourceSupport;
@@ -21,6 +22,8 @@ import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
+import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
+import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
@@ -34,6 +37,7 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadA
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArguments.jslDslLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LoadArguments.liquibaseLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.LoadArguments.rdbmsLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport.registerRdbmsDataTypesMetamodel;
@@ -122,6 +126,39 @@ public class WorkflowHelper {
                         asmModelFromContext,
                         of(psm2AsmTransformationTraceSourceURI).orElseThrow(() ->
                                         new IllegalArgumentException("psm2AsmTransformationTrace or psm2AsmTransformationTraceSourceURI have to be defined"))
+                                .toURL().openStream()))));
+    }
+
+    public void loadMeasureModel(final String modelName,
+                                 final MeasureModel measureModel,
+                                 final URI measureModelSourceURI,
+                                 final Psm2MeasureTransformationTrace psm2MeasureTransformationTrace,
+                                 final URI psm2MeasureTransformationTraceSourceURI) {
+
+        if (measureModel == null && measureModelSourceURI == null) {
+            return;
+        }
+
+        transformationContext.put(ofNullable(measureModel).orElseGet(
+                ThrowingSupplier.sneaky(() -> MeasureModel.loadMeasureModel(measureLoadArgumentsBuilder()
+                        .inputStream(
+                                of(measureModelSourceURI).orElseThrow(() ->
+                                                new IllegalArgumentException("measureModel or measureModelSourceURI have to be defined"))
+                                        .toURL().openStream())
+                        .name(modelName)))));
+
+        Optional<PsmModel> psmModelFromContext = transformationContext.getByClass(PsmModel.class);
+
+        MeasureModel measureModelFromContext = transformationContext.getByClass(MeasureModel.class).get();
+
+        transformationContext.put(ofNullable(psm2MeasureTransformationTrace).orElseGet(
+                ThrowingSupplier.sneaky(() -> Psm2MeasureTransformationTrace.fromModelsAndTrace(
+                        modelName,
+                        psmModelFromContext.orElseThrow(() ->
+                                new IllegalArgumentException("psmModel have to be defined")),
+                        measureModelFromContext,
+                        of(psm2MeasureTransformationTraceSourceURI).orElseThrow(() ->
+                                        new IllegalArgumentException("psm2MeasureTransformationTrace or psm2MeasureTransformationTraceSourceURI have to be defined"))
                                 .toURL().openStream()))));
     }
 
@@ -255,6 +292,29 @@ public class WorkflowHelper {
                                 .execute(
                                         new Jsl2PsmWork(transformationContext).withMetricsCollector(workflowMetrics),
                                         new CheckWork(jsl2PsmOutputPredicate())
+                                )
+                                .build()
+                )
+                .otherwise(new NoOpWork())
+                .build();
+    }
+
+    public Supplier<Boolean> psm2MeasureOutputPredicate() {
+        return () -> transformationContext.transformationContextVerifier.verifyClassPresent(MeasureModel.class) &&
+                transformationContext.transformationContextVerifier.verifyClassPresent(Psm2MeasureTransformationTrace.class);
+    }
+
+    public Work createPsm2MeasureWork() {
+        return 	aNewConditionalFlow()
+                .named("Conditional when Psm model exists then Execute Psm2Measure")
+                .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyClassPresent(PsmModel.class)))
+                .when(WorkReportPredicate.COMPLETED)
+                .then(
+                        aNewSequentialFlow()
+                                .named("Execute Psm2Measure")
+                                .execute(
+                                        new Psm2MeasureWork(transformationContext).withMetricsCollector(workflowMetrics),
+                                        new CheckWork(psm2MeasureOutputPredicate())
                                 )
                                 .build()
                 )
