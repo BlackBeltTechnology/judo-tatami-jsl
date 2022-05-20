@@ -84,6 +84,10 @@ public abstract class AbstractTatamiPipelineWorkflow {
 				Optional.empty() :
 				Optional.of(workflowHelper.createPsm2AsmWork());
 
+		Optional<Work> createMeasureWork = parameters.getIgnorePsm2Measure() || workflowHelper.psm2MeasureOutputPredicate().get() ?
+				Optional.empty() :
+				Optional.of(workflowHelper.createPsm2MeasureWork());
+
 		Optional<Work> createExpressionWork = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2Expression() || workflowHelper.asm2ExpressionOutputPredicate().get() ?
 				Optional.empty() :
 				Optional.of(workflowHelper.createAsm2ExpressionWork(parameters.getValidateModels()));
@@ -128,7 +132,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
 							Optional.of(
 									aNewParallelFlow()
 											.named("Parallel PSM Transformations")
-											.execute(Stream.of(createAsmWork))
+											.execute(Stream.of(createAsmWork, createMeasureWork))
 											.build()),
 							Optional.of(
 									aNewParallelFlow()
@@ -148,6 +152,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
 									/*validateJslWork,*/
 									validatePsmWork,
 									createPsmWork,
+									createMeasureWork,
 									createAsmWork,
 									createExpressionWork,
 									createSDKWork

@@ -1,10 +1,11 @@
 import "../../../../operations/_importAll.eol";
 
+@lazy
 rule CreateRootModel
     transform s : String
     to t : JUDOPSM!Model {
 		log.debug("Create root model: " + s);
-	    t.setId("(jsl/" + s + ")/CreateModelPackages");
+	    t.setId("(jsl/" + s.replaceAll("::", "/") + ")/CreateModelPackages");
 	    t.name = s.replaceAll("::", "_");
 }
 
