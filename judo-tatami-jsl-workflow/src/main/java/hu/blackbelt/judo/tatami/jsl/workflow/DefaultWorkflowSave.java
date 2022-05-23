@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
+import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureTransformationTrace;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -49,55 +50,66 @@ public class DefaultWorkflowSave {
 		transformationContext.getByClass(JslDslModel.class).ifPresent(executeWrapper(catchError, (m) ->
 				m.saveJslDslModel(jslDslSaveArgumentsBuilder()
 						.validateModel(VALIDATE_MODELS_ON_SAVE)
-						.file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-jsl.model"))))));
+						.file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-jsl.model"))))));
 
 		transformationContext.getByClass(PsmModel.class).ifPresent(executeWrapper(catchError, (m) ->
 				m.savePsmModel(psmSaveArgumentsBuilder()
 						.validateModel(VALIDATE_MODELS_ON_SAVE)
-						.file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-psm.model"))))));
+						.file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-psm.model"))))));
 
 		transformationContext.getByClass(Jsl2PsmTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
-				m.save(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "jsl2psm.model")))));
+				m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "jsl2psm.model")))));
+
+		transformationContext.getByClass(Psm2MeasureTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
+				m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "psm2measure.model")))));
+
+		transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
+				m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "psm2asm.model")))));
+
 
 		transformationContext.getByClass(AsmModel.class).ifPresent(executeWrapper(catchError, (m) ->
 				m.saveAsmModel(asmSaveArgumentsBuilder()
 						.validateModel(VALIDATE_MODELS_ON_SAVE)
-						.file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-asm.model"))))));
+						.file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-asm.model"))))));
 
 		transformationContext.getByClass(MeasureModel.class).ifPresent(executeWrapper(catchError, (m) ->
 				m.saveMeasureModel(measureSaveArgumentsBuilder()
 						.validateModel(VALIDATE_MODELS_ON_SAVE)
-						.file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-measure.model"))))));
+						.file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-measure.model"))))));
 
 		dialectList.forEach(dialect -> getRdbmsModel(transformationContext, dialect)
 				.ifPresent(executeWrapper(catchError, (m) -> m.saveRdbmsModel(rdbmsSaveArgumentsBuilder().validateModel(VALIDATE_MODELS_ON_SAVE)
-						.file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "rdbms_" + dialect + ".model")))))));
+						.file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "rdbms_" + dialect + ".model")))))));
 
 		transformationContext.getByClass(ExpressionModel.class).ifPresent(executeWrapper(catchError, (m) ->
 				m.saveExpressionModel(expressionSaveArgumentsBuilder()
 						.validateModel(VALIDATE_MODELS_ON_SAVE)
-						.file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-expression.model"))))));
+						.file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-expression.model"))))));
 
 		dialectList.forEach(dialect -> getLiquibaseModel(transformationContext, dialect)
 				.ifPresent(executeWrapper(catchError,
-						(m) -> saveFixedLiquibaseModel(m, new FileOutputStream(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "liquibase_" + dialect + ".changelog.xml")))))));
+						(m) -> saveFixedLiquibaseModel(m, new FileOutputStream(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "liquibase_" + dialect + ".changelog.xml")))))));
 
 		transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
-				m.save(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "psm2asm.model")))));
+				m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "psm2asm.model")))));
 
 		dialectList.forEach(dialect -> getAsm2RdbmsTrace(transformationContext, dialect)
-				.ifPresent(executeWrapper(catchError, (m) -> m.save(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "asm2rdbms_" + dialect + ".model"))))));
+				.ifPresent(executeWrapper(catchError, (m) -> m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "asm2rdbms_" + dialect + ".model"))))));
 
 		getSdkStream(transformationContext).ifPresent(executeWrapper(catchError, (m) -> {
-			Files.copy(m, deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "asm2sdk.jar")).toPath());
+			Files.copy(m, deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "asm2sdk.jar")).toPath());
 			m.close();
 		}));
 
 		getSdkInternalStream(transformationContext).ifPresent(executeWrapper(catchError, (m) -> {
-			Files.copy(m, deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-" + "asm2sdk-internal.jar")).toPath());
+			Files.copy(m, deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "asm2sdk-internal.jar")).toPath());
 			m.close();
 		}));
 
+	}
+
+	private static String fileName(TransformationContext transformationContext) {
+		return transformationContext.getModelName().replaceAll(":", "_");
 	}
 
 	private static File deleteFileIfExists(File file) {

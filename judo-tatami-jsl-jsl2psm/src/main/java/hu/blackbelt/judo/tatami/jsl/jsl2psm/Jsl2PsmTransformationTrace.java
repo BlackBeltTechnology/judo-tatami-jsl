@@ -46,7 +46,8 @@ public class Jsl2PsmTransformationTrace implements TransformationTrace {
     @NonNull
     Map<EObject, List<EObject>> trace;
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public List<Class> getSourceModelTypes() {
         return ImmutableList.of(JslDslModel.class);
     }
@@ -77,7 +78,8 @@ public class Jsl2PsmTransformationTrace implements TransformationTrace {
         throw new IllegalArgumentException("Unknown source model type: " + sourceModelType.getName());
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public Class getTargetModelType() {
         return PsmModel.class;
     }
