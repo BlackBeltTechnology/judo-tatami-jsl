@@ -56,7 +56,7 @@
         <epsilon-runtime-version>1.4.0.20220522_205914_4b95b3e2_feature_JNG_3769_Improve_logging</epsilon-runtime-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.0.20220520_161157_b5b3f8a6_feature_JNG_3768_NamespaceFixes</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.0.20220523_222741_67e0a0dc_feature_JNG_3770_JSLBatchTransfromation</judo-meta-jsl-version>
 
         <judo-meta-rdbms-version>1.0.0.20220405_162243_a599d313_develop</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.1.20220405_161348_f273cd5a_develop</judo-meta-jql-version>
