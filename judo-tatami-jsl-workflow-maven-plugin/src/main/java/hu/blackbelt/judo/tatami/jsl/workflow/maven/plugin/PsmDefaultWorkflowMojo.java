@@ -125,9 +125,12 @@ public class PsmDefaultWorkflowMojo extends AbstractMojo {
 			//DefaultWorkflowSetupParameters.addTransformerCalculatedUris(parameters);
 
 			if (!isNullOrEmpty(psmGeneratorClassName) && !isNullOrEmpty(psmGeneratorMethodName)) {
+				@SuppressWarnings("rawtypes")
 				Class generatorClass = Thread.currentThread().getContextClassLoader().loadClass(psmGeneratorClassName);
+				@SuppressWarnings("unchecked")
 				Method generatorMethod = generatorClass.getMethod(psmGeneratorMethodName);
-				PsmModel psmModel = (PsmModel) generatorMethod.invoke(generatorClass.newInstance());
+				@SuppressWarnings("unchecked")
+				PsmModel psmModel = (PsmModel) generatorMethod.invoke(generatorClass.getDeclaredConstructor().newInstance());
 				parameters.psmModel(psmModel);
 			} else {
 				parameters.psmModelSourceURI(psmModelFile.toURI());

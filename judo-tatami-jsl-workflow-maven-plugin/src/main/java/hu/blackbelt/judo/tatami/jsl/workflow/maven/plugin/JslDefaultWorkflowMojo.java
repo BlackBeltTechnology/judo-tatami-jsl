@@ -117,6 +117,7 @@ public class JslDefaultWorkflowMojo extends AbstractMojo {
 		return artifact.getFile().toURI().toURL();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -145,9 +146,10 @@ public class JslDefaultWorkflowMojo extends AbstractMojo {
 			//DefaultWorkflowSetupParameters.addTransformerCalculatedUris(parameters);
 
 			if (!isNullOrEmpty(jslGeneratorClassName) && !isNullOrEmpty(jslGeneratorMethodName)) {
+				@SuppressWarnings("rawtypes")
 				Class generatorClass = Thread.currentThread().getContextClassLoader().loadClass(jslGeneratorClassName);
 				Method generatorMethod = generatorClass.getMethod(jslGeneratorMethodName);
-				JslDslModel jslModel = (JslDslModel) generatorMethod.invoke(generatorClass.newInstance());
+				JslDslModel jslModel = (JslDslModel) generatorMethod.invoke(generatorClass.getDeclaredConstructor().newInstance());
 				parameters.jslModel(jslModel);
 			} else {
 				parameters.jslModelSourceURI(jslModelFile.toURI());

@@ -48,6 +48,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
 
 	abstract public void loadModels(WorkflowHelper workflowFactory, WorkflowMetrics metrics, TransformationContext transformationContext, DefaultWorkflowSetupParameters parameters);
 
+	@SuppressWarnings("unchecked")
 	public WorkReport startDefaultWorkflow() {
 		TransformationContext.TransformationContextVerifier verifier = transformationContext.transformationContextVerifier;
 		WorkflowHelper workflowHelper = new WorkflowHelper(transformationContext, metrics);
@@ -104,6 +105,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
 						.map(dialect -> Optional.of(workflowHelper.createAsm2RdbmsWork(dialect, parameters.getIgnoreRdbms2Liquibase()))
 						);
 
+		@SuppressWarnings("unused")
 		Stream<Optional<Work>> createLiquibaseWorks = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2Rdbms() || parameters.getIgnoreRdbms2Liquibase() ?
 				Stream.empty() :
 				parameters.getDialectList()

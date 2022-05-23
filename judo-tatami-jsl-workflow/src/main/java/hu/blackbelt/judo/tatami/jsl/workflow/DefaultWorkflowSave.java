@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.jsl.workflow;
 
-import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
