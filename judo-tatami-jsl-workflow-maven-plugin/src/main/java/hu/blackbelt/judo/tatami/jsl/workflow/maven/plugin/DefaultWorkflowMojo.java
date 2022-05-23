@@ -183,6 +183,7 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 	 * @return
 	 * @throws MojoExecutionException
 	 */
+	@SuppressWarnings("null")
 	public File getArtifact(String url) throws MojoExecutionException {
 		if (url.startsWith("mvn:")) {
 			String mvnUrl = url;
@@ -410,6 +411,7 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> Stream<T> getStreamOf(ResourceSet resourceSet, final Class<T> clazz) {
 		final Iterable<Notifier> contents = resourceSet::getAllContents;
 		return StreamSupport.stream(contents.spliterator(), false)

@@ -43,7 +43,7 @@ public class Jsl2PsmTransformationService {
                 .tags(jslModel.getTags())
                 .build();
 
-        Log logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
+        StringBuilderLogger logger = new StringBuilderLogger(Slf4jLog.determinateLogLevel(log));
 
         java.net.URI scriptUri =
                 bundleContext.getBundle()

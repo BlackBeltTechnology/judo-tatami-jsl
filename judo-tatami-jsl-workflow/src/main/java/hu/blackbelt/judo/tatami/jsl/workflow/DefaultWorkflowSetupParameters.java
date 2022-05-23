@@ -50,7 +50,13 @@ public class DefaultWorkflowSetupParameters {
 	private Boolean ignorePsm2Asm = false;
 
 	@Builder.Default
+	private Boolean ignorePsm2Measure = false;
+
+	@Builder.Default
 	private Boolean ignorePsm2AsmTrace = false;
+
+	@Builder.Default
+	private Boolean ignorePsm2MeasureTrace = false;
 
 	@Builder.Default
 	private Boolean ignoreAsm2Rdbms = false;

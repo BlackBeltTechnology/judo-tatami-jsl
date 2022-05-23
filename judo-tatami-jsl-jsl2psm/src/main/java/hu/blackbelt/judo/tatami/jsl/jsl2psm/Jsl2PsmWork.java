@@ -76,6 +76,7 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
 		File jslModelFile = new File(args[0]);
 		String modelName = args[1];
 		File psmModelFile = new File(args[2]);
+		@SuppressWarnings("unused")
 		Boolean validate = true;
 
 		if (args.length >= 4) {
@@ -102,6 +103,7 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
 
 		WorkFlow workflow = aNewSequentialFlow().execute(jsl2PsmWork).build();
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
+		@SuppressWarnings("unused")
 		WorkReport workReport = workFlowEngine.run(workflow);
 
 		PsmModel psmModel = transformationContext.getByClass(PsmModel.class).get();
