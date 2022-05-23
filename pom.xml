@@ -53,7 +53,7 @@
         <slf4j-version>1.6.6</slf4j-version>
         <tycho-version>1.4.0</tycho-version>
 
-        <epsilon-runtime-version>1.4.0-SNAPSHOT</epsilon-runtime-version>
+        <epsilon-runtime-version>1.4.0.20220522_205914_4b95b3e2_feature_JNG_3769_Improve_logging</epsilon-runtime-version>
 
         <!-- Model versions -->
         <judo-meta-jsl-version>1.0.0.20220520_161157_b5b3f8a6_feature_JNG_3768_NamespaceFixes</judo-meta-jsl-version>
