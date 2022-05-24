@@ -88,7 +88,7 @@
                     <instructions>
                         <Export-Package>
                             tatami/jsl2psm;version=${project.version},
-                            hu.blackbelt.judo.tatami.jsl2psm.*;version=${project.version}
+                            hu.blackbelt.judo.tatami.jsl.jsl2psm.*;version=${project.version}
                         </Export-Package>
                         <Include-Resource>
                             {maven-resources},

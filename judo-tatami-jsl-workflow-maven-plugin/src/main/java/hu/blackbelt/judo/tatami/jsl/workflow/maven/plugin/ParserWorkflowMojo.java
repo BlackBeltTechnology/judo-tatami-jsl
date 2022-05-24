@@ -43,10 +43,8 @@ import java.util.stream.Collectors;
 		requiresDependencyResolution = ResolutionScope.COMPILE)
 public class ParserWorkflowMojo extends AbstractMojo {
 
-	final int BUFFER_SIZE = 4096;
-
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
-	private MavenProject project;
+	public MavenProject project;
 
 	@Component
 	public RepositorySystem repoSystem;
@@ -58,84 +56,87 @@ public class ParserWorkflowMojo extends AbstractMojo {
 	public List<RemoteRepository> repositories;
 
 	@Parameter(defaultValue = "${plugin}", readonly = true)
-	private PluginDescriptor pluginDescriptor;
+	public PluginDescriptor pluginDescriptor;
 
 	@Parameter(property = "sources")
-	private List<String> sources;
+	public List<String> sources;
 
 	@Parameter(property = "modelNames")
-	private List<String> modelNames;
+	public List<String> modelNames;
 
 	@Parameter(property = "sdkPackagePrefix")
-	private String sdkPackagePrefix;
+	public String sdkPackagePrefix;
 
 	@Parameter(property = "boolean", defaultValue = "false")
-	private Boolean useDependencies = false;
+	public Boolean useDependencies = false;
 
 	@Parameter(property = "parseOnly", defaultValue = "false")
-	private Boolean parseOnly = false;
+	public Boolean parseOnly = false;
 
 	@Parameter(property = "boolean", defaultValue = "false")
-	private Boolean compressSdk = false;
+	public Boolean compressSdk = false;
 
 	@Parameter(property = "boolean", defaultValue = "false")
-	private Boolean compileSdk = false;
+	public Boolean compileSdk = false;
 
 	@Parameter(property = "ignorePsm2Asm", defaultValue = "false")
-	private Boolean ignorePsm2Asm = false;
+	public Boolean ignorePsm2Asm = false;
 
 	@Parameter(property = "ignorePsm2AsmTrace", defaultValue = "true")
-	private Boolean ignorePsm2AsmTrace = true;
+	public Boolean ignorePsm2AsmTrace = true;
 
 	@Parameter(property = "ignorePsm2Measure", defaultValue = "false")
-	private Boolean ignoreAsm2Measure = false;
+	public Boolean ignorePsm2Measure = false;
 
 	@Parameter(property = "ignorePsm2MeasureTrace", defaultValue = "true")
-	private Boolean ignorePsm2MeasureTrace = true;
+	public Boolean ignorePsm2MeasureTrace = true;
 
 	@Parameter(property = "ignoreAsm2Rdbms", defaultValue = "false")
-	private Boolean ignoreAsm2Rdbms = false;
+	public Boolean ignoreAsm2Rdbms = false;
 
 	@Parameter(property = "ignoreAsm2RdbmsTrace", defaultValue = "false")
-	private Boolean ignoreAsm2RdbmsTrace = false;
+	public Boolean ignoreAsm2RdbmsTrace = false;
 
 	@Parameter(property = "ignoreRdbms2Liquibase", defaultValue = "false")
-	private Boolean ignoreRdbms2Liquibase = false;
+	public Boolean ignoreRdbms2Liquibase = false;
 
 	@Parameter(property = "ignoreAsm2sdk", defaultValue = "false")
-	private Boolean ignoreAsm2sdk = false;
+	public Boolean ignoreAsm2sdk = false;
 
 	@Parameter(property = "ignoreAsm2Expression", defaultValue = "false")
-	private Boolean ignoreAsm2Expression = false;
+	public Boolean ignoreAsm2Expression = false;
 
 	@Parameter(property = "destination", defaultValue = "${project.basedir}/target/model")
-	private File destination;
+	public File destination;
 
 	@Parameter(property = "modelVersion", defaultValue = "${project.version}")
-	private String modelVersion;
+	public String modelVersion;
 
 	@Parameter(property = "dialectList")
-	private List<String> dialectList;
+	public List<String> dialectList;
 
 	@Parameter(property = "runInParallel", defaultValue = "true")
-	private Boolean runInParallel = true;
+	public Boolean runInParallel = true;
 
 	@Parameter(property = "enableMetrics", defaultValue = "true")
-	private Boolean enableMetrics = true;
+	public Boolean enableMetrics = true;
 
 	@Parameter(property = "ignoreJsl2Psm", defaultValue = "false")
-	private Boolean ignoreJsl2Psm = false;
+	public Boolean ignoreJsl2Psm = false;
 
 	@Parameter(property = "ignoreJsl2PsmTrace", defaultValue = "true")
-	private Boolean ignoreJsl2PsmTrace = true;
+	public Boolean ignoreJsl2PsmTrace = true;
 
 	@Parameter(property = "validateModels", defaultValue = "false")
-	private Boolean validateModels = false;
+	public Boolean validateModels = false;
 
 	@Parameter(property = "saveModels", defaultValue = "true")
-	private Boolean saveModels = true;
+	public Boolean saveModels = true;
 
 	Set<URL> classPathUrls = new HashSet<>();
+
+	public ParserWorkflowMojo() {
+	}
 
 	private void setContextClassLoader() throws DependencyResolutionRequiredException, MalformedURLException {
 		// Project dependencies
@@ -151,11 +152,9 @@ public class ParserWorkflowMojo extends AbstractMojo {
 
 		// Plugin dependencies
 		final ClassRealm classRealm = pluginDescriptor.getClassRealm();
-		for (URL url : classRealm.getURLs()) {
-			classPathUrls.add(url);
-		}
+		classPathUrls.addAll(Arrays.asList(classRealm.getURLs()));
 
-		URL[] urlsForClassLoader = classPathUrls.toArray(new URL[classPathUrls.size()]);
+		URL[] urlsForClassLoader = classPathUrls.toArray(new URL[0]);
 		getLog().debug("Set urls for URLClassLoader: " + Arrays.asList(urlsForClassLoader));
 
 		// need to define parent classloader which knows all dependencies of the plugin
@@ -200,7 +199,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 				try {
 					URL artifactUrl = artifactResolver.getArtifact(source).toURI().toURL();
 					sourceFiles.addAll(ResourceList.getResources(getLog(), Set.of(artifactUrl), searchPattern));
-				} catch (MalformedURLException e) {
+				} catch (MalformedURLException ignored) {
 				}
 			}
 		}
@@ -219,9 +218,8 @@ public class ParserWorkflowMojo extends AbstractMojo {
 			getLog().warn("No JSL files presented to process");
 		}
 
-		JslParser jslParser = new JslParser();
-		XtextResourceSet resourceSet = jslParser.loadJslFromFile(jslFiles);
-		Collection<ModelDeclaration> allModelDeclcarations = jslParser.getAllModelDeclarationFromXtextResourceSet(resourceSet);
+		XtextResourceSet resourceSet = JslParser.loadJslFromFile(jslFiles);
+		Collection<ModelDeclaration> allModelDeclcarations = JslParser.getAllModelDeclarationFromXtextResourceSet(resourceSet);
 		final List<Issue> errors = new ArrayList<>();
 
 		for (ModelDeclaration modelDeclaration : allModelDeclcarations) {
@@ -253,15 +251,15 @@ public class ParserWorkflowMojo extends AbstractMojo {
 
 			if (process) {
 				String modelName = modelDeclaration.getName();
-				JslDslModel jslDslModel = jslParser.getModelFromStreamSources(
+				JslDslModel jslDslModel = JslParser.getModelFromStreamSources(
 						modelName,
-						jslFiles.stream()
-								.map(f -> f.toURI())
+						JslParser.collectReferencedModelDeclarations(modelDeclaration, allModelDeclcarations).stream().map(d -> d.eResource().getURI())
+								.map(s -> new File(s.toString()).toURI())
 								.map(s -> {
 									try {
 										return new JslStreamSource(s.toURL().openStream(), org.eclipse.emf.common.util.URI.createURI("platform:/" + s.getPath()));
 									} catch (IOException e) {
-										throw new RuntimeException("Could not open stream: " + s.toString());
+										throw new RuntimeException("Could not open stream: " + s);
 									}
 								})
 								.collect(Collectors.toList()));
@@ -293,6 +291,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 								.enableMetrics(enableMetrics)
 								.ignoreJsl2Psm(ignoreJsl2Psm || parseOnly)
 								.ignorePsm2Asm(ignorePsm2Asm)
+								.ignorePsm2Asm(ignorePsm2Measure)
 								.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
 								.ignoreAsm2sdk(ignoreAsm2sdk)
 								.ignoreAsm2Expression(ignoreAsm2Expression)
@@ -300,6 +299,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 								.ignorePsm2AsmTrace(ignorePsm2AsmTrace)
 								.ignoreAsm2RdbmsTrace(ignoreAsm2RdbmsTrace)
 								.ignorePsm2MeasureTrace(ignorePsm2MeasureTrace)
+								.ignoreJsl2PsmTrace(ignoreJsl2PsmTrace)
 								.validateModels(validateModels)
 								.modelName(modelName)
 								.dialectList(dialectList);
