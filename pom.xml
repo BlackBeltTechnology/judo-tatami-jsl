@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>hu.blackbelt.judo.tatami</groupId>
     <artifactId>judo-tatami-jsl-parent</artifactId>
@@ -53,10 +54,12 @@
         <slf4j-version>1.6.6</slf4j-version>
         <tycho-version>1.4.0</tycho-version>
 
-        <epsilon-runtime-version>1.4.0.20220522_205914_4b95b3e2_feature_JNG_3769_Improve_logging</epsilon-runtime-version>
+        <epsilon-runtime-version>1.4.0.20220522_205914_4b95b3e2_feature_JNG_3769_Improve_logging
+        </epsilon-runtime-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.0.20220523_222741_67e0a0dc_feature_JNG_3770_JSLBatchTransfromation</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.0.20220523_222741_67e0a0dc_feature_JNG_3770_JSLBatchTransfromation
+        </judo-meta-jsl-version>
 
         <judo-meta-rdbms-version>1.0.0.20220405_162243_a599d313_develop</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.1.20220405_161348_f273cd5a_develop</judo-meta-jql-version>
@@ -70,7 +73,7 @@
         <judo-operation-utils-version>1.1.0.20220405_162650_6298bb1f_develop</judo-operation-utils-version>
         <structured-map-proxy-version>1.0.6.20220301_160543_e228df4d_develop</structured-map-proxy-version>
 
-        <judo-tatami-version>1.1.0.20220411_100226_8bf5bb27_develop</judo-tatami-version>
+        <judo-tatami-version>1.1.0-SNAPSHOT</judo-tatami-version>
         <judo-tatami-core-version>1.1.0.20220405_161751_7fec76d0_develop</judo-tatami-core-version>
 
         <!-- Xtend / Xcore -->
@@ -535,7 +538,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -557,86 +560,86 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
-                                	<pluginExecutionFilter>
-                                		<groupId>
-                                			org.codehaus.mojo
-                                		</groupId>
-                                		<artifactId>
-                                			flatten-maven-plugin
-                                		</artifactId>
-                                		<versionRange>
-                                			[1.1.0,)
-                                		</versionRange>
-                                		<goals>
-                                			<goal>flatten</goal>
-                                		</goals>
-                                	</pluginExecutionFilter>
-                                	<action>
-                                		<ignore />
-                                	</action>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.codehaus.mojo
+                                        </groupId>
+                                        <artifactId>
+                                            flatten-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.1.0,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>flatten</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
                                 </pluginExecution>
                                 <pluginExecution>
-                                	<pluginExecutionFilter>
-                                		<groupId>
-                                			hu.blackbelt.judo.tatami
-                                		</groupId>
-                                		<artifactId>
-                                			judo-tatami-jsl-workflow-maven-plugin
-                                		</artifactId>
-                                		<versionRange>
-                                			[1.1.0-SNAPSHOT,)
-                                		</versionRange>
-                                		<goals>
-                                			<goal>
-                                				default-workflow
-                                			</goal>
-                                		</goals>
-                                	</pluginExecutionFilter>
-                                	<action>
-                                		<ignore />
-                                	</action>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            hu.blackbelt.judo.tatami
+                                        </groupId>
+                                        <artifactId>
+                                            judo-tatami-jsl-workflow-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.1.0-SNAPSHOT,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>
+                                                default-workflow
+                                            </goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
                                 </pluginExecution>
                                 <pluginExecution>
-                                	<pluginExecutionFilter>
-                                		<groupId>
-                                			org.apache.maven.plugins
-                                		</groupId>
-                                		<artifactId>
-                                			maven-antrun-plugin
-                                		</artifactId>
-                                		<versionRange>
-                                			[1.8,)
-                                		</versionRange>
-                                		<goals>
-                                			<goal>run</goal>
-                                		</goals>
-                                	</pluginExecutionFilter>
-                                	<action>
-                                		<ignore />
-                                	</action>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.apache.maven.plugins
+                                        </groupId>
+                                        <artifactId>
+                                            maven-antrun-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.8,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>run</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
                                 </pluginExecution>
                                 <pluginExecution>
-                                	<pluginExecutionFilter>
-                                		<groupId>
-                                			org.apache.maven.plugins
-                                		</groupId>
-                                		<artifactId>
-                                			maven-help-plugin
-                                		</artifactId>
-                                		<versionRange>
-                                			[3.2.0,)
-                                		</versionRange>
-                                		<goals>
-                                			<goal>active-profiles</goal>
-                                		</goals>
-                                	</pluginExecutionFilter>
-                                	<action>
-                                		<ignore />
-                                	</action>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.apache.maven.plugins
+                                        </groupId>
+                                        <artifactId>
+                                            maven-help-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [3.2.0,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>active-profiles</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
@@ -645,7 +648,7 @@
             </plugins>
         </pluginManagement>
         <plugins>
-			<plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
                 <version>1.1.0</version>
@@ -699,54 +702,54 @@
             </activation>
 
             <build>
-              <plugins>
-                <plugin>
-                  <groupId>net.nicoulaj.maven.plugins</groupId>
-                  <artifactId>checksum-maven-plugin</artifactId>
-                  <version>1.10</version>
-                  <executions>
-                    <execution>
-                      <goals>
-                        <goal>artifacts</goal>
-                      </goals>
-                    </execution>
-                  </executions>
-                  <configuration>
-                    <csvSummary>true</csvSummary>
-                    <csvSummaryFile>artifacts-checksums.csv</csvSummaryFile>
-                    <xmlSummary>true</xmlSummary>
-                    <xmlSummaryFile>artifacts-checksums.xml</xmlSummaryFile>
-                  </configuration>
-                </plugin>
+                <plugins>
+                    <plugin>
+                        <groupId>net.nicoulaj.maven.plugins</groupId>
+                        <artifactId>checksum-maven-plugin</artifactId>
+                        <version>1.10</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>artifacts</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <csvSummary>true</csvSummary>
+                            <csvSummaryFile>artifacts-checksums.csv</csvSummaryFile>
+                            <xmlSummary>true</xmlSummary>
+                            <xmlSummaryFile>artifacts-checksums.xml</xmlSummaryFile>
+                        </configuration>
+                    </plugin>
 
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>attach-checksum-artifacts</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>attach-artifact</goal>
-                            </goals>
-                            <configuration>
-                                <artifacts>
-                                    <artifact>
-                                        <file>${basedir}/target/artifacts-checksums.csv</file>
-                                        <type>csv</type>
-                                        <classifier>checksum</classifier>
-                                    </artifact>
-                                    <artifact>
-                                        <file>${basedir}/target/artifacts-checksums.xml</file>
-                                        <type>xml</type>
-                                        <classifier>checksum</classifier>
-                                    </artifact>
-                                </artifacts>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-              </plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-checksum-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${basedir}/target/artifacts-checksums.csv</file>
+                                            <type>csv</type>
+                                            <classifier>checksum</classifier>
+                                        </artifact>
+                                        <artifact>
+                                            <file>${basedir}/target/artifacts-checksums.xml</file>
+                                            <type>xml</type>
+                                            <classifier>checksum</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
 
@@ -782,18 +785,18 @@
         </profile>
 
         <profile>
-			<id>release-dummy</id>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>dummy-distribution</id>
-					<url>file:///tmp/${project.groupId}-${project.artifactId}-${project.version}/maven-snapshot/</url>
-				</snapshotRepository>
-				<repository>
-					<id>dummy-distribution</id>
-					<url>file:///tmp/${project.groupId}-${project.artifactId}-${project.version}/maven-release/</url>
-				</repository>
-			</distributionManagement>
-		</profile>
+            <id>release-dummy</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>dummy-distribution</id>
+                    <url>file:///tmp/${project.groupId}-${project.artifactId}-${project.version}/maven-snapshot/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>dummy-distribution</id>
+                    <url>file:///tmp/${project.groupId}-${project.artifactId}-${project.version}/maven-release/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
 
         <profile>
             <id>release-judong</id>

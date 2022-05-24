@@ -22,9 +22,6 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.diagnostics.Severity;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
@@ -35,17 +32,11 @@ import org.eclipse.xtext.validation.Issue;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArguments.jslDslLoadArgumentsBuilder;
-import static java.util.Optional.of;
 
 @Mojo(name = "parser-workflow",
 		defaultPhase = LifecyclePhase.COMPILE,
@@ -72,11 +63,23 @@ public class ParserWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "sources")
 	private List<String> sources;
 
+	@Parameter(property = "modelNames")
+	private List<String> modelNames;
+
+	@Parameter(property = "sdkPackagePrefix")
+	private String sdkPackagePrefix;
+
 	@Parameter(property = "boolean", defaultValue = "false")
 	private Boolean useDependencies = false;
 
 	@Parameter(property = "parseOnly", defaultValue = "false")
 	private Boolean parseOnly = false;
+
+	@Parameter(property = "boolean", defaultValue = "false")
+	private Boolean compressSdk = false;
+
+	@Parameter(property = "boolean", defaultValue = "false")
+	private Boolean compileSdk = false;
 
 	@Parameter(property = "ignorePsm2Asm", defaultValue = "false")
 	private Boolean ignorePsm2Asm = false;
@@ -222,10 +225,16 @@ public class ParserWorkflowMojo extends AbstractMojo {
 		final List<Issue> errors = new ArrayList<>();
 
 		for (ModelDeclaration modelDeclaration : allModelDeclcarations) {
-			XtextResource jslResource = (XtextResource) modelDeclaration.eResource();
-			final IResourceValidator validator = jslResource.getResourceServiceProvider().getResourceValidator();
-			errors.addAll(validator.validate(jslResource, CheckMode.ALL, CancelIndicator.NullImpl)
-					.stream().filter(i -> i.getSeverity() == Severity.ERROR).collect(Collectors.toList()));
+			boolean process = true;
+			if (modelNames != null && modelNames.size() > 0) {
+				process = modelNames.contains(modelDeclaration.getName());
+			}
+			if (process) {
+				XtextResource jslResource = (XtextResource) modelDeclaration.eResource();
+				final IResourceValidator validator = jslResource.getResourceServiceProvider().getResourceValidator();
+				errors.addAll(validator.validate(jslResource, CheckMode.ALL, CancelIndicator.NullImpl)
+						.stream().filter(i -> i.getSeverity() == Severity.ERROR).collect(Collectors.toList()));
+			}
 		}
 
 		try {
@@ -236,69 +245,92 @@ public class ParserWorkflowMojo extends AbstractMojo {
 			throw new MojoExecutionException("Model errors", e);
 		}
 
-		// TODO: Filtering
 		for (ModelDeclaration modelDeclaration : allModelDeclcarations) {
-			String modelName = modelDeclaration.getName();
-			JslDslModel jslDslModel = jslParser.getModelFromStreamSources(
-					modelName,
-					jslFiles.stream()
-							.map(f -> f.toURI())
-							.map(s -> {
-								try {
-									return new JslStreamSource(s.toURL().openStream(), org.eclipse.emf.common.util.URI.createURI("platform:/" + s.getPath()));
-								} catch (IOException e) {
-									throw new RuntimeException("Could not open stream: " + s.toString());
-								}
-							})
-							.collect(Collectors.toList()));
-
-			DefaultWorkflow defaultWorkflow;
-
-			DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder parameters =
-					DefaultWorkflowSetupParameters
-							.defaultWorkflowSetupParameters()
-							.modelVersion(modelVersion)
-							.runInParallel(runInParallel)
-							.enableMetrics(enableMetrics)
-							.ignoreJsl2Psm(ignoreJsl2Psm || parseOnly)
-							.ignorePsm2Asm(ignorePsm2Asm)
-							.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
-							.ignoreAsm2sdk(ignoreAsm2sdk)
-							.ignoreAsm2Expression(ignoreAsm2Expression)
-							.ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
-							.ignorePsm2AsmTrace(ignorePsm2AsmTrace)
-							.ignoreAsm2RdbmsTrace(ignoreAsm2RdbmsTrace)
-							.ignorePsm2MeasureTrace(ignorePsm2MeasureTrace)
-							.validateModels(validateModels)
-							.modelName(modelName)
-							.dialectList(dialectList);
-
-			defaultWorkflow = new DefaultWorkflow(parameters);
-
-			WorkflowHelper workflowHelper = new WorkflowHelper(defaultWorkflow);
-
-			workflowHelper.loadJslModel(modelName, jslDslModel, null);
-
-			Exception error = null;
-			try {
-				defaultWorkflow.startDefaultWorkflow();
-			} catch (IllegalStateException e) {
-				error = e;
+			boolean process = true;
+			if (modelNames != null && modelNames.size() > 0) {
+				process = modelNames.contains(modelDeclaration.getName());
 			}
 
-			if (destination != null && (error != null || saveModels)) {
-				destination.mkdirs();
-				try {
-					DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
-				} catch (Exception e) {
-					if (error != null) {
-						throw new MojoFailureException("An error occurred during the execution phase of the workflow.", error);
-					}
-					throw new MojoFailureException("An error occurred during the saving phase of the workflow.", e);
+			if (process) {
+				String modelName = modelDeclaration.getName();
+				JslDslModel jslDslModel = jslParser.getModelFromStreamSources(
+						modelName,
+						jslFiles.stream()
+								.map(f -> f.toURI())
+								.map(s -> {
+									try {
+										return new JslStreamSource(s.toURL().openStream(), org.eclipse.emf.common.util.URI.createURI("platform:/" + s.getPath()));
+									} catch (IOException e) {
+										throw new RuntimeException("Could not open stream: " + s.toString());
+									}
+								})
+								.collect(Collectors.toList()));
+
+				DefaultWorkflow defaultWorkflow;
+				File sdkOutputDirectory = null;
+				if (destination != null) {
+					sdkOutputDirectory = new File(new File(destination, "sdk"), modelName.replaceAll("::", "_"));
+					sdkOutputDirectory.mkdirs();
 				}
-			}
-			if (error != null) {
-				throw new MojoFailureException("An error occurred during the execution phase of the workflow.", error);
+
+				String packagePrefix = sdkPackagePrefix;
+				if (packagePrefix == null) {
+					packagePrefix = "";
+				} else if (!packagePrefix.endsWith(".")) {
+					packagePrefix = packagePrefix + ".";
+				}
+				packagePrefix = packagePrefix + modelName.replaceAll("::", ".").toLowerCase() + ".";
+
+				DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder parameters =
+						DefaultWorkflowSetupParameters
+								.defaultWorkflowSetupParameters()
+								.modelVersion(modelVersion)
+								.compileSdk(compileSdk)
+								.compressSdk(compressSdk)
+								.sdkOutputDirectory(sdkOutputDirectory)
+								.sdkPackagePrefix(packagePrefix)
+								.runInParallel(runInParallel)
+								.enableMetrics(enableMetrics)
+								.ignoreJsl2Psm(ignoreJsl2Psm || parseOnly)
+								.ignorePsm2Asm(ignorePsm2Asm)
+								.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
+								.ignoreAsm2sdk(ignoreAsm2sdk)
+								.ignoreAsm2Expression(ignoreAsm2Expression)
+								.ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
+								.ignorePsm2AsmTrace(ignorePsm2AsmTrace)
+								.ignoreAsm2RdbmsTrace(ignoreAsm2RdbmsTrace)
+								.ignorePsm2MeasureTrace(ignorePsm2MeasureTrace)
+								.validateModels(validateModels)
+								.modelName(modelName)
+								.dialectList(dialectList);
+
+				defaultWorkflow = new DefaultWorkflow(parameters);
+
+				WorkflowHelper workflowHelper = new WorkflowHelper(defaultWorkflow);
+
+				workflowHelper.loadJslModel(modelName, jslDslModel, null);
+
+				Exception error = null;
+				try {
+					defaultWorkflow.startDefaultWorkflow();
+				} catch (IllegalStateException e) {
+					error = e;
+				}
+
+				if (destination != null && (error != null || saveModels)) {
+					destination.mkdirs();
+					try {
+						DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
+					} catch (Exception e) {
+						if (error != null) {
+							throw new MojoFailureException("An error occurred during the execution phase of the workflow.", error);
+						}
+						throw new MojoFailureException("An error occurred during the saving phase of the workflow.", e);
+					}
+				}
+				if (error != null) {
+					throw new MojoFailureException("An error occurred during the execution phase of the workflow.", error);
+				}
 			}
 		}
 	}
