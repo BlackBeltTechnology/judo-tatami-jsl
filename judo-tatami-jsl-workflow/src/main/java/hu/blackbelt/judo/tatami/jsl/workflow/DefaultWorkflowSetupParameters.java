@@ -5,6 +5,8 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+
+import java.io.File;
 import java.net.URI;
 import java.util.List;
 
@@ -33,6 +35,18 @@ public class DefaultWorkflowSetupParameters {
 
 	@NonNull
 	private List<String> dialectList;
+
+	@Builder.Default
+	private Boolean createSdkJar = true;
+
+	@Builder.Default
+	private Boolean compileSdk = true;
+
+	@Builder.Default
+	private File sdkOutputDirectory = null;
+
+	@Builder.Default
+	private String sdkPackagePrefix = null;
 
 	@Builder.Default
 	private Boolean runInParallel = true;

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
@@ -56,7 +57,7 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
     void testImportModel() throws Exception {
         testName = "TestImportModelTest";
 
-        jslModel = parser.getModelFromStrings("ns2::c", ImmutableList.of(
+        jslModel = JslParser.getModelFromStrings("ns2::c", ImmutableList.of(
         		"model ns1::a\n"
         		+ "\n"
         		+ "type string String max-length 32",

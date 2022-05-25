@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.namespace;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class JslNamespace2PsmNamespaceTest extends AbstractTest {
     void testCreateModel() throws Exception {
         testName = "CreateModel";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "TestModel",
                 List.of("model TestModel"));
 

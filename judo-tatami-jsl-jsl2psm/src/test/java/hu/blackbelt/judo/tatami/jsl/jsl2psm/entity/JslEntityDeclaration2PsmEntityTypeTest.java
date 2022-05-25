@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
     void testCreateEntityType() throws Exception {
         testName = "TestCreateEntityType";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "EntityTypeCreateModel",
                 List.of("model EntityTypeCreateModel\n" +
                         "\n" +
@@ -84,7 +85,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
     void testEntityLocalName() throws Exception {
         testName = "TestEntityLocaleName";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "First::Second::EntityLocaleNameModel",
                 List.of("model First::Second::EntityLocaleNameModel\n" +
                         "\n" +

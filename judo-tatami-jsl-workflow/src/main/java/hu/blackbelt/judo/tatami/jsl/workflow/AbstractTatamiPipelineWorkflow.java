@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork.Asm2RdbmsWorkParameter.asm2RdbmsWorkParameter;
+import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.Asm2SDKWorkParameter.asm2SDKWorkParameter;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
@@ -66,6 +67,12 @@ public abstract class AbstractTatamiPipelineWorkflow {
 		transformationContext.put(psm2AsmWorkParameter().createTrace(!parameters.getIgnorePsm2AsmTrace()).build());
 		transformationContext.put(asm2RdbmsWorkParameter().createTrace(!parameters.getIgnoreAsm2Rdbms())
 				.modelVersion(modelVersion).build());
+
+		transformationContext.put(asm2SDKWorkParameter()
+				.compile(parameters.getCompileSdk())
+				.createJar(parameters.getCreateSdkJar())
+				.packagePrefix(parameters.getSdkPackagePrefix())
+				.outputDirectory(parameters.getSdkOutputDirectory()).build());
 
 		loadModels(workflowHelper, metrics, transformationContext, parameters);
 
@@ -143,6 +150,11 @@ public abstract class AbstractTatamiPipelineWorkflow {
 													Stream.of(createExpressionWork, createSDKWork),
 													createRdbmsWorks
 											))
+											.build()),
+							Optional.of(
+									aNewParallelFlow()
+											.named("Parallel RDBMS Transformations")
+											.execute(createLiquibaseWorks)
 											.build())
 
 							).build();
@@ -150,16 +162,17 @@ public abstract class AbstractTatamiPipelineWorkflow {
 			workflow = aNewSequentialFlow()
 					.named("Run all transformations sequentially")
 					.execute(
-							Stream.of(
-									/*validateJslWork,*/
-									validatePsmWork,
-									createPsmWork,
-									createMeasureWork,
-									createAsmWork,
-									createExpressionWork,
-									createSDKWork
-							)
-					).build();
+							Stream.concat(
+								Stream.of(
+										/*validateJslWork,*/
+										validatePsmWork,
+										createPsmWork,
+										createMeasureWork,
+										createAsmWork,
+										createExpressionWork,
+										createSDKWork),
+								Stream.concat(createRdbmsWorks, createLiquibaseWorks))
+							).build();
 		}
 
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();

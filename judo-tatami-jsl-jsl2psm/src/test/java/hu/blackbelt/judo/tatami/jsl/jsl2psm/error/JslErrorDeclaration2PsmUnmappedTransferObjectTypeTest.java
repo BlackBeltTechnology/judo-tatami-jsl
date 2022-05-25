@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.error;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.type.FlatPrimitiveType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
     void testCreateErrorType() throws Exception {
         testName = "ErrorTypeCreateModel";
 
-        jslModel = parser.getModelFromFiles(
+        jslModel = JslParser.getModelFromFiles(
                 "ErrorTypeCreateModel",
                 List.of(new File("src/test/resources/error/ErrorTestModel.jsl"))
         );
