@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,7 @@ public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
     void testDerivedRelationDeclarationModel() throws Exception {
         testName = "TestDerivedRelationModel";
 
-        jslModel = parser.getModelFromFiles(
+        jslModel = JslParser.getModelFromFiles(
                 "DerivedRelationModel",
                 List.of(new File("src/test/resources/derived/TestDerivedRelationModel.jsl"))
         );
