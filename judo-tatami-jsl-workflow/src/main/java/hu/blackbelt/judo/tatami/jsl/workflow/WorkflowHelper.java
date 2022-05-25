@@ -27,6 +27,7 @@ import hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork;
 import hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Optional;
@@ -376,6 +377,10 @@ public class WorkflowHelper {
         return () -> verifySdkStream(transformationContext) && verifySdkInternalStream(transformationContext);
     }
 
+    public Supplier<Boolean> asm2SDKOutputPredicate() {
+        return () -> asm2SDKPredicate().get() || transformationContext.getByClass(Asm2SDKWork.Asm2SDKWorkParameter.class).orElseGet(() -> Asm2SDKWork.Asm2SDKWorkParameter.asm2SDKWorkParameter().build()).getOutputDirectory() != null;
+    }
+
     public Work createAsm2SDKWork() {
         return 	aNewConditionalFlow()
                 .named("Conditional when Asm model exists then Execute Asm2SDK")
@@ -386,7 +391,7 @@ public class WorkflowHelper {
                                 .named("Execute Asm2SDK")
                                 .execute(
                                         new Asm2SDKWork(transformationContext).withMetricsCollector(workflowMetrics),
-                                        new CheckWork(asm2SDKPredicate())
+                                        new CheckWork(asm2SDKOutputPredicate())
                                 )
                                 .build()
                 )

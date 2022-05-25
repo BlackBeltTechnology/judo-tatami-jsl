@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.transferobject;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -46,7 +47,7 @@ public class JslEntityDeclaration2PsmDefaultTransferObjectTypeTest extends Abstr
         testName = "TestCreateDefaultTransferObjectType";
 
         
-        jslModel = parser.getModelFromFiles(
+        jslModel = JslParser.getModelFromFiles(
                 "DefaultTransferObjectTypeModel",
                 List.of(new File("src/test/resources/transferobject/TestCreateDefaultTransferObjectTypeModel.jsl"))
         );

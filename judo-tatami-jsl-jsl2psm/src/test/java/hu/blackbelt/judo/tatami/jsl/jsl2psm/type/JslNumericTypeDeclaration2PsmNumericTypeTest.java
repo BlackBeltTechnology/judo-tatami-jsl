@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.type;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -44,7 +45,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
     void testDeclaration() throws Exception {
         testName = "TestDeclaration";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
@@ -63,7 +64,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
     void testEntityMember() throws Exception {
         testName = "TestEntityMember";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "EntityMemberModel",
                 List.of("model EntityMemberModel\n" +
                         "\n" +
@@ -90,7 +91,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
     void testEntityMemberRequired() throws Exception {
         testName = "TestEntityMemberRequired";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel\n" +
                         "\n" +
@@ -117,7 +118,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
     void testEntityMemberInheritance() throws Exception {
         testName = "TestEntityMemberInheritance";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel\n" +
                         "\n" +
@@ -147,7 +148,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
     void testEntityMemberIdentifier() throws Exception {
         testName = "TestEntityMemberIdentifier";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +

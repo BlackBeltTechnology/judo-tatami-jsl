@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -45,7 +46,7 @@ public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractT
     void testPrimitiveDerivedDeclarationModel() throws Exception {
         testName = "TestPrimitiveDerivedDeclarationModel";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "PrimitiveDerivedDeclarationModel",
                 List.of("model PrimitiveDerivedDeclarationModel\n" +
                         "\n" +

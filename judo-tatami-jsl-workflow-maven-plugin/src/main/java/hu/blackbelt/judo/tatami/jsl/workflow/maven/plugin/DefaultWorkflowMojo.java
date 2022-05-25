@@ -1,7 +1,7 @@
 package hu.blackbelt.judo.tatami.jsl.workflow.maven.plugin;
 
+import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
-import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflow;
 import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSetupParameters;
@@ -44,9 +44,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArguments.jslDslLoadArgumentsBuilder;
-import static java.util.Optional.of;
 
-@Mojo(name = "default-workflow",
+@Mojo(name = "parsed-model-workflow",
 		defaultPhase = LifecyclePhase.COMPILE,
 		requiresDependencyResolution = ResolutionScope.COMPILE)
 public class DefaultWorkflowMojo extends AbstractMojo {
@@ -74,6 +73,9 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "psm")
 	private String psm;
 
+	@Parameter(property = "measure")
+	private String measure;
+
 	@Parameter(property = "asm")
 	private String asm;
 
@@ -95,6 +97,12 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "ignorePsm2AsmTrace", defaultValue = "true")
 	private Boolean ignorePsm2AsmTrace = true;
 
+	@Parameter(property = "ignorePsm2Measure", defaultValue = "false")
+	private Boolean ignoreAsm2Measure = false;
+
+	@Parameter(property = "ignorePsm2MeasureTrace", defaultValue = "true")
+	private Boolean ignorePsm2MeasureTrace = true;
+
 	@Parameter(property = "ignoreAsm2Rdbms", defaultValue = "false")
 	private Boolean ignoreAsm2Rdbms = false;
 
@@ -110,7 +118,7 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "ignoreAsm2Expression", defaultValue = "false")
 	private Boolean ignoreAsm2Expression = false;
 
-	@Parameter(property = "destination")
+	@Parameter(property = "destination", defaultValue = "${project.basedir}/target/model")
 	private File destination;
 
 	@Parameter(property = "modelName")
@@ -143,7 +151,7 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 	@Parameter
 	private Map<String, DialectParam> dialects;
 
-	Set<URL> classPathUrls = new HashSet<>();
+	Set<URL> classPathUrls = new TreeSet<>();
 
 	private void setContextClassLoader() throws DependencyResolutionRequiredException, MalformedURLException {
 		// Project dependencies
@@ -176,126 +184,6 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 		return artifact.getFile().toURI().toURL();
 	}
 
-
-	/**
-	 * Get the artifact file from the given url.
-	 * @param url
-	 * @return
-	 * @throws MojoExecutionException
-	 */
-	@SuppressWarnings("null")
-	public File getArtifact(String url) throws MojoExecutionException {
-		if (url.startsWith("mvn:")) {
-			String mvnUrl = url;
-			String subUrl = "";
-			if (mvnUrl.contains("!")) {
-				subUrl = mvnUrl.substring(mvnUrl.lastIndexOf("!") + 1);
-				mvnUrl = mvnUrl.substring(0, mvnUrl.lastIndexOf("!"));
-			}
-			ArtifactResult resolutionResult = getArtifactResult(mvnUrl);
-			// The file should exists, but we never know.
-			File file = resolutionResult.getArtifact().getFile();
-			if (file == null || !file.exists()) {
-				getLog().warn("Artifact " + url.toString() + " has no attached file. Its content will not be copied in the target model directory.");
-			}
-
-			if (subUrl.equals("")) {
-				return file;
-			} else {
-				// Extract file from JAR or ZIP
-				File fileFromArchive = null;
-				try {
-					fileFromArchive = getFileFromArchive(file, subUrl);
-				} catch (IOException e) {
-					throw new MojoExecutionException("Could not decompress: " + fileFromArchive.getAbsolutePath() + " file: " + fileFromArchive);
-				}
-				if (fileFromArchive == null || !fileFromArchive.exists()) {
-					throw new MojoExecutionException("File " + subUrl + " does not exists in " + file.getAbsolutePath());
-				}
-				return fileFromArchive;
-			}
-		} else {
-			File file = new File(url);
-			if (file == null || !file.exists()) {
-				getLog().warn("File " + url.toString() + " does not exists.");
-			}
-			return file;
-		}
-	}
-
-	public File getFileFromArchive(File archive, String path) throws IOException {
-		CompressorInputStream compressorInputStream = null;
-		ArchiveInputStream archiveInputStream = null;
-		File outFile = null;
-		try {
-			if (archive.getName().toLowerCase().endsWith(".tgz") || archive.getName().toLowerCase().endsWith(".tar.gz")) {
-				compressorInputStream = new GzipCompressorInputStream(new FileInputStream(archive));
-				archiveInputStream = new TarArchiveInputStream(compressorInputStream);
-			} else if (archive.getName().toLowerCase().endsWith(".zip") || archive.getName().toLowerCase().endsWith(".jar")) {
-				archiveInputStream = new ZipArchiveInputStream(new FileInputStream(archive));
-			} else if (archive.getName().toLowerCase().endsWith(".bz2") || archive.getName().toLowerCase().endsWith(".tar.bzip2")) {
-				compressorInputStream = new BZip2CompressorInputStream(new FileInputStream(archive));
-				archiveInputStream = new TarArchiveInputStream(compressorInputStream);
-			}
-
-			if (archiveInputStream == null) {
-				throw new IOException("Could not open: " + archive.getAbsolutePath());
-			}
-			if (archiveInputStream != null) {
-				ArchiveEntry entry;
-				while ((entry = archiveInputStream.getNextEntry()) != null) {
-					if (!entry.isDirectory() && entry.getName().equals(path)) {
-						FileNameUtils.getExtension(path);
-						outFile = File.createTempFile("artifacthandler", entry.getName().replaceAll("/", "_"));
-						int count;
-						byte data[] = new byte[BUFFER_SIZE];
-						FileOutputStream fos = new FileOutputStream(outFile, false);
-						try (BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER_SIZE)) {
-							while ((count = archiveInputStream.read(data, 0, BUFFER_SIZE)) != -1) {
-								dest.write(data, 0, count);
-							}
-						}
-						return outFile;
-					}
-				}
-			}
-		} finally {
-			if (compressorInputStream != null) {
-				try {
-					compressorInputStream.close();
-				} catch (Exception e) {
-				}
-			}
-
-			if (archiveInputStream != null) {
-				try {
-					archiveInputStream.close();
-				} catch (Exception e) {
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Get the artifact result from the given url.
-	 * @param url
-	 * @return
-	 * @throws MojoExecutionException
-	 */
-	public ArtifactResult getArtifactResult(String url) throws MojoExecutionException {
-		org.eclipse.aether.artifact.Artifact artifact = new DefaultArtifact(url.toString().substring(4));
-		ArtifactRequest req = new ArtifactRequest().setRepositories(this.repositories).setArtifact(artifact);
-		ArtifactResult resolutionResult;
-		try {
-			resolutionResult = repoSystem.resolveArtifact(repoSession, req);
-
-		} catch (ArtifactResolutionException e) {
-			throw new MojoExecutionException("Artifact " + url.toString() + " could not be resolved.", e);
-		}
-		return resolutionResult;
-	}
-
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -310,20 +198,28 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 		JslDslModel jslModel = null;
 		URI jslUri = null;
 
+		ArtifactResolver artifactResolver = ArtifactResolver.builder()
+				.log(getLog())
+				.project(project)
+				.repoSession(repoSession)
+				.repositories(repositories)
+				.repoSystem(repoSystem)
+				.build();
+
 		if (jsl != null && !jsl.trim().equals("")) {
-			jslUri = getArtifact(jsl).toURI();
+			jslUri = artifactResolver.getArtifact(jsl).toURI();
 
 			if (modelName == null || modelName.trim().equals("")) {
 				try {
 					JslDslModel jslModelForName = JslDslModel.loadJslDslModel(jslDslLoadArgumentsBuilder()
 							.inputStream(
-									of(jslUri).orElseThrow(() ->
+									Optional.of(jslUri).orElseThrow(() ->
 													new IllegalArgumentException("jslModel or jslModelSourceUri have to be defined"))
 											.toURL().openStream())
 							.validateModel(false)
 							.name("forName"));
 
-					modelName = getStreamOf(jslModelForName.getResourceSet(), Model.class)
+					modelName = getStreamOf(jslModelForName.getResourceSet(), ModelDeclaration.class)
 							.findFirst().orElseThrow(() -> new IllegalStateException("Cannot find Model element")).getName();
 				} catch (IOException | JslDslModel.JslDslValidationException e) {
 					throw new MojoExecutionException("Could not load model: ", e);
@@ -340,11 +236,13 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 						.runInParallel(runInParallel)
 						.enableMetrics(enableMetrics)
 						.ignorePsm2Asm(ignorePsm2Asm)
+						.ignorePsm2Measure(ignoreAsm2Measure)
 						.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
 						.ignoreAsm2sdk(ignoreAsm2sdk)
 						.ignoreAsm2Expression(ignoreAsm2Expression)
 						.ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
 						.ignorePsm2AsmTrace(ignorePsm2AsmTrace)
+						.ignorePsm2MeasureTrace(ignorePsm2MeasureTrace)
 						.ignoreAsm2RdbmsTrace(ignoreAsm2RdbmsTrace)
 						.validateModels(validateModels)
 						.modelName(modelName)
@@ -359,31 +257,35 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 		}
 
 		if (psm != null && !psm.trim().equals("")) {
-			workflowHelper.loadPsmModel(modelName, null, getArtifact(psm).toURI());
+			workflowHelper.loadPsmModel(modelName, null, artifactResolver.getArtifact(psm).toURI());
+		}
+
+		if (measure != null && !measure.trim().equals("")) {
+			workflowHelper.loadPsmModel(modelName, null, artifactResolver.getArtifact(measure).toURI());
 		}
 
 		if (asm != null && (ignorePsm2AsmTrace || psm2AsmTrace != null)) {
-			workflowHelper.loadAsmModel(modelName, null, getArtifact(asm).toURI(),
-					null, getArtifact(psm2AsmTrace).toURI());
+			workflowHelper.loadAsmModel(modelName, null, artifactResolver.getArtifact(asm).toURI(),
+					null, artifactResolver.getArtifact(psm2AsmTrace).toURI());
 		}
 
 		if (expression != null && !expression.trim().equals("")) {
-			workflowHelper.loadExpressionModel(modelName, null, getArtifact(expression).toURI());
+			workflowHelper.loadExpressionModel(modelName, null, artifactResolver.getArtifact(expression).toURI());
 		}
 
 		if (sdk != null && !sdk.trim().equals("") && sdkInternal != null && !sdkInternal.trim().equals("")) {
-			workflowHelper.loadSdk(null, getArtifact(sdk).toURI(), null, getArtifact(sdkInternal).toURI());
+			workflowHelper.loadSdk(null, artifactResolver.getArtifact(sdk).toURI(), null, artifactResolver.getArtifact(sdkInternal).toURI());
 		}
 
 		if (dialects != null) {
 			for (Map.Entry<String, DialectParam> entry : dialects.entrySet()) {
 
 				if (entry.getValue().getRdbms() != null && entry.getValue().getAsm2rdbmsTrace() != null) {
-					workflowHelper.loadRdbmsModel(modelName, entry.getKey(), null, getArtifact(entry.getValue().getRdbms()).toURI(),
-							null, getArtifact(entry.getValue().getAsm2rdbmsTrace()).toURI());
+					workflowHelper.loadRdbmsModel(modelName, entry.getKey(), null, artifactResolver.getArtifact(entry.getValue().getRdbms()).toURI(),
+							null, artifactResolver.getArtifact(entry.getValue().getAsm2rdbmsTrace()).toURI());
 				}
 				if (entry.getValue().getLiquibase() != null) {
-					workflowHelper.loadLiquibaseModel(modelName, entry.getKey(), null, getArtifact(entry.getValue().getLiquibase()).toURI());
+					workflowHelper.loadLiquibaseModel(modelName, entry.getKey(), null, artifactResolver.getArtifact(entry.getValue().getLiquibase()).toURI());
 				}
 			}
 		}
@@ -395,7 +297,7 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 			error = e;
 		}
 
-		if (error != null || saveModels) {
+		if (destination != null && (error != null || saveModels)) {
 			destination.mkdirs();
 			try {
 				DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
@@ -417,4 +319,39 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 		return StreamSupport.stream(contents.spliterator(), false)
 				.filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
 	}
+
+	private static ArrayList<File> listFileTree(File dir, boolean recursive) {
+		if (null == dir || !dir.isDirectory()) {
+			return new ArrayList<>();
+		}
+		final Set<File> fileTree = new HashSet<File>();
+		FileFilter fileFilter = new FileFilter() {
+			private final String[] acceptedExtensions = new String[]{"jsl"};
+
+			@Override
+			public boolean accept(File file) {
+				if (file.isDirectory()) {
+					return true;
+				}
+				for (String extension : acceptedExtensions) {
+					if (file.getName().toLowerCase().endsWith(extension)) {
+						return true;
+					}
+				}
+				return false;
+			}
+		};
+		File[] listed = dir.listFiles(fileFilter);
+		if(listed!=null){
+			for (File entry : listed) {
+				if (entry.isFile()) {
+					fileTree.add(entry);
+				} else if(recursive){
+					fileTree.addAll(listFileTree(entry,true));
+				}
+			}
+		}
+		return new ArrayList<>(fileTree);
+	}
+
 }

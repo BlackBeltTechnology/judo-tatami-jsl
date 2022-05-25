@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.Jsl2PsmParameter.Jsl2PsmParameterBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +72,7 @@ public class TransformationParametersTest extends AbstractTest {
     void testNoDefaultTransferObject() throws Exception {
         testName = "TestNoDefaultTransferObject";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "Test",
                 List.of("model Test\n" +
                         "\n" +
@@ -90,7 +91,7 @@ public class TransformationParametersTest extends AbstractTest {
     void testEntityPrefix() throws Exception {
         testName = "TestEntityPrefix";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "Test",
                 List.of("model Test\n" +
                         "\n" +
@@ -110,7 +111,7 @@ public class TransformationParametersTest extends AbstractTest {
     void testEntityPostfix() throws Exception {
         testName = "TestEntityPostfix";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "Test",
                 List.of("model Test\n" +
                         "\n" +
@@ -131,7 +132,7 @@ public class TransformationParametersTest extends AbstractTest {
     void testTransferObjectPrefix() throws Exception {
         testName = "TestTransferObjectPrefix";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "Test",
                 List.of("model Test\n" +
                         "\n" +
@@ -151,7 +152,7 @@ public class TransformationParametersTest extends AbstractTest {
     void testTransferObjectPostfix() throws Exception {
         testName = "TestTransferObjectPostfix";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "Test",
                 List.of("model Test\n" +
                         "\n" +
@@ -171,7 +172,7 @@ public class TransformationParametersTest extends AbstractTest {
     void testDefaultDefaultNamePrefix() throws Exception {
         testName = "TestDefaultDefaultNamePrefix";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "Test",
                 List.of("model Test\n" +
                         "\n" +
@@ -195,7 +196,7 @@ public class TransformationParametersTest extends AbstractTest {
     void testDefaultDefaultNameMidfix() throws Exception {
         testName = "TestDefaultDefaultNameMidfix";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "Test",
                 List.of("model Test\n" +
                         "\n" +
@@ -219,7 +220,7 @@ public class TransformationParametersTest extends AbstractTest {
     void testDefaultDefaultNamePostfix() throws Exception {
         testName = "TestDefaultDefaultNamePostfix";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "Test",
                 List.of("model Test\n" +
                         "\n" +

@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.Relation;
@@ -62,7 +63,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
     void testEntityUnidirectionalCompositionRelationType() throws Exception {
         testName = "TestEntityUnidirectionalCompositionRelationType";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "EntityUnidirectionalCompositionRelationTypeModel",
                 List.of("model EntityUnidirectionalCompositionRelationTypeModel\n" +
                         "\n" +
@@ -117,7 +118,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
     void testEntityUnidirectionalCompositionInheritedRelationType() throws Exception {
         testName = "TestEntityUnidirectionalCompositionInheritedRelationType";
 
-        jslModel = parser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "EntityUnidirectionalCompositionInheritedRelationTypeModel",
                 List.of("model EntityUnidirectionalCompositionInheritedRelationTypeModel\n" +
                         "\n" +
@@ -174,7 +175,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
     void testEntityAsssociationRelation() throws Exception {
         testName = "AssociationRelationTest";
 
-        jslModel = parser.getModelFromFiles(
+        jslModel = JslParser.getModelFromFiles(
                 "AssociationRelationTestModel",
                 List.of(new File("src/test/resources/entity/AssociationRelationTestModel.jsl"))
         );

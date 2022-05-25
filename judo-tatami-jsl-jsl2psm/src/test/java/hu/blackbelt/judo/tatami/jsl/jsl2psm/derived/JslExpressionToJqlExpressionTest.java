@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.JslExpressionToJqlExpression;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
     void testDerivedExpressionModel() throws Exception {
         testName = "TestDerivedExpressionModel";
 
-        jslModel = parser.getModelFromFiles(
+        jslModel = JslParser.getModelFromFiles(
                 "TestDerivedExpressionModel",
                 List.of(new File("src/test/resources/derived/TestDerivedExpressionModel.jsl"))
         );

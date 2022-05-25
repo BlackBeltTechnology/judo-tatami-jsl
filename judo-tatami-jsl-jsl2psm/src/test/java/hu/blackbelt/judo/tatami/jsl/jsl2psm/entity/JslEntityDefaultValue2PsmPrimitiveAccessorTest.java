@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.derived.PrimitiveAccessor;
 import hu.blackbelt.judo.meta.psm.derived.StaticData;
 import hu.blackbelt.judo.meta.psm.type.FlatPrimitiveType;
@@ -50,7 +51,7 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
     void testDefaultValues() throws Exception {
         testName = "TestDefaultValues";
 
-        jslModel = parser.getModelFromFiles(
+        jslModel = JslParser.getModelFromFiles(
                 "TestDefaultExpressionModel",
                 List.of(new File("src/test/resources/entity/TestDefaultExpressionModel.jsl"))
         );

@@ -53,7 +53,6 @@ abstract public class AbstractTest {
     protected static String TEST_SOURCE_MODEL_NAME = "urn:test.judo-meta-jsl";
 
     protected Log slf4jlog;
-    protected JslParser parser;
     protected JslDslModel jslModel;
 
     protected String testName;
@@ -68,7 +67,6 @@ abstract public class AbstractTest {
     void setUp() {
         // Default logger
         slf4jlog = createLog();
-        parser = new JslParser();
     }
 
     @AfterEach
