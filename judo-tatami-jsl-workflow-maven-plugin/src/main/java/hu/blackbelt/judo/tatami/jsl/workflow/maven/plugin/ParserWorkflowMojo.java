@@ -112,8 +112,8 @@ public class ParserWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "modelVersion", defaultValue = "${project.version}")
 	public String modelVersion;
 
-	@Parameter(property = "dialectList")
-	public List<String> dialectList;
+	@Parameter(property = "dialects")
+	public List<String> dialects;
 
 	@Parameter(property = "runInParallel", defaultValue = "true")
 	public Boolean runInParallel = true;
@@ -291,7 +291,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 								.enableMetrics(enableMetrics)
 								.ignoreJsl2Psm(ignoreJsl2Psm || parseOnly)
 								.ignorePsm2Asm(ignorePsm2Asm)
-								.ignorePsm2Asm(ignorePsm2Measure)
+								.ignorePsm2Measure(ignorePsm2Measure)
 								.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
 								.ignoreAsm2sdk(ignoreAsm2sdk)
 								.ignoreAsm2Expression(ignoreAsm2Expression)
@@ -302,7 +302,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 								.ignoreJsl2PsmTrace(ignoreJsl2PsmTrace)
 								.validateModels(validateModels)
 								.modelName(modelName)
-								.dialectList(dialectList);
+								.dialectList(dialects);
 
 				defaultWorkflow = new DefaultWorkflow(parameters);
 
@@ -320,7 +320,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 				if (destination != null && (error != null || saveModels)) {
 					destination.mkdirs();
 					try {
-						DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
+						DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialects);
 					} catch (Exception e) {
 						if (error != null) {
 							throw new MojoFailureException("An error occurred during the execution phase of the workflow.", error);

@@ -150,6 +150,11 @@ public abstract class AbstractTatamiPipelineWorkflow {
 													Stream.of(createExpressionWork, createSDKWork),
 													createRdbmsWorks
 											))
+											.build()),
+							Optional.of(
+									aNewParallelFlow()
+											.named("Parallel RDBMS Transformations")
+											.execute(createLiquibaseWorks)
 											.build())
 
 							).build();
@@ -157,16 +162,17 @@ public abstract class AbstractTatamiPipelineWorkflow {
 			workflow = aNewSequentialFlow()
 					.named("Run all transformations sequentially")
 					.execute(
-							Stream.of(
-									/*validateJslWork,*/
-									validatePsmWork,
-									createPsmWork,
-									createMeasureWork,
-									createAsmWork,
-									createExpressionWork,
-									createSDKWork
-							)
-					).build();
+							Stream.concat(
+								Stream.of(
+										/*validateJslWork,*/
+										validatePsmWork,
+										createPsmWork,
+										createMeasureWork,
+										createAsmWork,
+										createExpressionWork,
+										createSDKWork),
+								Stream.concat(createRdbmsWorks, createLiquibaseWorks))
+							).build();
 		}
 
 		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();

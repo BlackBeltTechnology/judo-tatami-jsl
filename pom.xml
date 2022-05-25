@@ -57,11 +57,10 @@
         <slf4j-version>1.7.36</slf4j-version>
         <surefire-version>3.0.0-M6</surefire-version>
 
-        <epsilon-runtime-version>1.4.0.20220522_205914_4b95b3e2_feature_JNG_3769_Improve_logging
-        </epsilon-runtime-version>
+        <epsilon-runtime-version>1.4.0.20220523_132344_09a0b54b_develop</epsilon-runtime-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.0-SNAPSHOT</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.0.20220525_071436_819e1384_develop</judo-meta-jsl-version>
 
         <judo-meta-rdbms-version>1.0.0.20220405_162243_a599d313_develop</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.1.20220405_161348_f273cd5a_develop</judo-meta-jql-version>
@@ -75,7 +74,7 @@
         <judo-operation-utils-version>1.1.0.20220405_162650_6298bb1f_develop</judo-operation-utils-version>
         <structured-map-proxy-version>1.0.6.20220301_160543_e228df4d_develop</structured-map-proxy-version>
 
-        <judo-tatami-version>1.1.0-SNAPSHOT</judo-tatami-version>
+        <judo-tatami-version>1.1.0.20220525_072125_768f90aa_feature_JNG_3770_JSLBatchTransfromation</judo-tatami-version>
         <judo-tatami-core-version>1.1.0.20220405_161751_7fec76d0_develop</judo-tatami-core-version>
 
         <!-- Xtend / Xcore -->
