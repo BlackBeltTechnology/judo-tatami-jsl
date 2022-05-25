@@ -70,7 +70,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
 
 		transformationContext.put(asm2SDKWorkParameter()
 				.compile(parameters.getCompileSdk())
-				.compress(parameters.getCompressSdk())
+				.createSdkJar(parameters.getCreateSdkJar())
 				.packagePrefix(parameters.getSdkPackagePrefix())
 				.outputDirectory(parameters.getSdkOutputDirectory()).build());
 

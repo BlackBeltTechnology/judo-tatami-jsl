@@ -37,7 +37,7 @@ public class DefaultWorkflowSetupParameters {
 	private List<String> dialectList;
 
 	@Builder.Default
-	private Boolean compressSdk = true;
+	private Boolean createSdkJar = true;
 
 	@Builder.Default
 	private Boolean compileSdk = true;

@@ -73,10 +73,10 @@ public class ParserWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "parseOnly", defaultValue = "false")
 	public Boolean parseOnly = false;
 
-	@Parameter(property = "boolean", defaultValue = "false")
-	public Boolean compressSdk = false;
+	@Parameter(property = "createSdkJar", defaultValue = "false")
+	public Boolean createSdkJar = false;
 
-	@Parameter(property = "boolean", defaultValue = "false")
+	@Parameter(property = "compileSdk", defaultValue = "false")
 	public Boolean compileSdk = false;
 
 	@Parameter(property = "ignorePsm2Asm", defaultValue = "false")
@@ -284,7 +284,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 								.defaultWorkflowSetupParameters()
 								.modelVersion(modelVersion)
 								.compileSdk(compileSdk)
-								.compressSdk(compressSdk)
+								.createSdkJar(createSdkJar)
 								.sdkOutputDirectory(sdkOutputDirectory)
 								.sdkPackagePrefix(packagePrefix)
 								.runInParallel(runInParallel)

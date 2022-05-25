@@ -74,7 +74,7 @@
         <judo-operation-utils-version>1.1.0.20220405_162650_6298bb1f_develop</judo-operation-utils-version>
         <structured-map-proxy-version>1.0.6.20220301_160543_e228df4d_develop</structured-map-proxy-version>
 
-        <judo-tatami-version>1.1.0.20220525_072125_768f90aa_feature_JNG_3770_JSLBatchTransfromation</judo-tatami-version>
+        <judo-tatami-version>1.1.0.20220525_193227_ed2d97d3_feature_JNG_3770_JSLBatchTransfromation</judo-tatami-version>
         <judo-tatami-core-version>1.1.0.20220405_161751_7fec76d0_develop</judo-tatami-core-version>
 
         <!-- Xtend / Xcore -->
