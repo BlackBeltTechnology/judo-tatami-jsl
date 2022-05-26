@@ -58,7 +58,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${plugin}", readonly = true)
 	public PluginDescriptor pluginDescriptor;
 
-	@Parameter(property = "sources")
+	@Parameter(property = "sources", defaultValue = "${project.basedir}/src/main/model")
 	public List<String> sources;
 
 	@Parameter(property = "modelNames")
@@ -69,9 +69,6 @@ public class ParserWorkflowMojo extends AbstractMojo {
 
 	@Parameter(property = "boolean", defaultValue = "false")
 	public Boolean useDependencies = false;
-
-	@Parameter(property = "parseOnly", defaultValue = "false")
-	public Boolean parseOnly = false;
 
 	@Parameter(property = "createSdkJar", defaultValue = "false")
 	public Boolean createSdkJar = false;
@@ -112,7 +109,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "modelVersion", defaultValue = "${project.version}")
 	public String modelVersion;
 
-	@Parameter(property = "dialects")
+	@Parameter(property = "dialects", defaultValue = "hsqldb,postgresql")
 	public List<String> dialects;
 
 	@Parameter(property = "runInParallel", defaultValue = "true")
@@ -289,7 +286,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 								.sdkPackagePrefix(packagePrefix)
 								.runInParallel(runInParallel)
 								.enableMetrics(enableMetrics)
-								.ignoreJsl2Psm(ignoreJsl2Psm || parseOnly)
+								.ignoreJsl2Psm(ignoreJsl2Psm)
 								.ignorePsm2Asm(ignorePsm2Asm)
 								.ignorePsm2Measure(ignorePsm2Measure)
 								.ignoreAsm2Rdbms(ignoreAsm2Rdbms)

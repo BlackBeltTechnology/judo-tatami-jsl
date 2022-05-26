@@ -1,4 +1,6 @@
-= Tatami JSL Workflow maven plugin
+Tatami JSL Workflow maven plugin
+================================
+
 ifndef::env-site,env-github[]
 include::_attributes.adoc[]
 endif::[]
@@ -6,27 +8,427 @@ endif::[]
 :idprefix:
 :idseparator: -
 
-This plugin manages and executes generators for JUDO JSL models.
+This plugin manages and executes generators for JUDO JSL Application codes.
 
-## Requirements
+It generates persitence DAO's and Guice Injector based bootstrap.
 
-- Maven 3.6 and Java 1.8
+Requirements
+------------
 
-## Installation
+- Maven 3.6 and Java 11
+
+Installation
+------------
 
 Include the plugin as a dependency in your Maven project. Change `LATEST_VERSION` to the latest tagged version.
+
+Generating application with minimal settings. 
 
 ```xml
 <plugin>
     <groupId>hu.blackbelt.judo.tatami</groupId>
     <artifactId>judo-tatami-jsl-workflow-maven-plugin</artifactId>
     <version>LATEST_VERSION</version>
-    ...
+    <executions>
+        <execution>
+            <id>generate-application-from-jsl</id>
+            <goals>
+                <goal>parser-workflow</goal>
+            </goals>
+            <phase>generate-sources</phase>
+        </execution>
+    <executions>
 </plugin>
 <!-- ... -->
-
 ```
 
-## Usage
 
-WIP
+## Generation pipeline
+
+The plugin executes model conversion pipeline started with the `.jsl` defined models. 
+The different models represents different architectual models, which used by
+the coresponding architectual element.
+
+Model pipeline for `.jsl`
+
+[plantuml, target=diagram-classes, format=png]   
+----
+@startuml
+JslDsl -> JSL: JslParser
+JSL -> PSM: Jsl2Psm
+PSM -> ASM: Psm2Asm
+PSM -> Measure: Psm2Measure
+ASM -> RDBMS: Asm2Rdbms (hsqldb, postgresql)
+ASM -> SDK: Asm2Sdk (hsqldb, postgresql)
+RDBMS -> Liquibase: Rdbms2Liquibase (hsqldb, postgresql)
+
+@enduml
+----
+
+- JslDsl - The JUDO Specification Language model. The source code of the model.
+- JSL - The XMI representation of JslDsl.
+- PSM - Platform Specific Model. It is the formal JUDO definition of platform domain in XMI format.
+- ASM - Artchitecture Specific Model. It is Ecore metamodel based XMI representation of PSM. This model and it's derivative models are used by the platform.
+- Measure - Special measure model, which helps
+the correct measurement handling.
+- RDBMS - Relation Data Model in XMI form. It is generated dialect dependent form.
+- Liquibase - This model contains RDBMS model definition for DDL generation. Means it will create the RDBMS schema in a database for the defined ASM model.
+
+
+## Plugin parameters
+
+```xml
+<execution>
+    <id>execute-esm-model-from-artifact</id>
+    <phase>compile</phase>
+    <goals>
+        <goal>default-workflow</goal>
+    </goals>
+    <configuration>
+        <sources>${project.basedir}/src/main/model</sources> <1>
+        <modelNames></modelName> <2>
+        <destination>${project.basedir}/target/model</destination> <3>
+        <modelVersion>${project.version}</modelVersion> <4>
+
+        <sdkPackagePrefix>my.best.package</sdkPackagePrefix> <5>
+        <useDependencies>false</useDependencies> <6>
+        <createSdkJar>false</createSdkJar> <7>
+        <compileSdk>false</compileSdk> <8>
+
+        <dialects>hsqldb,postgresql</dialects> <9>
+
+        <ignorePsm2Asm>false</ignorePsm2Asm> <25>
+        <ignorePsm2Asm>false</ignorePsm2Asm> <25>
+        <ignorePsm2AsmTrace>false</ignorePsm2AsmTrace> <26>
+        <ignorePsm2Measure>false</ignorePsm2Measure> <27>
+        <ignorePsm2MeasureTrace>false</ignorePsm2MeasureTrace> <28>
+        <ignoreAsm2Openapi>false</ignoreAsm2Openapi> <29>
+        <ignoreAsm2OpenapiTrace>false</ignoreAsm2OpenapiTrace> <30>
+        <ignoreAsm2Rdbms>false</ignoreAsm2Rdbms> <31>
+        <ignoreAsm2RdbmsTrace>false</ignoreAsm2RdbmsTrace> <32>
+        <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase> <35>
+        <ignoreAsm2sdk>false</ignoreAsm2sdk> <36>
+        <ignoreAsm2Expression>false</ignoreAsm2Expression> <38>
+        <runInParallel>true</runInParallel> <41>
+        <saveModels>true</saveModels> <42>
+        <enableMetrics>true<enableMetrics> <43>
+        <validateModels>false</validateModels> <44>
+    </configuration>
+</execution>
+```
+
+URI type parameters can be file or mvn with the following coordinate:
+`mvn:<groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>[!path/in/archive]`
+
+<1> (Optional) Sources URI. It is a coma separated list. When one or more models are defined, added them, when a directory in a filesystem or artifact is defined scans recursively for .jsl files. 
++
+(Default: src/model directory inside the project)
+
+<2> (Optional) Destination path where the transformation output is generated. It contains intermediate models, traces and source code.
++
+IMPORTANT: When the source codes have to be compiled, use the `build-helper-plugin` to add source folder, or
+have to enable `compileSdk` and `createSdkJar` option. 
++
+Default: `${project.basedir}/target/classes/model``.
+
+<3> (Optional) Logical model names. When multiple `jsl` files are defined, by default all of them are compiled. Most of the time only one or more dedicated model can be compiled with the list of the names. (the name which is dfined as `model` in the first line of `.jsl`)
++
+(Default: <none>)
+
+<4> (Optional) Which version number stored in the generated models.
++
+(Default: `${project.version}`)
+
+<5> (Optional) SDK Package prefix used to store all generated model element under.
+The generated Java package form <prefix>.<model fq name>.<sdk type>.<model defined packages>.<model name>
++
+- `model fq name` is created from `model` tag. There `::` used for package separation. In this form it replaced with `_`
+- `sdk type` name includes the type of generated package. It can be `internal`, `sdk` or `daoprovider` currently.
+- `model defined packages` is the base and imported model's packages. The `::` replaced with `.`.
+- `model name` The mode name without package. All of name tokens in package context are in lowercase format.
++
+(Default: <none>)
+<6> (Optional) Use maven dependencies as source of JSL files. When it is `true`, scans all dependencies transitively for `.jsl` files. When you have `.jsl` files packaged and stored
+in maven, add to your `pom.xml`.
++
+(Default: `false`)
+
+<7> (Optional) Create SDK Jar with pipeline. In this case the generated and compiled codes
+are stored in a OSGi compliant JAR file. This JAR files can be used as dependency. When model compilation is seperated from application development these JAR files can be used as dependency, and the model loader can load models from classpath too.
++
+(Default: `false`)
+
+<8> (Optional)  In this case the pipeline calls own compiler
+API to compile generated source codes. When it is `true`, use `createSdkJar` option too.
+
+<9> (Optional) Coma separated list of dialects generated. Valid values are: 
+- hsqldb, 
+- postgresql
++
+(Default: `hsqldb,postgresql`)
+
+<25> (Optional) Ignore Psm2Asm work. 
++
+Default: `false`
+
+<26> (Optional) Ignore Psm2Asm Trace. 
++
+Default: `true`
+
+<27> (Optional) Ignore Psm2Measure work. 
++
+Default: `false`
+
+<28> (Optional) Ignore Psm2Measure Trace. 
++
+Default: `true`
+
+<31> (Optional) Ignore Asm2Rdbms work. 
++
+Default: `false`
+
+<32> (Optional) Ignore Asm2Rdbms Trace. 
++
+Default: `false`
+
+<35> (Optional) Ignore Rdbms2Liquibase work.
++
+Default: `false`
+
+<36> (Optional) Ignore Asm2sdk work. 
++
+Default: `false`
+
+<38> (Optional) Ignore Asm2Expression work. 
++
+Default: `false`
+
+<41> (Optional) Run in parallel when possible, parallel execution is used in multicore system
++
+(Default: `true`)
+
+<42> (Optional) Save models after execution. After execution the models are stored on destination.
++
+(Default: `false`)
+
+<43> (Optional) Enable generation time statistics after execution
++
+(Default: `true`)
+
+<44> (Optional) Validate model on load and save
++
+(Default: `false`)
+
+
+
+Example
+-------
+
+- `src/model/salesmodel.jsl`
++
+----
+model SalesModel
+
+type numeric Integer precision 9  scale 0
+type string String max-length 128
+type string PhoneNumber max-length 32 regex "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$"   // escape sequencing does not work in regexp!!!!
+type boolean Boolean
+
+type date Date
+type timestamp Timestamp
+type binary Binary
+
+error MyError {
+	field required Integer code
+	field String msg
+}
+
+error MyExtendedError extends MyError {
+	field Integer extra = 0
+}
+
+enum LeadStatus {
+	OPPORTUNITY = 0
+	LEAD = 1
+	PROJECT = 2
+}
+
+entity abstract Person {
+	field String firstName
+	field String lastName
+	relation Lead[] leadsNoOpposite
+	derived	String fullName = self.firstName + " " \
+		+ self.lastName ;
+}
+
+entity SalesPerson extends Person {
+	relation Lead[] leads opposite salesPerson
+	derived Customer[] leadsOver(Integer limit = 100) = self.leads!filter(lead | lead.value > limit)
+	derived Customer[] leadsOver10 = self.leadsOver(limit = 10)
+}
+
+entity Lead {
+	field Integer value = 100000
+	relation required SalesPerson salesPerson opposite leads
+	constraint self.value > 10 onerror MyError(code = 10, msg = "Error message")
+}
+
+entity Customer {
+	identifier required String name
+	relation Lead lead opposite-add customer
+}
+
+----
+
+
+- `pom.xml`
++
+----
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>hu.blackbelt.judo.runtime</groupId>
+        <artifactId>judo-runtime-core-jsl-parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>judo-runtime-core-jsl-itest</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>JUDO Runtime Core :: JUDO Language Specification DSL Integrationtests</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-workflow-maven-plugin</artifactId>
+                <version>${judo-tatami-jsl-version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-models</id>
+                        <goals>
+                            <goal>parser-workflow</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sources>${basedir}/src/test/resources/model</sources>
+                    <sdkPackagePrefix>hu.blackbelt.judo.runtime.core.jsl.itest</sdkPackagePrefix>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/target/model/sdk/SalesModel</source>
+                                <source>${project.basedir}/target/model/sdk/SalesModel2</source>
+                                <source>${project.basedir}/target/model/sdk/SalesModel3</source>
+                                <source>${project.basedir}/target/model/sdk/SalesModelContract</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Export-Package>hu.blackbelt.judo.runtime.core.jsl.itest.*;version=${project.version}</Export-Package>
+                        <Include-Resource>
+                            {maven-resources},
+                            model=target/model
+                        </Include-Resource>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>hu.blackbelt.judo.runtime</groupId>
+                <artifactId>judo-runtime-core-dependencies</artifactId>
+                <version>${judo-runtime-core-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-jsl2psm</artifactId>
+                <version>${judo-tatami-jsl-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-workflow</artifactId>
+                <version>${judo-tatami-jsl-version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>hu.blackbelt.judo.runtime</groupId>
+            <artifactId>judo-runtime-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.runtime</groupId>
+            <artifactId>judo-runtime-core-bootstrap-hsqldb</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.runtime</groupId>
+            <artifactId>judo-runtime-core-bootstrap-postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo</groupId>
+            <artifactId>judo-dao-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.mapper</groupId>
+            <artifactId>mapper-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo</groupId>
+            <artifactId>judo-dispatcher-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo</groupId>
+            <artifactId>judo-sdk-common</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+----
+
+

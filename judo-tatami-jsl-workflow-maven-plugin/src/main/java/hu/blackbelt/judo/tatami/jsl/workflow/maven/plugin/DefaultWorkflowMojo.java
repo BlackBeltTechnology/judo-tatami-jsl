@@ -33,7 +33,7 @@ import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArguments.jslDslLoadArgumentsBuilder;
 
-@Mojo(name = "parsed-model-workflow",
+@Mojo(name = "default-model-workflow",
 		defaultPhase = LifecyclePhase.COMPILE,
 		requiresDependencyResolution = ResolutionScope.COMPILE)
 public class DefaultWorkflowMojo extends AbstractMojo {
