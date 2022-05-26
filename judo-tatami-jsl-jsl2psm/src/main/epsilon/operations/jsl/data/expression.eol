@@ -1,9 +1,9 @@
 @cached
-operation JSL!Expression isDefaultValueForEntity(): Boolean {
-	return (self.eContainer.isKindOf(JSL!EntityIdentifierDeclaration) or self.eContainer.isKindOf(JSL!EntityFieldDeclaration)) and self.eContainer.`default` == self;
+operation JSL!DefaultExpressionType isDefaultValueForEntity(): Boolean {
+	return (self.eContainer.isKindOf(JSL!EntityIdentifierDeclaration) or self.eContainer.isKindOf(JSL!EntityFieldDeclaration)) and self.eContainer.defaultExpression == self;
 }
 
 @cached
-operation JSL!Expression isDefaultValueForError(): Boolean {
-	return self.eContainer.isKindOf(JSL!ErrorField) and self.eContainer.`default` == self;
+operation JSL!DefaultExpressionType isDefaultValueForError(): Boolean {
+	return self.eContainer.isKindOf(JSL!ErrorField) and self.eContainer.defaultExpression == self;
 }

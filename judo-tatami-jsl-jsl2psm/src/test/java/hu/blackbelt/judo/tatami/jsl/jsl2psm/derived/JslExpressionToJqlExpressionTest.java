@@ -8,6 +8,7 @@ import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.JslExpressionToJqlExpression;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -19,6 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
+@Disabled
 public class JslExpressionToJqlExpressionTest extends AbstractTest {
     static final String TARGET_TEST_CLASSES = "target/test-classes/derived/primitiveAccessor";
 
