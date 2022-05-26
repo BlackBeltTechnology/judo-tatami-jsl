@@ -16,7 +16,9 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionParameter;
 import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionedExpression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.IntegerLiteral;
+import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaFunctionParameters;
 import hu.blackbelt.judo.meta.jsl.jsldsl.NavigationExpression;
+import hu.blackbelt.judo.meta.jsl.jsldsl.ParametrizedFunctionParameters;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ParenthesizedExpression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.QueryParameter;
 import hu.blackbelt.judo.meta.jsl.jsldsl.RawStringLiteral;
@@ -84,12 +86,12 @@ public class JslExpressionToJqlExpression {
             
             if (nav.getFeatures().size() == 0 || 
                     nav.getFeatures().get(0).getMember() == null || 
-                    nav.getFeatures().get(0).getMember().getEntityMemberDeclarationType() == null ||
-                    !(nav.getFeatures().get(0).getMember().getEntityMemberDeclarationType() instanceof EntityDerivedDeclaration)) {
+                    nav.getFeatures().get(0).getMember().getNavigationDeclarationType() == null ||
+                    !(nav.getFeatures().get(0).getMember().getNavigationDeclarationType() instanceof EntityDerivedDeclaration)) {
                 throw new IllegalArgumentException("The Self referenced feature has to be an entity derived declaration - " + entityDerivedDeclaration.getName());
             }
 
-            entityDerivedDeclaration = (EntityDerivedDeclaration) nav.getFeatures().get(0).getMember().getEntityMemberDeclarationType();
+            entityDerivedDeclaration = (EntityDerivedDeclaration) nav.getFeatures().get(0).getMember().getNavigationDeclarationType();
             stack.push(entityDerivedDeclaration);
 
         }
@@ -126,7 +128,7 @@ public class JslExpressionToJqlExpression {
 
                 NavigationExpression currentNav = (NavigationExpression) current.getExpression();
                 Feature currentMember = (Feature) currentNav.getFeatures().get(0).getMember();
-                EntityDerivedDeclaration calledQuery = (EntityDerivedDeclaration) currentMember.getEntityMemberDeclarationType();
+                EntityDerivedDeclaration calledQuery = (EntityDerivedDeclaration) currentMember.getNavigationDeclarationType();
 
                 // Check all parameters of the called method
                 for (DerivedParameter p : calledQuery.getParameters()) {
@@ -247,12 +249,12 @@ public class JslExpressionToJqlExpression {
 
     /**
      * SpawnOperation returns Expression
-     * : UnaryOperation (=> ({SpawnOperation.operand=current} 'as' type=LocalName))?
+     * : UnaryOperation (=> ({SpawnOperation.operand=current} 'as' spawnTargetType=LocalName))?
      * ;
      */
     private String getJqlDispacher(final SpawnOperation it) {
         return it != null
-                ? getJql(it.getOperand()) + " as " + it.getType()
+                ? getJql(it.getOperand()) + " as " + it.getSpawnTargetType()
                 : null;
     }
 
@@ -413,7 +415,7 @@ public class JslExpressionToJqlExpression {
      */
     private String getJql(final Feature it) {
         return it != null
-                ? '.' + modelExtension.getNameForEntityMemberDeclaration((EntityMemberDeclaration) it.getMember().getEntityMemberDeclarationType()) +
+                ? '.' + modelExtension.getNameForEntityMemberDeclaration((EntityMemberDeclaration) it.getMember().getNavigationDeclarationType()) +
                 (
                         it.getParameters().size() > 0
                                 ? "(" +  it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")"
@@ -428,7 +430,7 @@ public class JslExpressionToJqlExpression {
         }
         Feature member = it.getMember();
         if (member != null) {
-            if (member.getEntityMemberDeclarationType() != null && member.getEntityMemberDeclarationType() instanceof EntityDerivedDeclaration) {
+            if (member.getNavigationDeclarationType() != null && member.getNavigationDeclarationType() instanceof EntityDerivedDeclaration) {
                 return true;
             }                    
         }
@@ -488,22 +490,45 @@ public class JslExpressionToJqlExpression {
     
     /**
      * Function returns Function
-     * : name=ID '(' (lambdaArgument=ID '|')? (parameters+=FunctionParameter (',' parameters+=FunctionParameter)*)? ')'
+     * : name=ID '(' parameterDeclaration = FunctionParameterDeclaration? ')'
+     * ;
+     * 
+     * FunctionParameterDeclaration
+     * 	: LambdaFunctionParameters
+     * 	| ParametrizedFunctionParameters
+     * 	;
+     * 
+     * LambdaFunctionParameters
+     * : lambdaArgument=LambdaVariable '|' expression = Expression
+     * ;
+     * 
+     * ParametrizedFunctionParameters
+     * : parameters+=FunctionParameter (',' parameters+=FunctionParameter)*
+     * ;
+     *     
+     * LambdaVariable
+     * : {LambdaVariable} name=ID    	
      * ;
      */
+    
     private String getJql(final Function it) {
         return it != null
                 ? it.getName() + '(' +
                 (
-                        it.getLambdaArgument() != null
-                                ? it.getLambdaArgument() + " | "
-                                : ""
-                ) + it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")"
+                        it.getParameterDeclaration() instanceof LambdaFunctionParameters
+                                ? ((LambdaFunctionParameters) it.getParameterDeclaration()).getLambdaArgument().getName() + " | "
+                                		+ getJql(((LambdaFunctionParameters) it.getParameterDeclaration()).getExpression())
+                                : (
+                                	it.getParameterDeclaration() instanceof ParametrizedFunctionParameters 
+                                	? ((ParametrizedFunctionParameters) it.getParameterDeclaration()).getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(","))
+                                	: "")
+                ) + ")"
                 : null;
-    }
+   }
 
     private Boolean containsParametrizedQueryCall(final Function it) {
-        if (it != null && it.getParameters().stream().map(p -> containsParametrizedQueryCall(p)).filter(p -> p).count() > 0) {
+        if (it != null && it.getParameterDeclaration() instanceof ParametrizedFunctionParameters &&
+        		((ParametrizedFunctionParameters) it.getParameterDeclaration()).getParameters().stream().map(p -> containsParametrizedQueryCall(p)).filter(p -> p).count() > 0) {
             throw new IllegalArgumentException("Function parameters cannot contain parametrized query call");            
         }
         return false;
