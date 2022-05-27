@@ -239,43 +239,43 @@ type timestamp Timestamp
 type binary Binary
 
 error MyError {
-	field required Integer code
-	field String msg
+    field required Integer code
+    field String msg
 }
 
 error MyExtendedError extends MyError {
-	field Integer extra = 0
+    field Integer extra = 0
 }
 
 enum LeadStatus {
-	OPPORTUNITY = 0
-	LEAD = 1
-	PROJECT = 2
+    OPPORTUNITY = 0
+    LEAD = 1
+    PROJECT = 2
 }
 
 entity abstract Person {
-	field String firstName
-	field String lastName
-	relation Lead[] leadsNoOpposite
-	derived	String fullName = self.firstName + " " \
-		+ self.lastName ;
+    field String firstName
+    field String lastName
+    relation Lead[] leadsNoOpposite
+    derived    String fullName = self.firstName + " " \
+        + self.lastName ;
 }
 
 entity SalesPerson extends Person {
-	relation Lead[] leads opposite salesPerson
-	derived Customer[] leadsOver(Integer limit = 100) = self.leads!filter(lead | lead.value > limit)
-	derived Customer[] leadsOver10 = self.leadsOver(limit = 10)
+    relation Lead[] leads opposite salesPerson
+    derived Customer[] leadsOver(Integer limit = 100) = self.leads!filter(lead | lead.value > limit)
+    derived Customer[] leadsOver10 = self.leadsOver(limit = 10)
 }
 
 entity Lead {
-	field Integer value = 100000
-	relation required SalesPerson salesPerson opposite leads
-	constraint self.value > 10 onerror MyError(code = 10, msg = "Error message")
+    field Integer value = 100000
+    relation required SalesPerson salesPerson opposite leads
+    constraint self.value > 10 onerror MyError(code = 10, msg = "Error message")
 }
 
 entity Customer {
-	identifier required String name
-	relation Lead lead opposite-add customer
+    identifier required String name
+    relation Lead lead opposite-add customer
 }
 
 ----
@@ -344,22 +344,22 @@ entity Customer {
             </plugin>
         </plugins>
 
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.22.2</version>
-					<dependencies>
-						<dependency>
-							<groupId>org.junit.jupiter</groupId>
-							<artifactId>junit-jupiter-engine</artifactId>
-							<version>5.8.2</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.2</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.junit.jupiter</groupId>
+                            <artifactId>junit-jupiter-engine</artifactId>
+                            <version>5.8.2</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <dependencyManagement>
@@ -433,18 +433,18 @@ entity Customer {
             <artifactId>judo-sdk-common</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>5.8.2</version>
-			<scope>test</scope>
-		</dependency>        
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.8.2</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>        
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 </project>
