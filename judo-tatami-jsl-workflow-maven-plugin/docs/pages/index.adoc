@@ -224,7 +224,7 @@ Default: `false`
 Example
 -------
 
-- `src/model/salesmodel.jsl`
+- `src/main/model/salesmodel.jsl`
 +
 ----
 model SalesModel
@@ -283,21 +283,24 @@ entity Customer {
 
 - `pom.xml`
 +
+[source,xml]
 ----
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>hu.blackbelt.judo.runtime</groupId>
-        <artifactId>judo-runtime-core-jsl-parent</artifactId>
-        <version>${revision}</version>
-    </parent>
+    <groupId>hu.blackbelt.judo.test</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+    <artifactId>judo-sales-model</artifactId>
+    <packaging>jar</packaging>
 
-    <artifactId>judo-runtime-core-jsl-itest</artifactId>
-    <packaging>bundle</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
-    <name>JUDO Runtime Core :: JUDO Language Specification DSL Integrationtests</name>
-
+        <judo-runtime-core-version>1.0.0.20220525_074020_89c359f7_feature_JNG_3770_JSLBatchTransfromation</judo-runtime-core-version>
+        <judo-tatami-jsl-version>1.1.0-SNAPSHOT</judo-tatami-jsl-version>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -314,8 +317,9 @@ entity Customer {
                     </execution>
                 </executions>
                 <configuration>
-                    <sources>${basedir}/src/test/resources/model</sources>
-                    <sdkPackagePrefix>hu.blackbelt.judo.runtime.core.jsl.itest</sdkPackagePrefix>
+                    <modelNames>SalesModel</modelNames>
+                    <sources>${basedir}/src/main/model</sources>
+                    <sdkPackagePrefix>hu.blackbelt.judo.test</sdkPackagePrefix>
                 </configuration>
             </plugin>
 
@@ -333,28 +337,29 @@ entity Customer {
                         <configuration>
                             <sources>
                                 <source>${project.basedir}/target/model/sdk/SalesModel</source>
-                                <source>${project.basedir}/target/model/sdk/SalesModel2</source>
-                                <source>${project.basedir}/target/model/sdk/SalesModel3</source>
-                                <source>${project.basedir}/target/model/sdk/SalesModelContract</source>
                             </sources>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Export-Package>hu.blackbelt.judo.runtime.core.jsl.itest.*;version=${project.version}</Export-Package>
-                        <Include-Resource>
-                            {maven-resources},
-                            model=target/model
-                        </Include-Resource>
-                    </instructions>
-                </configuration>
-            </plugin>
         </plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.22.2</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.junit.jupiter</groupId>
+							<artifactId>junit-jupiter-engine</artifactId>
+							<version>5.8.2</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
     </build>
 
     <dependencyManagement>
@@ -427,8 +432,98 @@ entity Customer {
             <groupId>hu.blackbelt.judo</groupId>
             <artifactId>judo-sdk-common</artifactId>
         </dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.8.2</version>
+			<scope>test</scope>
+		</dependency>        
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.8.2</version>
+			<scope>test</scope>
+		</dependency>
+
     </dependencies>
 </project>
 ----
 
 
+- `/src/test/java/hu/blackbelt/judo/test/salesmodel/SalesModelTest.java`
++
+[source,java]
+----
+package hu.blackbelt.judo.test.salesmodel;
+
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import hu.blackbelt.judo.runtime.core.bootstrap.JudoDefaultModule;
+import hu.blackbelt.judo.runtime.core.bootstrap.JudoModelHolder;
+import hu.blackbelt.judo.runtime.core.bootstrap.dao.rdbms.hsqldb.JudoHsqldbModules;
+import hu.blackbelt.judo.runtime.core.dao.rdbms.hsqldb.HsqldbDialect;
+import hu.blackbelt.judo.test.salesmodel.daoprovider.salesmodel.SalesModelDaoModules;
+import hu.blackbelt.judo.test.salesmodel.sdk.salesmodel.salesmodel.Person;
+import hu.blackbelt.judo.test.salesmodel.sdk.salesmodel.salesmodel.SalesPerson;
+import hu.blackbelt.judo.sdk.query.StringFilter;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@Slf4j
+class SalesModelTest {
+
+    Injector injector;
+
+    @Inject
+    SalesPerson.SalesPersonDao salesPersonDao;
+
+    @Inject
+    Person.PersonDao personDao;
+
+    @BeforeEach
+    void init() throws Exception {
+        JudoModelHolder modelHolder = JudoModelHolder.
+                loadFromURL("SalesModel", new File("target/model").toURI(), new HsqldbDialect());
+
+        injector = Guice.createInjector(
+                JudoHsqldbModules.builder().build(),
+                new SalesModelDaoModules(),
+                new JudoDefaultModule(this, modelHolder));
+
+    }
+
+    @Test
+    public void test() {
+        SalesPerson createdSalesPerson = salesPersonDao.create(SalesPerson.builder()
+                        .withFirstName("Test")
+                        .withLastName("Elek")
+                        .build());
+
+        assertEquals("Test", createdSalesPerson.getFirstName());
+        assertEquals("Elek", createdSalesPerson.getLastName());
+
+        List<SalesPerson> personList = salesPersonDao.search()
+                        .filterByFirstName(StringFilter.equalTo("Test"))
+                .execute();
+
+        assertEquals(1, personList.size());
+
+        Person createdPerson = personDao.create(Person.builder()
+                .withFirstName("Masik")
+                .withLastName("Test")
+                .build());
+
+        assertEquals("Masik", createdPerson.getFirstName());
+        assertEquals("Test", createdPerson.getLastName());
+
+    }
+}
+----
