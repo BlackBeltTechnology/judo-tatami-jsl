@@ -298,8 +298,8 @@ entity Customer {
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <judo-runtime-core-version>1.0.0.20220525_074020_89c359f7_feature_JNG_3770_JSLBatchTransfromation</judo-runtime-core-version>
-        <judo-tatami-jsl-version>1.1.0-SNAPSHOT</judo-tatami-jsl-version>
+        <!--1--><judo-runtime-core-version>1.0.0.20220525_074020_89c359f7_feature_JNG_3770_JSLBatchTransfromation</judo-runtime-core-version> 
+        <!--2--><judo-tatami-jsl-version>1.1.0.20220527_111910_a1452733_develop</judo-tatami-jsl-version>
     </properties>
     <build>
         <plugins>
@@ -320,9 +320,11 @@ entity Customer {
                     <modelNames>SalesModel</modelNames>
                     <sources>${basedir}/src/main/model</sources>
                     <sdkPackagePrefix>hu.blackbelt.judo.test</sdkPackagePrefix>
+                    <dialects>hsqldb</dialects>
                 </configuration>
             </plugin>
 
+            <!--3-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -449,6 +451,9 @@ entity Customer {
     </dependencies>
 </project>
 ----
+<1> Runtime core version required to load end execute transformated model
+<2> Tatami JSL version required to transform JSL script
+<3> Build helper plugin adds the generated SDK source code to normal maven build pipeline
 
 
 - `/src/test/java/hu/blackbelt/judo/test/salesmodel/SalesModelTest.java`
@@ -480,19 +485,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Slf4j
 class SalesModelTest {
 
-    Injector injector;
+    Injector injector; // <1>
 
     @Inject
-    SalesPerson.SalesPersonDao salesPersonDao;
+    SalesPerson.SalesPersonDao salesPersonDao; // <2>
 
     @Inject
-    Person.PersonDao personDao;
+    Person.PersonDao personDao; // <3>
 
     @BeforeEach
     void init() throws Exception {
+        // <4>
         JudoModelHolder modelHolder = JudoModelHolder.
                 loadFromURL("SalesModel", new File("target/model").toURI(), new HsqldbDialect());
 
+        // <5>
         injector = Guice.createInjector(
                 JudoHsqldbModules.builder().build(),
                 new SalesModelDaoModules(),
@@ -502,6 +509,7 @@ class SalesModelTest {
 
     @Test
     public void test() {
+        <6>
         SalesPerson createdSalesPerson = salesPersonDao.create(SalesPerson.builder()
                         .withFirstName("Test")
                         .withLastName("Elek")
@@ -510,12 +518,14 @@ class SalesModelTest {
         assertEquals("Test", createdSalesPerson.getFirstName());
         assertEquals("Elek", createdSalesPerson.getLastName());
 
+        <7>
         List<SalesPerson> personList = salesPersonDao.search()
                         .filterByFirstName(StringFilter.equalTo("Test"))
                 .execute();
 
         assertEquals(1, personList.size());
 
+        <8>
         Person createdPerson = personDao.create(Person.builder()
                 .withFirstName("Masik")
                 .withLastName("Test")
@@ -527,3 +537,11 @@ class SalesModelTest {
     }
 }
 ----
+<1> The Guice injector. It can use to get provided services.
+<2> Injected DAO service. It is from generted SDK.
+<3> Injected DAO service. It is from generted SDK.
+<4> Load generated runtime models. It's required for runtime. It is loaded from filesystem.
+<5> Inject modules for generated modules. The SDK wrapper for DAO's loaded as Guice module.
+<6> Create a SalesPerson
+<7> Search for created salesperson
+<8> Create a Person
