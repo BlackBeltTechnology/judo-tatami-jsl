@@ -1,5 +1,4 @@
-Tatami JSL Workflow maven plugin
-================================
+= Tatami JSL Workflow maven plugin
 
 ifndef::env-site,env-github[]
 include::_attributes.adoc[]
@@ -12,19 +11,18 @@ This plugin manages and executes generators for JUDO JSL Application codes.
 
 It generates persitence DAO's and Guice Injector based bootstrap.
 
-Requirements
-------------
+== Requirements
 
 - Maven 3.6 and Java 11
 
-Installation
-------------
+== Installation
 
 Include the plugin as a dependency in your Maven project. Change `LATEST_VERSION` to the latest tagged version.
 
-Generating application with minimal settings. 
+Generating application with minimal settings.
 
-```xml
+[source,xml]
+----
 <plugin>
     <groupId>hu.blackbelt.judo.tatami</groupId>
     <artifactId>judo-tatami-jsl-workflow-maven-plugin</artifactId>
@@ -37,13 +35,13 @@ Generating application with minimal settings.
             </goals>
             <phase>generate-sources</phase>
         </execution>
-    <executions>
+    </executions>
 </plugin>
 <!-- ... -->
-```
+----
 
 
-## Generation pipeline
+== Generation pipeline
 
 The plugin executes model conversion pipeline started with the `.jsl` defined models. 
 The different models represents different architectual models, which used by
@@ -51,7 +49,7 @@ the coresponding architectual element.
 
 Model pipeline for `.jsl`
 
-[plantuml, target=diagram-classes, format=png]   
+[plantuml, target=diagram-classes, format=png]
 ----
 @startuml
 JslDsl -> JSL: JslParser
@@ -75,9 +73,10 @@ the correct measurement handling.
 - Liquibase - This model contains RDBMS model definition for DDL generation. Means it will create the RDBMS schema in a database for the defined ASM model.
 
 
-## Plugin parameters
+== Plugin parameters
 
-```xml
+[source,xml]
+----
 <execution>
     <id>execute-esm-model-from-artifact</id>
     <phase>compile</phase>
@@ -85,34 +84,42 @@ the correct measurement handling.
         <goal>default-workflow</goal>
     </goals>
     <configuration>
-        <sources>${project.basedir}/src/main/model</sources> <1>
-        <modelNames></modelName> <2>
-        <destination>${project.basedir}/target/model</destination> <3>
-        <modelVersion>${project.version}</modelVersion> <4>
+        <sources>${project.basedir}/src/main/model</sources> <!--1-->
+        <modelNames/> <!--2-->
+        <destination>${project.basedir}/target/model</destination> <!--3-->
+        <modelVersion>${project.version}</modelVersion> <!--4-->
 
-        <sdkPackagePrefix>my.best.package</sdkPackagePrefix> <5>
-        <useDependencies>false</useDependencies> <6>
-        <createSdkJar>false</createSdkJar> <7>
-        <compileSdk>false</compileSdk> <8>
+        <sdkPackagePrefix>my.best.package</sdkPackagePrefix> <!--5-->
+        <useDependencies>false</useDependencies> <!--6-->
+        <createSdkJar>false</createSdkJar> <!--7-->
+        <compileSdk>false</compileSdk> <!--8-->
 
-        <dialects>hsqldb,postgresql</dialects> <9>
+        <dialects>hsqldb,postgresql</dialects> <!--9-->
 
-        <ignorePsm2Asm>false</ignorePsm2Asm> <10>
-        <ignorePsm2AsmTrace>false</ignorePsm2AsmTrace> <11>
-        <ignorePsm2Measure>false</ignorePsm2Measure> <12>
-        <ignorePsm2MeasureTrace>false</ignorePsm2MeasureTrace> <13>
-        <ignoreAsm2Rdbms>false</ignoreAsm2Rdbms> <14>
-        <ignoreAsm2RdbmsTrace>false</ignoreAsm2RdbmsTrace> <15>
-        <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase> <16>
-        <ignoreAsm2sdk>false</ignoreAsm2sdk> <17>
-        <ignoreAsm2Expression>false</ignoreAsm2Expression> <18>
-        <runInParallel>true</runInParallel> <19>
-        <saveModels>true</saveModels> <20>
-        <enableMetrics>true<enableMetrics> <21>
-        <validateModels>false</validateModels> <22>
+        <ignorePsm2Asm>false</ignorePsm2Asm> <!--10-->
+        <ignorePsm2AsmTrace>false</ignorePsm2AsmTrace> <!--11-->
+        <ignorePsm2Measure>false</ignorePsm2Measure> <!--12-->
+        <ignorePsm2MeasureTrace>false</ignorePsm2MeasureTrace> <!--13-->
+        <ignoreAsm2Rdbms>false</ignoreAsm2Rdbms> <!--14-->
+        <ignoreAsm2RdbmsTrace>false</ignoreAsm2RdbmsTrace> <!--15-->
+        <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase> <!--16-->
+        <ignoreAsm2sdk>false</ignoreAsm2sdk> <!--17-->
+        <ignoreAsm2Expression>false</ignoreAsm2Expression> <!--18-->
+        <runInParallel>true</runInParallel> <!--19-->
+        <saveModels>true</saveModels> <!--20-->
+        <enableMetrics>true</enableMetrics> <!--21-->
+        <validateModels>false</validateModels> <!--22-->
+        <sdkOutputDirectory/> <!--23-->
+        <sdkAddSourceToJar>true</sdkAddSourceToJar> <!--24-->
+        <generateSdk>true</generateSdk> <!--25-->
+        <generateSdkInternal>true</generateSdkInternal> <!--26-->
+        <generateSdkGuice>false</generateSdkGuice> <!--27-->
+        <generateSdkSpring>false</generateSdkSpring> <!--28-->
     </configuration>
 </execution>
-```
+----
+
+
 
 URI type parameters can be file or mvn with the following coordinate:
 `mvn:<groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>[!path/in/archive]`
@@ -216,10 +223,33 @@ Default: `false`
 +
 (Default: `false`)
 
+<23> (Optional) When SDK output is defined, it is used instead of destination + modelName.
++
+(Default: `<none>`)
+
+<24> (Optional) Add generared codes to JAR files. To work the  `createSdkJar` option
+have to be enabled.
++
+(Default: `true`)
+
+<25> (Optional) Generate SDK interfaces. When internal, guice or spring is generated, it have to be enabled
++
+(Default: `true`)
+
+<26> (Optional) Generate Internal Wrapper implementation. When guice or spring is generated, it have to be enabled
++
+(Default: `true`)
+
+<27> (Optional) Generate Guice SDK implementation.
++
+(Default: `false`)
+
+<28> (Optional) Generate Spring SDK implementation.
++
+(Default: `false`)
 
 
-Example
--------
+== Example
 
 - `src/main/model/salesmodel.jsl`
 +
@@ -295,8 +325,8 @@ entity Customer {
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <!--1--><judo-runtime-core-version>1.0.0.20220525_074020_89c359f7_feature_JNG_3770_JSLBatchTransfromation</judo-runtime-core-version> 
-        <!--2--><judo-tatami-jsl-version>1.1.0.20220527_111910_a1452733_develop</judo-tatami-jsl-version>
+        <judo-runtime-core-version>1.0.0.20220525_074020_89c359f7_feature_JNG_3770_JSLBatchTransfromation</judo-runtime-core-version>  <!--1-->
+        <judo-tatami-jsl-version>1.1.0.20220527_111910_a1452733_develop</judo-tatami-jsl-version> <!--2-->
     </properties>
     <build>
         <plugins>
@@ -318,6 +348,7 @@ entity Customer {
                     <sources>${basedir}/src/main/model</sources>
                     <sdkPackagePrefix>hu.blackbelt.judo.test</sdkPackagePrefix>
                     <dialects>hsqldb</dialects>
+                    <generateSdkGuice>true</generateSdkGuice>
                 </configuration>
             </plugin>
 
@@ -491,7 +522,7 @@ class SalesModelTest {
     Person.PersonDao personDao; // <3>
 
     @BeforeEach
-    void init() throws Exception {
+    void init() {
         // <4>
         JudoModelHolder modelHolder = JudoModelHolder.
                 loadFromURL("SalesModel", new File("target/model").toURI(), new HsqldbDialect());
@@ -506,7 +537,7 @@ class SalesModelTest {
 
     @Test
     public void test() {
-        <6>
+        // <6>
         SalesPerson createdSalesPerson = salesPersonDao.create(SalesPerson.builder()
                         .withFirstName("Test")
                         .withLastName("Elek")
@@ -515,14 +546,14 @@ class SalesModelTest {
         assertEquals("Test", createdSalesPerson.getFirstName());
         assertEquals("Elek", createdSalesPerson.getLastName());
 
-        <7>
+        // <7>
         List<SalesPerson> personList = salesPersonDao.search()
                         .filterByFirstName(StringFilter.equalTo("Test"))
                 .execute();
 
         assertEquals(1, personList.size());
 
-        <8>
+        // <8>
         Person createdPerson = personDao.create(Person.builder()
                 .withFirstName("Masik")
                 .withLastName("Test")

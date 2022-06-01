@@ -72,6 +72,11 @@ public abstract class AbstractTatamiPipelineWorkflow {
 				.compile(parameters.getCompileSdk())
 				.createJar(parameters.getCreateSdkJar())
 				.packagePrefix(parameters.getSdkPackagePrefix())
+				.addSourceToJar(parameters.getAddSourceToJar())
+				.generateSdk(parameters.getGenerateSdk())
+				.generateInternal(parameters.getGenerateInternal())
+				.generateGuice(parameters.getGenerateGuice())
+				.generateSpring(parameters.getGenerateSpring())
 				.outputDirectory(parameters.getSdkOutputDirectory()).build());
 
 		loadModels(workflowHelper, metrics, transformationContext, parameters);
