@@ -238,12 +238,21 @@ public class WorkflowHelper {
     public void loadSdk(final InputStream sdk,
                         final URI sdkSourceURI,
                         final InputStream sdkInternal,
-                        final URI sdkInternalSourceURI
+                        final URI sdkInternalSourceURI,
+                        final InputStream sdkGuice,
+                        final URI sdkGuiceSourceURI,
+                        final InputStream sdkSpring,
+                        final URI sdkSpringSourceURI
+
     ) {
 
         if (sdk == null && sdkSourceURI == null || sdkInternal == null && sdkInternalSourceURI == null ) {
             return;
         }
+        Asm2SDKWorkParameter params =
+                transformationContext.getByClass(Asm2SDKWorkParameter.class)
+                        .orElseGet(() -> Asm2SDKWorkParameter.asm2SDKWorkParameter().build());
+
         putSdkStream(transformationContext, ofNullable(sdk).orElseGet(
                 ThrowingSupplier.sneaky(() -> of(sdkSourceURI).orElseThrow(() ->
                                 new IllegalArgumentException("sdk or sdkSourceURI have to be defined"))
@@ -254,7 +263,24 @@ public class WorkflowHelper {
                                 new IllegalArgumentException("sdkInternal or sdkInternalSourceURI have to be defined"))
                         .toURL().openStream())));
 
+        if (params.getGenerateGuice()) {
+            putSdkGuiceStream(transformationContext, ofNullable(sdkGuice).orElseGet(
+                    ThrowingSupplier.sneaky(() -> of(sdkGuiceSourceURI).orElseThrow(() ->
+                                    new IllegalArgumentException("sdkGuice or sdkGuiceSourceURI have to be defined"))
+                            .toURL().openStream())));
+
+        }
+
+        if (params.getGenerateSpring()) {
+            putSdkSpringStream(transformationContext, ofNullable(sdkSpring).orElseGet(
+                    ThrowingSupplier.sneaky(() -> of(sdkSpringSourceURI).orElseThrow(() ->
+                                    new IllegalArgumentException("sdkGuice or sdkGuiceSourceURI have to be defined"))
+                            .toURL().openStream())));
+
+        }
+
     }
+
 
 //    public Work createJslValidateWork() {
 //        return aNewConditionalFlow()
@@ -382,6 +408,7 @@ public class WorkflowHelper {
     }
 
     public Work createAsm2SDKWork() {
+
         return 	aNewConditionalFlow()
                 .named("Conditional when Asm model exists then Execute Asm2SDK")
                 .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyClassPresent(AsmModel.class)))

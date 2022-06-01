@@ -58,26 +58,41 @@ public class ParserWorkflowMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${plugin}", readonly = true)
 	public PluginDescriptor pluginDescriptor;
 
-	@Parameter(property = "sources")
+	@Parameter(property = "sources", defaultValue = "${project.basedir}/src/main/model")
 	public List<String> sources;
 
 	@Parameter(property = "modelNames")
 	public List<String> modelNames;
 
-	@Parameter(property = "sdkPackagePrefix")
-	public String sdkPackagePrefix;
-
 	@Parameter(property = "boolean", defaultValue = "false")
 	public Boolean useDependencies = false;
-
-	@Parameter(property = "parseOnly", defaultValue = "false")
-	public Boolean parseOnly = false;
 
 	@Parameter(property = "createSdkJar", defaultValue = "false")
 	public Boolean createSdkJar = false;
 
 	@Parameter(property = "compileSdk", defaultValue = "false")
 	public Boolean compileSdk = false;
+
+	@Parameter(property = "sdkOutputDirectory")
+	private File sdkOutputDirectory = null;
+
+	@Parameter(property = "sdkPackagePrefix")
+	private String sdkPackagePrefix = null;
+
+	@Parameter(property = "sdkAddSourceToJar", defaultValue = "true")
+	private Boolean sdkAddSourceToJar = true;
+
+	@Parameter(property = "generateSdk", defaultValue = "true")
+	private Boolean generateSdk = true;
+
+	@Parameter(property = "generateSdkInternal", defaultValue = "true")
+	private Boolean generateSdkInternal = true;
+
+	@Parameter(property = "generateSdkGuice", defaultValue = "false")
+	private Boolean generateSdkGuice = false;
+
+	@Parameter(property = "generateSdkSpring", defaultValue = "false")
+	private Boolean generateSdkSpring = false;
 
 	@Parameter(property = "ignorePsm2Asm", defaultValue = "false")
 	public Boolean ignorePsm2Asm = false;
@@ -112,7 +127,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "modelVersion", defaultValue = "${project.version}")
 	public String modelVersion;
 
-	@Parameter(property = "dialects")
+	@Parameter(property = "dialects", defaultValue = "hsqldb,postgresql")
 	public List<String> dialects;
 
 	@Parameter(property = "runInParallel", defaultValue = "true")
@@ -265,8 +280,8 @@ public class ParserWorkflowMojo extends AbstractMojo {
 								.collect(Collectors.toList()));
 
 				DefaultWorkflow defaultWorkflow;
-				File sdkOutputDirectory = null;
-				if (destination != null) {
+				File sdkOutputDirectory = this.sdkOutputDirectory;
+				if (destination != null && this.sdkOutputDirectory == null) {
 					sdkOutputDirectory = new File(new File(destination, "sdk"), modelName.replaceAll("::", "_"));
 					sdkOutputDirectory.mkdirs();
 				}
@@ -283,13 +298,9 @@ public class ParserWorkflowMojo extends AbstractMojo {
 						DefaultWorkflowSetupParameters
 								.defaultWorkflowSetupParameters()
 								.modelVersion(modelVersion)
-								.compileSdk(compileSdk)
-								.createSdkJar(createSdkJar)
-								.sdkOutputDirectory(sdkOutputDirectory)
-								.sdkPackagePrefix(packagePrefix)
 								.runInParallel(runInParallel)
 								.enableMetrics(enableMetrics)
-								.ignoreJsl2Psm(ignoreJsl2Psm || parseOnly)
+								.ignoreJsl2Psm(ignoreJsl2Psm)
 								.ignorePsm2Asm(ignorePsm2Asm)
 								.ignorePsm2Measure(ignorePsm2Measure)
 								.ignoreAsm2Rdbms(ignoreAsm2Rdbms)
@@ -302,7 +313,16 @@ public class ParserWorkflowMojo extends AbstractMojo {
 								.ignoreJsl2PsmTrace(ignoreJsl2PsmTrace)
 								.validateModels(validateModels)
 								.modelName(modelName)
-								.dialectList(dialects);
+								.dialectList(dialects)
+								.compileSdk(compileSdk)
+								.createSdkJar(createSdkJar)
+								.sdkOutputDirectory(sdkOutputDirectory)
+								.sdkPackagePrefix(packagePrefix)
+								.addSourceToJar(sdkAddSourceToJar)
+								.generateSdk(generateSdk)
+								.generateInternal(generateSdkInternal)
+								.generateGuice(generateSdkGuice)
+								.generateSpring(generateSdkSpring);
 
 				defaultWorkflow = new DefaultWorkflow(parameters);
 

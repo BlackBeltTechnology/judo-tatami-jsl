@@ -33,7 +33,7 @@ import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArguments.jslDslLoadArgumentsBuilder;
 
-@Mojo(name = "parsed-model-workflow",
+@Mojo(name = "default-model-workflow",
 		defaultPhase = LifecyclePhase.COMPILE,
 		requiresDependencyResolution = ResolutionScope.COMPILE)
 public class DefaultWorkflowMojo extends AbstractMojo {
@@ -78,6 +78,12 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 
 	@Parameter(property = "sdkInternal")
 	private String sdkInternal;
+
+	@Parameter(property = "sdkGuice")
+	private String sdkGuice;
+
+	@Parameter(property = "sdkSpring")
+	private String sdkSpring;
 
 	@Parameter(property = "ignorePsm2Asm", defaultValue = "false")
 	private Boolean ignorePsm2Asm = false;
@@ -135,6 +141,21 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 
 	@Parameter(property = "saveModels", defaultValue = "true")
 	private Boolean saveModels = true;
+
+	@Parameter(property = "sdkAddSourceToJar", defaultValue = "true")
+	private Boolean sdkAddSourceToJar = true;
+
+	@Parameter(property = "generateSdk", defaultValue = "true")
+	private Boolean generateSdk = true;
+
+	@Parameter(property = "generateSdkInternal", defaultValue = "true")
+	private Boolean generateSdkInternal = true;
+
+	@Parameter(property = "generateSdkGuice", defaultValue = "false")
+	private Boolean generateSdkGuice = false;
+
+	@Parameter(property = "generateSdkSpring", defaultValue = "false")
+	private Boolean generateSdkSpring = false;
 
 	@Parameter
 	private Map<String, DialectParam> dialects;
@@ -234,7 +255,12 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 						.ignoreAsm2RdbmsTrace(ignoreAsm2RdbmsTrace)
 						.validateModels(validateModels)
 						.modelName(modelName)
-						.dialectList(dialectList);
+						.dialectList(dialectList)
+						.addSourceToJar(sdkAddSourceToJar)
+						.generateSdk(generateSdk)
+						.generateInternal(generateSdkInternal)
+						.generateGuice(generateSdkGuice)
+						.generateSpring(generateSdkSpring);
 
 		defaultWorkflow = new DefaultWorkflow(parameters);
 
@@ -262,7 +288,10 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 		}
 
 		if (sdk != null && !sdk.trim().equals("") && sdkInternal != null && !sdkInternal.trim().equals("")) {
-			workflowHelper.loadSdk(null, artifactResolver.getArtifact(sdk).toURI(), null, artifactResolver.getArtifact(sdkInternal).toURI());
+			workflowHelper.loadSdk(null, artifactResolver.getArtifact(sdk).toURI(),
+					null, artifactResolver.getArtifact(sdkInternal).toURI(),
+					null, sdkGuice != null && !sdkGuice.isBlank() ? artifactResolver.getArtifact(sdkGuice).toURI() : null,
+					null, sdkSpring != null && !sdkSpring.isBlank() ? artifactResolver.getArtifact(sdkSpring).toURI() : null);
 		}
 
 		if (dialects != null) {

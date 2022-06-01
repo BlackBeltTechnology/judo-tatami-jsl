@@ -49,6 +49,21 @@ public class DefaultWorkflowSetupParameters {
 	private String sdkPackagePrefix = null;
 
 	@Builder.Default
+	private Boolean addSourceToJar = true;
+
+	@Builder.Default
+	private Boolean generateSdk = true;
+
+	@Builder.Default
+	private Boolean generateInternal = true;
+
+	@Builder.Default
+	private Boolean generateGuice = false;
+
+	@Builder.Default
+	private Boolean generateSpring = false;
+
+	@Builder.Default
 	private Boolean runInParallel = true;
 
 	@Builder.Default
