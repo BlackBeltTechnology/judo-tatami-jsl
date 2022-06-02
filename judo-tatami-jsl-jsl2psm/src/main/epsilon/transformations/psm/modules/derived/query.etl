@@ -1,6 +1,6 @@
 
 rule CreateUnmappedTransferObjectForQuery
-    transform s : JSL!EntityDerivedDeclaration
+    transform s : JSL!EntityQueryDeclaration
     to t : JUDOPSM!UnmappedTransferObjectType {
 		guard: s.parameters.size() > 0
 		
@@ -11,7 +11,7 @@ rule CreateUnmappedTransferObjectForQuery
 }
 
 rule CreatedTransferObjectForDerivedParameter
-    transform s : JSL!DerivedParameter
+    transform s : JSL!QueryParameter
     to t: JUDOPSM!TransferAttribute {
         guard: s.eContainer.isKindOf(JSL!EntityDerivedDeclaration)
         

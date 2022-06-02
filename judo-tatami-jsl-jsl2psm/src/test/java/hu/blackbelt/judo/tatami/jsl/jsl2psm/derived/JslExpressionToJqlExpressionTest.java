@@ -20,7 +20,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
-@Disabled
 public class JslExpressionToJqlExpressionTest extends AbstractTest {
     static final String TARGET_TEST_CLASSES = "target/test-classes/derived/primitiveAccessor";
 

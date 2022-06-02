@@ -18,7 +18,7 @@ entity SalesPerson {
     relation Lead[] leads
     derived Integer value = self.leads!count()
     derived Integer t1 = self.leads!count() > 1
-    derived Customer[] leadsOver(Integer limit = 100) = self.leads!filter(lead | lead.value > limit)
+    query Customer[] leadsOver(Integer limit = 100) = self.leads!filter(lead | lead.value > limit)
     derived Customer[] leadsOver10 = self.leadsOver(limit = 10)
     derived Customer selfDerived = self
     derived Customer anyCustomer = Customer!any()

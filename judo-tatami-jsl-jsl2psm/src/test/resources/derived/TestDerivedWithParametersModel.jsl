@@ -7,10 +7,10 @@ type string String max-length 128
 entity SalesPerson {
     relation Lead[] leads opposite salesPerson
 
-    derived Lead[] leadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) = self.leads!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)
+    query Lead[] leadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) = self.leads!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)
     // self.leads!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
 
-    derived Lead[] leadsOverWithMin(Integer minLeadsOverMin = 5) = self.leadsBetween(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100)
+    query Lead[] leadsOverWithMin(Integer minLeadsOverMin = 5) = self.leadsBetween(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100)
     // self.leads!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)
     
     derived Lead[] leadsOver10 = self.leadsOverWithMin(minLeadsOverMin = 10)
@@ -20,10 +20,10 @@ entity SalesPerson {
     // self.leads!filter(lead | lead.value > 20 and lead.value < 50)
     
 
-    derived Integer leadsBetweenCount(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) = self.leads!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)!count()
+    query Integer leadsBetweenCount(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) = self.leads!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)!count()
     // self.leads!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)!count()
     
-    derived Integer leadsOverWithMinCount(Integer minLeadsOverMin = 5) = self.leadsBetweenCount(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100)
+    query Integer leadsOverWithMinCount(Integer minLeadsOverMin = 5) = self.leadsBetweenCount(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100)
     // self.leads!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)!count()
     
     derived Integer leadsOver10Count = self.leadsOverWithMinCount(minLeadsOverMin = 10)
