@@ -332,21 +332,21 @@ public class JslExpressionToJqlExpression {
      */
     private String getJqlDispacher(final NavigationExpression it) {
 
-    	String navName = "";
     	if (it == null) {
             return "";
         }
-    	
+
+    	if (it.getBase() != null) {
+            return getJql(it.getBase()) + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
+        }
+
+    	String navName = "";
     	if (it.isIsSelf()) {
             navName = "self";
         } else {
         	navName = getNameForNavigationBaseReference(it.getNavigationBaseType());
 		}
-
-        	
-        	if (it.getNavigationBaseType() != null) {
-            return getJql(it.getBase()) + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
-        }
+        return navName + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
 
     	
     	/*

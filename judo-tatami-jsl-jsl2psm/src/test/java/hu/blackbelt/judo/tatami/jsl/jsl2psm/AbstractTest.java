@@ -204,6 +204,7 @@ abstract public class AbstractTest {
         return staticData.get();
     }
 
+
     public NavigationProperty assertNavigationProperty(String entityName, String propName) {
     	final Optional<NavigationProperty> attr = assertEntityType(entityName).getAllNavigationProperties().stream().filter(e -> e.getName().equals(propName)).findAny();
         assertTrue(attr.isPresent());    	
