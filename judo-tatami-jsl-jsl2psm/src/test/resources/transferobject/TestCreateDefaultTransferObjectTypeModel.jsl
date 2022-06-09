@@ -1,9 +1,9 @@
 model DefaultTransferObjectTypeModel
 
-type string String max-length 250
-type string Name max-length 32
-type numeric Age precision 3 scale 0
-type numeric Identifier precision 8 scale 0
+type string String(max-length = 250)
+type string Name(max-length = 32)
+type numeric Age(precision = 3, scale = 0)
+type numeric Identifier(precision = 8, scale = 0)
 
 
 entity Address {
@@ -23,7 +23,7 @@ entity abstract Person {
 	field Name birthName
 	field Address residentAddress
 	field Address[] postalAddresses
-	derived Address mainPostalAddress = self.postalAddresses!any()
+	derived Address mainPostalAddress => self.postalAddresses!any()
 }
 
 entity SalesPerson extends Person, PersonWithAge {

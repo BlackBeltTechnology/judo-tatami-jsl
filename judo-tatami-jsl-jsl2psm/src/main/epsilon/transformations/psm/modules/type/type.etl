@@ -8,8 +8,8 @@ rule CreateNumericType
 
         t.setId("(jsl/" + s.getId() + ")/CreateNumericType");
         t.name = s.name;
-        t.precision = s.precision.precision.intValue();
-        t.scale = s.scale.scale.intValue();
+        t.precision = s.precision.value.intValue();
+        t.scale = s.scale.value.intValue();
         s.eContainer.getModelRoot().elements.add(t);
         log.debug("Created NumericType: " + t.name);
     }
@@ -85,7 +85,7 @@ rule CreateStringType
         
         t.setId("(jsl/" + s.getId() + ")/CreateStringType");
         t.name = s.name;
-        t.maxLength = s.maxLength.maxLength.intValue();
+        t.maxLength = s.maxLength.value.intValue();
         
         if (s.regex.isDefined() and s.regex.regex.value.isDefined()) {
         	t.regExp = s.regex.regex.value;
@@ -105,13 +105,13 @@ rule CreateBinaryType
 
 
         if (s.mimeTypes.isDefined()) {
-            for (mimeType in s.mimeTypes.mimeTypes) {
+            for (mimeType in s.mimeTypes.values) {
                 t.mimeTypes.add(mimeType);
             }
         }
 
         if (s.maxFileSize.isDefined()) {
-            t.maxFileSize = s.maxFileSize.maxFileSize.longValue();
+            t.maxFileSize = s.maxFileSize.value.longValue();
         }
          
         s.eContainer.getModelRoot().elements.add(t);

@@ -1,11 +1,11 @@
 model TestDefaultExpressionModel
 
-type numeric Integer precision 9 scale 0
+type numeric Integer(precision = 9, scale = 0)
 type date Date
 type timestamp Timestamp
 type time Time
-type string String max-length 32
-type numeric Decimal precision 9 scale 2
+type string String(max-length = 32)
+type numeric Decimal(precision = 9, scale = 2)
 type boolean Boolean
 
 error ErrorWithDefaults {

@@ -49,7 +49,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
-                        "type numeric MyNumber precision 12 scale 5\n"
+                        "type numeric MyNumber(precision = 12, scale = 5)\n"
                 )
         );
 
@@ -68,7 +68,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 "EntityMemberModel",
                 List.of("model EntityMemberModel\n" +
                         "\n" +
-                        "type numeric Height precision 3 scale 0\n" +
+                        "type numeric Height(precision = 3, scale = 0)\n" +
                         "\n" +
                         "entity Person {\n" +
                         "\tfield Height height\n" +
@@ -95,7 +95,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel\n" +
                         "\n" +
-                        "type numeric Height precision 3 scale 0\n" +
+                        "type numeric Height(precision = 3, scale = 0)\n" +
                         "\n" +
                         "entity Person {\n" +
                         "\tfield required Height height\n" +
@@ -122,7 +122,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel\n" +
                         "\n" +
-                        "type numeric Height precision 3 scale 0\n" +
+                        "type numeric Height(precision = 3, scale = 0)\n" +
                         "\n" +
                         "entity Person {\n" +
                         "\tfield Height height\n" +
@@ -152,7 +152,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +
-                        "type numeric Height precision 3 scale 0\n" +
+                        "type numeric Height(precision = 3, scale = 0)\n" +
                         "\n" +
                         "entity Person {\n" +
                         "\tidentifier Height height\n" +
