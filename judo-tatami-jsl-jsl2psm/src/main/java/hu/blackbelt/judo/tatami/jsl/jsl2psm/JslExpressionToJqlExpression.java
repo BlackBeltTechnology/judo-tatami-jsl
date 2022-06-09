@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDerivedDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityMemberDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityQueryDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.EnumLiteralReference;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EscapedStringLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Feature;
@@ -16,19 +17,23 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.Function;
 import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionParameter;
 import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionedExpression;
+import hu.blackbelt.judo.meta.jsl.jsldsl.InstanceFunction;
 import hu.blackbelt.judo.meta.jsl.jsldsl.IntegerLiteral;
+import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaFunction;
 import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaFunctionParameters;
 import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaVariable;
+import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunction;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Named;
+import hu.blackbelt.judo.meta.jsl.jsldsl.NamedFunction;
 import hu.blackbelt.judo.meta.jsl.jsldsl.NavigationBaseReference;
 import hu.blackbelt.judo.meta.jsl.jsldsl.NavigationExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ParametrizedFunctionParameters;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ParenthesizedExpression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.QueryCall;
 import hu.blackbelt.judo.meta.jsl.jsldsl.QueryDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.QueryDeclarationParameter;
 import hu.blackbelt.judo.meta.jsl.jsldsl.QueryParameter;
 import hu.blackbelt.judo.meta.jsl.jsldsl.RawStringLiteral;
+import hu.blackbelt.judo.meta.jsl.jsldsl.SelectorFunction;
 import hu.blackbelt.judo.meta.jsl.jsldsl.SpawnOperation;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TernaryOperation;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TimeLiteral;
@@ -52,13 +57,6 @@ public class JslExpressionToJqlExpression {
     
     static JslDslModelExtension modelExtension = new JslDslModelExtension();
     
-//    private EntityDerivedDeclaration originalDerivedDeclaration;
-//    private EntityDerivedDeclaration baseDerivedDeclaration;
-//    private Deque<EntityDerivedDeclaration> entityDerivedDeclarationCallStack;
-//    private Map<QueryParameter, EObject> collectedParameterValues;
-
-//    private Deque<EntityQueryDeclaration> entityQueryDeclarationCallStack = new ArrayDeque();
-//    private Deque<QueryDeclaration> queryDeclarationCallStack = new ArrayDeque();
     private Deque<Map<QueryParameter, EObject>> queryStackParameterValues = new ArrayDeque();
 
     public static  <T extends Class> T getContainer(EObject from, Class<T> type) {
@@ -162,8 +160,8 @@ public class JslExpressionToJqlExpression {
         return transformer.getJql(expression);
     }
 
-    private Map<QueryParameter, EObject> collectParameterValues() {
-        Map<QueryParameter, EObject> derivedValueOrParameter = new HashMap();
+//    private Map<QueryParameter, EObject> collectParameterValues() {
+//        Map<QueryParameter, EObject> derivedValueOrParameter = new HashMap();
         
         /*
         entityDerivedDeclarationCallStack.descendingIterator().forEachRemaining((c) -> {
@@ -210,8 +208,8 @@ public class JslExpressionToJqlExpression {
         });
         */
 
-        return derivedValueOrParameter;
-    }
+//        return derivedValueOrParameter;
+//    }
 
     
     /**
@@ -237,15 +235,6 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    /*
-    private Boolean containsParametrizedQueryCallDispacher(final TernaryOperation it) {
-        if (it != null && containsParametrizedQueryCall(it.getCondition()) | containsParametrizedQueryCall(it.getThenExpression()) | containsParametrizedQueryCall(it.getElseExpression())) {
-            throw new IllegalArgumentException("Ternary expression cannot contain parametrized query call");
-        }
-        return false;
-    } */
-
-    
     /**
      * ImpliesExpression returns Expression
      * : OrExpression (=> ({BinaryOperation.leftOperand=current} operator='implies') rightOperand=OrExpression)
@@ -289,15 +278,6 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    /*
-    private Boolean containsParametrizedQueryCallDispacher(final BinaryOperation it) {
-        if (it != null &&  containsParametrizedQueryCall(it.getLeftOperand()) | containsParametrizedQueryCall(it.getRightOperand())) {
-            throw new IllegalArgumentException("Binary operation cannot contain parametrized query call");
-        }
-        return false;
-    }
-    */
-
     /**
      * SpawnOperation returns Expression
      * : UnaryOperation (=> ({SpawnOperation.operand=current} 'as' spawnTargetType=LocalName))?
@@ -308,16 +288,6 @@ public class JslExpressionToJqlExpression {
                 ? getJql(it.getOperand()) + " as " + it.getSpawnTargetType()
                 : null;
     }
-
-    /*
-    private Boolean containsParametrizedQueryCallDispacher(final SpawnOperation it) {
-        if (it != null && containsParametrizedQueryCall(it.getOperand())) {
-            throw new IllegalArgumentException("Spawn operation cannot contain parametrized query call");
-        }
-        return false;
-    }
-    */
-
 
     /**
      * UnaryOperation returns Expression
@@ -331,15 +301,6 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    /*
-    private Boolean containsParametrizedQueryCallDispacher(final UnaryOperation it) {
-        if (it != null && containsParametrizedQueryCall(it.getOperand())) {
-            throw new IllegalArgumentException("Unary operation cannot contain parametrized query call");
-        }
-        return false;
-    }
-    */
-
     /**
      * FunctionedExpression returns Expression
      * : NavigationExpression ({FunctionedExpression.operand=current} functionCall=FunctionCall)?
@@ -351,67 +312,88 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    /*
-    private Boolean containsParametrizedQueryCallDispacher(final FunctionedExpression it) {
-        if (it != null && containsParametrizedQueryCall(it.getFunctionCall())) {
-            throw new IllegalArgumentException("Function expression cannot contain parametrized query call");
-        }
-        return false;
-    }
-    */
-
     /**
-     * NavigationExpression returns Expression
-     * : PrimaryExpression ({NavigationExpression.base=current} features+=Feature+)?
-     * | NavigationBase
-     * ;
-     * // enums as separate literals cause problems with completion and script
-     * NavigationBase returns NavigationExpression
-     * : {NavigationExpression} qName=LocalName (features+=Feature* | '#' enumValue = ID)
-     * ;
+     * 
      */
+    private String getJql(final QueryDeclaration it) {
+    	if (it == null) {
+    		return null;
+    	}
+    	return getJql(it.getExpression());
+    }
 
+    private String getJqlWithoutBase(final QueryDeclaration it) {
+    	if (it == null) {
+    		return null;
+    	}
+    	return getJql(it.getExpression());
+    }
+    
     /**
      * NavigationExpression returns Expression
-	 * : PrimaryExpression ({NavigationExpression.base=current} features+=Feature+)?
-     * | NavigationBase
-     * | EnumLiteralReference
-     * | QueryCall ({NavigationExpression.base=current} features+=Feature+)?
-     * ;
+     * 	: PrimaryExpression features+=Feature*
+     *  | NavigationBase
+     *  | EnumLiteralReference
+     *  | QueryCall features+=Feature*
+     *  | PrimitiveDeclaration
+     *  ;
      * NavigationBase returns NavigationExpression
-     * 	: {NavigationExpression} (isSelf ?= 'self' | navigationBaseType = [NavigationBaseReference | LocalName]) (features+=Feature*)		
+     * 	: {NavigationExpression} (isSelf ?= 'self' | navigationBaseType = [NavigationBaseReference | LocalName]) (features+=Feature*) 
      * 	;
      * NavigationBaseReference
      * 	: EntityDeclaration
-     * 	| QueryDeclaration
      * 	| LambdaVariable
      * 	| QueryDeclarationParameter
+     * 	;
      * 
-     * 
+     * PrimaryExpression returns Expression
+     * 	: ParenthesizedExpression
+     * 	| CreateExpression
+     * 	| Literal
      * 	;
      */
-    private String getJqlDispacher(final NavigationExpression it) {
+    private String getJqlDispacher(final NavigationExpression it, boolean cutPrefix) {
 
     	if (it == null) {
             return "";
         }
 
-    	if (it.getBase() != null) {
-            return getJql(it.getBase()) + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
-        }
+    	//if (it.getBase() != null) {
+        //    return getJql(it.getBase()) + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
+        //}
+    	
+    	/*
+    	 * 	: ParenthesizedExpression
+	| CreateExpression
+	| Literal
+
+    	 */
 
     	String navExpression = "";
     	if (it.isIsSelf()) {
     		navExpression = "self";
-    	} else if (it.getNavigationBaseType() instanceof QueryDeclaration) {
-    		// TODO: Put parameters to stack, call getJql for QueryDeclaration and remove parameters
-    		// queryStackParameterValues.add(null)
-    		
-    	} else if (it.getNavigationBaseType() instanceof QueryDeclarationParameter) {
-    		// TODO: Get parameter value from stack or default and put inside
+    	} else if (it.getNavigationBaseType() != null) {
+   	
+	    	if (it.getNavigationBaseType() instanceof QueryDeclaration) {
+	    		//navExpression = getNameForNamed(it.getNavigationBaseType());
+	    		navExpression = getJql((QueryDeclaration)it.getNavigationBaseType());	    		
+	    		// TODO: Put parameters to stack, call getJql for QueryDeclaration and remove parameters
+	    		// queryStackParameterValues.add(null)		    		
+	    	} else if (it.getNavigationBaseType() instanceof QueryDeclarationParameter) {
+	    		// TODO: Get parameter value from stack or default and put inside
+	    		navExpression += ((QueryDeclarationParameter)it.getNavigationBaseType()).getName();
+	
+	    	} else if (it.getNavigationBaseType() instanceof Named) {
+	    		navExpression = getNameForNamed(it.getNavigationBaseType());
+	    	} else {
+	    		throw new IllegalArgumentException("Expression base type have to be Named");
+	    	}
+    	} else if (it instanceof EnumLiteralReference) {
+    		// TODO: Resolve PSM fully qualified name
+    		navExpression = ((EnumLiteralReference) it).getEnumDeclaration().getName() + "#" + ((EnumLiteralReference) it).getEnumLiteral().getName();
     	} else {
-    		navExpression = getNameForNamed(it.getNavigationBaseType());
-		}
+    		navExpression = getJql(it);
+    	}
         return navExpression + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
 
     	
@@ -458,26 +440,6 @@ public class JslExpressionToJqlExpression {
         */
     }
 
-    /*
-    private Boolean containsParametrizedQueryCallDispacher(final NavigationExpression it) {
-        if (it == null) {
-            return false;
-        }
-        if (it.getBase() != null) {
-            if (containsParametrizedQueryCall(it.getBase())) {                
-                throw new IllegalArgumentException("Base expression cannot contain parametrized query call");
-            }
-        }
-        
-        // If any feature contain parametrized call
-        if (it.getFeatures().size() > 0) {
-            return it.getFeatures().stream().map(p -> containsParametrizedQueryCall(p)).filter(p -> p).count() > 0;
-        }
-        
-        return false;        
-    }
-    */
-    
     /**
      * QueryCall returns Expression
 	 *  : {QueryCall} queryDeclarationReference = [ QueryDeclaration | LocalName ] '(' (parameters+=QueryParameter (',' parameters+=QueryParameter)*)? ')'
@@ -514,71 +476,65 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    /*
-    private Boolean containsParametrizedQueryCall(final FunctionCall it) {
-        return it != null
-                ? containsParametrizedQueryCall(it.getFunction()) |
-                (
-                        it.getCall() != null
-                                ? containsParametrizedQueryCall(it.getCall())
-                                : false
-                )
-                : false;
-    }
-    */
 
+    private String getJql(final EntityQueryDeclaration it) {
+    	if (it == null) {
+    		return null;
+    	}
+    	return getJql(it.getExpression());
+    }
+    
+    private String getJqlWithoutBase(final EntityQueryDeclaration it) {
+    	if (it == null) {
+    		return null;
+    	}
+    	if (it.getExpression() instanceof NavigationExpression) {
+    		NavigationExpression navigation = (NavigationExpression) it.getExpression();
+    		if (navigation.isIsSelf()) {
+    			
+    		}
+    	} else {
+    		
+    	}
+    	return getJql(it.getExpression());
+    }
+
+    
     /**
      * Feature
-     * : {Feature} '.' member = EntityMemberDeclarationFeature
-     * ;
-     *
-     * EntityMemberDeclarationFeature returns Feature
-     * : entityMemberDeclarationType = [EntityMemberDeclaration | LocalName ] ('(' (parameters+=QueryParameter (',' parameters+=QueryParameter)*)? ')')?
-     * ;
-
-
-Feature
-    : {Feature} '.' member = NavigationFeature
-    ;
-
-NavigationFeature returns Feature
-	: navigationDeclarationType = [NavigationDeclaration | LocalName ] ('(' (parameters+=QueryParameter (',' parameters+=QueryParameter)*)? ')')?
-	;
-
-NavigationDeclaration
-    : LambdaVariable
-    | EntityMemberDeclaration
-    ;
-
-     *
-     *
-     *
+     *     : {Feature} '.' navigationTargetType = [NavigationDeclaration | LocalName]('(' (parameters+=QueryParameter (',' parameters+=QueryParameter)*)? ')')?
+     *     ;
+     * NavigationDeclaration
+     *     : LambdaVariable
+     *     | EntityMemberDeclaration
+     *     | EntityDeclaration
+     *     ;
      */
     private String getJql(final Feature it) {
-        return it != null
-                ? '.' + modelExtension.getName((EntityMemberDeclaration) it.getMember().getNavigationDeclarationType()) +
-                (
-                        it.getParameters().size() > 0
-                                ? "(" +  it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")"
-                                : ""
-                )
-                : null;
+    	if (it == null) {
+    		return null;
+    	}
+    	String repr = null; //"<." + getNameForNamed(it.getNavigationTargetType());
+    	
+    	if (it.getNavigationTargetType() instanceof EntityQueryDeclaration) {
+    		repr = getJql((EntityQueryDeclaration) it.getNavigationTargetType());    		
+    	} else if (it.getNavigationTargetType() instanceof EntityDeclaration) {
+    		// TODO: Resolve entity new name
+    		repr = ((EntityDeclaration) it.getNavigationTargetType()).getName();
+    	} else if (it.getNavigationTargetType() instanceof Named) {
+    		repr = getNameForNamed(it.getNavigationTargetType());
+    	} else {
+    		throw new IllegalArgumentException("Feature navigation target have to be Named");
+    	}
+    	
+    	// TODO: Push parameters to stack.
+    	
+//    	if (it.getParameters().size() > 0) {
+//    		repr += "(" +  it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")";    		
+//    	}
+    	return "." + repr;
     }
 
-    /*
-    private Boolean containsParametrizedQueryCall(final Feature it) {
-        if (it == null) {
-            return false;
-        }
-        Feature member = it.getMember();
-        if (member != null) {
-            if (member.getNavigationDeclarationType() != null && member.getNavigationDeclarationType() instanceof EntityDerivedDeclaration) {
-                return true;
-            }                    
-        }
-        return false;
-    }
-    */
 
     /**
      * QueryParameter
@@ -605,15 +561,6 @@ NavigationDeclaration
                 : null;
     }
 
-    /*
-    private Boolean containsParametrizedQueryCallDispacher(final ParenthesizedExpression it) {
-        if (it != null && containsParametrizedQueryCall(it.getExpression())) {                
-            throw new IllegalArgumentException("Parenthesized expression cannot contain parametrized query call");
-        }
-        return false;
-    }
-    */
-
     /**
      * // Warning: create statement is not allowed in getter!
      * CreateExpression returns Expression
@@ -634,10 +581,10 @@ NavigationDeclaration
 
     
     /**
-     * Function returns Function
-     * : name=ID '(' parameterDeclaration = FunctionParameterDeclaration? ')'
-     * ;
-     * 
+     * Function
+     * 	: SelectableFunction
+     *  ;
+    
      * FunctionParameterDeclaration
      * 	: LambdaFunctionParameters
      * 	| ParametrizedFunctionParameters
@@ -654,32 +601,61 @@ NavigationDeclaration
      * LambdaVariable
      * : {LambdaVariable} name=ID    	
      * ;
+     * 
+     * NamedFunction returns Function : {NamedFunction} name = JslID
+     * ;
+     * LambdaFunction returns NamedFunction : {LambdaFunction} lambdaArgument = LambdaFunctionParameters;
+     * LiteralFunction returns NamedFunction : {LiteralFunction} parameters += FunctionParameter;
+     * InstanceFunction returns NamedFunction : {InstanceFunction} entityDeclaration = [EntityDeclaration | LocalName];
+     * SelectorFunction returns NamedFunction : {SelectorFunction} selectorArgument = SelectorFunctionParameters;
+     * 
      */
-    
+
     private String getJql(final Function it) {
-        return it != null
-                ? it.getName() + '(' +
-                (
-                        it.getParameterDeclaration() instanceof LambdaFunctionParameters
-                                ? ((LambdaFunctionParameters) it.getParameterDeclaration()).getLambdaArgument().getName() + " | "
-                                		+ getJql(((LambdaFunctionParameters) it.getParameterDeclaration()).getExpression())
-                                : (
-                                	it.getParameterDeclaration() instanceof ParametrizedFunctionParameters 
-                                	? ((ParametrizedFunctionParameters) it.getParameterDeclaration()).getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(","))
-                                	: "")
-                ) + ")"
-                : null;
+        if (it instanceof LiteralFunction) {
+            return getJql((LiteralFunction)it);
+        } else if (it instanceof InstanceFunction) {
+            return getJql((InstanceFunction)it);
+        } else if (it instanceof SelectorFunction) {
+            return getJql((SelectorFunction)it);
+        } else if (it instanceof LambdaFunction) {
+            return getJql((LambdaFunction)it);
+        }
+        else return  getJql((NamedFunction) it);
+    }
+
+    private String getJql(final NamedFunction it) {
+    	return it.getName() + "()";
+    }
+
+    private String getJql(final LiteralFunction it) {
+    	if (it == null) {
+        	return null;    		
+    	}
+    	return it.getName() + "(" + it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")";
    }
 
-    /*
-    private Boolean containsParametrizedQueryCall(final Function it) {
-        if (it != null && it.getParameterDeclaration() instanceof ParametrizedFunctionParameters &&
-        		((ParametrizedFunctionParameters) it.getParameterDeclaration()).getParameters().stream().map(p -> containsParametrizedQueryCall(p)).filter(p -> p).count() > 0) {
-            throw new IllegalArgumentException("Function parameters cannot contain parametrized query call");            
-        }
-        return false;
-    }
-    */
+    private String getJql(final InstanceFunction it) {
+    	if (it == null) {
+        	return null;    		
+    	}
+    	return it.getName() + "()";
+   }
+
+    private String getJql(final SelectorFunction it) {
+    	if (it == null) {
+        	return null;    		
+    	}
+    	return it.getName() + "()";
+   }
+
+    private String getJql(final LambdaFunction it) {
+    	if (it == null) {
+        	return null;    		
+    	}
+    	return it.getName() + (it.getLambdaArgument() != null ? ("(" + it.getLambdaArgument().getLambdaArgument().getName() + " | " + getJql(it.getLambdaArgument().getExpression()) + ")") : "()") ;
+   }
+    
 
     /**
      * FunctionParameter
@@ -691,14 +667,6 @@ NavigationDeclaration
                 ? getJql(it.getExpression())
                 : null;
     }
-
-    /*
-    private Boolean containsParametrizedQueryCall(final FunctionParameter it) {
-        return it != null
-                ? containsParametrizedQueryCall(it.getExpression())
-                : false;
-    }
-    */
 
     /**
      * Literal returns Expression
@@ -730,19 +698,24 @@ NavigationDeclaration
      */
     private String getJqlDispacher(final DateLiteral it) {
         return it != null
-                ? "`" + it.getValue() + "`"
-                : null;
+//                ? "`" + it.getValue() + "`"
+              ? it.getValue()
+
+        		: null;
     }
 
     private String getJqlDispacher(final TimeStampLiteral it) {
         return it != null
-                ? "`" + it.getValue() + "`"
-                : null;
+//                ? "`" + it.getValue() + "`"
+              ? it.getValue()
+
+        		: null;
     }
 
     private String getJqlDispacher(final TimeLiteral it) {
         return it != null
-                ? "`" + it.getValue() + "`"
+//                ? "`" + it.getValue() + "`"
+        		? it.getValue()
                 : null;
     }
 
@@ -795,12 +768,6 @@ NavigationDeclaration
             return getJqlDispacher((FunctionedExpression)it);
         } else if (it instanceof IntegerLiteral) {
             return getJqlDispacher((IntegerLiteral)it);
-        } else if (it instanceof QueryCall) {
-            return getJqlDispacher((QueryCall)it);
-        } else if (it instanceof NavigationExpression) {
-            return getJqlDispacher((NavigationExpression)it);
-        } else if (it instanceof ParenthesizedExpression) {
-            return getJqlDispacher((ParenthesizedExpression)it);
         } else if (it instanceof RawStringLiteral) {
             return getJqlDispacher((RawStringLiteral)it);
         } else if (it instanceof SpawnOperation) {
@@ -813,50 +780,17 @@ NavigationDeclaration
             return getJqlDispacher((TimeStampLiteral)it);
         } else if (it instanceof UnaryOperation) {
             return getJqlDispacher((UnaryOperation)it);
+        } else if (it instanceof QueryCall) {
+            return getJqlDispacher((QueryCall)it);
+        } else if (it instanceof ParenthesizedExpression) {
+            return getJqlDispacher((ParenthesizedExpression)it);
+        } else if (it instanceof NavigationExpression) {
+            return getJqlDispacher((NavigationExpression)it, false);
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " +
                     Arrays.<Object>asList(it).toString());
         }
     }
-    
-    /*
-    private Boolean containsParametrizedQueryCall(final Expression it) {
-        if (it instanceof BinaryOperation) {
-            return containsParametrizedQueryCallDispacher((BinaryOperation)it);
-        } else if (it instanceof BooleanLiteral) {
-            return false;
-        } else if (it instanceof DateLiteral) {
-            return false;
-        } else if (it instanceof DecimalLiteral) {
-            return false;
-        } else if (it instanceof EscapedStringLiteral) {
-            return false;
-        } else if (it instanceof FunctionedExpression) {
-            return containsParametrizedQueryCallDispacher((FunctionedExpression)it);
-        } else if (it instanceof IntegerLiteral) {
-            return false;
-        } else if (it instanceof NavigationExpression) {
-            return  containsParametrizedQueryCallDispacher((NavigationExpression)it);
-        } else if (it instanceof ParenthesizedExpression) {
-            return containsParametrizedQueryCallDispacher((ParenthesizedExpression)it);
-        } else if (it instanceof RawStringLiteral) {
-            return false;
-        } else if (it instanceof SpawnOperation) {
-            return containsParametrizedQueryCallDispacher((SpawnOperation)it);
-        } else if (it instanceof TernaryOperation) {
-            return containsParametrizedQueryCallDispacher((TernaryOperation)it);
-        } else if (it instanceof TimeLiteral) {
-            return false;
-        } else if (it instanceof TimeStampLiteral) {
-            return false;
-        } else if (it instanceof UnaryOperation) {
-            return containsParametrizedQueryCallDispacher((UnaryOperation)it);
-        } else {
-            throw new IllegalArgumentException("Unhandled parameter types: " +
-                    Arrays.<Object>asList(it).toString());
-        }
-    }    
-    */
     
     private String getNameForNamed(EObject baseRef) {
     	if (baseRef == null) {
