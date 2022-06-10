@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.support.JslDslModelResourceSupport;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.JslExpressionToJqlExpression;
@@ -54,7 +55,9 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
                 List.of(new File("src/test/resources/derived/TestDerivedExpressionModel.jsl"))
         );
 
-        transform();
+        jslModelWrapper = JslDslModelResourceSupport.jslDslModelResourceSupportBuilder().resourceSet(jslModel.getResourceSet()).build();
+
+//        transform();
 /*
         assertEquals("self.leads!count()",  jql("SalesPerson", "value"));
         assertEquals("self.leads!count() > 1", jql("SalesPerson", "t1"));

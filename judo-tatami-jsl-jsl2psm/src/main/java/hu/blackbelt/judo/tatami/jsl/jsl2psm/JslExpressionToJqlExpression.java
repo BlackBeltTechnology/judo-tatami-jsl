@@ -43,6 +43,7 @@ import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.epsilon.ecl.parse.Ecl_EolParserRules.returnStatement_return;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -321,13 +322,6 @@ public class JslExpressionToJqlExpression {
     	}
     	return getJql(it.getExpression());
     }
-
-    private String getJqlWithoutBase(final QueryDeclaration it) {
-    	if (it == null) {
-    		return null;
-    	}
-    	return getJql(it.getExpression());
-    }
     
     /**
      * NavigationExpression returns Expression
@@ -352,7 +346,7 @@ public class JslExpressionToJqlExpression {
      * 	| Literal
      * 	;
      */
-    private String getJqlDispacher(final NavigationExpression it, boolean cutPrefix) {
+    private String getJqlDispacher(final NavigationExpression it) {
 
     	if (it == null) {
             return "";
@@ -369,10 +363,10 @@ public class JslExpressionToJqlExpression {
 
     	 */
 
+    	//EntityQueryDeclaration decl = modelExtension.parentContainer(it,  EntityQueryDeclaration.class);
+    	
     	String navExpression = "";
-    	if (it.isIsSelf()) {
-    		navExpression = "self";
-    	} else if (it.getNavigationBaseType() != null) {
+    	if (it.getNavigationBaseType() != null) {
    	
 	    	if (it.getNavigationBaseType() instanceof QueryDeclaration) {
 	    		//navExpression = getNameForNamed(it.getNavigationBaseType());
@@ -381,20 +375,23 @@ public class JslExpressionToJqlExpression {
 	    		// queryStackParameterValues.add(null)		    		
 	    	} else if (it.getNavigationBaseType() instanceof QueryDeclarationParameter) {
 	    		// TODO: Get parameter value from stack or default and put inside
-	    		navExpression += ((QueryDeclarationParameter)it.getNavigationBaseType()).getName();
+	    		navExpression = ((QueryDeclarationParameter)it.getNavigationBaseType()).getName(); 
 	
 	    	} else if (it.getNavigationBaseType() instanceof Named) {
-	    		navExpression = getNameForNamed(it.getNavigationBaseType());
+    			navExpression = getNameForNamed(it.getNavigationBaseType()) + ".";
 	    	} else {
 	    		throw new IllegalArgumentException("Expression base type have to be Named");
 	    	}
+	    	navExpression += ".";
     	} else if (it instanceof EnumLiteralReference) {
     		// TODO: Resolve PSM fully qualified name
     		navExpression = ((EnumLiteralReference) it).getEnumDeclaration().getName() + "#" + ((EnumLiteralReference) it).getEnumLiteral().getName();
+    	} else if (it.isIsSelf()) {
+			navExpression = "self.";
     	} else {
-    		navExpression = getJql(it);
+    		navExpression = getJql(it) + ".";
     	}
-        return navExpression + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
+        return navExpression + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining("."));
 
     	
     	/*
@@ -477,27 +474,32 @@ public class JslExpressionToJqlExpression {
     }
 
 
+    /*
+    private String getNavigationJql(final Expression expression, boolean cutPrefix) {
+    	if (expression instanceof NavigationExpression) {
+    		return getJqlDispacher((NavigationExpression) expression);
+    	} else if (expression instanceof FunctionedExpression) {
+			return getNavigationJql(((FunctionedExpression) expression).getOperand());
+    	} else {
+    		throw new IllegalArgumentException("Expression have to be Functioned or NavigationExpression");
+    	}
+   
+    } */
+    
     private String getJql(final EntityQueryDeclaration it) {
     	if (it == null) {
     		return null;
     	}
-    	return getJql(it.getExpression());
+		return getJql(it.getExpression());    		
     }
-    
-    private String getJqlWithoutBase(final EntityQueryDeclaration it) {
+
+/*
+    private String getJql(final EntityDerivedDeclaration it, boolean cutPrefix) {
     	if (it == null) {
     		return null;
     	}
-    	if (it.getExpression() instanceof NavigationExpression) {
-    		NavigationExpression navigation = (NavigationExpression) it.getExpression();
-    		if (navigation.isIsSelf()) {
-    			
-    		}
-    	} else {
-    		
-    	}
-    	return getJql(it.getExpression());
-    }
+		return getNavigationJql(it.getExpression(), cutPrefix);    		
+    } */
 
     
     /**
@@ -514,7 +516,7 @@ public class JslExpressionToJqlExpression {
     	if (it == null) {
     		return null;
     	}
-    	String repr = null; //"<." + getNameForNamed(it.getNavigationTargetType());
+    	String repr = null;
     	
     	if (it.getNavigationTargetType() instanceof EntityQueryDeclaration) {
     		repr = getJql((EntityQueryDeclaration) it.getNavigationTargetType());    		
@@ -532,7 +534,8 @@ public class JslExpressionToJqlExpression {
 //    	if (it.getParameters().size() > 0) {
 //    		repr += "(" +  it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")";    		
 //    	}
-    	return "." + repr;
+    	return repr;
+    	//return repr;
     }
 
 
@@ -785,7 +788,7 @@ public class JslExpressionToJqlExpression {
         } else if (it instanceof ParenthesizedExpression) {
             return getJqlDispacher((ParenthesizedExpression)it);
         } else if (it instanceof NavigationExpression) {
-            return getJqlDispacher((NavigationExpression)it, false);
+            return getJqlDispacher((NavigationExpression)it);
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " +
                     Arrays.<Object>asList(it).toString());
