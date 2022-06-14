@@ -1,15 +1,13 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.derived.DataProperty;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +37,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
 
     @Override
     protected Log createLog() {
-        return new Slf4jLog(log);
+        return new BufferedSlf4jLogger(log);
     }
 
     @BeforeAll
