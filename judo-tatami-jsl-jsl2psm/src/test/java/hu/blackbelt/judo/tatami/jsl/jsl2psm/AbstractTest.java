@@ -71,6 +71,8 @@ abstract public class AbstractTest {
 
     @AfterEach
     void tearDown() throws Exception {
+        slf4jlog.close();
+
         final String traceFileName = testName + "-jsl2psm.model";
 
         // Saving trace map

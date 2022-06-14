@@ -1,7 +1,7 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.derived.PrimitiveAccessor;
 import hu.blackbelt.judo.meta.psm.derived.StaticData;
@@ -37,7 +37,7 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
 
     @Override
     protected Log createLog() {
-        return new Slf4jLog(log);
+        return new BufferedSlf4jLogger(log);
     }
 
     @BeforeAll
