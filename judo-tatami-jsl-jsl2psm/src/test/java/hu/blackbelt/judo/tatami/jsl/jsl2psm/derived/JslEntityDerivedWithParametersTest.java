@@ -49,7 +49,6 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
     }
 
     @Test
-    @Disabled
     void testEntityDerivedWithParametersTest() throws Exception {
         testName = "TestEntityDerivedWithParametersTest";
 
