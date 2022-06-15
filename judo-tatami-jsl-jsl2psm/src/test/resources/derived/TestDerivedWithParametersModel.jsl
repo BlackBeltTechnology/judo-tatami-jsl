@@ -46,7 +46,6 @@ entity SalesPerson {
     derived Lead[] leadsOver20Static => staticLeadsBetween(minLeadsBetween = 20)
     // Lead!filter(lead | lead.value > 20 and lead.value < 50)
     
-
     query Integer leadsBetweenCount(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) => self.leads!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)!count()
     // self.leads!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)!count()
     

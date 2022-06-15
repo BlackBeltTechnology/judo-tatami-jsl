@@ -38,12 +38,27 @@ rule CreateDataPropertyForQuery
       log.debug("Created Query Data Property: " + t.name);
 }
 
+rule CreateNavigationPropertyForQuery
+    transform s : JSL!EntityQueryDeclaration
+    to t : JUDOPSM!NavigationProperty
+    {
+      guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+      t.name = s.name;
+      t.setId("(jsl/" + s.getId() + ")/NavigationProperty");
+      t.getterExpression = s.equivalent("CreateGetterExpressionForParametrizedReferenceType");
+	  t.cardinality = s.equivalent("CreateCardinalityForEntityQueryDeclaration");
+      t.target = s.referenceType.getPSMEquivalent();
+
+      s.eContainer.getPSMEquivalent().navigationProperties.add(t);
+      log.error("Created Query Navigation Property: " + t.name);
+}
+
 @lazy
 rule CreateGetterExpressionForParametrizedDataType
     transform s : JSL!EntityQueryDeclaration
     to t: JUDOPSM!DataExpressionType {
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForParametrizedDataType");
-        t.expression = expressionUtils.getJql(s);
+        t.expression = expressionUtils.getJqlForEntityQuery(s, entityNamePrefix, entityNamePostfix);
 
 		if (s.parameters.size() > 0) {
 			t.parameterType = s.equivalent("CreateUnmappedTransferObjectForQuery");
@@ -57,7 +72,7 @@ rule CreateGetterExpressionForParametrizedReferenceType
     transform s : JSL!EntityQueryDeclaration
     to t: JUDOPSM!ReferenceExpressionType {
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForParametrizedReferenceType");
-        t.expression = expressionUtils.getJql(s);
+        t.expression = expressionUtils.getJqlForEntityQuery(s, entityNamePrefix, entityNamePostfix);
 
 		if (s.parameters.size() > 0) {
 			t.parameterType = s.equivalent("CreateUnmappedTransferObjectForQuery");

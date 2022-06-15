@@ -49,7 +49,6 @@ public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
     }
 
     @Test
-    @Disabled
     void testDerivedRelationDeclarationModel() throws Exception {
         testName = "TestDerivedRelationModel";
 

@@ -44,7 +44,6 @@ public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractT
     }
 
     @Test
-    @Disabled
     void testPrimitiveDerivedDeclarationModel() throws Exception {
         testName = "TestPrimitiveDerivedDeclarationModel";
 
