@@ -70,27 +70,27 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > 20 and lead.value < 50)", 
         		jqlDerived("SalesPerson", "leadsOver20Static", "", ""));
         
-        assertEquals("self.leads!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 "
-        		+ "and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)", 
+        assertEquals("self.leads!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
+        		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))", 
         		jqlEntityQuery("SalesPerson", "leadsBetween", "", ""));
         
-        assertEquals("self.leads!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)", 
+        assertEquals("self.leads!filter(lead | lead.value > (input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5) and lead.value < 100)", 
         		jqlEntityQuery("SalesPerson", "leadsOverWithMin", "", ""));
         
-        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 "
+        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5) "
         		+ "and lead.value < 100)", jqlEntityQuery("SalesPerson", "leadsOverWithMinStatic", "", ""));
 
-        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 "
-        		+ "and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)", jqlStaticQuery("staticLeadsBetween", "", ""));
+        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
+        		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))", jqlStaticQuery("staticLeadsBetween", "", ""));
         
-        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 "
+        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5) "
         		+ "and lead.value < 100)", jqlStaticQuery("staticLeadsOverWithMin", "", ""));
         
-        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 "
-        		+ "and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)", jqlStaticQuery("staticLeadsBetweenAndSalesPersonLeads", "", ""));
+        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
+        		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))", jqlStaticQuery("staticLeadsBetweenAndSalesPersonLeads", "", ""));
 
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModelImport::EntityNamePrefix_LeadInherited_EntityNamePostfix!filter(lead | "
-        		+ "lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)",
+        		+ "lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))",
         		jqlStaticQuery("staticInheritedLeadsBetween", "EntityNamePrefix_", "_EntityNamePostfix"));
         
         assertEquals("self", jqlDerived("SalesPerson", "selfDerived", "", ""));

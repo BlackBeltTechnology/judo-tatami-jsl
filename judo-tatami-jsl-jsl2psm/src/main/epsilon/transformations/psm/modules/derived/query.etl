@@ -10,12 +10,12 @@ rule CreateUnmappedTransferObjectForQuery
 		log.debug("Created UnmappedTransferObjectType: " + t.name);
 }
 
-rule CreatedTransferObjectForQueryParameter
-    transform s : JSL!QueryParameter
+rule CreateTransferObjectForQueryDeclarationParameter
+    transform s : JSL!QueryDeclarationParameter
     to t: JUDOPSM!TransferAttribute {
         guard: s.eContainer.isKindOf(JSL!EntityQueryDeclaration)
         
-        t.setId("(jsl/" + s.getId() + ")/CreatedTransferObjectForQueryParameter");
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForQueryDeclarationParameter");
 
         t.name = s.name;
         t.dataType = s.referenceType.getPSMEquivalent();
@@ -50,7 +50,7 @@ rule CreateNavigationPropertyForQuery
       t.target = s.referenceType.getPSMEquivalent();
 
       s.eContainer.getPSMEquivalent().navigationProperties.add(t);
-      log.error("Created Query Navigation Property: " + t.name);
+      log.debug("Created Query Navigation Property: " + t.name);
 }
 
 @lazy

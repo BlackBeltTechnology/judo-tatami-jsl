@@ -101,9 +101,9 @@ public class JslExpressionToJqlExpression {
 				.collect(
 						Collectors.toMap(
 								e -> e.getName(), 
-								e -> "input." + e.getName() + "!isDefined() ? " 
+								e -> "(input." + e.getName() + "!isDefined() ? " 
 				        				+ "input." + e.getName() 
-				        				+ " : " + transformer.getJql(e.getDefault()), 
+				        				+ " : " + transformer.getJql(e.getDefault()) + ")", 
 								(key1, key2)-> key2)));
 
 		transformer.queryStackParameterValues.add(parameterValues);
@@ -123,9 +123,9 @@ public class JslExpressionToJqlExpression {
 				.collect(
 						Collectors.toMap(
 								e -> e.getName(), 
-								e -> "input." + e.getName() + "!isDefined() ? " 
+								e -> "(input." + e.getName() + "!isDefined() ? " 
 				        				+ "input." + e.getName() 
-				        				+ " : " + transformer.getJql(e.getDefault()), 
+				        				+ " : " + transformer.getJql(e.getDefault()) + ")", 
 								(key1, key2)-> key2)));
 
 		transformer.queryStackParameterValues.add(parameterValues);
