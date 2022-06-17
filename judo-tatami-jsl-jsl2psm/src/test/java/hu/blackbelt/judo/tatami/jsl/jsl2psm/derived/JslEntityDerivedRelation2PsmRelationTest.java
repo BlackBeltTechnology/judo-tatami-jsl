@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@Disabled
 public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
     static final String TARGET_TEST_CLASSES = "target/test-classes/derived/derivedRelation";
 

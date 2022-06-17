@@ -176,7 +176,7 @@ public class TransformationParametersTest extends AbstractTest {
                 "Test",
                 List.of("model Test\n" +
                         "\n" +
-                        "type string String max-length 32\n" +
+                        "type string String(max-length = 32)\n" +
                         "\n" +
                         "entity T {\n" +
                         "\tfield String strField = \"hello\"" +
@@ -200,7 +200,7 @@ public class TransformationParametersTest extends AbstractTest {
                 "Test",
                 List.of("model Test\n" +
                         "\n" +
-                        "type string String max-length 32\n" +
+                        "type string String(max-length = 32)\n" +
                         "\n" +
                         "entity T {\n" +
                         "\tfield String strField = \"hello\"" +
@@ -224,7 +224,7 @@ public class TransformationParametersTest extends AbstractTest {
                 "Test",
                 List.of("model Test\n" +
                         "\n" +
-                        "type string String max-length 32\n" +
+                        "type string String(max-length = 32)\n" +
                         "\n" +
                         "entity T {\n" +
                         "\tfield String strField = \"hello\"" +

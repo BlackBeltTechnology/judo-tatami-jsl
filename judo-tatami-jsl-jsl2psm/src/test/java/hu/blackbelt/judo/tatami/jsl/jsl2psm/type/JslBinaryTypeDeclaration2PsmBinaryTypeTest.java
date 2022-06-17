@@ -52,7 +52,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
-                        "type binary Picture mime-types m\"image/png\", m\"image/*\" max-file-size 1024\n"
+                        "type binary Picture(mime-types = m\"image/png\", m\"image/*\", max-file-size = 1024)\n"
                 )
         );
 

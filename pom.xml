@@ -57,42 +57,25 @@
         <slf4j-version>1.7.36</slf4j-version>
         <surefire-version>3.0.0-M6</surefire-version>
 
-        <epsilon-runtime-version>1.4.0.20220523_132344_09a0b54b_develop</epsilon-runtime-version>
+        <epsilon-runtime-version>1.4.0.20220616_093846_72efef9e_develop</epsilon-runtime-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.0.20220526_145215_7b38424d_develop</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.0.20220617_125412_83bc07d4_feature_JNG_3777_ReplaceDerivedWithQuery</judo-meta-jsl-version>
 
-        <judo-meta-rdbms-version>1.0.0.20220405_162243_a599d313_develop</judo-meta-rdbms-version>
-        <judo-meta-jql-version>1.0.1.20220405_161348_f273cd5a_develop</judo-meta-jql-version>
-        <judo-meta-psm-version>1.1.0.20220405_162250_fee181a8_develop</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.0.20220405_162156_c69f1a74_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20220405_162647_f55885a1_develop</judo-meta-expression-version>
-        <judo-meta-liquibase-version>1.0.0.20220405_162206_0ac0daa1_develop</judo-meta-liquibase-version>
+        <judo-meta-rdbms-version>1.0.0.20220616_233835_0769db60_feature_JNG_3784_FixingTycho</judo-meta-rdbms-version>
+        <judo-meta-jql-version>1.0.1.20220616_233726_d15ba154_feature_JNG_3784_FixingTycho</judo-meta-jql-version>
+        <judo-meta-psm-version>1.1.0.20220616_233527_1f1d6701_feature_JNG_3784_FixingTycho</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.0.20220616_233557_c20986c3_feature_JNG_3784_FixingTycho</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.1.20220616_235047_08db5e0f_feature_JNG_3784_FixingTycho</judo-meta-expression-version>
+        <judo-meta-liquibase-version>1.0.0.20220616_233755_f0144685_feature_JNG_3784_FixingTycho</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.2.20220301_152834_cea2e81e_develop</judo-dao-api-version>
         <judo-sdk-common-version>1.0.0.20220405_162646_7bf86e0e_develop</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2.20220301_152852_a63b2efa_develop</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.0.20220405_162650_6298bb1f_develop</judo-operation-utils-version>
         <structured-map-proxy-version>1.0.6.20220301_160543_e228df4d_develop</structured-map-proxy-version>
 
-        <judo-tatami-version>1.1.0.20220601_150225_24698e7f_feature_JNG_3774_AddSpringSupport</judo-tatami-version>
+        <judo-tatami-version>1.1.0.20220617_085025_1fbd6153_feature_JNG_3769_Improve_logging</judo-tatami-version>
         <judo-tatami-core-version>1.1.0.20220405_161751_7fec76d0_develop</judo-tatami-core-version>
-
-        <!-- Xtend / Xcore -->
-        <emf-version>2.21.0</emf-version>
-        <emf-common-version>2.18.0</emf-common-version>
-        <core-resources-version>3.12.0</core-resources-version>
-        <eclipse-text-version>3.5.101</eclipse-text-version>
-        <emf-codegen-version>2.19.0</emf-codegen-version>
-        <emf-codegen-ecore-version>2.21.0</emf-codegen-ecore-version>
-        <emf-ecore-xmi-version>2.16.0</emf-ecore-xmi-version>
-        <xtext-version>2.17.0</xtext-version>
-        <ecore-xtext-version>1.2.0</ecore-xtext-version>
-        <ecore-xcore-version>1.3.1</ecore-xcore-version>
-        <ecore-xcore-lib-version>1.3.0</ecore-xcore-lib-version>
-        <emf-mwe2-launch-version>2.10.0</emf-mwe2-launch-version>
-        <emf-mwe-utils-version>1.4.0</emf-mwe-utils-version>
-        <xpand-version>2.0.0</xpand-version>
-        <emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 
     </properties>
 
@@ -193,6 +176,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>fr.jmini.ecentral</groupId>
+                <artifactId>eclipse-platform-dependencies</artifactId>
+                <version>4.18</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j-version}</version>
@@ -212,22 +203,14 @@
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore</artifactId>
-                <version>${emf-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.common</artifactId>
-                <version>${emf-common-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-                <version>${emf-ecore-xmi-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jdt</groupId>
-                <artifactId>org.eclipse.jdt.core</artifactId>
-                <version>3.13.102</version>
             </dependency>
 
             <dependency>
