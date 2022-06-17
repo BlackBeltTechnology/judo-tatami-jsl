@@ -379,17 +379,6 @@
                 <groupId>hu.blackbelt.epsilon</groupId>
                 <artifactId>epsilon-runtime-execution</artifactId>
                 <version>${epsilon-runtime-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.equinox.preferences</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.platform</groupId>
-                <artifactId>org.eclipse.equinox.preferences</artifactId>
-                <version>3.10.1</version>
             </dependency>
 
             <dependency>
