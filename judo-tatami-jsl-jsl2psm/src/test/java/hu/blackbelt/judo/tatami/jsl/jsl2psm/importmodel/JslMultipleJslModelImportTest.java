@@ -3,16 +3,14 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.importmodel;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
-import hu.blackbelt.judo.meta.psm.namespace.Model;
-import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
 import hu.blackbelt.judo.meta.psm.namespace.Package;
+import hu.blackbelt.judo.meta.psm.namespace.*;
 import hu.blackbelt.judo.meta.psm.type.StringType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
-
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,7 +41,7 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
 
     @Override
     protected Log createLog() {
-        return new Slf4jLog(log);
+        return new BufferedSlf4jLogger(log);
     }
 
     @BeforeAll

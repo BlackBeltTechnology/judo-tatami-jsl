@@ -55,7 +55,7 @@
         <logback-test-config>${maven.multiModuleProjectDirectory}/logback-test.xml</logback-test-config>
 
         <slf4j-version>1.7.36</slf4j-version>
-        <surefire-version>3.0.0-M6</surefire-version>
+        <surefire-version>3.0.0-M5</surefire-version>
 
         <epsilon-runtime-version>1.4.0.20220616_093846_72efef9e_develop</epsilon-runtime-version>
 

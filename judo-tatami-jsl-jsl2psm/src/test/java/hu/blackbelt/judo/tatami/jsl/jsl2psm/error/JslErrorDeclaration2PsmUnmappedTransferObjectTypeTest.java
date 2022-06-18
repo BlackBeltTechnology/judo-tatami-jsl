@@ -1,7 +1,7 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm.error;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.type.FlatPrimitiveType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
@@ -16,7 +16,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends AbstractTest {
@@ -34,7 +35,7 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
 
     @Override
     protected Log createLog() {
-        return new Slf4jLog(log);
+        return new BufferedSlf4jLogger(log);
     }
 
     @BeforeAll

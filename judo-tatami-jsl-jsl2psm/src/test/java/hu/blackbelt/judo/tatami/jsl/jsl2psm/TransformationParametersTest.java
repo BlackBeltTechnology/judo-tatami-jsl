@@ -1,12 +1,11 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.Jsl2PsmParameter.Jsl2PsmParameterBuilder;
 import lombok.extern.slf4j.Slf4j;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +32,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Override
     protected Log createLog() {
-        return new Slf4jLog(log);
+        return new BufferedSlf4jLogger(log);
     }
 
     @BeforeAll

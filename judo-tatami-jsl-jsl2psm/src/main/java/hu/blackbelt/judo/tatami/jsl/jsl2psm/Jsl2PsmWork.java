@@ -1,28 +1,24 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
-import hu.blackbelt.judo.tatami.core.workflow.work.AbstractTransformationWork;
-import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
-import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
+import hu.blackbelt.judo.tatami.core.workflow.work.*;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
-
-import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArguments.jslDslLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
-import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
-import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
+import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArguments.jslDslLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
+import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.calculateJsl2PsmTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.executeJsl2PsmTransformation;
 
@@ -63,7 +59,7 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
 		Jsl2PsmTransformationTrace jsl2PsmTransformationTrace = executeJsl2PsmTransformation(Jsl2Psm.Jsl2PsmParameter.jsl2PsmParameter()
 				.jslModel(jslModel.get())
 				.psmModel(psmModel)
-				.log(getTransformationContext().getByClass(Log.class).orElseGet(() -> new Slf4jLog(log)))
+				.log(getTransformationContext().getByClass(Log.class).orElse(null))
 				.scriptUri(transformationScriptRoot)
 				.createTrace(workParam.createTrace)
 				.parallel(workParam.parallel));
