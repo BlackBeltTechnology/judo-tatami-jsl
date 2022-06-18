@@ -32,7 +32,7 @@ rule CreateDefaultValueForPrimitiveEntityMember
         t.required = false;
 
         var det = new JUDOPSM!DataExpressionType();
-        det.expression = expressionUtils.getJqlForExpression(s.expression);
+        det.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
 
         t.getterExpression = det;
 
@@ -59,7 +59,7 @@ rule CreateDefaultValueForPrimitiveErrorField
         t.required = false;
 
         var det = new JUDOPSM!DataExpressionType();
-        det.expression = expressionUtils.getJqlForExpression(s.expression);
+        det.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
 
         t.getterExpression = det;
 

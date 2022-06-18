@@ -49,7 +49,7 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
-                        "type string Name max-length 32 regex \"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g\"\n"
+                        "type string Name(max-length = 32, regex =\"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g\")\n"
                 )
         );
 
@@ -68,7 +68,7 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
                 "EntityMemberModel",
                 List.of("model EntityMemberModel\n" +
                         "\n" +
-                        "type string Name max-length 32\n" +
+                        "type string Name(max-length = 32)\n" +
                         "\n" +
                         "entity Person {\n" +
                         "\tfield Name name\n" +
@@ -95,7 +95,7 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
                 "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel\n" +
                         "\n" +
-                        "type string Name max-length 32\n" +
+                        "type string Name(max-length = 32)\n" +
                         "\n" +
                         "entity Person {\n" +
                         "\tfield required Name name\n" +
@@ -122,7 +122,7 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
                 "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel\n" +
                         "\n" +
-                        "type string Name max-length 32\n" +
+                        "type string Name(max-length = 32)\n" +
                         "\n" +
                         "entity Person {\n" +
                         "\tfield Name name\n" +
@@ -152,7 +152,7 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel\n" +
                         "\n" +
-                        "type string Name max-length 32\n" +
+                        "type string Name(max-length = 32)\n" +
                         "\n" +
                         "entity Person {\n" +
                         "\tidentifier Name name\n" +

@@ -5,9 +5,11 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.BooleanLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.CreateExpression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.DateLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.DecimalLiteral;
-import hu.blackbelt.judo.meta.jsl.jsldsl.DerivedParameter;
+import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDerivedDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityMemberDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.EntityQueryDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.EnumLiteralReference;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EscapedStringLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Feature;
@@ -15,14 +17,26 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.Function;
 import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionParameter;
 import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionedExpression;
+import hu.blackbelt.judo.meta.jsl.jsldsl.InstanceFunction;
 import hu.blackbelt.judo.meta.jsl.jsldsl.IntegerLiteral;
+import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaFunction;
 import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaFunctionParameters;
+import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaVariable;
+import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunction;
+import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunctionParameter;
+import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.Named;
+import hu.blackbelt.judo.meta.jsl.jsldsl.NavigationBaseExpression;
+import hu.blackbelt.judo.meta.jsl.jsldsl.NavigationBaseReference;
 import hu.blackbelt.judo.meta.jsl.jsldsl.NavigationExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ParametrizedFunctionParameters;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ParenthesizedExpression;
+import hu.blackbelt.judo.meta.jsl.jsldsl.PrimitiveDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.QueryCallExpression;
+import hu.blackbelt.judo.meta.jsl.jsldsl.QueryDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.QueryDeclarationParameter;
 import hu.blackbelt.judo.meta.jsl.jsldsl.QueryParameter;
 import hu.blackbelt.judo.meta.jsl.jsldsl.RawStringLiteral;
-import hu.blackbelt.judo.meta.jsl.jsldsl.Self;
+import hu.blackbelt.judo.meta.jsl.jsldsl.SelfExpression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.SpawnOperation;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TernaryOperation;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TimeLiteral;
@@ -32,6 +46,7 @@ import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.epsilon.ecl.parse.Ecl_EolParserRules.returnStatement_return;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -46,125 +61,98 @@ public class JslExpressionToJqlExpression {
     
     static JslDslModelExtension modelExtension = new JslDslModelExtension();
     
-    private EntityDerivedDeclaration originalDerivedDeclaration;
-    private EntityDerivedDeclaration baseDerivedDeclaration;
-    private Deque<EntityDerivedDeclaration> entityDerivedDeclarationCallStack;
-    private Map<DerivedParameter, EObject> collectedParameterValues;
+    private Deque<Map<String, String>> queryStackParameterValues = new ArrayDeque();
+    private Deque<EObject> queryCallStack = new ArrayDeque();
+    private String entityNamePrefix = "";
+    private String entityNamePostfix = "";
     
-    public EntityDerivedDeclaration getDerivedDeclaration(EObject from) {
-        EntityDerivedDeclaration found = null;
-        EObject current = from;
+    public static  <T> T getContainer(EObject from, Class<T> type) {
+        T found = null;
+        Object current = from;
         while (found == null && current != null) {
-            if (current instanceof EntityDerivedDeclaration) {
-                found = (EntityDerivedDeclaration) current;
+            if (type.isAssignableFrom(current.getClass())) {
+                found = (T) current;
             }
             if (from.eContainer() != null) {
-                current = current.eContainer();
+                current = ((EObject) current).eContainer();
             } else {
                 current = null;
             }
         }
         return found;
     }
-
-    public Deque<EntityDerivedDeclaration> getBaseDerived(final EntityDerivedDeclaration d) {
-        Deque<EntityDerivedDeclaration> stack = new ArrayDeque();
-        EntityDerivedDeclaration entityDerivedDeclaration = d;
-        stack.push(entityDerivedDeclaration);
-        
-        while (containsParametrizedQueryCall(entityDerivedDeclaration.getExpression())) {
-            
-            if (!(d.getExpression() instanceof NavigationExpression)) {
-                throw new IllegalArgumentException("Parametrized query expression has to be Navigation Expression - " + entityDerivedDeclaration.getName());
-            }
-        
-            NavigationExpression nav = (NavigationExpression) entityDerivedDeclaration.getExpression();
-            if (!(nav.getBase() instanceof Self)) {
-                throw new IllegalArgumentException("A Parametrized query's navigation expression has to be Self - " + entityDerivedDeclaration.getName());
-            }
-
-            
-            if (nav.getFeatures().size() == 0 || 
-                    nav.getFeatures().get(0).getMember() == null || 
-                    nav.getFeatures().get(0).getMember().getNavigationDeclarationType() == null ||
-                    !(nav.getFeatures().get(0).getMember().getNavigationDeclarationType() instanceof EntityDerivedDeclaration)) {
-                throw new IllegalArgumentException("The Self referenced feature has to be an entity derived declaration - " + entityDerivedDeclaration.getName());
-            }
-
-            entityDerivedDeclaration = (EntityDerivedDeclaration) nav.getFeatures().get(0).getMember().getNavigationDeclarationType();
-            stack.push(entityDerivedDeclaration);
-
-        }
-        return stack;
-    }
     
-    public static String getJql(EntityDerivedDeclaration declaration) {
+    public static String getJqlForDerived(EntityDerivedDeclaration declaration, String entityNamePrefix, String entityNamePostfix) {
         JslExpressionToJqlExpression transformer = new JslExpressionToJqlExpression();
-        transformer.originalDerivedDeclaration = declaration;
-        transformer.entityDerivedDeclarationCallStack = transformer.getBaseDerived(declaration);        
-        transformer.baseDerivedDeclaration = transformer.entityDerivedDeclarationCallStack.getFirst();
-        transformer.collectedParameterValues = transformer.collectParameterValues();
-        return transformer.getJql(transformer.baseDerivedDeclaration.getExpression());
+        
+        transformer.entityNamePrefix = entityNamePrefix;
+        transformer.entityNamePostfix = entityNamePostfix;
+        
+        return transformer.getJql(declaration.getExpression());
     }
-    
-    public static String getJqlForExpression(Expression expression) {
+
+    public static String getJqlForEntityQuery(EntityQueryDeclaration declaration, String entityNamePrefix, String entityNamePostfix) {
         JslExpressionToJqlExpression transformer = new JslExpressionToJqlExpression();
-        transformer.originalDerivedDeclaration = null;
-        transformer.entityDerivedDeclarationCallStack = new ArrayDeque<>();        
-        transformer.baseDerivedDeclaration = null;
-        transformer.collectedParameterValues = new HashMap<>();
+        //transformer.forQuery = true;
+        
+		Map<String, String> parameterValues = new HashMap();
+		parameterValues.putAll(declaration.getParameters()
+				.stream()
+				.collect(
+						Collectors.toMap(
+								e -> e.getName(), 
+								e -> "(input." + e.getName() + "!isDefined() ? " 
+				        				+ "input." + e.getName() 
+				        				+ " : " + transformer.getJql(e.getDefault()) + ")", 
+								(key1, key2)-> key2)));
+
+		transformer.queryStackParameterValues.add(parameterValues);
+        transformer.entityNamePrefix = entityNamePrefix;
+        transformer.entityNamePostfix = entityNamePostfix;
+		
+        return transformer.getJql(declaration.getExpression());
+    }
+
+
+    public static String getJqlForStaticQuery(QueryDeclaration declaration, String entityNamePrefix, String entityNamePostfix) {
+        JslExpressionToJqlExpression transformer = new JslExpressionToJqlExpression();
+
+		Map<String, String> parameterValues = new HashMap();
+		parameterValues.putAll(declaration.getParameters()
+				.stream()
+				.collect(
+						Collectors.toMap(
+								e -> e.getName(), 
+								e -> "(input." + e.getName() + "!isDefined() ? " 
+				        				+ "input." + e.getName() 
+				        				+ " : " + transformer.getJql(e.getDefault()) + ")", 
+								(key1, key2)-> key2)));
+
+		transformer.queryStackParameterValues.add(parameterValues);
+        transformer.entityNamePrefix = entityNamePrefix;
+        transformer.entityNamePostfix = entityNamePostfix;
+
+        return transformer.getJql(declaration.getExpression());
+    }
+
+    public static String getJqlForExpression(Expression expression, String entityNamePrefix, String entityNamePostfix) {
+        JslExpressionToJqlExpression transformer = new JslExpressionToJqlExpression();
+        transformer.entityNamePrefix = entityNamePrefix;
+        transformer.entityNamePostfix = entityNamePostfix;
+
         return transformer.getJql(expression);
     }
 
-    private Map<DerivedParameter, EObject> collectParameterValues() {
-        Map<DerivedParameter, EObject> derivedValueOrParameter = new HashMap();
-        
-        entityDerivedDeclarationCallStack.descendingIterator().forEachRemaining((c) -> {
-            EntityDerivedDeclaration current = c;
-            
-            // Collecting parameters
-            if (current != baseDerivedDeclaration) {
-                //addParameterValues(c, previousDeclaration.get(), parameterValues);            
-
-                NavigationExpression currentNav = (NavigationExpression) current.getExpression();
-                Feature currentMember = (Feature) currentNav.getFeatures().get(0).getMember();
-                EntityDerivedDeclaration calledQuery = (EntityDerivedDeclaration) currentMember.getNavigationDeclarationType();
-
-                // Check all parameters of the called method
-                for (DerivedParameter p : calledQuery.getParameters()) {
-                    
-                    Optional<QueryParameter> queryParameter = currentMember.getParameters().stream().filter(q -> q.getDerivedParameterType() == p).findAny();
-
-                    if (!queryParameter.isPresent()) {
-                        // When the parameter is not given, using default value
-                        derivedValueOrParameter.put(p, p.getDefault());
-                    } else if (queryParameter.get().getParameter() != null) {
-                        // When parameter is given and mapped from the caller,
-                        derivedValueOrParameter.put(p, derivedValueOrParameter.get(queryParameter.get().getParameter()));
-                        if (!originalDerivedDeclaration.getParameters().contains(queryParameter.get().getParameter())) {
-                            derivedValueOrParameter.put(p, derivedValueOrParameter.get(queryParameter.get().getParameter()));                            
-                        } else {
-                            derivedValueOrParameter.put(p, queryParameter.get().getParameter());                                                        
-                        }
-                    } else {
-                        // When parameter is given and mapped caller literal
-                        derivedValueOrParameter.put(p, queryParameter.get().getLiteral());        
-                    }
-
-                }
-            } else {
-                for (DerivedParameter p : originalDerivedDeclaration.getParameters()) {
-                    if (!derivedValueOrParameter.containsKey(p)) {
-                        derivedValueOrParameter.put(p, p);                                    
-                    }
-                }                
-            }
-            
-        });
-
-        return derivedValueOrParameter;
+    public String getModelDeclarationPSMFullyQualifiedName(ModelDeclaration modelDeclaration, ModelDeclaration owner) {
+    	String fqName = owner.getName().replaceAll("::", "_");
+    	return fqName + "::" + modelDeclaration.getName();
     }
-
+    
+    public String getEntityPSMFullyQualifiedName(EntityDeclaration entityDeclaration, EObject owner) {
+    	ModelDeclaration modelDeclaration = (ModelDeclaration) getContainer(entityDeclaration, ModelDeclaration.class);
+    	ModelDeclaration ownerModelDeclaration = (ModelDeclaration) getContainer(owner, ModelDeclaration.class);    	
+    	return getModelDeclarationPSMFullyQualifiedName(modelDeclaration, ownerModelDeclaration) + "::" + entityNamePrefix + entityDeclaration.getName() + entityNamePostfix;
+    }
     
     /**
      * Expression returns Expression hidden(WS, CONT_NL, SL_COMMENT, ML_COMMENT)
@@ -189,14 +177,6 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    private Boolean containsParametrizedQueryCallDispacher(final TernaryOperation it) {
-        if (it != null && containsParametrizedQueryCall(it.getCondition()) | containsParametrizedQueryCall(it.getThenExpression()) | containsParametrizedQueryCall(it.getElseExpression())) {
-            throw new IllegalArgumentException("Ternary expression cannot contain parametrized query call");
-        }
-        return false;
-    }
-
-    
     /**
      * ImpliesExpression returns Expression
      * : OrExpression (=> ({BinaryOperation.leftOperand=current} operator='implies') rightOperand=OrExpression)
@@ -240,13 +220,6 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    private Boolean containsParametrizedQueryCallDispacher(final BinaryOperation it) {
-        if (it != null &&  containsParametrizedQueryCall(it.getLeftOperand()) | containsParametrizedQueryCall(it.getRightOperand())) {
-            throw new IllegalArgumentException("Binary operation cannot contain parametrized query call");
-        }
-        return false;
-    }
-
     /**
      * SpawnOperation returns Expression
      * : UnaryOperation (=> ({SpawnOperation.operand=current} 'as' spawnTargetType=LocalName))?
@@ -257,14 +230,6 @@ public class JslExpressionToJqlExpression {
                 ? getJql(it.getOperand()) + " as " + it.getSpawnTargetType()
                 : null;
     }
-
-    private Boolean containsParametrizedQueryCallDispacher(final SpawnOperation it) {
-        if (it != null && containsParametrizedQueryCall(it.getOperand())) {
-            throw new IllegalArgumentException("Spawn operation cannot contain parametrized query call");
-        }
-        return false;
-    }
-
 
     /**
      * UnaryOperation returns Expression
@@ -278,13 +243,6 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    private Boolean containsParametrizedQueryCallDispacher(final UnaryOperation it) {
-        if (it != null && containsParametrizedQueryCall(it.getOperand())) {
-            throw new IllegalArgumentException("Unary operation cannot contain parametrized query call");
-        }
-        return false;
-    }
-
     /**
      * FunctionedExpression returns Expression
      * : NavigationExpression ({FunctionedExpression.operand=current} functionCall=FunctionCall)?
@@ -296,86 +254,131 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    private Boolean containsParametrizedQueryCallDispacher(final FunctionedExpression it) {
-        if (it != null && containsParametrizedQueryCall(it.getFunctionCall())) {
-            throw new IllegalArgumentException("Function expression cannot contain parametrized query call");
-        }
-        return false;
-    }
-
     /**
-     * NavigationExpression returns Expression
-     * : PrimaryExpression ({NavigationExpression.base=current} features+=Feature+)?
-     * | NavigationBase
-     * ;
-     * // enums as separate literals cause problems with completion and script
-     * NavigationBase returns NavigationExpression
-     * : {NavigationExpression} qName=LocalName (features+=Feature* | '#' enumValue = ID)
+     * QueryDeclaration
+     * : 'query' (referenceType = [SingleType | LocalName] Cardinality?) Named
+     *   ('(' parameters += QueryDeclarationParameter (',' parameters += QueryDeclarationParameter)* ')')
+     *   "=>" expression = Expression
      * ;
      */
-    private String getJqlDispacher(final NavigationExpression it) {
-        if (it == null) {
+    private String getJql(final QueryDeclaration it) {
+    	if (it == null) {
+    		return null;
+    	}
+    	return getJql(it.getExpression());
+    }
+    
+    
+    private String resolveQueryDeclarationParameterValue(QueryDeclarationParameter parameter) {
+    	String keyName = parameter.getName();
+
+		Map<String, String> stackValues = queryStackParameterValues.peekLast();
+		if (stackValues != null && stackValues.containsKey(keyName)) {
+			return stackValues.get(keyName);
+		}
+    	return getJql(parameter.getDefault());
+    }
+
+    
+    /**    
+    * NavigationBaseExpression returns NavigationExpression
+    * 	: {NavigationBaseExpression} navigationBaseType = [NavigationBaseReference | LocalName]  (features+=Feature*)
+    * 	;
+    * NavigationBaseReference
+    * 	: EntityDeclaration
+    * 	| QueryDeclaration
+    * 	| LambdaVariable
+    * 	| QueryDeclarationParameter
+    * 	| PrimitiveDeclaration
+	;
+    *
+    */
+    private String getJqlDispacher(final NavigationBaseExpression it) {
+
+    	if (it == null) {
             return "";
         }
-        if (it.getBase() != null) {
-            return getJql(it.getBase()) + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
-        }
-        if (it.getEnumValue() != null) {
-            return it.getQName() + "#" + it.getEnumValue();
-        }
-        if (it.getFeatures().size() > 0) {
-            return it.getQName() + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
-        }
-        
-        // Check the navigation name matches with declared parameter
-        Optional<DerivedParameter> parameter = baseDerivedDeclaration.getParameters().stream()
-                .filter(p -> p.getName().equals(it.getQName())).findFirst();
-        
-        if (parameter.isPresent()) {
-            if (collectedParameterValues.get(parameter.get()) != null) {
-                if (collectedParameterValues.get(parameter.get()) instanceof DerivedParameter) {
-                	DerivedParameter derivedParameter = (DerivedParameter) collectedParameterValues.get(parameter.get());
-                	String parName = "input." + derivedParameter.getName();
-                    return parName + "!isDefined() ? " + parName + " : " + getJql(derivedParameter.getDefault());                 
-                } else {
-                    return getJql((Expression) collectedParameterValues.get(parameter.get()));
-                }
-            } else {
-                throw new IllegalStateException("Could not resolve parameter value");
-            }
-        }
+    	
+    	String navExpression = "";
+    	if (it.getNavigationBaseType() instanceof EntityDeclaration) {
+    		navExpression = getEntityPSMFullyQualifiedName((EntityDeclaration) it.getNavigationBaseType(), it);
+    	} else if (it.getNavigationBaseType() instanceof QueryDeclaration) {
+    		navExpression = ((QueryDeclaration) it.getNavigationBaseType()).getName();    		
+    	} else if (it.getNavigationBaseType() instanceof LambdaVariable) {
+    		navExpression = ((LambdaVariable) it.getNavigationBaseType()).getName();
+    	} else if (it.getNavigationBaseType() instanceof QueryDeclarationParameter) {	   		
+    		navExpression = resolveQueryDeclarationParameterValue((QueryDeclarationParameter) it.getNavigationBaseType());
+    	} else if (it.getNavigationBaseType() instanceof PrimitiveDeclaration) {
+    		navExpression = getNameForNamed(it.getNavigationBaseType());    		
+    	}
+    	return navExpression + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
+    }
+    
+    /**
+	 * SelfExpression returns NavigationExpression
+	 * 	: {SelfExpression} isSelf ?= 'self' (features+=Feature*)		
+	 * 	;
+     */
+    private String getJqlDispacher(final SelfExpression it) {
 
-        
-        return it.getQName();
-        
-        /*
-        return it != null
-                ? it.getBase() != null
-                ? getJql(it.getBase()) + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining())
-                : it.getQName() + (it.getEnumValue() != null
-                ? "#" + it.getEnumValue()
-                : it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining()))
-                : "";
-        */
+    	if (it == null) {
+            return "";
+    	}
+    	String features = it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
+    	if (queryCallStack.size() > 0) {
+    		return features;
+    	} else {
+    		return "self" + features;
+    	}
     }
 
-    private Boolean containsParametrizedQueryCallDispacher(final NavigationExpression it) {
-        if (it == null) {
-            return false;
+    
+    /**
+	 *  QueryCallExpression returns NavigationExpression
+	 *  	: {QueryCallExpression} queryDeclarationType = [ QueryDeclaration | LocalName ] '(' (parameters+=QueryParameter (',' parameters+=QueryParameter)*)? ')' (features+=Feature*)
+	 *  ;
+     */
+    private String getJqlDispacher(final QueryCallExpression it) {
+
+    	if (it == null) {
+            return "";
         }
-        if (it.getBase() != null) {
-            if (containsParametrizedQueryCall(it.getBase()) || !(it.getBase() instanceof Self)) {                
-                throw new IllegalArgumentException("Base expression cannot contain parametrized query call");
-            }
-        }
-        
-        // If any feature contain parametrized call
-        if (it.getFeatures().size() > 0) {
-            return it.getFeatures().stream().map(p -> containsParametrizedQueryCall(p)).filter(p -> p).count() > 0;
-        }
-        
-        return false;        
+    	
+     	QueryDeclaration queryDeclaration = it.getQueryDeclarationType();
+    	
+		// Get parameters which passed from call
+		Map<String, String> parameterValues = new HashMap();
+		parameterValues.putAll(it.getParameters()
+				.stream()
+				.filter(e -> e.getQueryParameterType() != null)
+				.collect(
+						Collectors.toMap(
+								e -> e.getQueryParameterType().getName(), 
+								e -> resolveQueryParameterValue(e), 
+								(key1, key2)-> key2)));
+
+		// Search for parameters which is not defined to set default values
+		Map<String, String> missingValues = queryDeclaration.getParameters().stream()
+			.filter(e -> !parameterValues.containsKey(e.getName()))
+			.collect(
+					Collectors.toMap(
+							e -> e.getName(), 
+							e -> getJql(e.getDefault()), 
+							(key1, key2)-> key2)    					
+					);
+		
+		parameterValues.putAll(missingValues);
+
+		queryCallStack.add(queryDeclaration);
+		queryStackParameterValues.add(parameterValues);
+		String repr = getJql(queryDeclaration);
+		queryStackParameterValues.poll();
+		queryCallStack.poll();    		
+
+    	return repr;
     }
+
+
 
     /**
      * FunctionCall
@@ -393,61 +396,102 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    private Boolean containsParametrizedQueryCall(final FunctionCall it) {
-        return it != null
-                ? containsParametrizedQueryCall(it.getFunction()) |
-                (
-                        it.getCall() != null
-                                ? containsParametrizedQueryCall(it.getCall())
-                                : false
-                )
-                : false;
+
+    private String getJql(final EntityQueryDeclaration it) {
+    	if (it == null) {
+    		return null;
+    	}
+		return getJql(it.getExpression());    		
     }
 
+    
+    private String resolveQueryParameterValue(QueryParameter parameter) {
+    	if (parameter.getLiteral() != null) {
+    		return getJql(parameter.getLiteral());
+    	} else if (parameter.getParameter() != null) {
+    		Map<String, String> stackValues = queryStackParameterValues.peekLast();
+    		if (stackValues != null && stackValues.containsKey(parameter.getParameter().getName())) {
+    			return stackValues.get(parameter.getParameter().getName());
+    		}
+    	} 
+    	return getJql(parameter.getQueryParameterType().getDefault());    		
+    }
+    
     /**
      * Feature
-     * : {Feature} '.' member = EntityMemberDeclarationFeature
-     * ;
-     *
-     * EntityMemberDeclarationFeature returns Feature
-     * : entityMemberDeclarationType = [EntityMemberDeclaration | LocalName ] ('(' (parameters+=QueryParameter (',' parameters+=QueryParameter)*)? ')')?
-     * ;
+     *     : {Feature} {Feature.base = current} '.' navigationTargetType = [NavigationTarget | LocalName]('(' (parameters+=QueryParameter (',' parameters+=QueryParameter)*)? ')')?
+     *     ;
+     * NavigationTarget
+     *     : EntityMemberDeclaration
+     *     | EntityDeclaration
+     *     ;
      */
     private String getJql(final Feature it) {
-        return it != null
-                ? '.' + modelExtension.getNameForEntityMemberDeclaration((EntityMemberDeclaration) it.getMember().getNavigationDeclarationType()) +
-                (
-                        it.getParameters().size() > 0
-                                ? "(" +  it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")"
-                                : ""
-                )
-                : null;
+    	if (it == null) {
+    		return null;
+    	}
+    	String repr = null;
+    	
+    	if (it.getNavigationTargetType() instanceof EntityQueryDeclaration) {
+    		EntityQueryDeclaration entityQueryDeclaration = (EntityQueryDeclaration) it.getNavigationTargetType();
+    		
+    		// Get parameters which passed from call
+    		Map<String, String> parameterValues = new HashMap();
+    		parameterValues.putAll(it.getParameters()
+    				.stream()
+    				.filter(e -> e.getQueryParameterType() != null)
+    				.collect(
+    						Collectors.toMap(
+    								e -> e.getQueryParameterType().getName(), 
+    								e -> resolveQueryParameterValue(e), 
+    								(key1, key2)-> key2)));
+
+    		// Search for parameters which is not defined to set default values
+    		Map<String, String> missingValues = entityQueryDeclaration.getParameters().stream()
+    			.filter(e -> !parameterValues.containsKey(e.getName()))
+    			.collect(
+						Collectors.toMap(
+								e -> e.getName(), 
+								e -> getJql(e.getDefault()), 
+								(key1, key2)-> key2)    					
+    					);
+    		
+    		parameterValues.putAll(missingValues);
+    		
+    		queryCallStack.add(entityQueryDeclaration);
+    		queryStackParameterValues.add(parameterValues);
+    		repr = getJql((EntityQueryDeclaration) it.getNavigationTargetType());
+    		queryStackParameterValues.poll();
+    		queryCallStack.poll();    		
+    		
+    	} else if (it.getNavigationTargetType() instanceof EntityDeclaration) {
+    		repr = getEntityPSMFullyQualifiedName((EntityDeclaration) it.getNavigationTargetType(), it);
+    	} else if (it.getNavigationTargetType() instanceof Named) {
+    		repr = getNameForNamed(it.getNavigationTargetType());
+    	} else {
+    		throw new IllegalArgumentException("Feature navigation target have to be Named");
+    	}
+    	
+    	if (queryCallStack.size() > 0 && it.eContainer() instanceof SelfExpression) {
+        	return repr;    		
+    	} else {
+    		return "." + repr;
+    	}
     }
 
-    private Boolean containsParametrizedQueryCall(final Feature it) {
-        if (it == null) {
-            return false;
-        }
-        Feature member = it.getMember();
-        if (member != null) {
-            if (member.getNavigationDeclarationType() != null && member.getNavigationDeclarationType() instanceof EntityDerivedDeclaration) {
-                return true;
-            }                    
-        }
-        return false;
-    }
 
     /**
      * QueryParameter
-     * :  derivedParameterType=[DerivedParameter | LocalName] '=' (literal = Literal | parameter = [DerivedParameter | LocalName])     // expression=MultilineExpression
-     * ;
+     * 	:  queryParameterType=[QueryDeclarationParameter | QueryParameterName] '=' (literal = Literal | parameter = [QueryDeclarationParameter | QueryParameterName])     // expression=MultilineExpression
+     * 	;
+     * 
      */
     private String getJql(final QueryParameter it) {
         return it != null
-                ? it.getDerivedParameterType().getName() + "=" + 
+                ? it.getQueryParameterType().getName() + "=" + 
                     (it.getLiteral() != null 
                     ? getJql(it.getLiteral())
-                    : it.getDerivedParameterType().getName())
+                    : it.getQueryParameterType().getName())
                 : null;
     }
 
@@ -457,16 +501,15 @@ public class JslExpressionToJqlExpression {
      * ;
      */
     private String getJqlDispacher(final ParenthesizedExpression it) {
+    	if (it == null) {
+    		return null;
+    	}
+    	if ((it.eContainer() instanceof QueryDeclaration) || (it.eContainer() instanceof EntityQueryDeclaration)) {
+    		return getJql(it.getExpression());
+    	}
         return it != null
                 ?  "(" + getJql(it.getExpression()) + ")"
                 : null;
-    }
-
-    private Boolean containsParametrizedQueryCallDispacher(final ParenthesizedExpression it) {
-        if (it != null && containsParametrizedQueryCall(it.getExpression())) {                
-            throw new IllegalArgumentException("Parenthesized expression cannot contain parametrized query call");
-        }
-        return false;
     }
 
     /**
@@ -489,67 +532,93 @@ public class JslExpressionToJqlExpression {
 
     
     /**
-     * Function returns Function
-     * : name=ID '(' parameterDeclaration = FunctionParameterDeclaration? ')'
-     * ;
-     * 
-     * FunctionParameterDeclaration
-     * 	: LambdaFunctionParameters
-     * 	| ParametrizedFunctionParameters
+     * Function
+     * 	: LiteralFunction
+     * 	| LambdaFunction
+     * 	| InstanceFunction
+     * 	| SelectorFunction
      * 	;
-     * 
+
+     * LiteralFunction returns Function: {LiteralFunction} functionDeclarationReference = [LiteralFunctionDeclaration | LocalName ] '(' (parameters += LiteralFunctionParameter (',' parameters += LiteralFunctionParameter)*)? ')' ;
+     * LambdaFunction returns Function : {LambdaFunction} functionDeclarationReference = [LambdaFunctionDeclaration | LocalName ] '(' lambdaArgument=LambdaVariable '|' expression = Expression ')';
+     * InstanceFunction returns Function : {InstanceFunction} functionDeclarationReference = [InstanceFunctionDeclaration | LocalName ] '(' entityDeclaration = [EntityDeclaration | LocalName] ')';
+     * //SelectorFunction returns Function : {SelectorFunction} => functionDeclarationReference = [SelectorFunctionDeclaration | LocalName ] '('  selectorArgument = SelectorVariable '|' selectors += SelectorDeclaration (',' selectors += SelectorDeclaration)* ')';
+
+     * LiteralFunctionParameters
+     *     : {LiteralFunctionParameters} parameters += LiteralFunctionParameter (',' parameters += LiteralFunctionParameter)*
+     * 	;
+
+     * LiteralFunctionParameter 
+     * 	: declaration = [FunctionParameterDeclaration | LocalName] '=' expression=Expression 
+     * 	;
+
      * LambdaFunctionParameters
-     * : lambdaArgument=LambdaVariable '|' expression = Expression
-     * ;
-     * 
-     * ParametrizedFunctionParameters
-     * : parameters+=FunctionParameter (',' parameters+=FunctionParameter)*
-     * ;
-     *     
-     * LambdaVariable
-     * : {LambdaVariable} name=ID    	
-     * ;
-     */
+     *     : lambdaArgument=LambdaVariable '|' expression = Expression
+     * 	;
     
+     * LambdaVariable
+     *     : {LambdaVariable} Named    	
+     *     ;
+
+     * SelectorFunctionParameters
+     *     : {SelectorFunctionParameters} selectorArgument=SelectorVariable '|' selectors += SelectorDeclaration (',' selectors += SelectorDeclaration)*
+     * 	;
+
+     * SelectorDeclaration
+     *     : {SelectorDeclaration} selector = [SelectorVariable | LocalName] '.' member = [EntityMemberDeclaration | LocalName] ('DESC' | isTrue?='ASC')?
+     *     ;
+
+     * SelectorVariable
+     *     : {SelectorVariable} Named
+     *     ;
+
+     */
+
     private String getJql(final Function it) {
-        return it != null
-                ? it.getName() + '(' +
-                (
-                        it.getParameterDeclaration() instanceof LambdaFunctionParameters
-                                ? ((LambdaFunctionParameters) it.getParameterDeclaration()).getLambdaArgument().getName() + " | "
-                                		+ getJql(((LambdaFunctionParameters) it.getParameterDeclaration()).getExpression())
-                                : (
-                                	it.getParameterDeclaration() instanceof ParametrizedFunctionParameters 
-                                	? ((ParametrizedFunctionParameters) it.getParameterDeclaration()).getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(","))
-                                	: "")
-                ) + ")"
-                : null;
+        if (it instanceof LiteralFunction) {
+            return getJql((LiteralFunction)it);
+        } else if (it instanceof InstanceFunction) {
+            return getJql((InstanceFunction)it);
+//        } else if (it instanceof SelectorFunction) {
+//            return getJql((SelectorFunction)it);
+        } else if (it instanceof LambdaFunction) {
+            return getJql((LambdaFunction)it);
+        }
+        else return ""; // getJql((NamedFunction) it);
+    }
+
+
+    private String getJql(final LiteralFunction it) {
+    	if (it == null) {
+        	return null;    		
+    	}
+    	
+    	return it.getFunctionDeclarationReference().getName() + "(" + it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")";
    }
 
-    private Boolean containsParametrizedQueryCall(final Function it) {
-        if (it != null && it.getParameterDeclaration() instanceof ParametrizedFunctionParameters &&
-        		((ParametrizedFunctionParameters) it.getParameterDeclaration()).getParameters().stream().map(p -> containsParametrizedQueryCall(p)).filter(p -> p).count() > 0) {
-            throw new IllegalArgumentException("Function parameters cannot contain parametrized query call");            
-        }
-        return false;
+    private String getJql(final LiteralFunctionParameter it) {
+    	if (it == null) {
+        	return null;    		
+    	}
+    	return it.getDeclaration().getName() + " = " + getJql(it.getExpression());
     }
+    
+    
+    private String getJql(final InstanceFunction it) {
+    	if (it == null) {
+        	return null;    		
+    	}
+    	return it.getFunctionDeclarationReference().getName() + "()";
+   }
 
-    /**
-     * FunctionParameter
-     * : {FunctionParameter} expression=Expression
-     * ;
-     */
-    private String getJql(final FunctionParameter it) {
-        return it != null
-                ? getJql(it.getExpression())
-                : null;
-    }
-
-    private Boolean containsParametrizedQueryCall(final FunctionParameter it) {
-        return it != null
-                ? containsParametrizedQueryCall(it.getExpression())
-                : false;
-    }
+    private String getJql(final LambdaFunction it) {
+    	if (it == null) {
+        	return null;    		
+    	}
+    	return it.getFunctionDeclarationReference().getName() + (it.getLambdaArgument() != null 
+    			? ("(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + ")") : "()") ;
+   }
+    
 
     /**
      * Literal returns Expression
@@ -581,19 +650,21 @@ public class JslExpressionToJqlExpression {
      */
     private String getJqlDispacher(final DateLiteral it) {
         return it != null
-                ? "`" + it.getValue() + "`"
-                : null;
+              ? it.getValue()
+
+        		: null;
     }
 
     private String getJqlDispacher(final TimeStampLiteral it) {
         return it != null
-                ? "`" + it.getValue() + "`"
-                : null;
+              ? it.getValue()
+
+        		: null;
     }
 
     private String getJqlDispacher(final TimeLiteral it) {
         return it != null
-                ? "`" + it.getValue() + "`"
+        		? it.getValue()
                 : null;
     }
 
@@ -628,16 +699,6 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    /**
-     * Self returns Expression
-     * : {Self} 'self'
-     * ;
-     */
-    private String getJqlDispacher(final Self it) {
-        return it != null
-                ?  "self"
-                : null;
-    }
 
     private String getJqlDispacher(final Expression it) {
         if (it instanceof BinaryOperation) {
@@ -656,14 +717,8 @@ public class JslExpressionToJqlExpression {
             return getJqlDispacher((FunctionedExpression)it);
         } else if (it instanceof IntegerLiteral) {
             return getJqlDispacher((IntegerLiteral)it);
-        } else if (it instanceof NavigationExpression) {
-            return getJqlDispacher((NavigationExpression)it);
-        } else if (it instanceof ParenthesizedExpression) {
-            return getJqlDispacher((ParenthesizedExpression)it);
         } else if (it instanceof RawStringLiteral) {
             return getJqlDispacher((RawStringLiteral)it);
-        } else if (it instanceof Self) {
-            return getJqlDispacher((Self)it);
         } else if (it instanceof SpawnOperation) {
             return getJqlDispacher((SpawnOperation)it);
         } else if (it instanceof TernaryOperation) {
@@ -674,48 +729,32 @@ public class JslExpressionToJqlExpression {
             return getJqlDispacher((TimeStampLiteral)it);
         } else if (it instanceof UnaryOperation) {
             return getJqlDispacher((UnaryOperation)it);
+        } else if (it instanceof ParenthesizedExpression) {
+            return getJqlDispacher((ParenthesizedExpression)it);
+        } else if (it instanceof QueryCallExpression) {
+            return getJqlDispacher((QueryCallExpression)it);
+        } else if (it instanceof SelfExpression) {
+            return getJqlDispacher((SelfExpression)it);
+        } else if (it instanceof NavigationBaseExpression) {
+            return getJqlDispacher((NavigationBaseExpression)it);                
+        } else if (it instanceof NavigationExpression) {
+            return getJqlDispacher((NavigationExpression)it);
+
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " +
                     Arrays.<Object>asList(it).toString());
         }
     }
     
-    private Boolean containsParametrizedQueryCall(final Expression it) {
-        if (it instanceof BinaryOperation) {
-            return containsParametrizedQueryCallDispacher((BinaryOperation)it);
-        } else if (it instanceof BooleanLiteral) {
-            return false;
-        } else if (it instanceof DateLiteral) {
-            return false;
-        } else if (it instanceof DecimalLiteral) {
-            return false;
-        } else if (it instanceof EscapedStringLiteral) {
-            return false;
-        } else if (it instanceof FunctionedExpression) {
-            return containsParametrizedQueryCallDispacher((FunctionedExpression)it);
-        } else if (it instanceof IntegerLiteral) {
-            return false;
-        } else if (it instanceof NavigationExpression) {
-            return  containsParametrizedQueryCallDispacher((NavigationExpression)it);
-        } else if (it instanceof ParenthesizedExpression) {
-            return containsParametrizedQueryCallDispacher((ParenthesizedExpression)it);
-        } else if (it instanceof RawStringLiteral) {
-            return false;
-        } else if (it instanceof Self) {
-            return false;
-        } else if (it instanceof SpawnOperation) {
-            return containsParametrizedQueryCallDispacher((SpawnOperation)it);
-        } else if (it instanceof TernaryOperation) {
-            return containsParametrizedQueryCallDispacher((TernaryOperation)it);
-        } else if (it instanceof TimeLiteral) {
-            return false;
-        } else if (it instanceof TimeStampLiteral) {
-            return false;
-        } else if (it instanceof UnaryOperation) {
-            return containsParametrizedQueryCallDispacher((UnaryOperation)it);
-        } else {
-            throw new IllegalArgumentException("Unhandled parameter types: " +
-                    Arrays.<Object>asList(it).toString());
-        }
-    }    
+    private String getNameForNamed(EObject baseRef) {
+    	if (baseRef == null) {
+    		return null;
+    	}
+		if (baseRef instanceof Named) {
+			return ((Named) baseRef).getName();
+		} else {
+			throw new IllegalArgumentException("Not a named object: " + baseRef);
+		}
+    }
+
 }
