@@ -55,9 +55,9 @@
         <logback-test-config>${maven.multiModuleProjectDirectory}/logback-test.xml</logback-test-config>
 
         <slf4j-version>1.7.36</slf4j-version>
-        <surefire-version>3.0.0-M6</surefire-version>
+        <surefire-version>3.0.0-M5</surefire-version>
 
-        <epsilon-runtime-version>1.4.0.20220523_132344_09a0b54b_develop</epsilon-runtime-version>
+        <epsilon-runtime-version>1.4.0.20220608_125416_42b1cd6e_develop</epsilon-runtime-version>
 
         <!-- Model versions -->
         <judo-meta-jsl-version>1.0.0.20220526_145215_7b38424d_develop</judo-meta-jsl-version>
@@ -492,6 +492,8 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire-version}</version>
                     <configuration>
+                        <argLine>-Dfile.encoding=UTF-8</argLine>
+                        <trimStackTrace>false</trimStackTrace>
                         <systemPropertyVariables>
                             <logback.configurationFile>${logback-test-config}</logback.configurationFile>
                         </systemPropertyVariables>
