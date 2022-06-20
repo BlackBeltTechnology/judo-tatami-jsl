@@ -42,7 +42,17 @@ rule CreateEntityDefaultTransferObjectType
 	                } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
 						t.relations.add(im.equivalentWithPrefix("CloneTransferObjectDerivedRelationForDefaultTransferObjectType", t.getId()));
 	                }
+                // Entity queries
+		        } else if (im.isKindOf(JSL!EntityQueryDeclaration)) {
+		        	log.error(" QUERY DECLARATION");
+					// Primitive derives
+	                if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
+						t.attributes.add(im.equivalentWithPrefix("CloneEntityQueryTransferAttributeForDefaultTransferObjectType", t.getId()));
+	                } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
+						t.relations.add(im.equivalentWithPrefix("CloneTransferObjectEntityQueryRelationForDefaultTransferObjectType", t.getId()));
+	                }
 		        }
+
             }
 
 			// Opposite added relation            
