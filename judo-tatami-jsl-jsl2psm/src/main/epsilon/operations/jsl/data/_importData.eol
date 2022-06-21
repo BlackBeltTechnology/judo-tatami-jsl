@@ -3,6 +3,7 @@ import "entityDeclaration.eol";
 import "entityFieldDeclaration.eol";
 import "entityRelationDeclaration.eol";
 import "entityDerivedDeclaration.eol";
+import "entityQueryDeclaration.eol";
 import "entityIdentifierDeclaration.eol";
 import "entityRelationOpposite.eol";
 import "primitiveDeclaration.eol";

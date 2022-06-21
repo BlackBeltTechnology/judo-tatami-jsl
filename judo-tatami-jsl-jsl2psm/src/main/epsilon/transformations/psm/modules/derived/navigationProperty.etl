@@ -11,5 +11,5 @@ rule CreateNavigationProperty
       t.target = s.referenceType.getPSMEquivalent();
 
       s.eContainer.getPSMEquivalent().navigationProperties.add(t);
-      log.error("Created Navigation Property: " + t.name);
+      log.debug("Created Navigation Property: " + t.name);
 }

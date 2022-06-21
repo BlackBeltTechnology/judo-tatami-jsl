@@ -1,0 +1,7 @@
+model TestDerivedExpressionModelImport
+
+import TestDerivedExpressionModel as original
+
+entity LeadInherited extends original::Lead {
+	
+}

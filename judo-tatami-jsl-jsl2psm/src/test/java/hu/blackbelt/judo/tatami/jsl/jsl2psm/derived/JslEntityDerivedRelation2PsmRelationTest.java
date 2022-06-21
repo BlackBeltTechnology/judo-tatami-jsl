@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-@Disabled
 public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
     static final String TARGET_TEST_CLASSES = "target/test-classes/derived/derivedRelation";
 

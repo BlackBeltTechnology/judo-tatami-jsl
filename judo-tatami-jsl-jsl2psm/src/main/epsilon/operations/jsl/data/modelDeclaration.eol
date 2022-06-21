@@ -5,7 +5,6 @@ operation JSL!ModelDeclaration getPSMEquivalent(): JUDOPSM!Model {
 
 @cached
 operation JSL!ModelDeclaration getModelRoot(): JUDOPSM!Package {	
-	var fragments = self.name.split("::");
     var current : JUDOPSM!Namespace = self.equivalent("CreateModelPackages"); //psmModel;
     return current;
 }
