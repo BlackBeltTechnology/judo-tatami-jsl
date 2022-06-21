@@ -20,7 +20,19 @@ rule CreateAttributeFromField
         log.debug("Created Attribute (Field): " + t.name);
     }
 
-@greedy
+
+rule CreateDefaultValueExpressionForPrimitiveEntityMember
+    transform s : JSL!DefaultExpressionType
+    to t: JUDOPSM!DataExpressionType {
+        guard: s.isDefaultValueForEntity() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDefaultValueExpressionForPrimitiveEntityMember");
+        t.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
+        s.equivalent("CreateDefaultValueForPrimitiveEntityMember").getterExpression = t;
+
+        log.debug("Created DataExpressionType for Default Value: " + t.expression);
+    }
+
 rule CreateDefaultValueForPrimitiveEntityMember
     transform s : JSL!DefaultExpressionType
     to t: JUDOPSM!DataProperty {
@@ -31,23 +43,23 @@ rule CreateDefaultValueForPrimitiveEntityMember
         t.dataType = s.eContainer.referenceType.getPSMEquivalent();
         t.required = false;
 
-        var det = new JUDOPSM!DataExpressionType();
-        det.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
-
-        t.getterExpression = det;
-
-        if (s.eContainer.isKindOf(JSL!EntityFieldDeclaration)) {
-            s.eContainer.equivalent("CreateTransferAttributeForDefaultTransferObjectType").defaultValue = t;
-        } else if (s.eContainer.isKindOf(JSL!EntityIdentifierDeclaration)) {
-            s.eContainer.equivalent("CreateIdentifierTransferAttributeForDefaultTransferObjectType").defaultValue = t;
-        }
-
         s.eContainer.eContainer.getPSMEquivalent().dataProperties.add(t);
 
-        log.debug("Created DataProperty for Default Value: " + det.expression);
+        log.debug("Created DataProperty for Default Value: " + s.expression);
     }
 
-@greedy
+rule CreateDefaultValueExpressionForPrimitiveErrorField
+    transform s : JSL!DefaultExpressionType
+    to t: JUDOPSM!DataExpressionType {
+        guard: s.isDefaultValueForError() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDefaultValueExpressionForPrimitiveErrorField");
+        t.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
+        s.equivalent("CreateDefaultValueForPrimitiveErrorField").getterExpression = t;
+
+        log.debug("Created DefaultExpressionType for Default Value: " + t.expression);
+    }
+
 rule CreateDefaultValueForPrimitiveErrorField
     transform s : JSL!DefaultExpressionType
     to t: JUDOPSM!StaticData {
@@ -58,16 +70,9 @@ rule CreateDefaultValueForPrimitiveErrorField
         t.dataType = s.eContainer.referenceType.getPSMEquivalent();
         t.required = false;
 
-        var det = new JUDOPSM!DataExpressionType();
-        det.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
-
-        t.getterExpression = det;
-
-        s.eContainer.equivalent('CreateTransferAttributeForErrorTransferObjectType').defaultValue = t;
-
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
 
-        log.debug("Created StaticData for Default Value: " + det.expression);
+        log.debug("Created StaticData for Default Value: " + s.expression);
     }
 
 rule CreateAttributeFromIdentifier
