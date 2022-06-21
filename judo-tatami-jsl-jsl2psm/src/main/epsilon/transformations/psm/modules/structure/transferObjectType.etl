@@ -47,7 +47,6 @@ rule CreateEntityDefaultTransferObjectType
 	                }
                 // Entity queries
 		        } else if (im.isKindOf(JSL!EntityQueryDeclaration)) {
-		        	log.error(" QUERY DECLARATION");
 					// Primitive derives
 	                if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
 						t.attributes.add(im.equivalentWithPrefix("CloneEntityQueryTransferAttributeForDefaultTransferObjectType", t.getId()));
