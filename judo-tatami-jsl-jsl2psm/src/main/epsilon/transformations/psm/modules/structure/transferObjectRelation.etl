@@ -206,3 +206,55 @@ rule CloneTransferObjectDerivedRelationForDefaultTransferObjectType
         
         log.debug("Clone TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "]");
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Entity Query relation
+///////////////////////////////////////////////////////////////////////////
+
+@abstract
+rule AbstractCreateTransferObjectEntityQueryRelationForDefaultTransferObjectType
+    transform s : JSL!EntityQueryDeclaration
+    to t : JUDOPSM!TransferObjectRelation
+    {
+      guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!EntityDeclaration)
+
+      t.name = s.name;
+      t.target = s.referenceType.equivalent("CreateEntityDefaultTransferObjectType");
+
+      t.embeddedCreate = false;
+      t.embeddedUpdate = false;
+      t.embeddedDelete = false;
+
+      t.binding = s.equivalent("CreateNavigationPropertyForQuery");
+      t.embedded = true;
+        
+}
+
+
+rule CreateTransferObjectEntityQueryRelationForDefaultTransferObjectType
+    transform s: JSL!EntityQueryDeclaration
+    to t: JUDOPSM!TransferObjectRelation
+    extends AbstractCreateTransferObjectEntityQueryRelationForDefaultTransferObjectType {
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!EntityDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEntityQueryRelationForDefaultTransferObjectType");
+        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForEntityQueryDeclaration", t.getId());
+
+        s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").relations.add(t);
+
+        log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+        
+}
+
+@lazy
+rule CloneTransferObjectQueryRelationForDefaultTransferObjectType
+    transform s: JSL!EntityQueryDeclaration
+    to t: JUDOPSM!TransferObjectRelation 
+    extends AbstractCreateTransferObjectEntityQueryRelationForDefaultTransferObjectType {
+    
+        t.setId("CloneTransferObjectEntityQueryRelationForDefaultTransferObjectType");
+        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForEntityQueryDeclaration", t.getId());
+        
+        
+        log.debug("Clone TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "]");
+}

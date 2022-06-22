@@ -76,34 +76,39 @@ abstract public class AbstractTest {
         final String traceFileName = testName + "-jsl2psm.model";
 
         // Saving trace map
-        jsl2PsmTransformationTrace.save(new File(getTargetTestClasses(), traceFileName));
+        if (jsl2PsmTransformationTrace != null) {
+            jsl2PsmTransformationTrace.save(new File(getTargetTestClasses(), traceFileName));
 
-        // Loading trace map
-        Jsl2PsmTransformationTrace jsl2PsmTransformationTraceLoaded = Jsl2PsmTransformationTrace
-                .fromModelsAndTrace(
-                        psmModel.getName(),
-                        jslModel,
-                        psmModel,
-                        new File(getTargetTestClasses(), traceFileName)
-                );
+            // Loading trace map
+            Jsl2PsmTransformationTrace jsl2PsmTransformationTraceLoaded = Jsl2PsmTransformationTrace
+                    .fromModelsAndTrace(
+                            psmModel.getName(),
+                            jslModel,
+                            psmModel,
+                            new File(getTargetTestClasses(), traceFileName)
+                    );
 
-        // Resolve serialized URI's as EObject map
-        resolvedTrace = jsl2PsmTransformationTraceLoaded.getTransformationTrace();
+            // Resolve serialized URI's as EObject map
+            resolvedTrace = jsl2PsmTransformationTraceLoaded.getTransformationTrace();
 
-        // Printing trace
-        for (EObject e : resolvedTrace.keySet()) {
-            for (EObject t : resolvedTrace.get(e)) {
-                log.trace(e.toString() + " -> " + t.toString());
-            }
+            // Printing trace
+            for (EObject e : resolvedTrace.keySet()) {
+                for (EObject t : resolvedTrace.get(e)) {
+                    log.trace(e.toString() + " -> " + t.toString());
+                }
+            }	
         }
 
         jslModel.saveJslDslModel(jslDslSaveArgumentsBuilder().file(new File(getTargetTestClasses(), testName + "-jsl.model")));
-        psmModel.savePsmModel(psmSaveArgumentsBuilder().validateModel(false).file(new File(getTargetTestClasses(), testName + "-psm.model")));
-        if (!psmModel.isValid()) {
-            log.error(psmModel.getDiagnosticsAsString());
+
+        if (psmModel != null) {
+            psmModel.savePsmModel(psmSaveArgumentsBuilder().validateModel(false).file(new File(getTargetTestClasses(), testName + "-psm.model")));
+            if (!psmModel.isValid()) {
+                log.error(psmModel.getDiagnosticsAsString());
+            }
+            
+            assertTrue(psmModel.isValid());        	
         }
-        
-        assertTrue(psmModel.isValid());
     }
     
     protected void transform() throws Exception {
@@ -205,6 +210,7 @@ abstract public class AbstractTest {
         assertTrue(staticData.isPresent());
         return staticData.get();
     }
+
 
     public NavigationProperty assertNavigationProperty(String entityName, String propName) {
     	final Optional<NavigationProperty> attr = assertEntityType(entityName).getAllNavigationProperties().stream().filter(e -> e.getName().equals(propName)).findAny();

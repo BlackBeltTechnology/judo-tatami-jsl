@@ -14,3 +14,4 @@ rule CreateDataProperty
       s.eContainer.getPSMEquivalent().dataProperties.add(t);
       log.debug("Created Data Property: " + t.name);
 }
+

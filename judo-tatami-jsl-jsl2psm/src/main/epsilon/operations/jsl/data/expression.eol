@@ -7,3 +7,8 @@ operation JSL!DefaultExpressionType isDefaultValueForEntity(): Boolean {
 operation JSL!DefaultExpressionType isDefaultValueForError(): Boolean {
 	return self.eContainer.isKindOf(JSL!ErrorField) and self.eContainer.defaultExpression == self;
 }
+
+@cached
+operation JSL!DefaultExpressionType getId(): String {
+	return (self.eContainer.getId() + "/defaultExpression");
+}
