@@ -74,7 +74,7 @@
         <judo-operation-utils-version>1.1.0.20220405_162650_6298bb1f_develop</judo-operation-utils-version>
         <structured-map-proxy-version>1.0.6.20220301_160543_e228df4d_develop</structured-map-proxy-version>
 
-        <judo-tatami-version>1.1.0.20220617_085025_1fbd6153_feature_JNG_3769_Improve_logging</judo-tatami-version>
+        <judo-tatami-base-version>1.1.0.20220623_075841_f90a9967_develop</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.0.20220405_161751_7fec76d0_develop</judo-tatami-core-version>
 
     </properties>
@@ -318,61 +318,61 @@
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2expression</artifactId>
-                <version>${judo-tatami-version}</version>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2rdbms</artifactId>
-                <version>${judo-tatami-version}</version>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2sdk</artifactId>
-                <version>${judo-tatami-version}</version>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-psm2asm</artifactId>
-                <version>${judo-tatami-version}</version>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-psm2measure</artifactId>
-                <version>${judo-tatami-version}</version>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-rdbms2liquibase</artifactId>
-                <version>${judo-tatami-version}</version>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-psm-validation</artifactId>
-                <version>${judo-tatami-version}</version>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm-validation</artifactId>
-                <version>${judo-tatami-version}</version>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-expression-asm-validation</artifactId>
-                <version>${judo-tatami-version}</version>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-expression-psm-validation</artifactId>
-                <version>${judo-tatami-version}</version>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
