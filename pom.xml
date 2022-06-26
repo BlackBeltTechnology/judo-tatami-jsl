@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>hu.blackbelt.judo.tatami</groupId>
     <artifactId>judo-tatami-jsl-parent</artifactId>
@@ -60,22 +59,22 @@
         <epsilon-runtime-version>1.4.0.20220616_093846_72efef9e_develop</epsilon-runtime-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.0.20220625_205707_7890559b_develop</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.0.20220427_093101_bc50729e_develop</judo-meta-jsl-version>
 
-        <judo-meta-rdbms-version>1.0.0.20220616_233835_0769db60_feature_JNG_3784_FixingTycho</judo-meta-rdbms-version>
-        <judo-meta-jql-version>1.0.1.20220616_233726_d15ba154_feature_JNG_3784_FixingTycho</judo-meta-jql-version>
-        <judo-meta-psm-version>1.1.0.20220616_233527_1f1d6701_feature_JNG_3784_FixingTycho</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.0.20220616_233557_c20986c3_feature_JNG_3784_FixingTycho</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20220616_235047_08db5e0f_feature_JNG_3784_FixingTycho</judo-meta-expression-version>
-        <judo-meta-liquibase-version>1.0.0.20220616_233755_f0144685_feature_JNG_3784_FixingTycho</judo-meta-liquibase-version>
+        <judo-meta-rdbms-version>1.0.0.20220618_232651_d22f429b_develop</judo-meta-rdbms-version>
+        <judo-meta-jql-version>1.0.1.20220618_232004_193cd19d_develop</judo-meta-jql-version>
+        <judo-meta-psm-version>1.1.0.20220618_232648_f4311fb9_develop</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.0.20220618_232613_0c08e3ef_develop</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.1.20220619_080709_a8a43869_develop</judo-meta-expression-version>
+        <judo-meta-liquibase-version>1.0.0.20220618_232643_9a47d4b3_develop</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.2.20220301_152834_cea2e81e_develop</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.0.20220405_162646_7bf86e0e_develop</judo-sdk-common-version>
+        <judo-sdk-common-version>1.0.0.20220619_080710_e94f42ec_develop</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2.20220301_152852_a63b2efa_develop</judo-dispatcher-api-version>
-        <judo-operation-utils-version>1.1.0.20220405_162650_6298bb1f_develop</judo-operation-utils-version>
+        <judo-operation-utils-version>1.1.0.20220619_080726_840d3f84_develop</judo-operation-utils-version>
         <structured-map-proxy-version>1.0.6.20220301_160543_e228df4d_develop</structured-map-proxy-version>
 
-        <judo-tatami-base-version>1.1.0.20220623_075841_f90a9967_develop</judo-tatami-base-version>
-        <judo-tatami-core-version>1.1.0.20220405_161751_7fec76d0_develop</judo-tatami-core-version>
+        <judo-tatami-base-version>1.1.0.20220626_234018_a1bcc65e_develop</judo-tatami-base-version>
+        <judo-tatami-core-version>1.1.0.20220626_230410_79f7971b_develop</judo-tatami-core-version>
 
     </properties>
 
@@ -516,7 +515,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -538,7 +537,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -557,7 +556,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -578,7 +577,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -597,7 +596,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -616,7 +615,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
