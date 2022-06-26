@@ -60,7 +60,7 @@
         <epsilon-runtime-version>1.4.0.20220616_093846_72efef9e_develop</epsilon-runtime-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.0.20220617_125412_83bc07d4_feature_JNG_3777_ReplaceDerivedWithQuery</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.0.20220625_205707_7890559b_develop</judo-meta-jsl-version>
 
         <judo-meta-rdbms-version>1.0.0.20220616_233835_0769db60_feature_JNG_3784_FixingTycho</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.1.20220616_233726_d15ba154_feature_JNG_3784_FixingTycho</judo-meta-jql-version>
