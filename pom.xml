@@ -59,13 +59,13 @@
         <epsilon-runtime-version>1.4.0.20220616_093846_72efef9e_develop</epsilon-runtime-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.0.20220427_093101_bc50729e_develop</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.0.20220625_205707_7890559b_develop</judo-meta-jsl-version>
 
         <judo-meta-rdbms-version>1.0.0.20220618_232651_d22f429b_develop</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.1.20220618_232004_193cd19d_develop</judo-meta-jql-version>
         <judo-meta-psm-version>1.1.0.20220618_232648_f4311fb9_develop</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.0.20220618_232613_0c08e3ef_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.1.20220619_080709_a8a43869_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.1.20220628_153033_ff0614e1_develop</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.0.20220618_232643_9a47d4b3_develop</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.2.20220301_152834_cea2e81e_develop</judo-dao-api-version>
         <judo-sdk-common-version>1.0.0.20220619_080710_e94f42ec_develop</judo-sdk-common-version>
@@ -180,6 +180,12 @@
                 <version>4.18</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr-runtime</artifactId>
+                <version>3.2</version>
             </dependency>
 
             <dependency>
