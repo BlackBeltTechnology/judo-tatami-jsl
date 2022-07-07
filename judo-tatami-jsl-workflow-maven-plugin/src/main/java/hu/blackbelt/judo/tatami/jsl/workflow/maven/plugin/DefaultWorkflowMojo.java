@@ -67,6 +67,9 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "asm")
 	private String asm;
 
+	@Parameter(property = "generateOptionalTypes", defaultValue = "true")
+	private Boolean generateOptionalTypes = true;
+
 	@Parameter(property = "psm2AsmTrace")
 	private String psm2AsmTrace;
 
@@ -260,7 +263,8 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 						.generateSdk(generateSdk)
 						.generateInternal(generateSdkInternal)
 						.generateGuice(generateSdkGuice)
-						.generateSpring(generateSdkSpring);
+						.generateSpring(generateSdkSpring)
+						.generateOptionalTypes(generateOptionalTypes);
 
 		defaultWorkflow = new DefaultWorkflow(parameters);
 

@@ -64,6 +64,9 @@ public class DefaultWorkflowSetupParameters {
 	private Boolean generateSpring = false;
 
 	@Builder.Default
+	private Boolean generateOptionalTypes = true;
+
+	@Builder.Default
 	private Boolean runInParallel = true;
 
 	@Builder.Default
