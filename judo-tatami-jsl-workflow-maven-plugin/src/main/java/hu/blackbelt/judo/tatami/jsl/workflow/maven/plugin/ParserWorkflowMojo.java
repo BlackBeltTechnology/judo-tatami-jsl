@@ -94,6 +94,9 @@ public class ParserWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "generateSdkSpring", defaultValue = "false")
 	private Boolean generateSdkSpring = false;
 
+	@Parameter(property = "generateOptionalTypes", defaultValue = "true")
+	private Boolean generateOptionalTypes = true;
+
 	@Parameter(property = "ignorePsm2Asm", defaultValue = "false")
 	public Boolean ignorePsm2Asm = false;
 
@@ -322,7 +325,8 @@ public class ParserWorkflowMojo extends AbstractMojo {
 								.generateSdk(generateSdk)
 								.generateInternal(generateSdkInternal)
 								.generateGuice(generateSdkGuice)
-								.generateSpring(generateSdkSpring);
+								.generateSpring(generateSdkSpring)
+								.generateOptionalTypes(generateOptionalTypes);
 
 				defaultWorkflow = new DefaultWorkflow(parameters);
 
