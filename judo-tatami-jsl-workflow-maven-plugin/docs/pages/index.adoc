@@ -128,16 +128,16 @@ URI type parameters can be file or mvn with the following coordinate:
 +
 (Default: src/model directory inside the project)
 
-<2> (Optional) Destination path where the transformation output is generated. It contains intermediate models, traces and source code.
+<2> (Optional) Logical model names. When multiple `jsl` files are defined, by default all of them are compiled. Most of the time only one or more dedicated model can be compiled with the list of the names. (the name which is dfined as `model` in the first line of `.jsl`)
++
+(Default: <none>)
+
+<3> (Optional) Destination path where the transformation output is generated. It contains intermediate models, traces and source code.
 +
 IMPORTANT: When the source codes have to be compiled, use the `build-helper-plugin` to add source folder, or
 have to enable `compileSdk` and `createSdkJar` option. 
 +
 Default: `${project.basedir}/target/classes/model``.
-
-<3> (Optional) Logical model names. When multiple `jsl` files are defined, by default all of them are compiled. Most of the time only one or more dedicated model can be compiled with the list of the names. (the name which is dfined as `model` in the first line of `.jsl`)
-+
-(Default: <none>)
 
 <4> (Optional) Which version number stored in the generated models.
 +
