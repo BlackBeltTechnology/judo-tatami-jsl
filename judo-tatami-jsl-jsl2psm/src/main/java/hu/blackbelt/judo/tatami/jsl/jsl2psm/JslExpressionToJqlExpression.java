@@ -1,42 +1,6 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 
-import hu.blackbelt.judo.meta.jsl.jsldsl.BinaryOperation;
-import hu.blackbelt.judo.meta.jsl.jsldsl.BooleanLiteral;
-import hu.blackbelt.judo.meta.jsl.jsldsl.CreateExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.DateLiteral;
-import hu.blackbelt.judo.meta.jsl.jsldsl.DecimalLiteral;
-import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDerivedDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.EntityQueryDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.EscapedStringLiteral;
-import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.Feature;
-import hu.blackbelt.judo.meta.jsl.jsldsl.Function;
-import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionCall;
-import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionedExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.InstanceFunction;
-import hu.blackbelt.judo.meta.jsl.jsldsl.IntegerLiteral;
-import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaFunction;
-import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaVariable;
-import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunction;
-import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunctionParameter;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.Named;
-import hu.blackbelt.judo.meta.jsl.jsldsl.NavigationBaseExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.NavigationExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.ParenthesizedExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.PrimitiveDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.QueryCallExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.QueryDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.QueryDeclarationParameter;
-import hu.blackbelt.judo.meta.jsl.jsldsl.QueryParameter;
-import hu.blackbelt.judo.meta.jsl.jsldsl.RawStringLiteral;
-import hu.blackbelt.judo.meta.jsl.jsldsl.SelfExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.SpawnOperation;
-import hu.blackbelt.judo.meta.jsl.jsldsl.TernaryOperation;
-import hu.blackbelt.judo.meta.jsl.jsldsl.TimeLiteral;
-import hu.blackbelt.judo.meta.jsl.jsldsl.TimeStampLiteral;
-import hu.blackbelt.judo.meta.jsl.jsldsl.UnaryOperation;
+import hu.blackbelt.judo.meta.jsl.jsldsl.*;
 import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
 
 import org.apache.commons.text.StringEscapeUtils;
@@ -692,47 +656,51 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
+    private String getJqlDispacher(final EnumLiteralReference it) {
+        return it != null
+                ? it.getEnumDeclaration().getName() + "#" + it.getEnumLiteral().getName()
+                : null;
+    }
 
     private String getJqlDispacher(final Expression it) {
         if (it instanceof BinaryOperation) {
-            return getJqlDispacher((BinaryOperation)it);
+            return getJqlDispacher((BinaryOperation) it);
         } else if (it instanceof BooleanLiteral) {
-            return getJqlDispacher((BooleanLiteral)it);
+            return getJqlDispacher((BooleanLiteral) it);
         } else if (it instanceof CreateExpression) {
-            return getJqlDispacher((CreateExpression)it);
+            return getJqlDispacher((CreateExpression) it);
         } else if (it instanceof DateLiteral) {
-            return getJqlDispacher((DateLiteral)it);
+            return getJqlDispacher((DateLiteral) it);
         } else if (it instanceof DecimalLiteral) {
-            return getJqlDispacher((DecimalLiteral)it);
+            return getJqlDispacher((DecimalLiteral) it);
         } else if (it instanceof EscapedStringLiteral) {
-            return getJqlDispacher((EscapedStringLiteral)it);
+            return getJqlDispacher((EscapedStringLiteral) it);
         } else if (it instanceof FunctionedExpression) {
-            return getJqlDispacher((FunctionedExpression)it);
+            return getJqlDispacher((FunctionedExpression) it);
         } else if (it instanceof IntegerLiteral) {
-            return getJqlDispacher((IntegerLiteral)it);
+            return getJqlDispacher((IntegerLiteral) it);
         } else if (it instanceof RawStringLiteral) {
-            return getJqlDispacher((RawStringLiteral)it);
+            return getJqlDispacher((RawStringLiteral) it);
         } else if (it instanceof SpawnOperation) {
-            return getJqlDispacher((SpawnOperation)it);
+            return getJqlDispacher((SpawnOperation) it);
         } else if (it instanceof TernaryOperation) {
-            return getJqlDispacher((TernaryOperation)it);
+            return getJqlDispacher((TernaryOperation) it);
         } else if (it instanceof TimeLiteral) {
-            return getJqlDispacher((TimeLiteral)it);
+            return getJqlDispacher((TimeLiteral) it);
         } else if (it instanceof TimeStampLiteral) {
-            return getJqlDispacher((TimeStampLiteral)it);
+            return getJqlDispacher((TimeStampLiteral) it);
         } else if (it instanceof UnaryOperation) {
-            return getJqlDispacher((UnaryOperation)it);
+            return getJqlDispacher((UnaryOperation) it);
         } else if (it instanceof ParenthesizedExpression) {
-            return getJqlDispacher((ParenthesizedExpression)it);
+            return getJqlDispacher((ParenthesizedExpression) it);
         } else if (it instanceof QueryCallExpression) {
-            return getJqlDispacher((QueryCallExpression)it);
+            return getJqlDispacher((QueryCallExpression) it);
         } else if (it instanceof SelfExpression) {
-            return getJqlDispacher((SelfExpression)it);
+            return getJqlDispacher((SelfExpression) it);
         } else if (it instanceof NavigationBaseExpression) {
-            return getJqlDispacher((NavigationBaseExpression)it);                
-        } else if (it instanceof NavigationExpression) {
-            return getJqlDispacher((NavigationExpression)it);
-
+            return getJqlDispacher((NavigationBaseExpression) it);
+        } else if (it instanceof EnumLiteralReference) {
+            return getJqlDispacher((EnumLiteralReference) it);
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " +
                     Arrays.<Object>asList(it).toString());
