@@ -116,6 +116,7 @@ the correct measurement handling.
         <generateSdkGuice>false</generateSdkGuice> <!--27-->
         <generateSdkSpring>false</generateSdkSpring> <!--28-->
         <generateOptionalTypes>true</generateOptionalTypes> <!--29-->
+        <generateSdkPayloadValidator>true</generateSdkPayloadValidator> <!--30-->
     </configuration>
 </execution>
 ----
@@ -249,9 +250,13 @@ have to be enabled.
 +
 (Default: `false`)
 
-<28> (Optional) Generate Optional types. It generates
+<29> (Optional) Generate Optional types. It generates
 Optional wrapper for Transfer Object fields and for single relations
 where the cardinality is 0
++
+(Default: `true`)
+
+<30> (Optional) Generate SDK Payload validation on DAO calls.
 +
 (Default: `true`)
 
