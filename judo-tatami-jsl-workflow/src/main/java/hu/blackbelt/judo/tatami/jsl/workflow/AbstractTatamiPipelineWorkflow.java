@@ -78,6 +78,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
 				.generateGuice(parameters.getGenerateGuice())
 				.generateSpring(parameters.getGenerateSpring())
 				.generateOptionalTypes(parameters.getGenerateOptionalTypes())
+				.generatePayloadValidator(parameters.getGenerateDaoPayloadValidator())
 				.outputDirectory(parameters.getSdkOutputDirectory()).build());
 
 		loadModels(workflowHelper, metrics, transformationContext, parameters);
