@@ -160,6 +160,9 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "generateSdkSpring", defaultValue = "false")
 	private Boolean generateSdkSpring = false;
 
+	@Parameter(property = "generateSdkPayloadValidator", defaultValue = "true")
+	private Boolean generateSdkPayloadValidator = true;
+
 	@Parameter
 	private Map<String, DialectParam> dialects;
 
@@ -264,7 +267,8 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 						.generateInternal(generateSdkInternal)
 						.generateGuice(generateSdkGuice)
 						.generateSpring(generateSdkSpring)
-						.generateOptionalTypes(generateOptionalTypes);
+						.generateOptionalTypes(generateOptionalTypes)
+						.generateDaoPayloadValidator(generateSdkPayloadValidator);
 
 		defaultWorkflow = new DefaultWorkflow(parameters);
 
