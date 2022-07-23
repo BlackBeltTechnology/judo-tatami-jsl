@@ -67,13 +67,13 @@
         <judo-meta-asm-version>1.1.0.20220629_125026_5f754291_develop</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.1.20220629_162820_56ca208c_develop</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.0.20220629_125038_89073da4_develop</judo-meta-liquibase-version>
-        <judo-dao-api-version>1.0.2.20220301_152834_cea2e81e_develop</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.0.20220713_162340_8b08b279_bugfix_JNG_3844_fix_structured_map_proxy</judo-sdk-common-version>
+        <judo-dao-api-version>1.0.2.20220722_142101_af9eb8e5_feature_JNG_3849_AddValidatorsToDAO</judo-dao-api-version>
+        <judo-sdk-common-version>1.0.0.20220722_142500_5e43dbcb_feature_JNG_3849_AddValidatorsToDAO</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2.20220301_152852_a63b2efa_develop</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.0.20220629_130102_0b30dcfe_develop</judo-operation-utils-version>
         <structured-map-proxy-version>1.1.0.20220713_135331_1fa05c17_develop</structured-map-proxy-version>
 
-        <judo-tatami-base-version>1.1.0.20220713_162314_dee01b8c_bugfix_JNG_3844_fix_structured_map_proxy</judo-tatami-base-version>
+        <judo-tatami-base-version>1.1.0.20220722_155609_c53b5ec4_feature_JNG_3849_AddValidatorsToDAO</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.0.20220629_124119_2b63ca1f_develop</judo-tatami-core-version>
 
     </properties>

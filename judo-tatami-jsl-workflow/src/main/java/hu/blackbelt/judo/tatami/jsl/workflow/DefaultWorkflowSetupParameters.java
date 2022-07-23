@@ -108,4 +108,7 @@ public class DefaultWorkflowSetupParameters {
 	@Builder.Default
 	private Boolean validateModels = false;
 
+	@Builder.Default
+	private Boolean generateDaoPayloadValidator = true;
+
 }
