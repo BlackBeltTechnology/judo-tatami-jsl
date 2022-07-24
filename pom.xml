@@ -73,7 +73,7 @@
         <judo-operation-utils-version>1.1.0.20220629_130102_0b30dcfe_develop</judo-operation-utils-version>
         <structured-map-proxy-version>1.1.0.20220713_135331_1fa05c17_develop</structured-map-proxy-version>
 
-        <judo-tatami-base-version>1.1.0.20220722_155609_c53b5ec4_feature_JNG_3849_AddValidatorsToDAO</judo-tatami-base-version>
+        <judo-tatami-base-version>1.1.0-SNAPSHOT</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.0.20220629_124119_2b63ca1f_develop</judo-tatami-core-version>
 
     </properties>
