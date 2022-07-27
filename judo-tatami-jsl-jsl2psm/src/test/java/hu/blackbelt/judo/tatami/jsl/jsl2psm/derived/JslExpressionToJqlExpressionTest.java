@@ -104,6 +104,9 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         assertEquals("\"String\nString2\"", jqlDerived("SalesPerson", "stringLiteral", "", ""));
         assertEquals("\"Raw\\\\n\"", jqlDerived("SalesPerson", "stringRawLiteral", "", ""));
         assertEquals("100.12", jqlDerived("SalesPerson", "decimalLiteral", "", ""));
+
+        assertEquals("10 * 10 * 10", jqlDerived("SalesPerson", "powerOfTen", "", ""));
+
     }
 
     private String jqlDerived(String entity, String field, String entityNamePrefix, String entityNamePostfix) {
