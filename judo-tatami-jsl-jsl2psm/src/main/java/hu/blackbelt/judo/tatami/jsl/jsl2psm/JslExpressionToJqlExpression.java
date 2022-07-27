@@ -6,11 +6,7 @@ import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.emf.ecore.EObject;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("all")
@@ -172,9 +168,15 @@ public class JslExpressionToJqlExpression {
      * ;
      */
     private String getJqlDispacher(final BinaryOperation it) {
-        return it != null
-                ? getJql(it.getLeftOperand()) + " " + it.getOperator() + " " + getJql(it.getRightOperand())
-                : null;
+        if (it == null) {
+            return null;
+        }
+        if (it.getOperator().equals("^")) {
+            Integer power = Integer.parseInt(getJql(it.getRightOperand()));
+            return String.join(" * ", Collections.nCopies(power, getJql(it.getLeftOperand())));
+        } else {
+            return getJql(it.getLeftOperand()) + " " + it.getOperator() + " " + getJql(it.getRightOperand());
+        }
     }
 
     /**

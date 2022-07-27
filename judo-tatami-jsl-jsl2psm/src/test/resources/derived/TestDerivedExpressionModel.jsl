@@ -78,6 +78,7 @@ entity SalesPerson {
     derived String stringLiteral => "String\nString2"
     derived String stringRawLiteral => r"Raw\n"
     derived Decimal decimalLiteral => 100.12
+    derived Integer powerOfTen => 10 ^ 3
 }
 
 entity Customer {
