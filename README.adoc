@@ -7,7 +7,7 @@ image::https://github.com/BlackBeltTechnology/judo-tatami-jsl/actions/workflows/
 Provides https://github.com/BlackBeltTechnology/judo-meta-jsl[JSL] to https://github.com/BlackBeltTechnology/judo-meta-psm[PSM]
 transformations.
 
-== Usages
+== Usage
 
 For usage in projects please check the
 xref:judo-tatami-jsl-workflow-maven-plugin/README.adoc [judo-tatami-jsl-workflow-maven-plugin] documentation.
