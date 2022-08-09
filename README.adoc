@@ -1,9 +1,21 @@
-# judo-tatami-jsl
+= judo-tatami-jsl
 
 image::https://github.com/BlackBeltTechnology/judo-tatami-jsl/actions/workflows/build.yml/badge.svg?branch=develop[link="https://github.com/BlackBeltTechnology/judo-tatami-jsl/actions/workflows/build.yml" float="center"]
 
+== Introduction
 
-For usage in project check
-xref:judo-tatami-jsl-workflow-maven-plugin/README.adoc [judo-tatatmi-jsl-workflow-maven plugin documentation]
-for more information.
+Provides https://github.com/BlackBeltTechnology/judo-meta-jsl[JSL] to https://github.com/BlackBeltTechnology/judo-meta-psm[PSM]
+transformations.
 
+== Usages
+
+For usage in projects please check the
+xref:judo-tatami-jsl-workflow-maven-plugin/README.adoc [judo-tatami-jsl-workflow-maven-plugin] documentation.
+
+== Contributing to the project
+
+Everyone is welcome to contribute to JUDO! As a starter, please read the corresponding link:CONTRIBUTING.adoc[CONTRIBUTING] guide for details!
+
+== License
+
+This project is licensed under the https://www.eclipse.org/legal/epl-2.0/[Eclipse Public License - v 2.0].
