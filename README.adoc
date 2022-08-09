@@ -10,7 +10,12 @@ transformations.
 == Usage
 
 For usage in projects please check the
-xref:judo-tatami-jsl-workflow-maven-plugin/README.adoc [judo-tatami-jsl-workflow-maven-plugin] documentation.
+xref:judo-tatami-jsl-workflow-maven-plugin/README.adoc[judo-tatami-jsl-workflow-maven-plugin] documentation.
+
+== Context
+
+This project is a building block of the https://github.com/BlackBeltTechnology/judo-community[judo-community] aggregator
+project. In order to better understand how this module fits into our ecosystem, please check the corresponding documentation!
 
 == Contributing to the project
 
