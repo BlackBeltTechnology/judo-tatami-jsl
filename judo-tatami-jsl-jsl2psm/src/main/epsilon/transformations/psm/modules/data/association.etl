@@ -1,14 +1,12 @@
 rule CreateNamedOppositeAssociationEnd
-    transform s: JSL!EntityRelationOpposite
+    transform s: JSL!EntityRelationOppositeInjected
     to t: JUDOPSM!AssociationEnd
     {
-        guard: s.oppositeName.isDefined()
-
     	var relationAddedFrom = s.eContainer;
     	var entityToAdd = relationAddedFrom.referenceType;
     
         t.setId("(jsl/" + s.getId() + ")/CreateNamedOppositeAssociationEnd");
-        t.name = s.oppositeName;
+        t.name = s.name;
         t.target = relationAddedFrom.eContainer.getPSMEquivalent();
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForOppositeAddedRelation", t.getId());
 
@@ -38,7 +36,7 @@ rule CreateDeclaredAssociationEnd
 		if (s.opposite?.oppositeType.isDefined()) {
 			t.partner = s.opposite.oppositeType.equivalent("CreateDeclaredAssociationEnd");
 		}
-		if (s.opposite?.oppositeName.isDefined()) {
+		if (s.opposite?.name.isDefined()) {
 			t.partner = s.opposite.equivalent("CreateNamedOppositeAssociationEnd");
 		}
 

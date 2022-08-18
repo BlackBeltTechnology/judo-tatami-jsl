@@ -58,7 +58,7 @@ rule CreateEntityDefaultTransferObjectType
             }
 
 			// Opposite added relation            
-			for (o in JSL!EntityRelationOpposite.all().select(o | o.oppositeName.isDefined() and o.eContainer.referenceType == entity)) {
+			for (o in JSL!EntityRelationOppositeInjected.all().select(o | o.eContainer.referenceType == entity)) {
 				t.relations.add(o.equivalent("CloneTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType"));			
 			}
         }

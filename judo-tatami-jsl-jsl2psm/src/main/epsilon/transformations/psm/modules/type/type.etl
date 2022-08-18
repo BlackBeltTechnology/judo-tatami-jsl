@@ -106,12 +106,12 @@ rule CreateBinaryType
 
         if (s.mimeTypes.isDefined()) {
             for (mimeType in s.mimeTypes.values) {
-                t.mimeTypes.add(mimeType);
+                t.mimeTypes.add(mimeType.value.value);
             }
         }
 
         if (s.maxFileSize.isDefined()) {
-            t.maxFileSize = s.maxFileSize.value.longValue();
+            t.maxFileSize = s.maxFileSize.value().longValue();
         }
          
         s.eContainer.getModelRoot().elements.add(t);

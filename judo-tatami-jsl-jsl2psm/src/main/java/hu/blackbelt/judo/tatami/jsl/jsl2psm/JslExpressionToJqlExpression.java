@@ -629,34 +629,33 @@ public class JslExpressionToJqlExpression {
      */
     private String getJqlDispacher(final DateLiteral it) {
         return it != null
-              ? it.getValue()
+              ? "`" + it.getValue() + "`"
 
                 : null;
     }
 
     private String getJqlDispacher(final TimeStampLiteral it) {
         return it != null
-              ? it.getValue()
+              ? "`" + it.getValue() + "`"
 
                 : null;
     }
 
     private String getJqlDispacher(final TimeLiteral it) {
         return it != null
-                ? it.getValue()
+                ? "`" + it.getValue() + "`"
                 : null;
     }
 
     private String getJqlDispacher(final RawStringLiteral it) {
         return it != null
-                ? "\"" + StringEscapeUtils.escapeJava(it.getValue()
-                        .replaceAll("^r\"|\"$", "")) + "\""
+                ? "\"" + it.getValue() + "\""
                 : null;
     }
 
     private String getJqlDispacher(final EscapedStringLiteral it) {
         return it != null
-                ? "\"" + it.getValue().replaceAll("^\"|\"$", "") + "\""
+                ? "\"" + it.getValue() + "\""
                 : null;
     }
 

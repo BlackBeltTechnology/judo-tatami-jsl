@@ -82,7 +82,7 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
         assertDefault("LiteralEntity", "intLiteral", "1", () -> assertNumericType("Integer"));
         assertDefault("LiteralEntity", "decimalLiteral", "1.23", () -> assertNumericType("Decimal"));
         assertDefault("LiteralEntity", "escapedStringLiteral", "\"escaped\nstring\"", () -> assertStringType("String"));
-        assertDefault("LiteralEntity", "rawStringLiteral", "\"raw\\\\nstring\"", () -> assertStringType("String"));
+        assertDefault("LiteralEntity", "rawStringLiteral", "\"raw\\nstring\"", () -> assertStringType("String"));
         assertDefault("LiteralEntity", "dateLiteral", "`2020-02-18`", () -> assertDateType("Date"));
         assertDefault("LiteralEntity", "timeStampLiteral", "`2020-02-18T10:11:12Z`", () -> assertTimestampType("Timestamp"));
         assertDefault("LiteralEntity", "timeLiteral", "`23:59:59`", () -> assertTimeType("Time"));
@@ -91,7 +91,7 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
         assertDefault("LiteralEntityWithIdentifiers", "idIntLiteral", "1", () -> assertNumericType("Integer"));
         assertDefault("LiteralEntityWithIdentifiers", "idDecimalLiteral", "1.23", () -> assertNumericType("Decimal"));
         assertDefault("LiteralEntityWithIdentifiers", "idEscapedStringLiteral", "\"escaped\nstring\"", () -> assertStringType("String"));
-        assertDefault("LiteralEntityWithIdentifiers", "idRawStringLiteral", "\"raw\\\\nstring\"", () -> assertStringType("String"));
+        assertDefault("LiteralEntityWithIdentifiers", "idRawStringLiteral", "\"raw\\nstring\"", () -> assertStringType("String"));
         assertDefault("LiteralEntityWithIdentifiers", "idDateLiteral", "`2020-02-18`", () -> assertDateType("Date"));
         assertDefault("LiteralEntityWithIdentifiers", "idTimeStampLiteral", "`2020-02-18T10:11:12Z`", () -> assertTimestampType("Timestamp"));
         assertDefault("LiteralEntityWithIdentifiers", "idTimeLiteral", "`23:59:59`", () -> assertTimeType("Time"));
