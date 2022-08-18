@@ -122,7 +122,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         assertEquals("`2020-12-01T12:12:11.11Z`", jqlDerived("SalesPerson", "timestampLiteral", "", ""));
         assertEquals("`2020-12-01`", jqlDerived("SalesPerson", "dateLiteral", "", ""));
         assertEquals("\"String\nString2\"", jqlDerived("SalesPerson", "stringLiteral", "", ""));
-        assertEquals("\"Raw\\\\n\"", jqlDerived("SalesPerson", "stringRawLiteral", "", ""));
+        assertEquals("\"Raw\\n\"", jqlDerived("SalesPerson", "stringRawLiteral", "", ""));
         assertEquals("100.12", jqlDerived("SalesPerson", "decimalLiteral", "", ""));
 
         assertEquals("10 * 10 * 10", jqlDerived("SalesPerson", "powerOfTen", "", ""));

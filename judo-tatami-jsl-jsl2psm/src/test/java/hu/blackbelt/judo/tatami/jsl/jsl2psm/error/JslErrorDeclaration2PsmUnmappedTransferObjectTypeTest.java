@@ -83,17 +83,16 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
         assertUnmappedTransferObject("YetAnotherError");
 
         assertUnmappedTransferObjectAttribute("OtherError", "code");
-        assertTrue(assertUnmappedTransferObjectAttribute("MyError", "code").isRequired());
         assertEquals(assertNumericType("Integer"), assertUnmappedTransferObjectAttribute("MyError", "code").getDataType());
 
-        assertErrorData("MyError", "code", true, () -> assertNumericType("Integer"));
+        assertErrorData("MyError", "code", false, () -> assertNumericType("Integer"));
         assertErrorData("MyError", "msg", false, () -> assertStringType("String"));
 
-        assertErrorData("OtherError", "code", true, () -> assertNumericType("Integer"));
+        assertErrorData("OtherError", "code", false, () -> assertNumericType("Integer"));
         assertErrorData("OtherError", "msg", false, () -> assertStringType("String"));
         assertErrorData("OtherError", "other", false, () -> assertStringType("String"));
 
-        assertErrorData("YetAnotherError", "code", true, () -> assertNumericType("Integer"));
+        assertErrorData("YetAnotherError", "code", false, () -> assertNumericType("Integer"));
         assertErrorData("YetAnotherError", "msg", false, () -> assertStringType("String"));
         assertErrorData("YetAnotherError", "other", false, () -> assertStringType("String"));
         assertErrorData("YetAnotherError", "someField", false, () -> assertStringType("String"));

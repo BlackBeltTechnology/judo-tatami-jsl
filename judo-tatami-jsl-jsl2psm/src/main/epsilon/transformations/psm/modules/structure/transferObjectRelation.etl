@@ -52,14 +52,14 @@ rule CloneTransferObjectEmbeddedRelationForDefaultTransferObjectType
 ///////////////////////////////////////////////////////////////
 @abstract
 rule AbstractCreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType
-    transform s: JSL!EntityRelationOpposite
+    transform s: JSL!EntityRelationOppositeInjected
     to t: JUDOPSM!TransferObjectRelation {
-        guard: generateDefaultTransferObject and s.oppositeName.isDefined()
+        guard: generateDefaultTransferObject
 
     	var relationAddedFrom = s.eContainer;
     	var entityToAdd = relationAddedFrom.referenceType;
 
-        t.name = s.oppositeName;
+        t.name = s.name;
         t.target = relationAddedFrom.eContainer.equivalent("CreateEntityDefaultTransferObjectType");
 
         t.embeddedCreate = not entityToAdd.isAbstract;
@@ -72,10 +72,10 @@ rule AbstractCreateTransferObjectAssociatedOppositeRelationForDefaultTransferObj
 }
 
 rule CreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType
-    transform s: JSL!EntityRelationOpposite
+    transform s: JSL!EntityRelationOppositeInjected
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType {
-        guard: generateDefaultTransferObject and s.oppositeName.isDefined()
+        guard: generateDefaultTransferObject
 
     	var relationAddedFrom = s.eContainer;
     	var entityToAdd = relationAddedFrom.referenceType;
@@ -89,7 +89,7 @@ rule CreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType
 
 @lazy
 rule CloneTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType
-    transform s: JSL!EntityRelationOpposite
+    transform s: JSL!EntityRelationOppositeInjected
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType {
 

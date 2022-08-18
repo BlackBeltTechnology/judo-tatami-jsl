@@ -21,7 +21,7 @@ rule CreateCardinalityForFieldDeclaration
 
 @lazy
 rule CreateCardinalityForOppositeAddedRelation
-    transform s: JSL!EntityRelationOpposite
+    transform s: JSL!EntityRelationOppositeInjected
     to t: JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForOppositeAddedRelation");
 
