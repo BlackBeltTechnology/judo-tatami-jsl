@@ -163,7 +163,6 @@ rule AbstractCreateTransferAttributeForErrorTransferObjectType
     transform s: JSL!ErrorField
     to t: JUDOPSM!TransferAttribute {
         guard: generateDefaultTransferObject
-        t.required = s.isRequired;
         t.name = s.name;
         t.dataType = s.referenceType.getPSMEquivalent();
 

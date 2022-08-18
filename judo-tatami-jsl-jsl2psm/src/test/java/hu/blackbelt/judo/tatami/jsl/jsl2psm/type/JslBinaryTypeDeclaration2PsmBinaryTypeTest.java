@@ -70,7 +70,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 "DeclarationModel",
                 List.of("model DeclarationModel\n" +
                         "\n" +
-                        "type binary Picture(mime-types = m\"image/png\", m\"image/*\", max-file-size = 1024)\n"
+                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB)\n"
                 )
         );
 
@@ -79,8 +79,8 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
         assertBinaryType("Picture");
         assertEquals(assertBinaryType("Picture").getName(), "Picture");
         assertEquals(assertBinaryType("Picture").getMimeTypes().size(), 2);
-        assertEquals(assertBinaryType("Picture").getMimeTypes(), Arrays.asList("m\"image/png\"", "m\"image/*\""));
-        assertEquals(assertBinaryType("Picture").getMaxFileSize(), 1024);
+        assertEquals(assertBinaryType("Picture").getMimeTypes(), Arrays.asList("image/png", "image/*"));
+        assertEquals(assertBinaryType("Picture").getMaxFileSize(), 1048576);
     }
 
     @Test

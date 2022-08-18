@@ -2,3 +2,17 @@
 operation JSL!DataTypeDeclaration getId(): String {
 	return (self.eContainer.getId() + "/" + self.name);
 }
+
+@cached
+operation JSL!ModifierMaxFileSize value() : Integer {
+    switch (self.unit.literal) {
+        case "kB": return self.numeric * 1000;
+        case "MB": return self.numeric * 1000 * 1000;
+        case "GB": return self.numeric * 1000 * 1000 * 1000;
+
+        case "KiB": return self.numeric * 1024;
+        case "MiB": return self.numeric * 1024 * 1024;
+        case "GiB": return self.numeric * 1024 * 1024 * 1024;
+    }
+    return self.numeric;
+}
