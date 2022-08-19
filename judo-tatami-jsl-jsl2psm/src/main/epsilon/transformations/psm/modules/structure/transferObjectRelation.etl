@@ -174,7 +174,7 @@ rule AbstractCreateTransferObjectDerivedRelationForDefaultTransferObjectType
       t.embeddedDelete = false;
 
       t.binding = s.equivalent("CreateNavigationProperty");
-      t.embedded = true;
+      t.embedded = false;
         
 }
 
@@ -226,7 +226,7 @@ rule AbstractCreateTransferObjectEntityQueryRelationForDefaultTransferObjectType
       t.embeddedDelete = false;
 
       t.binding = s.equivalent("CreateNavigationPropertyForQuery");
-      t.embedded = true;
+      t.embedded = false;
         
 }
 
