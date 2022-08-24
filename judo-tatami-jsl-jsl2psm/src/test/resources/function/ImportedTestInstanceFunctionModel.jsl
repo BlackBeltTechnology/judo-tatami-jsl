@@ -1,0 +1,8 @@
+model ImportedTestInstanceFunctionModel
+
+import TestInstanceFunctionModel
+
+entity I {
+	field TestInstanceFunctionModel::C[] cs	
+}
+

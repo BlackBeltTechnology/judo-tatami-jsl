@@ -587,7 +587,11 @@ public class JslExpressionToJqlExpression {
         if (it == null) {
             return null;            
         }
-        return it.getFunctionDeclarationReference().getName() + "()";
+        return it.getFunctionDeclarationReference().getName() + "(" + 
+        	(it.getEntityDeclaration() != null 
+        		? getEntityPSMFullyQualifiedName(it.getEntityDeclaration(), it) 
+				: "") 
+        	+ ")";
    }
 
     private String getJql(final LambdaFunction it) {
