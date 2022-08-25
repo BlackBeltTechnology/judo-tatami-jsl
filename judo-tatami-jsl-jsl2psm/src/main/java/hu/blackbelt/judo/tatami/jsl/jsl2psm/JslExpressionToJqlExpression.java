@@ -26,6 +26,9 @@ import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.emf.ecore.EObject;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -556,8 +559,8 @@ public class JslExpressionToJqlExpression {
     private String getJql(final Function it) {
         if (it instanceof LiteralFunction) {
             return getJql((LiteralFunction)it);
-        } else if (it instanceof InstanceFunction) {
-            return getJql((InstanceFunction)it);
+//        } else if (it instanceof InstanceFunction) {
+//            return getJql((InstanceFunction)it);
 //        } else if (it instanceof SelectorFunction) {
 //            return getJql((SelectorFunction)it);
         } else if (it instanceof LambdaFunction) {
@@ -566,23 +569,57 @@ public class JslExpressionToJqlExpression {
         else return ""; // getJql((NamedFunction) it);
     }
 
+    
+    private Map<String, Collection<Collection<String>>> literalFunctionParameters = ImmutableMap.<String, Collection<Collection<String>>>builder()
+    		.put("getVariable", ImmutableList.of( ImmutableList.of("category", "key")))
+    		.put("first", ImmutableList.of(ImmutableList.of("count")))
+    		.put("last", ImmutableList.of(ImmutableList.of("count")))
+    		.put("substring", ImmutableList.of(ImmutableList.of("count", "offset" )))
+    		.put("matches", ImmutableList.of(ImmutableList.of("pattern")))
+    		.put("like", ImmutableList.of(ImmutableList.of("pattern")))
+    		.put("ilike", ImmutableList.of(ImmutableList.of("pattern")))
+    		.put("replace", ImmutableList.of(ImmutableList.of("pattern", "replacement")))
+    		.put("of", ImmutableList.of(
+    				ImmutableList.of("year", "month", "day"), 
+					ImmutableList.of("hour", "minute", "second"), 
+					ImmutableList.of("date", "time")))
+    		.put("plus", ImmutableList.of(ImmutableList.of("years", "months", "days", "hours", "minutes", "seconds", "milliseconds")))    		
+    		.put("typeOf", ImmutableList.of(ImmutableList.of("type")))
+    		.put("kindOf", ImmutableList.of(ImmutableList.of("type")))
+    		.put("container", ImmutableList.of(ImmutableList.of("type")))
+    		.put("asType", ImmutableList.of(ImmutableList.of("type")))
+    		.put("memberOf", ImmutableList.of(ImmutableList.of("instances")))
+    		.put("contains", ImmutableList.of(ImmutableList.of("instance")))  		
+    		.build();
 
+    
     private String getJql(final LiteralFunction it) {
         if (it == null) {
             return null;            
         }
         
-        return it.getFunctionDeclarationReference().getName() + "(" + it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")";
+        String functionName = it.getFunctionDeclarationReference().getName();
+        if (literalFunctionParameters.containsKey(functionName)) {
+        	Collection<Collection<String>> parameterDefinitions = literalFunctionParameters.get(functionName);
+        	
+        } else {
+        	return functionName + "()";
+        }
+        
+        //return it.getFunctionDeclarationReference().getName() + "(" + it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")";
    }
-
+    
     private String getJql(final LiteralFunctionParameter it) {
         if (it == null) {
             return null;            
         }
+        // Determinate functions
+        
         return it.getDeclaration().getName() + " = " + getJql(it.getExpression());
     }
     
-    
+
+    /*
     private String getJql(final InstanceFunction it) {
         if (it == null) {
             return null;            
@@ -592,7 +629,7 @@ public class JslExpressionToJqlExpression {
         		? getEntityPSMFullyQualifiedName(it.getEntityDeclaration(), it) 
 				: "") 
         	+ ")";
-   }
+   }*/
 
     private String getJql(final LambdaFunction it) {
         if (it == null) {
