@@ -1,0 +1,19 @@
+model TestInstanceFunctionModel
+
+import ImportedTestInstanceFunctionModel
+
+entity A {
+	field C[] cs	
+}
+
+entity B {
+	field C[] cs
+}
+
+
+entity C {
+	derived C[] allCfromAPlainName => self!container(A)
+	derived C[] allCfromAFqName => self!container(TestInstanceFunctionModel::A)
+	derived C[] allCfromAImport => self!container(ImportedTestInstanceFunctionModel::I)
+}
+
