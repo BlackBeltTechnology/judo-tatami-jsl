@@ -12,8 +12,8 @@ entity B {
 
 
 entity C {
-	derived C[] allCfromAPlainName => self!container(A)
-	derived C[] allCfromAFqName => self!container(TestInstanceFunctionModel::A)
-	derived C[] allCfromAImport => self!container(ImportedTestInstanceFunctionModel::I)
+	derived C[] allCfromAPlainName => self!container(entityType = A)
+	derived C[] allCfromAFqName => self!container(entityType = TestInstanceFunctionModel::A)
+	derived C[] allCfromAImport => self!container(entityType = ImportedTestInstanceFunctionModel::I)
 }
 
