@@ -141,8 +141,19 @@ public class Jsl2JqlFunction {
     		.build();
     
     
+    private static String getEffectiveFunctionName(String functionName) {
+    	if (functionName.equalsIgnoreCase("lower"))  {
+    		return "lowerCase";
+    	} else  if (functionName.equalsIgnoreCase("upper"))  {
+    		return "upperCase";
+    	} else {
+    		return functionName;
+    	}
+    }
+    
     public static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor) {
         String functionName = it.getFunctionDeclarationReference().getName();
+        
         if (literalFunctionParameters.containsKey(functionName)) {
         	Collection<Collection<ParameterValue>> definedParameters = literalFunctionParameters.get(functionName);
         	
