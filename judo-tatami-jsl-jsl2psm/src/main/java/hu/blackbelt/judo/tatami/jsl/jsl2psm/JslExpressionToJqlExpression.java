@@ -26,6 +26,9 @@ import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.emf.ecore.EObject;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -556,8 +559,8 @@ public class JslExpressionToJqlExpression {
     private String getJql(final Function it) {
         if (it instanceof LiteralFunction) {
             return getJql((LiteralFunction)it);
-        } else if (it instanceof InstanceFunction) {
-            return getJql((InstanceFunction)it);
+//        } else if (it instanceof InstanceFunction) {
+//            return getJql((InstanceFunction)it);
 //        } else if (it instanceof SelectorFunction) {
 //            return getJql((SelectorFunction)it);
         } else if (it instanceof LambdaFunction) {
@@ -566,23 +569,28 @@ public class JslExpressionToJqlExpression {
         else return ""; // getJql((NamedFunction) it);
     }
 
+    
 
+    
     private String getJql(final LiteralFunction it) {
         if (it == null) {
             return null;            
         }
-        
-        return it.getFunctionDeclarationReference().getName() + "(" + it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")";
+        return Jsl2JqlFunction.getFunctionAsJql(it, f -> getJql(f));
    }
-
+    
+    /*
     private String getJql(final LiteralFunctionParameter it) {
         if (it == null) {
             return null;            
         }
+        // Determinate functions
+        
         return it.getDeclaration().getName() + " = " + getJql(it.getExpression());
-    }
+    } */
     
-    
+
+    /*
     private String getJql(final InstanceFunction it) {
         if (it == null) {
             return null;            
@@ -592,7 +600,7 @@ public class JslExpressionToJqlExpression {
         		? getEntityPSMFullyQualifiedName(it.getEntityDeclaration(), it) 
 				: "") 
         	+ ")";
-   }
+   }*/
 
     private String getJql(final LambdaFunction it) {
         if (it == null) {
