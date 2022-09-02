@@ -104,8 +104,8 @@ public class Jsl2JqlFunction {
     		.put("ilike", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("pattern").build())))
     		.put("replace", ImmutableList.of(ImmutableList.of(
-    				ParameterValue.builder().name("pattern").build(), 
-    				ParameterValue.builder().name("replacement").build())))
+    				ParameterValue.builder().name("oldstring").build(),
+    				ParameterValue.builder().name("newstring").build())))
     		.put("of", ImmutableList.of(
     				ImmutableList.of(
     						ParameterValue.builder().name("year").mandatory(false).defaultValue("0").build(), 
@@ -130,6 +130,8 @@ public class Jsl2JqlFunction {
     				ParameterValue.builder().name("entityType").build())))
     		.put("kindOf", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("entityType").build())))
+			.put("asCollection", ImmutableList.of(ImmutableList.of(
+					ParameterValue.builder().name("entityType").build())))
     		.put("container", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("entityType").build())))
     		.put("asType", ImmutableList.of(ImmutableList.of(
