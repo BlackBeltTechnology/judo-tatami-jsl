@@ -56,7 +56,7 @@
         <slf4j-version>1.7.36</slf4j-version>
         <surefire-version>3.0.0-M5</surefire-version>
 
-        <epsilon-runtime-version>1.4.0.20220629_123622_4279f257_develop</epsilon-runtime-version>
+        <epsilon-runtime-version>1.5.0</epsilon-runtime-version>
 
         <!-- Model versions -->
         <judo-meta-jsl-version>1.0.0.20220901_121335_58799008_develop</judo-meta-jsl-version>
@@ -71,7 +71,7 @@
         <judo-sdk-common-version>1.0.0.20220902_155840_4580d478_develop</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2.20220901_121018_b6e9cf92_develop</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.0.20220902_155843_fae617e1_develop</judo-operation-utils-version>
-        <structured-map-proxy-version>1.1.0.20220807_065738_525bb031_develop</structured-map-proxy-version>
+        <structured-map-proxy-version>1.1.0</structured-map-proxy-version>
 
         <judo-tatami-base-version>1.1.0.20220902_160512_abf46895_develop</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.0.20220901_121006_b2120b4c_develop</judo-tatami-core-version>
