@@ -54,7 +54,7 @@
         <logback-test-config>${maven.multiModuleProjectDirectory}/logback-test.xml</logback-test-config>
 
         <slf4j-version>1.7.36</slf4j-version>
-        <surefire-version>3.0.0-M5</surefire-version>
+        <surefire-version>3.0.0-M7</surefire-version>
 
         <epsilon-runtime-version>1.5.0</epsilon-runtime-version>
 
@@ -75,6 +75,15 @@
 
         <judo-tatami-base-version>1.1.0</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.0</judo-tatami-core-version>
+
+
+        <!-- Code Quality-->
+        <sonar-maven-plugin-version>3.9.1.2184</sonar-maven-plugin-version>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.language>java</sonar.language>
+        <sonar.java.source>${java.version}</sonar.java.source>
+        <jacoco.version>0.8.8</jacoco.version>
 
     </properties>
 
@@ -474,20 +483,22 @@
                     <version>3.3.0</version>
                 </plugin>
 
-
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire-version}</version>
                     <configuration>
+                        <trimStackTrace>false</trimStackTrace>
                         <systemPropertyVariables>
                             <logback.configurationFile>${logback-test-config}</logback.configurationFile>
                         </systemPropertyVariables>
+                        <!--suppress UnresolvedMavenProperty -->
                         <argLine>
+                            ${jacoco.agent}
                             -Dfile.encoding=UTF-8
                             --add-opens java.base/java.lang=ALL-UNNAMED
                             --add-opens java.base/java.util=ALL-UNNAMED
                             --add-opens java.base/java.time=ALL-UNNAMED
+                            --add-opens java.base/java.net=ALL-UNNAMED
                         </argLine>
                         <trimStackTrace>false</trimStackTrace>
                     </configuration>
@@ -496,7 +507,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>5.1.4</version>
+                    <version>5.1.8</version>
                 </plugin>
 
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
