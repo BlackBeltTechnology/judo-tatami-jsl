@@ -765,25 +765,14 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
+                        <groupId>org.simplify4u.plugins</groupId>
+                        <artifactId>sign-maven-plugin</artifactId>
+                        <version>1.0.1</version>
                         <executions>
                             <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
-                                <configuration>
-                                    <keyname>${gpg.keyname}</keyname>
-                                    <passphraseServerId>${gpg.keyname}</passphraseServerId>
-                                    <!-- This is necessary for gpg to not try to use the pinentry programs -->
-                                    <gpgArguments>
-                                        <arg>--pinentry-mode</arg>
-                                        <arg>loopback</arg>
-                                    </gpgArguments>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -850,6 +839,119 @@
             </distributionManagement>
         </profile>
 
+
+        <profile>
+            <id>generate-github-asciidoc-diagrams</id>
+
+            <properties>
+                <asciidoctor.maven.plugin.version>2.2.2</asciidoctor.maven.plugin.version>
+                <asciidoctorj.version>2.5.6</asciidoctorj.version>
+                <asciidoctorj.diagram.version>2.2.3</asciidoctorj.diagram.version>
+                <jruby.version>9.3.4.0</jruby.version>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctor-maven-plugin</artifactId>
+                        <version>${asciidoctor.maven.plugin.version}</version>
+                        <dependencies>
+                            <!-- Comment this section to use the default jruby artifact provided by the plugin -->
+                            <dependency>
+                                <groupId>org.jruby</groupId>
+                                <artifactId>jruby-complete</artifactId>
+                                <version>${jruby.version}</version>
+                            </dependency>
+                            <!-- Comment this section to use the default AsciidoctorJ artifact provided by the plugin -->
+                            <dependency>
+                                <groupId>org.asciidoctor</groupId>
+                                <artifactId>asciidoctorj</artifactId>
+                                <version>${asciidoctorj.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.asciidoctor</groupId>
+                                <artifactId>asciidoctorj-diagram</artifactId>
+                                <version>${asciidoctorj.diagram.version}</version>
+                            </dependency>
+                            <!-- Since asciidoctorj-diagram v2.2.0, uncomment to use specific version of plantuml or ditaa -->
+                            <dependency>
+                                <groupId>org.asciidoctor</groupId>
+                                <artifactId>asciidoctorj-diagram-plantuml</artifactId>
+                                <version>1.2022.5</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.asciidoctor</groupId>
+                                <artifactId>asciidoctorj-diagram-ditaamini</artifactId>
+                                <version>1.0.3</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <sourceDirectory>./.github</sourceDirectory>
+                            <requires>
+                                <require>asciidoctor-diagram</require>
+                            </requires>
+                            <attributes>
+                                <!-- Example below shows how to specify in this pom instead of System's PATH, the location of dot command of Graphviz, required by PlantUML libraries -->
+                                <!-- Windows:
+                                    <graphvizdot>C:\Program Files (x86)\Graphviz2.38\bin\dot.exe</graphvizdot>
+                                -->
+                                <!-- *nix :
+                                    <graphvizdot>/usr/local/bin/dot</graphvizdot>
+                                -->
+                            </attributes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>generate-html-doc</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>process-asciidoc</goal>
+                                </goals>
+                                <configuration>
+                                    <backend>html5</backend>
+                                    <attributes>
+                                        <imagesdir>./images</imagesdir>
+                                        <toc>left</toc>
+                                        <icons>font</icons>
+                                        <sectanchors>true</sectanchors>
+                                        <idprefix/>
+                                        <idseparator>-</idseparator>
+                                    </attributes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.3.0</version>
+                        <executions>
+                            <execution>
+                                <id>copy-generated-gitflow-diagrams</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+
+                                <configuration>
+                                    <outputDirectory>${basedir}/.github</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${basedir}/target/generated-docs/images/</directory>
+                                            <includes>
+                                                <include>*.png</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>update-source-code-license</id>
             <build>
@@ -874,13 +976,8 @@
                                 <configuration>
                                     <licenseName>epl_v2</licenseName>
                                     <roots>
-                                        <root>judo-tatami-jsl-jsl2psm/src/main/java</root>
-                                        <root>judo-tatami-jsl-jsl2psm/src/test/java</root>
-
-                                        <root>judo-tatami-jsl-workflow/src/main/java</root>
-                                        <root>judo-tatami-jsl-workflow/src/test/java</root>
-
-                                        <root>judo-tatami-jsl-workflow-maven-plugin/src/main/java</root>
+                                        <root>src/main/java</root>
+                                        <root>src/test</root>
                                     </roots>
                                 </configuration>
                             </execution>
