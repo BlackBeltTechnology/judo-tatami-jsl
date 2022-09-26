@@ -66,15 +66,15 @@
         <judo-meta-psm-version>1.2.1</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.1</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.1</judo-meta-expression-version>
-        <judo-meta-liquibase-version>1.0.1</judo-meta-liquibase-version>
-        <judo-dao-api-version>1.0.2.20220901_121014_d87d7719_develop</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.0.20220902_155840_4580d478_develop</judo-sdk-common-version>
-        <judo-dispatcher-api-version>1.0.2.20220901_121018_b6e9cf92_develop</judo-dispatcher-api-version>
-        <judo-operation-utils-version>1.1.0.20220902_155843_fae617e1_develop</judo-operation-utils-version>
+        <judo-meta-liquibase-version>1.0.0</judo-meta-liquibase-version>
+        <judo-dao-api-version>1.0.2</judo-dao-api-version>
+        <judo-sdk-common-version>1.0.0</judo-sdk-common-version>
+        <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
+        <judo-operation-utils-version>1.1.0</judo-operation-utils-version>
         <structured-map-proxy-version>1.1.0</structured-map-proxy-version>
 
         <judo-tatami-base-version>1.1.0.20220902_160512_abf46895_develop</judo-tatami-base-version>
-        <judo-tatami-core-version>1.1.0.20220901_121006_b2120b4c_develop</judo-tatami-core-version>
+        <judo-tatami-core-version>1.1.0</judo-tatami-core-version>
 
     </properties>
 
@@ -835,19 +835,6 @@
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                             <stagingProgressTimeoutMinutes>15</stagingProgressTimeoutMinutes>
                         </configuration>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
