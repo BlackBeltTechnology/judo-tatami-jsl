@@ -102,6 +102,14 @@
         <url>http://github.com/${project-repositoryId}</url>
     </scm>
 
+    <licenses>
+        <license>
+            <distribution>repo</distribution>
+            <name>Eclipse Public License 2.0</name>
+            <url>https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt</url>
+        </license>
+    </licenses>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
