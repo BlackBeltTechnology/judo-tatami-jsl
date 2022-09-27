@@ -69,12 +69,12 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "DeclarationModel",
-                List.of("model DeclarationModel\n" +
+                List.of("model DeclarationModel;\n" +
                         "\n" +
                         "enum LeadStatus {\n" +
-                        "\tOPPORTUNITY = 0\n" +
-                        "\tLEAD = 1\n" +
-                        "\tPROJECT = 2\n" +
+                        "\tOPPORTUNITY = 0;\n" +
+                        "\tLEAD = 1;\n" +
+                        "\tPROJECT = 2;\n" +
                         "}"
                 )
         );
@@ -99,16 +99,16 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberModel",
-                List.of("model EntityMemberModel\n" +
+                List.of("model EntityMemberModel;\n" +
                         "\n" +
                         "enum LeadStatus {\n" +
-                        "\tOPPORTUNITY = 0\n" +
-                        "\tLEAD = 1\n" +
-                        "\tPROJECT = 2\n" +
+                        "\tOPPORTUNITY = 0;\n" +
+                        "\tLEAD = 1;\n" +
+                        "\tPROJECT = 2;\n" +
                         "}\n" +
                         "\n" +
                         "entity Lead {\n" +
-                        "\tfield LeadStatus status\n" +
+                        "\tfield LeadStatus status;\n" +
                         "}"
                 )
         );
@@ -131,16 +131,16 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberRequiredModel",
-                List.of("model EntityMemberRequiredModel\n" +
+                List.of("model EntityMemberRequiredModel;\n" +
                         "\n" +
                         "enum LeadStatus {\n" +
-                        "\tOPPORTUNITY = 0\n" +
-                        "\tLEAD = 1\n" +
-                        "\tPROJECT = 2\n" +
+                        "\tOPPORTUNITY = 0;\n" +
+                        "\tLEAD = 1;\n" +
+                        "\tPROJECT = 2;\n" +
                         "}\n" +
                         "\n" +
                         "entity Lead {\n" +
-                        "\tfield required LeadStatus status\n" +
+                        "\tfield required LeadStatus status;\n" +
                         "}"
                 )
         );
@@ -160,16 +160,16 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
-                List.of("model EntityMemberInheritanceModel\n" +
+                List.of("model EntityMemberInheritanceModel;\n" +
                         "\n" +
                         "enum LeadStatus {\n" +
-                        "\tOPPORTUNITY = 0\n" +
-                        "\tLEAD = 1\n" +
-                        "\tPROJECT = 2\n" +
+                        "\tOPPORTUNITY = 0;\n" +
+                        "\tLEAD = 1;\n" +
+                        "\tPROJECT = 2;\n" +
                         "}\n" +
                         "\n" +
                         "entity Lead {\n" +
-                        "\tfield LeadStatus status\n" +
+                        "\tfield LeadStatus status;\n" +
                         "}\n" +
                         "\n" +
                         "entity LeadManager extends Lead {\n" +
@@ -193,16 +193,16 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
-                List.of("model EntityMemberIdentifierModel\n" +
+                List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
                         "enum LeadStatus {\n" +
-                        "\tOPPORTUNITY = 0\n" +
-                        "\tLEAD = 1\n" +
-                        "\tPROJECT = 2\n" +
+                        "\tOPPORTUNITY = 0;\n" +
+                        "\tLEAD = 1;\n" +
+                        "\tPROJECT = 2;\n" +
                         "}\n" +
                         "\n" +
                         "entity Lead {\n" +
-                        "\tidentifier LeadStatus status\n" +
+                        "\tidentifier LeadStatus status;\n" +
                         "}\n" +
                         "\n" +
                         "entity LeadManager extends Lead {\n" +

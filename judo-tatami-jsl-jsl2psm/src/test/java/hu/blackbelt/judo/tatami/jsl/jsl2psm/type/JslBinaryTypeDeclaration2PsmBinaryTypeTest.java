@@ -68,9 +68,9 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "DeclarationModel",
-                List.of("model DeclarationModel\n" +
+                List.of("model DeclarationModel;\n" +
                         "\n" +
-                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB)\n"
+                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB);\n"
                 )
         );
 
@@ -89,12 +89,12 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberRequiredModel",
-                List.of("model EntityMemberRequiredModel\n" +
+                List.of("model EntityMemberRequiredModel;\n" +
                         "\n" +
-                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB)\n" +
+                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB);\n" +
                         "\n" +
                         "entity User {\n" +
-                        "\tfield required Picture profilePicture\n" +
+                        "\tfield required Picture profilePicture;\n" +
                         "}"
                 )
         );
@@ -117,12 +117,12 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
-                List.of("model EntityMemberInheritanceModel\n" +
+                List.of("model EntityMemberInheritanceModel;\n" +
                         "\n" +
-                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB)\n" +
+                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB);\n" +
                         "\n" +
                         "entity User {\n" +
-                        "\tfield Picture profilePicture\n" +
+                        "\tfield Picture profilePicture;\n" +
                         "}\n" +
                         "\n" +
                         "entity AdminUser extends User {\n" +
@@ -147,12 +147,12 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
     	jslModel = JslParser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
-                List.of("model EntityMemberIdentifierModel\n" +
+                List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
-                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB)\n" +
+                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB);\n" +
                         "\n" +
                         "entity User {\n" +
-                        "\tidentifier Picture profilePicture\n" +
+                        "\tidentifier Picture profilePicture;\n" +
                         "}"
                 )
         );

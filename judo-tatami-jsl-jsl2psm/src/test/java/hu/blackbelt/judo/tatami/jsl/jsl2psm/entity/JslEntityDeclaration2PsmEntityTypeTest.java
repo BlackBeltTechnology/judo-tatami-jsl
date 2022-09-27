@@ -74,7 +74,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityTypeCreateModel",
-                List.of("model EntityTypeCreateModel\n" +
+                List.of("model EntityTypeCreateModel;\n" +
                         "\n" +
                         "entity Test {\n" +
                         "}\n" +
@@ -108,7 +108,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "First::Second::EntityLocaleNameModel",
-                List.of("model First::Second::EntityLocaleNameModel\n" +
+                List.of("model First::Second::EntityLocaleNameModel;\n" +
                         "\n" +
                         "entity Test {\n" +
                         "}"

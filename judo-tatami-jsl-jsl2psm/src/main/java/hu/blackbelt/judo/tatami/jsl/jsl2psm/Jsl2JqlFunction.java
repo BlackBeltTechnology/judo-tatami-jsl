@@ -162,17 +162,18 @@ public class Jsl2JqlFunction {
     				ParameterValue.builder().name("instance").build())))  		
     		.build();
     
-    
     private static String getEffectiveFunctionName(String functionName) {
     	if (functionName.equalsIgnoreCase("lower"))  {
     		return "lowerCase";
     	} else  if (functionName.equalsIgnoreCase("upper"))  {
     		return "upperCase";
+    	} else  if (functionName.equalsIgnoreCase("size"))  {
+    		return "count";
     	} else {
     		return functionName;
     	}
     }
-    
+
     public static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor) {
         String functionName = it.getFunctionDeclarationReference().getName();
         
@@ -202,14 +203,14 @@ public class Jsl2JqlFunction {
         					outputValues.add(rawValue);
         				}
         			}
-        			return functionName + "(" + outputValues.stream().collect(Collectors.joining(",")) + ")";
+        			return getEffectiveFunctionName(functionName) + "(" + outputValues.stream().collect(Collectors.joining(",")) + ")";
         		}
         	}
         	        	
-        	return functionName + "()";
+        	return getEffectiveFunctionName(functionName) + "()";
         	
         } else {
-        	return functionName + "()";
+        	return getEffectiveFunctionName(functionName) + "()";
         }
         //return it.getFunctionDeclarationReference().getName() + "(" + it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")";
 
