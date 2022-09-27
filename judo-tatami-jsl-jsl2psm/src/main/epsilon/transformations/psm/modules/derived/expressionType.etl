@@ -1,0 +1,20 @@
+import "../../../../operations/_importAll.eol";
+
+@lazy
+rule CreateGetterExpressionForDataType
+    transform s : JSL!EntityDerivedDeclaration
+    to t: JUDOPSM!DataExpressionType {
+        t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForDataType");
+        t.expression = expressionUtils.getJqlForDerived(s, entityNamePrefix, entityNamePostfix);
+        log.debug("Created Data Expression Type for Data Property: " + s.name);
+}
+
+@lazy
+rule CreateGetterExpressionForReferenceType
+    transform s : JSL!EntityDerivedDeclaration
+    to t: JUDOPSM!ReferenceExpressionType {
+        t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForReferenceType");
+        t.expression = expressionUtils.getJqlForDerived(s, entityNamePrefix, entityNamePostfix);
+        log.debug("Created Reference Expression Type for Reference Type: " + s.name);
+}
+

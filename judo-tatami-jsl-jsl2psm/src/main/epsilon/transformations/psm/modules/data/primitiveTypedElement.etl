@@ -1,0 +1,87 @@
+import "../../../../operations/_importAll.eol";
+import "../namespace/namespace.etl";
+
+@abstract
+rule CreatePrimitiveTypedElement
+    transform s: JSL!EntityMemberDeclaration
+    to t: JUDOPSM!PrimitiveTypedElement {
+        t.required = s.isRequired;
+        t.name = s.name;
+    }
+
+rule CreateAttributeFromField
+    transform s: JSL!EntityFieldDeclaration
+    to t: JUDOPSM!Attribute
+    extends CreatePrimitiveTypedElement {
+        guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.setId("(jsl/" + s.getId() + ")/CreateAttributeFromField");
+        t.dataType = s.referenceType.getPSMEquivalent();
+        s.eContainer.getPSMEquivalent().attributes.add(t);
+        log.debug("Created Attribute (Field): " + t.name);
+    }
+
+rule CreateDefaultDataExpressionTypeForPrimitiveEntityMember
+    transform s : JSL!DefaultExpressionType
+    to t: JUDOPSM!DataExpressionType {
+        guard: s.isDefaultValueForEntity() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDefaultDataExpressionTypeForPrimitiveEntityMember");
+        t.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
+        s.equivalent("CreateDefaultValueForPrimitiveEntityMember").getterExpression = t;
+
+        log.debug("Created DataExpressionType for Default Value: " + t.expression);
+    }
+
+rule CreateDefaultValueForPrimitiveEntityMember
+    transform s : JSL!DefaultExpressionType
+    to t: JUDOPSM!DataProperty {
+        guard: s.isDefaultValueForEntity() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDefaultValueForPrimitiveEntityMember");
+        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+        t.required = false;
+
+        s.eContainer.eContainer.getPSMEquivalent().dataProperties.add(t);
+
+        log.debug("Created DataProperty for Default Value: " + s.expression);
+    }
+
+rule CreateDefaultDataExpressionTypeForPrimitiveErrorField
+    transform s : JSL!DefaultExpressionType
+    to t: JUDOPSM!DataExpressionType {
+        guard: s.isDefaultValueForError() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDefaultDataExpressionTypeForPrimitiveErrorField");
+        t.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
+        s.equivalent("CreateDefaultValueForPrimitiveErrorField").getterExpression = t;
+
+        log.debug("Created DefaultExpressionType for Default Value: " + t.expression);
+    }
+
+rule CreateDefaultValueForPrimitiveErrorField
+    transform s : JSL!DefaultExpressionType
+    to t: JUDOPSM!StaticData {
+        guard: s.isDefaultValueForError() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDefaultValueForPrimitiveErrorField");
+        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+        t.required = false;
+
+        s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
+
+        log.debug("Created StaticData for Default Value: " + s.expression);
+    }
+
+rule CreateAttributeFromIdentifier
+    transform s: JSL!EntityIdentifierDeclaration
+    to t: JUDOPSM!Attribute
+    extends CreatePrimitiveTypedElement {
+        t.setId("(jsl/" + s.getId() + ")/CreateAttributeFromIdentifier");
+
+        t.dataType = s.referenceType.getPSMEquivalent();
+        t.identifier = true;
+        s.eContainer.getPSMEquivalent().attributes.add(t);
+        log.debug("Created Attribute (Identifier): " + t.name);
+    }

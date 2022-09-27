@@ -1,0 +1,6 @@
+JUDO Tatami JSL Workflow maven plugin
+========================================
+
+This plugin manages and executes generators for JUDO PSM and Expression.
+
+It generates PSM and Expression code from JSL model.
