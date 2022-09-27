@@ -1,0 +1,31 @@
+//operation ESM!StringType getPSMEquivalent(): JUDOPSM!StringType {
+//	return self.equivalent("CreateStringType");
+//}
+
+//operation JSL!DataTypeDeclaration getPSMEquivalent(): JUDOPSM!NumericType {
+//    if (self.primitive == "numeric") {
+//        return self.equivalent("CreateNumericType");
+//    } else {
+//        return self.equivalent("CreateStringType");
+//    }
+//}
+
+//operation ESM!BooleanType getPSMEquivalent(): JUDOPSM!BooleanType {
+//	return self.equivalent("CreateBooleanType");
+//}
+
+//operation ESM!DateType getPSMEquivalent(): JUDOPSM!DateType {
+//	return self.equivalent("CreateDateType");
+//}
+
+//operation ESM!TimestampType getPSMEquivalent(): JUDOPSM!TimestampType {
+//	return self.equivalent("CreateTimestampType");
+//}
+
+//operation ESM!TimeType getPSMEquivalent(): JUDOPSM!TimeType {
+//	return self.equivalent("CreateTimeType");
+//}
+
+//operation ESM!EnumerationType getPSMEquivalent(): JUDOPSM!EnumerationType {
+//	return self.equivalent("CreateEnumerationType");
+//}

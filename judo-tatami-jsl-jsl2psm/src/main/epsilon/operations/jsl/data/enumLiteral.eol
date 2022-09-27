@@ -1,0 +1,4 @@
+@cached
+operation JSL!EnumLiteral getId(): String {
+	return (self.eContainer.getId() + "/" + self.name);
+}

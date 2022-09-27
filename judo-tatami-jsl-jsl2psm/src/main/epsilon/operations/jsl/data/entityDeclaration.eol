@@ -1,0 +1,32 @@
+@cached
+operation JSL!EntityDeclaration getPSMEquivalent(): JUDOPSM!EntityType {
+	return self.equivalent("CreateEntityType");
+}
+
+@cached
+operation JSL!EntityDeclaration getId(): String {
+	return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!EntityDeclaration getModelRoot(): JUDOPSM!Package {
+	return self.getPsmEquivalent().getModelRoot();
+}
+
+
+@cached
+operation JSL!EntityDeclaration getInheritedMembers(): Sequence<EntityMemberDeclaration> {
+    var members = new Sequence<EntityMemberDeclaration>();
+
+    for (member in self.members) {
+        members.add(member);
+    }
+
+    for (parent in self.`extends`) {
+        for (m in parent.getInheritedMembers()) {
+            members.add(m);
+        }
+    }
+
+	return members;
+}

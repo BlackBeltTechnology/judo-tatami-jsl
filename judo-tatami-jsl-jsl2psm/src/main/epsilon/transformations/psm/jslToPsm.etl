@@ -1,0 +1,25 @@
+import "modules/namespace/namespace.etl";
+
+import "modules/structure/transferAttribute.etl";
+import "modules/structure/transferObjectType.etl";
+import "modules/structure/transferObjectRelation.etl";
+
+import "modules/data/cardinality.etl";
+import "modules/data/containment.etl";
+import "modules/data/association.etl";
+import "modules/data/entityType.etl";
+import "modules/data/errorType.etl";
+import "modules/data/primitiveTypedElement.etl";
+
+import "modules/derived/expressionType.etl";
+import "modules/derived/dataProperty.etl";
+import "modules/derived/navigationProperty.etl";
+import "modules/derived/query.etl";
+
+import "modules/type/type.etl";
+
+post {
+	for (c in JUDOPSM!Cardinality.all()) {
+		c.setId(c.eContainer.getId()+"/cardinality");
+	}
+}

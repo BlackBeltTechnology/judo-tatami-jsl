@@ -1,0 +1,14 @@
+rule CreateContainmentFromField
+    transform s: JSL!EntityFieldDeclaration
+    to t: JUDOPSM!Containment
+    {
+        guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateContainmentFromField");
+        t.name = s.name;
+        t.target = s.referenceType.getPSMEquivalent();
+        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForFieldDeclaration", t.getId());
+
+        s.eContainer.getPSMEquivalent().relations.add(t);
+        log.debug("Created Containment: " + t.name);
+    }

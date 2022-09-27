@@ -1,0 +1,119 @@
+import "../namespace/namespace.etl";
+import "../../../../operations/_importAll.eol";
+
+rule CreateNumericType
+	transform s: JSL!DataTypeDeclaration
+	to t: JUDOPSM!NumericType {
+        guard: s.`primitive` == "numeric"
+
+        t.setId("(jsl/" + s.getId() + ")/CreateNumericType");
+        t.name = s.name;
+        t.precision = s.precision.value.intValue();
+        t.scale = s.scale.value.intValue();
+        s.eContainer.getModelRoot().elements.add(t);
+        log.debug("Created NumericType: " + t.name);
+    }
+
+rule CreateDateType
+  transform s: JSL!DataTypeDeclaration
+  to t: JUDOPSM!DateType {
+        guard: s.`primitive` == "date"
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDateType");
+        t.name = s.name;
+        s.eContainer.getModelRoot().elements.add(t);
+        log.debug("Created DateType: " + t.name);
+  }
+
+rule CreateTimeType
+  transform s: JSL!DataTypeDeclaration
+  to t: JUDOPSM!TimeType {
+        guard: s.`primitive` == "time"
+
+        t.setId("(jsl/" + s.getId() + ")/CreateTimeType");
+        t.name = s.name;
+        s.eContainer.getModelRoot().elements.add(t);
+        log.debug("Created TimeType: " + t.name);
+  }
+
+rule CreateTimestampType
+	transform s: JSL!DataTypeDeclaration
+	to t: JUDOPSM!TimestampType {
+        guard: s.`primitive` == "timestamp"
+
+        t.setId("(jsl/" + s.getId() + ")/CreateTimestampType");
+        t.name = s.name;
+        s.eContainer.getModelRoot().elements.add(t);
+        log.debug("Created TimestampType: " + t.name);
+    }
+
+rule CreateEnumerationType
+	transform s: JSL!EnumDeclaration
+	to t: JUDOPSM!EnumerationType {
+        t.setId("(jsl/" + s.getId() + ")/CreateEnumerationType");
+        t.name = s.name;
+        s.eContainer.getModelRoot().elements.add(t);
+        log.debug("Created EnumerationType: " + t.name);
+    }
+
+rule CreateEnumerationMember
+	transform s: JSL!EnumLiteral
+	to t: JUDOPSM!EnumerationMember {
+        t.setId("(jsl/" + s.getId() + ")/CreateEnumerationMember");
+        t.name = s.name;
+        t.ordinal = s.value.intValue();
+        s.eContainer.equivalent("CreateEnumerationType").members.add(t);
+        log.debug("Created EnumerationMember: " + t.name);
+    }
+    
+rule CreateBooleanType 
+	transform s : JSL!DataTypeDeclaration
+	to t : JUDOPSM!BooleanType {
+        guard: s.`primitive` == "boolean"
+        
+        t.setId("(jsl/" + s.getId() + ")/CreateBooleanType");
+        t.name = s.name;
+        s.eContainer.getModelRoot().elements.add(t);
+        log.debug("Created BooleanType: " + t.name);
+}
+
+    
+rule CreateStringType 
+	transform s : JSL!DataTypeDeclaration
+	to t : JUDOPSM!StringType {
+        guard: s.`primitive` == "string"
+        
+        t.setId("(jsl/" + s.getId() + ")/CreateStringType");
+        t.name = s.name;
+        t.maxLength = s.maxLength.value.intValue();
+        
+        if (s.regex.isDefined() and s.regex.regex.value.isDefined()) {
+        	t.regExp = s.regex.regex.value;
+        }
+        
+        s.eContainer.getModelRoot().elements.add(t);
+        log.debug("Created StringType: " + t.name);
+}
+
+rule CreateBinaryType 
+    transform s : JSL!DataTypeDeclaration
+    to t : JUDOPSM!BinaryType {
+        guard: s.`primitive` == "binary"
+		
+        t.setId("(jsl/" + s.getId() + ")/CreateBinaryType");
+        t.name = s.name;
+
+
+        if (s.mimeTypes.isDefined()) {
+            for (mimeType in s.mimeTypes.values) {
+                t.mimeTypes.add(mimeType.value.value);
+            }
+        }
+
+        if (s.maxFileSize.isDefined()) {
+            t.maxFileSize = s.maxFileSize.value().longValue();
+        }
+         
+        s.eContainer.getModelRoot().elements.add(t);
+        log.debug("Created BinaryType: " + t.name);
+}

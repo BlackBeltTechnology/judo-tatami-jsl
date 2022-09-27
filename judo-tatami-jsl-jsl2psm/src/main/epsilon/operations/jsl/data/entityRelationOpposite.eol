@@ -1,0 +1,4 @@
+@cached
+operation JSL!EntityRelationOppositeInjected getId(): String {
+	return (self.eContainer.getId() + "/opposite-add/" + self.name);
+}

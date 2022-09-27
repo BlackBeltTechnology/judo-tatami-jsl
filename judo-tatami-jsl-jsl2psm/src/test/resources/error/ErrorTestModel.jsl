@@ -1,0 +1,17 @@
+model ErrorTypeCreateModel
+
+type numeric Integer(precision = 9, scale = 0)
+type string String(max-length = 128)
+
+error MyError {
+    field Integer code
+    field String msg
+}
+
+error OtherError extends MyError {
+	field String other
+}
+
+error YetAnotherError extends OtherError {
+	field String someField
+}

@@ -1,0 +1,8 @@
+operation Any setId(id: String) {
+    self.eResource.setId(self, id);
+}
+
+operation Any getId() : String {
+     return self.eResource.getId(self);
+}
+
