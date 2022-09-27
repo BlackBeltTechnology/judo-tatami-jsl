@@ -337,8 +337,8 @@ entity Customer {
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <judo-runtime-core-version>1.0.0.20220525_074020_89c359f7_feature_JNG_3770_JSLBatchTransfromation</judo-runtime-core-version>  <!--1-->
-        <judo-tatami-jsl-version>1.1.0.20220527_111910_a1452733_develop</judo-tatami-jsl-version> <!--2-->
+        <judo-runtime-core-version>1.0.0</judo-runtime-core-version>  <!--1-->
+        <judo-tatami-jsl-version>1.1.0</judo-tatami-jsl-version> <!--2-->
     </properties>
     <build>
         <plugins>

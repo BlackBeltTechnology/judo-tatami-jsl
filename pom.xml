@@ -29,7 +29,7 @@
     </developers>
 
     <properties>
-        <revision>1.1.0</revision>
+        <revision>1.1.1</revision>
         <maven>3.8.3</maven>
 
         <project-shortname>judo-tatami-jsl</project-shortname>
@@ -68,12 +68,12 @@
         <judo-meta-expression-version>1.0.1</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.0</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.2</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.0</judo-sdk-common-version>
+        <judo-sdk-common-version>1.0.1</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.0</judo-operation-utils-version>
-        <structured-map-proxy-version>1.1.0</structured-map-proxy-version>
+        <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
-        <judo-tatami-base-version>1.1.0</judo-tatami-base-version>
+        <judo-tatami-base-version>1.1.1</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.0</judo-tatami-core-version>
 
 
