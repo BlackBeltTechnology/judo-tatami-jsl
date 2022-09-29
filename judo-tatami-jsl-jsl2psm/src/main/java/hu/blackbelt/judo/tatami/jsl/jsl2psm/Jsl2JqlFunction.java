@@ -179,8 +179,8 @@ public class Jsl2JqlFunction {
     public static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor) {
 		String functionName = it.getFunctionDeclarationReference().getName();
 
-		if (functionName.equals("plus")) {
-			return getTimestampPlusFunctionAsJql(it, expressionExtractor);
+		if ("plus".equals(functionName)) {
+			return getTimestampPlusFunctionAsJql(it, expressionExtractor, functionName);
 		} else {
 			return getFunctionAsJql(it, expressionExtractor, functionName);
 		}
@@ -217,19 +217,15 @@ public class Jsl2JqlFunction {
 						jqlParameters.add(expressionExtractor.apply(givenParameters.get(definedParameter.getName()).getExpression()));
 					}
 				}
-				String jqlFunctionCall = getEffectiveFunctionName(functionName) + "(" + String.join(", ", jqlParameters) + ")";
-				System.out.println("!!! " + jqlFunctionCall);
-				return jqlFunctionCall;
+				return getEffectiveFunctionName(functionName) + "(" + String.join(", ", jqlParameters) + ")";
 			}
 		}
 
-		String jqlFunctionCall = getEffectiveFunctionName(functionName) + "()";
-		System.out.println("!!! " + jqlFunctionCall);
-		return jqlFunctionCall;
+		return getEffectiveFunctionName(functionName) + "()";
 	}
 
-	private static String getTimestampPlusFunctionAsJql(LiteralFunction literalFunction, Function<Expression, String> expressionExtractor) {
-		Collection<Collection<ParameterValue>> timestampPlusParameterLists = literalFunctionParameters.get("plus");
+	private static String getTimestampPlusFunctionAsJql(LiteralFunction literalFunction, Function<Expression, String> expressionExtractor, String functionName) {
+		Collection<Collection<ParameterValue>> timestampPlusParameterLists = literalFunctionParameters.get(functionName);
 		if (timestampPlusParameterLists.size() != 1) {
 			throw new IllegalStateException("Unsupported number of timestamp plus definitions: " + timestampPlusParameterLists.size());
 		}
