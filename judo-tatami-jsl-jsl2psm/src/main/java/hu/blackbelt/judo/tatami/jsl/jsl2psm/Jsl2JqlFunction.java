@@ -238,9 +238,7 @@ public class Jsl2JqlFunction {
 			}
 			jqlFunctionCall.add(String.format("%s(%s)", getJqlTimestampArithmeticFunctionNameOf(parameterName), expressionExtractor.apply(parameter.getExpression())));
 		}
-		String jqlFunctionCallString = String.join("!", jqlFunctionCall);
-		System.out.println("!!! " + jqlFunctionCallString);
-		return jqlFunctionCallString;
+		return String.join("!", jqlFunctionCall);
 	}
 
 	private static String getJqlTimestampArithmeticFunctionNameOf(String parameterName) {
