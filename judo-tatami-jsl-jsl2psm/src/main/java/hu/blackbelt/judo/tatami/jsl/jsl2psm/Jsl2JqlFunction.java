@@ -190,6 +190,10 @@ public class Jsl2JqlFunction {
 	private static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor, String functionName) {
 		if (literalFunctionParameters.containsKey(functionName)) {
 			List<String> givenParameterNames = it.getParameters().stream().map(p -> p.getDeclaration().getName()).collect(Collectors.toList());
+			if (givenParameterNames.size() < 1 || givenParameterNames.size() > 7) {
+				throw new IllegalArgumentException(String.format("Invalid number of parameters for '%s'. Got: %s, Expected: min 1, max 7",
+																 functionName, givenParameterNames.size()));
+			}
 			List<Collection<ParameterValue>> alignedParameterLists =
 					literalFunctionParameters.get(functionName).stream()
 											 .filter(parameterValues -> parameterValues.stream().map(ParameterValue::getName).collect(Collectors.toList()).containsAll(givenParameterNames))
