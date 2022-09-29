@@ -26,10 +26,7 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunction;
 import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunctionParameter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -104,8 +101,11 @@ public class Jsl2JqlFunction {
 			}
 		}
 	}
-    
-    private static Map<String, Collection<Collection<ParameterValue>>> literalFunctionParameters = 
+
+	/**
+	 * Keys are function names. Each "function" can have multiple possible parameter lists.
+	 */
+    private static Map<String, Collection<Collection<ParameterValue>>> literalFunctionParameters =
     		ImmutableMap.<String, Collection<Collection<ParameterValue>>>builder()
     		.put("getVariable", ImmutableList.of( ImmutableList.of(
     				ParameterValue.builder().name("category").build(), 
@@ -126,27 +126,29 @@ public class Jsl2JqlFunction {
     		.put("replace", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("oldstring").build(),
     				ParameterValue.builder().name("newstring").build())))
+			.put("fromMilliseconds", ImmutableList.of(ImmutableList.of(
+					ParameterValue.builder().name("milliseconds").build())))
     		.put("of", ImmutableList.of(
     				ImmutableList.of(
-    						ParameterValue.builder().name("year").mandatory(false).defaultValue("0").build(), 
-    						ParameterValue.builder().name("month").mandatory(false).defaultValue("0").build(), 
-    						ParameterValue.builder().name("day").mandatory(false).defaultValue("0").build()), 
+    						ParameterValue.builder().name("year").build(),
+    						ParameterValue.builder().name("month").build(),
+    						ParameterValue.builder().name("day").build()),
 					ImmutableList.of(
-							ParameterValue.builder().name("hour").mandatory(false).defaultValue("0").build(), 
-							ParameterValue.builder().name("minute").mandatory(false).defaultValue("0").build(), 
-							ParameterValue.builder().name("second").mandatory(false).defaultValue("0").build()), 
+							ParameterValue.builder().name("hour").build(),
+							ParameterValue.builder().name("minute").build(),
+							ParameterValue.builder().name("second").build()),
 					ImmutableList.of(
-							ParameterValue.builder().name("date").build(), 
-							ParameterValue.builder().name("time").build())))
-    		.put("plus", ImmutableList.of(ImmutableList.of(
-    				ParameterValue.builder().name("years").mandatory(false).defaultValue("0").build(), 
-    				ParameterValue.builder().name("months").mandatory(false).defaultValue("0").build(), 
-    				ParameterValue.builder().name("days").mandatory(false).defaultValue("0").build(), 
-    				ParameterValue.builder().name("hours").mandatory(false).defaultValue("0").build(),
-    				ParameterValue.builder().name("minutes").mandatory(false).defaultValue("0").build(), 
-    				ParameterValue.builder().name("seconds").mandatory(false).defaultValue("0").build(), 
-    				ParameterValue.builder().name("milliseconds").mandatory(false).defaultValue("0").build())))    		
-    		.put("typeOf", ImmutableList.of(ImmutableList.of(
+							ParameterValue.builder().name("date").build(),
+							ParameterValue.builder().name("time").mandatory(false).build())))
+			.put("plus", ImmutableList.of(ImmutableList.of(
+					ParameterValue.builder().name("years").mandatory(false).build(),
+					ParameterValue.builder().name("months").mandatory(false).build(),
+					ParameterValue.builder().name("days").mandatory(false).build(),
+					ParameterValue.builder().name("hours").mandatory(false).build(),
+					ParameterValue.builder().name("minutes").mandatory(false).build(),
+					ParameterValue.builder().name("seconds").mandatory(false).build(),
+					ParameterValue.builder().name("milliseconds").mandatory(false).build())))
+			.put("typeOf", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("entityType").build())))
     		.put("kindOf", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("entityType").build())))
@@ -175,46 +177,87 @@ public class Jsl2JqlFunction {
     }
 
     public static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor) {
-        String functionName = it.getFunctionDeclarationReference().getName();
-        
-        if (literalFunctionParameters.containsKey(functionName)) {
-        	Collection<Collection<ParameterValue>> definedParameters = literalFunctionParameters.get(functionName);
-        	
-        	List<String> givenParameterNames = it.getParameters().stream().map(p -> p.getDeclaration().getName()).collect(Collectors.toList());
-        	Map<String, LiteralFunctionParameter> givenParameters = it.getParameters().stream().collect(Collectors.toMap(p -> p.getDeclaration().getName(), p -> p));
-        	
-        	for (Collection<ParameterValue> definedParameter : definedParameters) {
-        		Map<String, ParameterValue> definedParameterMap = definedParameter.stream().collect(Collectors.toMap(v -> v.getName(), v -> v));
-        		
-        		List<String> functionParameters = definedParameter.stream().map(p -> p.getName()).collect(Collectors.toList());
-        		if (givenParameterNames.containsAll(functionParameters)) {
-        			Collection<String> outputValues = new ArrayList<>();
-        			for (String parameterName : functionParameters) {
-        				ParameterValue parameterValue = definedParameterMap.get(parameterName);
-        				String rawValue = parameterValue.defaultValue;        
-        				
-        				if (parameterValue.getMandatory() && !givenParameters.containsKey(parameterName)) {
-        					throw new IllegalArgumentException(parameterName + " is not defined, but mandatory");
-        				} else if (givenParameters.containsKey(parameterName)) {
-        					LiteralFunctionParameter parameter = givenParameters.get(parameterName);
-        					rawValue = expressionExtractor.apply(parameter.getExpression());
-        				}        				
-        				if (rawValue != null) {
-        					outputValues.add(rawValue);
-        				}
-        			}
-        			return getEffectiveFunctionName(functionName) + "(" + outputValues.stream().collect(Collectors.joining(",")) + ")";
-        		}
-        	}
-        	        	
-        	return getEffectiveFunctionName(functionName) + "()";
-        	
-        } else {
-        	return getEffectiveFunctionName(functionName) + "()";
-        }
-        //return it.getFunctionDeclarationReference().getName() + "(" + it.getParameters().stream().map(p -> getJql(p)).collect(Collectors.joining(",")) + ")";
+		String functionName = it.getFunctionDeclarationReference().getName();
 
-    }
-    
+		if (functionName.equals("plus")) {
+			return getTimestampPlusFunctionAsJql(it, expressionExtractor);
+		} else {
+			return getFunctionAsJql(it, expressionExtractor, functionName);
+		}
+
+	}
+
+	private static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor, String functionName) {
+		if (literalFunctionParameters.containsKey(functionName)) {
+			List<String> givenParameterNames = it.getParameters().stream().map(p -> p.getDeclaration().getName()).collect(Collectors.toList());
+			if (givenParameterNames.size() < 1 || givenParameterNames.size() > 7) {
+				throw new IllegalArgumentException(String.format("Invalid number of parameters for '%s'. Got: %s, Expected: min 1, max 7",
+																 functionName, givenParameterNames.size()));
+			}
+			List<Collection<ParameterValue>> alignedParameterLists =
+					literalFunctionParameters.get(functionName).stream()
+											 .filter(parameterValues -> parameterValues.stream().map(ParameterValue::getName).collect(Collectors.toList()).containsAll(givenParameterNames))
+											 .collect(Collectors.toList());
+			if (alignedParameterLists.size() > 1) {
+				throw new IllegalStateException(String.format("Cannot determine which definition of function '%s' to use with [%s] given parameters",
+															  it.getFunctionDeclarationReference().getName(), String.join(", ", givenParameterNames)));
+			} else if (alignedParameterLists.size() == 1) {
+				Map<String, LiteralFunctionParameter> givenParameters = it.getParameters().stream().collect(Collectors.toMap(p -> p.getDeclaration().getName(), p -> p));
+				Collection<ParameterValue> definedParameters = alignedParameterLists.get(0);
+				List<String> jqlParameters = new ArrayList<>();
+				for (ParameterValue definedParameter : definedParameters) {
+					if (definedParameter.getMandatory() && !givenParameterNames.contains(definedParameter.getName())) {
+						throw new IllegalArgumentException(String.format("Parameter '%s' is required for '%s' function", definedParameter.getName(), functionName));
+					} else if (!definedParameter.getMandatory() && !givenParameterNames.contains(definedParameter.getName())) {
+						String defaultValue = definedParameter.getDefaultValue();
+						if (defaultValue != null) {
+							jqlParameters.add(defaultValue);
+						}
+					} else if (givenParameterNames.contains(definedParameter.getName())) {
+						jqlParameters.add(expressionExtractor.apply(givenParameters.get(definedParameter.getName()).getExpression()));
+					}
+				}
+				String jqlFunctionCall = getEffectiveFunctionName(functionName) + "(" + String.join(", ", jqlParameters) + ")";
+				System.out.println("!!! " + jqlFunctionCall);
+				return jqlFunctionCall;
+			}
+		}
+
+		String jqlFunctionCall = getEffectiveFunctionName(functionName) + "()";
+		System.out.println("!!! " + jqlFunctionCall);
+		return jqlFunctionCall;
+	}
+
+	private static String getTimestampPlusFunctionAsJql(LiteralFunction literalFunction, Function<Expression, String> expressionExtractor) {
+		Collection<Collection<ParameterValue>> timestampPlusParameterLists = literalFunctionParameters.get("plus");
+		if (timestampPlusParameterLists.size() != 1) {
+			throw new IllegalStateException("Unsupported number of timestamp plus definitions: " + timestampPlusParameterLists.size());
+		}
+		Set<String> definedParameters = timestampPlusParameterLists.stream().findFirst().orElseThrow().stream().map(ParameterValue::getName).collect(Collectors.toSet());
+		List<String> jqlFunctionCall = new ArrayList<>();
+		for (LiteralFunctionParameter parameter : literalFunction.getParameters()) {
+			String parameterName = parameter.getDeclaration().getName();
+			if (!definedParameters.contains(parameterName)){
+				throw new IllegalArgumentException("Invalid parameter name: " + parameterName);
+			}
+			jqlFunctionCall.add(String.format("%s(%s)", getJqlTimestampArithmeticFunctionNameOf(parameterName), expressionExtractor.apply(parameter.getExpression())));
+		}
+		String jqlFunctionCallString = String.join("!", jqlFunctionCall);
+		System.out.println("!!! " + jqlFunctionCallString);
+		return jqlFunctionCallString;
+	}
+
+	private static String getJqlTimestampArithmeticFunctionNameOf(String parameterName) {
+		switch (parameterName){
+			case "years": return "plusYears";
+			case "months": return "plusMonths";
+			case "days": return "plusDays";
+			case "hours": return "plusHours";
+			case "minutes": return "plusMinutes";
+			case "seconds": return "plusSeconds";
+			case "milliseconds": return "plusMilliseconds";
+			default: throw new IllegalArgumentException("Unsupported timestamp arithmetic function (from parameter name): " + parameterName);
+		}
+	}
 
 }
