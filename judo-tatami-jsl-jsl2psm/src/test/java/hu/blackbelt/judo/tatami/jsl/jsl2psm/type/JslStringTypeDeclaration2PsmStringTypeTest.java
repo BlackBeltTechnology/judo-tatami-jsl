@@ -67,9 +67,9 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "DeclarationModel",
-                List.of("model DeclarationModel\n" +
+                List.of("model DeclarationModel;\n" +
                         "\n" +
-                        "type string Name(max-length = 32, regex =\"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g\")\n"
+                        "type string Name(min-size = 0, max-size = 32, regex =\"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g\");\n"
                 )
         );
 
@@ -86,12 +86,12 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberModel",
-                List.of("model EntityMemberModel\n" +
+                List.of("model EntityMemberModel;\n" +
                         "\n" +
-                        "type string Name(max-length = 32)\n" +
+                        "type string Name(min-size = 0, max-size = 32);\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield Name name\n" +
+                        "\tfield Name name;\n" +
                         "}"
                 )
         );
@@ -113,12 +113,12 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberRequiredModel",
-                List.of("model EntityMemberRequiredModel\n" +
+                List.of("model EntityMemberRequiredModel;\n" +
                         "\n" +
-                        "type string Name(max-length = 32)\n" +
+                        "type string Name(min-size = 0, max-size = 32);\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield required Name name\n" +
+                        "\tfield required Name name;\n" +
                         "}"
                 )
         );
@@ -140,12 +140,12 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
-                List.of("model EntityMemberInheritanceModel\n" +
+                List.of("model EntityMemberInheritanceModel;\n" +
                         "\n" +
-                        "type string Name(max-length = 32)\n" +
+                        "type string Name(min-size = 0, max-size = 32);\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield Name name\n" +
+                        "\tfield Name name;\n" +
                         "}\n" +
                         "\n" +
                         "entity StudentPerson extends Person {\n" +
@@ -170,12 +170,12 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
-                List.of("model EntityMemberIdentifierModel\n" +
+                List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
-                        "type string Name(max-length = 32)\n" +
+                        "type string Name(min-size = 0, max-size = 32);\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tidentifier Name name\n" +
+                        "\tidentifier Name name;\n" +
                         "}"
                 )
         );

@@ -1,20 +1,20 @@
-model DerivedRelationModel
+model DerivedRelationModel;
 
-type numeric Integer(precision = 9, scale = 0)
-type boolean Boolean
+type numeric Integer(precision = 9, scale = 0);
+type boolean Boolean;
 
-type string String(max-length = 128)
+type string String(min-size = 0, max-size = 128);
 
 entity Lead {
-	field Integer value
-	field Customer[] customers
-	derived Customer[] keyCustomers => self.customers!filter(c | c.iskey)
-	derived Customer keyCustomer => self.customers!filter(c | c.iskey)!any()
+	field Integer value;
+	field Customer[] customers;
+	derived Customer[] keyCustomers => self.customers!filter(c | c.iskey);
+	derived Customer keyCustomer => self.customers!filter(c | c.iskey)!any();
 }
 
 entity Customer {
-	field String name
-	field Boolean iskey
+	field String name;
+	field Boolean iskey;
 }
 
 entity LeadExtended extends Lead {

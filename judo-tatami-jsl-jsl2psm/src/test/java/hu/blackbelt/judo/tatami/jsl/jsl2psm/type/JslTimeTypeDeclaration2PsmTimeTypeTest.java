@@ -67,9 +67,9 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "DeclarationModel",
-                List.of("model DeclarationModel\n" +
+                List.of("model DeclarationModel;\n" +
                         "\n" +
-                        "type time MyTime\n"
+                        "type time MyTime;\n"
                 )
         );
 
@@ -84,12 +84,12 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberModel",
-                List.of("model EntityMemberModel\n" +
+                List.of("model EntityMemberModel;\n" +
                         "\n" +
-                        "type time MyTime\n" +
+                        "type time MyTime;\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield MyTime arrivalTime\n" +
+                        "\tfield MyTime arrivalTime;\n" +
                         "}"
                 )
         );
@@ -111,12 +111,12 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberRequiredModel",
-                List.of("model EntityMemberRequiredModel\n" +
+                List.of("model EntityMemberRequiredModel;\n" +
                         "\n" +
-                        "type time MyTime\n" +
+                        "type time MyTime;\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield required MyTime arrivalTime\n" +
+                        "\tfield required MyTime arrivalTime;\n" +
                         "}"
                 )
         );
@@ -137,12 +137,12 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
-                List.of("model EntityMemberInheritanceModel\n" +
+                List.of("model EntityMemberInheritanceModel;\n" +
                         "\n" +
-                        "type time MyTime\n" +
+                        "type time MyTime;\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield MyTime arrivalTime\n" +
+                        "\tfield MyTime arrivalTime;\n" +
                         "}\n" +
                         "\n" +
                         "entity StudentPerson extends Person {\n" +
@@ -166,12 +166,12 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
-                List.of("model EntityMemberIdentifierModel\n" +
+                List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
-                        "type time MyTime\n" +
+                        "type time MyTime;\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tidentifier MyTime arrivalTime\n" +
+                        "\tidentifier MyTime arrivalTime;\n" +
                         "}"
                 )
         );

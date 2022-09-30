@@ -76,24 +76,24 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
         testName = "TestImportModelTest";
 
         jslModel = JslParser.getModelFromStrings("ns2::c", ImmutableList.of(
-        		"model ns1::a\n"
+        		"model ns1::a;\n"
         		+ "\n"
-        		+ "type string String(max-length = 32)",
+        		+ "type string String(min-size = 0, max-size = 32);",
         		
-        		"model ns2::b\n"
+        		"model ns2::b;\n"
         		+ "\n"
-        		+ "import ns1::a as modela\n"
+        		+ "import ns1::a as modela;\n"
         		+ "\n"
         		+ "entity B {\n"
-        		+ "	field modela::String f1 \n"
+        		+ "	field modela::String f1;\n"
         		+ "}",
 
-        		"model ns2::c\n"
+        		"model ns2::c;\n"
         		+ "\n"
-        		+ "import ns1::a\n"
+        		+ "import ns1::a;\n"
         		+ "\n"
         		+ "entity C {\n"
-        		+ "	field String f1 \n"
+        		+ "	field String f1;\n"
         		+ "}"
 
         		
