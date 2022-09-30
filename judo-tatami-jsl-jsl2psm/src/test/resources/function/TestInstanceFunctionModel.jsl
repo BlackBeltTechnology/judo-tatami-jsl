@@ -1,19 +1,19 @@
-model TestInstanceFunctionModel
+model TestInstanceFunctionModel;
 
-import ImportedTestInstanceFunctionModel
+import ImportedTestInstanceFunctionModel;
 
 entity A {
-	field C[] cs	
+	field C[] cs;
 }
 
 entity B {
-	field C[] cs
+	field C[] cs;
 }
 
 
 entity C {
-	derived C[] allCfromAPlainName => self!container(entityType = A)
-	derived C[] allCfromAFqName => self!container(entityType = TestInstanceFunctionModel::A)
-	derived C[] allCfromAImport => self!container(entityType = ImportedTestInstanceFunctionModel::I)
+	derived C[] allCfromAPlainName => self!container(entityType = A);
+	derived C[] allCfromAFqName => self!container(entityType = TestInstanceFunctionModel::A);
+	derived C[] allCfromAImport => self!container(entityType = ImportedTestInstanceFunctionModel::I);
 }
 

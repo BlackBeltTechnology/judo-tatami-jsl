@@ -67,9 +67,9 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "DeclarationModel",
-                List.of("model DeclarationModel\n" +
+                List.of("model DeclarationModel;\n" +
                         "\n" +
-                        "type numeric MyNumber(precision = 12, scale = 5)\n"
+                        "type numeric MyNumber(precision = 12, scale = 5);\n"
                 )
         );
 
@@ -86,12 +86,12 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberModel",
-                List.of("model EntityMemberModel\n" +
+                List.of("model EntityMemberModel;\n" +
                         "\n" +
-                        "type numeric Height(precision = 3, scale = 0)\n" +
+                        "type numeric Height(precision = 3, scale = 0);\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield Height height\n" +
+                        "\tfield Height height;\n" +
                         "}"
                 )
         );
@@ -113,12 +113,12 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberRequiredModel",
-                List.of("model EntityMemberRequiredModel\n" +
+                List.of("model EntityMemberRequiredModel;\n" +
                         "\n" +
-                        "type numeric Height(precision = 3, scale = 0)\n" +
+                        "type numeric Height(precision = 3, scale = 0);\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield required Height height\n" +
+                        "\tfield required Height height;\n" +
                         "}"
                 )
         );
@@ -140,12 +140,12 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
-                List.of("model EntityMemberInheritanceModel\n" +
+                List.of("model EntityMemberInheritanceModel;\n" +
                         "\n" +
-                        "type numeric Height(precision = 3, scale = 0)\n" +
+                        "type numeric Height(precision = 3, scale = 0);\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield Height height\n" +
+                        "\tfield Height height;\n" +
                         "}\n" +
                         "\n" +
                         "entity StudentPerson extends Person {\n" +
@@ -170,12 +170,12 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
-                List.of("model EntityMemberIdentifierModel\n" +
+                List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
-                        "type numeric Height(precision = 3, scale = 0)\n" +
+                        "type numeric Height(precision = 3, scale = 0);\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tidentifier Height height\n" +
+                        "\tidentifier Height height;\n" +
                         "}"
                 )
         );
