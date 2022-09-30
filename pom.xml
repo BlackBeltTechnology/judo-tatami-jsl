@@ -59,7 +59,7 @@
         <epsilon-runtime-version>1.5.0</epsilon-runtime-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.1.20220930_113910_56e5f386_feature_JNG_4030_Semicolon_is_a_must_at_the_end_of_the_lines</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.1.20220930_160301_71552a29_develop</judo-meta-jsl-version>
 
         <judo-meta-rdbms-version>1.0.0</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.1</judo-meta-jql-version>
