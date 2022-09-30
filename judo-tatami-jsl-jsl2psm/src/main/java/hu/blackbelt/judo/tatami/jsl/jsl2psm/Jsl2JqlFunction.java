@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunction;
 import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunctionParameter;
+import org.eclipse.emf.ecore.EObject;
 
 import java.util.*;
 import java.util.function.Function;
