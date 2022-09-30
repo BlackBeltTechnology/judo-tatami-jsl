@@ -67,9 +67,9 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "DeclarationModel",
-                List.of("model DeclarationModel\n" +
+                List.of("model DeclarationModel;\n" +
                         "\n" +
-                        "type date Date\n"
+                        "type date Date;\n"
                 )
         );
 
@@ -84,12 +84,12 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberModel",
-                List.of("model EntityMemberModel\n" +
+                List.of("model EntityMemberModel;\n" +
                         "\n" +
-                        "type date Date\n" +
+                        "type date Date;\n" +
                         "\n" +
                         "entity Patient {\n" +
-                        "\tfield Date birthDate\n" +
+                        "\tfield Date birthDate;\n" +
                         "}"
                 )
         );
@@ -111,12 +111,12 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberRequiredModel",
-                List.of("model EntityMemberRequiredModel\n" +
+                List.of("model EntityMemberRequiredModel;\n" +
                         "\n" +
-                        "type date Date\n" +
+                        "type date Date;\n" +
                         "\n" +
                         "entity Patient {\n" +
-                        "\tfield required Date birthDate\n" +
+                        "\tfield required Date birthDate;\n" +
                         "}"
                 )
         );
@@ -138,12 +138,12 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
-                List.of("model EntityMemberInheritanceModel\n" +
+                List.of("model EntityMemberInheritanceModel;\n" +
                         "\n" +
-                        "type date Date\n" +
+                        "type date Date;\n" +
                         "\n" +
                         "entity Patient {\n" +
-                        "\tfield Date birthDate\n" +
+                        "\tfield Date birthDate;\n" +
                         "}\n" +
                         "\n" +
                         "entity SurgentPatient extends Patient {\n" +
@@ -167,12 +167,12 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
     	
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
-                List.of("model EntityMemberIdentifierModel\n" +
+                List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
-                        "type date Date\n" +
+                        "type date Date;\n" +
                         "\n" +
                         "entity Patient {\n" +
-                        "\tidentifier Date birthDate\n" +
+                        "\tidentifier Date birthDate;\n" +
                         "}"
                 )
         );

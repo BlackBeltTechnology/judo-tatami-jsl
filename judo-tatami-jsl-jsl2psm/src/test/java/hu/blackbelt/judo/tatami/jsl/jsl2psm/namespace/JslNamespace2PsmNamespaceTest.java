@@ -71,7 +71,7 @@ public class JslNamespace2PsmNamespaceTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "TestModel",
-                List.of("model TestModel"));
+                List.of("model TestModel;"));
 
         transform();
 
