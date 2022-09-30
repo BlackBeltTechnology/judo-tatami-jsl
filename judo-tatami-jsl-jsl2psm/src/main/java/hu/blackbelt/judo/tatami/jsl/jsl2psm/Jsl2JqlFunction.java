@@ -177,6 +177,7 @@ public class Jsl2JqlFunction {
     }
 
     public static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor) {
+		System.out.println(getStack(it, 1));
 		String functionName = it.getFunctionDeclarationReference().getName();
 
 		if ("plus".equals(functionName)) {
@@ -253,5 +254,17 @@ public class Jsl2JqlFunction {
 			default: throw new IllegalArgumentException("Unsupported timestamp arithmetic function (from parameter name): " + parameterName);
 		}
 	}
+
+	static String getStack(EObject o, int ident) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\t".repeat(ident));
+		sb.append(o.toString());
+		if (o.eContainer() != null) {
+			sb.append("\n" + getStack(o.eContainer(), ident +1));
+		}
+		return sb.toString();
+	}
+
+	void getBaseTypeOfExpression()
 
 }
