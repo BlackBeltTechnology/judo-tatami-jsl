@@ -1,8 +1,8 @@
-model ImportedTestInstanceFunctionModel
+model ImportedTestInstanceFunctionModel;
 
-import TestInstanceFunctionModel
+import TestInstanceFunctionModel;
 
 entity I {
-	field TestInstanceFunctionModel::C[] cs	
+	field TestInstanceFunctionModel::C[] cs	;
 }
 
