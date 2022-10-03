@@ -65,7 +65,7 @@
         <judo-meta-jql-version>1.0.1</judo-meta-jql-version>
         <judo-meta-psm-version>1.2.1</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.1</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.2.20220930_112053_c0bce21c_develop</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.2.20221003_073953_751eab06_feature_JNG_3795_Support_capitalize_on_strings</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.0</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.2</judo-dao-api-version>
         <judo-sdk-common-version>1.0.1</judo-sdk-common-version>
@@ -73,7 +73,7 @@
         <judo-operation-utils-version>1.1.0</judo-operation-utils-version>
         <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
-        <judo-tatami-base-version>1.1.2.20220930_114708_9f392177_develop</judo-tatami-base-version>
+        <judo-tatami-base-version>1.1.2.20221003_133857_24f86572_feature_JNG_3795_Support_capitalize_on_strings</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.0</judo-tatami-core-version>
 
 
