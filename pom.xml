@@ -74,7 +74,7 @@
         <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
         <judo-tatami-base-version>1.1.2.20221003_112341_59465c58_feature_JNG_4086_missing_in_unary_operators_wrong_number_terminal</judo-tatami-base-version>
-        <judo-tatami-core-version>1.0.3.20221003_134009_666573dd_feature_JNG_4086_missing_in_unary_operators_wrong_number_terminal</judo-tatami-core-version>
+        <judo-tatami-core-version>1.1.0</judo-tatami-core-version>
 
 
         <!-- Code Quality-->
