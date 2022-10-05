@@ -56,25 +56,25 @@
         <slf4j-version>1.7.36</slf4j-version>
         <surefire-version>3.0.0-M7</surefire-version>
 
-        <epsilon-runtime-version>1.5.0</epsilon-runtime-version>
+        <epsilon-runtime-version>1.5.1.20220915_170323_044ded18_develop</epsilon-runtime-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.1.20220930_160301_71552a29_develop</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.1.20221005_071058_32e8da29_develop</judo-meta-jsl-version>
 
-        <judo-meta-rdbms-version>1.0.0</judo-meta-rdbms-version>
-        <judo-meta-jql-version>1.0.1</judo-meta-jql-version>
-        <judo-meta-psm-version>1.2.1</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.1</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.2.20221003_073953_751eab06_feature_JNG_3795_Support_capitalize_on_strings</judo-meta-expression-version>
-        <judo-meta-liquibase-version>1.0.0</judo-meta-liquibase-version>
-        <judo-dao-api-version>1.0.2</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.1</judo-sdk-common-version>
-        <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
-        <judo-operation-utils-version>1.1.0</judo-operation-utils-version>
-        <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
+        <judo-meta-rdbms-version>1.0.1.20220921_225003_7bd9d181_develop</judo-meta-rdbms-version>
+        <judo-meta-jql-version>1.0.2.20221004_225904_6d3e8bdf_develop</judo-meta-jql-version>
+        <judo-meta-psm-version>1.2.2.20220921_224946_fcbce10a_develop</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.2.20220921_230227_7d158c9b_develop</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.2.20221005_124208_4caf2979_feature_JNG_3795_Support_capitalize_on_strings</judo-meta-expression-version>
+        <judo-meta-liquibase-version>1.0.1.20220921_224934_d7629408_develop</judo-meta-liquibase-version>
+        <judo-dao-api-version>1.0.3.20220930_100653_2b31acaa_develop</judo-dao-api-version>
+        <judo-sdk-common-version>1.0.2.20221002_212048_24544196_develop</judo-sdk-common-version>
+        <judo-dispatcher-api-version>1.0.3.20220926_012329_fb44a05f_develop</judo-dispatcher-api-version>
+        <judo-operation-utils-version>1.1.1.20221002_212104_0f501950_develop</judo-operation-utils-version>
+        <structured-map-proxy-version>1.2.1.20220927_090501_89bce74f_develop</structured-map-proxy-version>
 
-        <judo-tatami-base-version>1.1.2.20221003_133857_24f86572_feature_JNG_3795_Support_capitalize_on_strings</judo-tatami-base-version>
-        <judo-tatami-core-version>1.1.0</judo-tatami-core-version>
+        <judo-tatami-base-version>1.1.2.20221005_124817_b12dd004_feature_JNG_3795_Support_capitalize_on_strings</judo-tatami-base-version>
+        <judo-tatami-core-version>1.1.1.20221002_212035_77939a62_develop</judo-tatami-core-version>
 
 
         <!-- Code Quality-->
@@ -934,7 +934,7 @@
                                         <toc>left</toc>
                                         <icons>font</icons>
                                         <sectanchors>true</sectanchors>
-                                        <idprefix/>
+                                        <idprefix />
                                         <idseparator>-</idseparator>
                                     </attributes>
                                 </configuration>
