@@ -119,9 +119,9 @@ public class Jsl2JqlFunction {
     				ParameterValue.builder().name("offset").build())))
     		.put("matches", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("pattern").build())))
+    		.put("position", ImmutableList.of(ImmutableList.of(
+    				ParameterValue.builder().name("substring").build())))
     		.put("like", ImmutableList.of(ImmutableList.of(
-    				ParameterValue.builder().name("pattern").build())))
-    		.put("ilike", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("pattern").build())))
     		.put("replace", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("oldstring").build(),
@@ -163,7 +163,7 @@ public class Jsl2JqlFunction {
     		.put("contains", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("instance").build())))  		
     		.build();
-    
+
     private static String getEffectiveFunctionName(String functionName) {
     	if (functionName.equalsIgnoreCase("lower"))  {
     		return "lowerCase";
