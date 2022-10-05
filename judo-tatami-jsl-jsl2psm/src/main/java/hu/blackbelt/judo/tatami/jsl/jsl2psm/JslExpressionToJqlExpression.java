@@ -220,9 +220,15 @@ public class JslExpressionToJqlExpression {
      * ;
      */
     private String getJqlDispacher(final UnaryOperation it) {
-        return it != null
-                ? it.getOperator() + ' ' + getJql(it.getOperand())
-                : null;
+    	if (it != null) {
+    		if ("+".equals(it.getOperator())) {
+    			return getJql(it.getOperand());
+    		}
+    		
+    		return it.getOperator() + ' ' + getJql(it.getOperand());
+    	}
+
+    	return null;
     }
 
     /**
