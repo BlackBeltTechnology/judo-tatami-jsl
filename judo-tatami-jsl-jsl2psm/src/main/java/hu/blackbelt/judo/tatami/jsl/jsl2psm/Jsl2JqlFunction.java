@@ -22,9 +22,15 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+
+import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDerivedDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
+import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunction;
 import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunctionParameter;
+import hu.blackbelt.judo.meta.jsl.jsldsl.PrimitiveDeclaration;
+
 import org.eclipse.emf.ecore.EObject;
 
 import java.util.*;
@@ -177,6 +183,10 @@ public class Jsl2JqlFunction {
     	}
     }
 
+    
+	/**
+	 * Keys are function names. Each "function" can have multiple possible parameter lists.
+	 */
     public static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor) {
 		String functionName = it.getFunctionDeclarationReference().getName();
 
@@ -189,7 +199,7 @@ public class Jsl2JqlFunction {
 	}
 
 	private static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor, String functionName) {
-		System.out.println(getStack(it, 0));
+		System.out.println(getStack(it));
 
 		if (literalFunctionParameters.containsKey(functionName)) {
 			List<String> givenParameterNames = it.getParameters().stream().map(p -> p.getDeclaration().getName()).collect(Collectors.toList());
@@ -257,7 +267,9 @@ public class Jsl2JqlFunction {
 		}
 	}
 
-	static String getStack(EObject o, int ident) {
+	static String getStack(EObject object) {
+		Collection<EObject> callStack = callStack(object);
+		/*
 		StringBuilder sb = new StringBuilder();
 		sb.append("\t".repeat(ident));
 		sb.append(o.toString());
@@ -265,10 +277,50 @@ public class Jsl2JqlFunction {
 			sb.append("\n" + getStack(o.eContainer(), ident +1));
 		}
 		return sb.toString();
+		*/
+		int ident = 0;
+		StringBuilder sb = new StringBuilder();
+		for (EObject o : callStack) {
+			sb.append("\t".repeat(ident) + o.toString() + "\n");
+			ident++;
+		}
+		return sb.toString();
 	}
 
-	void getBaseTypeOfExpression() {
-
+	static Collection<EObject> callStack(EObject object) {
+		List<EObject> stack = new ArrayList<>();
+		callStack(object, stack);
+		return stack;
 	}
+
+	static void callStack(EObject object, List<EObject> stack) {
+		stack.add(0, object);
+		if (object.eContainer() != null) {
+			callStack(object.eContainer(), stack);
+		}
+	}
+
+	
+	/*
+	void getBaseTypeOfExpression(LiteralFunction literalFunction) {
+		FunctionCall functionCall = (FunctionCall) literalFunction.eContainer()
+		
+		EntityDerivedDeclaration edd;
+
+		PrimitiveDeclaration pt;
+		EntityDeclaration ed;
+		
+//		edd.getReferenceType()
+	} */
+	
+	
+	void getBaseTypeOfFunctionCall(FunctionCall functionCall) {
+		if (functionCall.eContainer() instanceof FunctionCall) {
+			
+		}
+	}
+	
+	
+	
 
 }

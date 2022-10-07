@@ -80,6 +80,10 @@ entity SalesPerson {
     derived Decimal decimalLiteral => 100.12;
     derived Integer powerOfTen => 10 ^ 3;
     derived Integer strLength => "apple"!size();
+    derived Integer strLengthChained => "apple"!substring(offset=1, count=1)!size();
+    derived Integer strLengthDerived => self.stringLiteral!substring(offset=1, count=1)!size();
+    derived Integer strLengthDerived2 => self.lead.salesPerson.stringLiteral!substring(offset=1, count=1)!size();
+
 }
 
 entity Customer {
