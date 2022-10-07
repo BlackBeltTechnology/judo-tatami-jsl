@@ -110,6 +110,8 @@ public class Jsl2JqlFunction {
     		.put("getVariable", ImmutableList.of( ImmutableList.of(
     				ParameterValue.builder().name("category").build(), 
     				ParameterValue.builder().name("key").build())))
+    		.put("round", ImmutableList.of(ImmutableList.of(
+    				ParameterValue.builder().name("scale").mandatory(false).build())))
     		.put("first", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("count").build())))
     		.put("last", ImmutableList.of(ImmutableList.of(
@@ -123,11 +125,19 @@ public class Jsl2JqlFunction {
     				ParameterValue.builder().name("substring").build())))
     		.put("like", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("pattern").build())))
+    		.put("lpad", ImmutableList.of(ImmutableList.of(
+    				ParameterValue.builder().name("size").build(),
+    				ParameterValue.builder().name("padstring").mandatory(false).build())))
+    		.put("rpad", ImmutableList.of(ImmutableList.of(
+    				ParameterValue.builder().name("size").build(),
+    				ParameterValue.builder().name("padstring").mandatory(false).build())))
     		.put("replace", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("oldstring").build(),
     				ParameterValue.builder().name("newstring").build())))
 			.put("fromMilliseconds", ImmutableList.of(ImmutableList.of(
 					ParameterValue.builder().name("milliseconds").build())))
+			.put("fromSeconds", ImmutableList.of(ImmutableList.of(
+					ParameterValue.builder().name("seconds").build())))
     		.put("of", ImmutableList.of(
     				ImmutableList.of(
     						ParameterValue.builder().name("year").build(),
@@ -190,10 +200,6 @@ public class Jsl2JqlFunction {
 	private static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor, String functionName) {
 		if (literalFunctionParameters.containsKey(functionName)) {
 			List<String> givenParameterNames = it.getParameters().stream().map(p -> p.getDeclaration().getName()).collect(Collectors.toList());
-			if (givenParameterNames.size() < 1 || givenParameterNames.size() > 7) {
-				throw new IllegalArgumentException(String.format("Invalid number of parameters for '%s'. Got: %s, Expected: min 1, max 7",
-																 functionName, givenParameterNames.size()));
-			}
 			List<Collection<ParameterValue>> alignedParameterLists =
 					literalFunctionParameters.get(functionName).stream()
 											 .filter(parameterValues -> parameterValues.stream().map(ParameterValue::getName).collect(Collectors.toList()).containsAll(givenParameterNames))
