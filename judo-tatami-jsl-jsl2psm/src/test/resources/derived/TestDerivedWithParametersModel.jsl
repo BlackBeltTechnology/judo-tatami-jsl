@@ -3,7 +3,6 @@ model TestDerivesWithParameters;
 type numeric Integer(precision = 9, scale = 0);
 type string String(min-size = 0, max-size = 128);
 
-
 query Lead[] staticLeadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) => Lead!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);
 // Lead!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
 
@@ -19,7 +18,6 @@ query Integer staticLeadsOverWithMinCount(Integer minLeadsOverMin = 5) => static
 query Lead[] staticLeadsBetweenAndSalesPersonLeads(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) =>
 	Lead!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween).salesPerson.leadsBetween(minLeadsBetween = minLeadsBetween, maxLeadsBetween = maxLeadsBetween);
 // Lead!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
-
 
 entity SalesPerson {
     relation Lead[] leads opposite salesPerson;
@@ -52,7 +50,6 @@ entity SalesPerson {
     query Integer leadsOverWithMinCount(Integer minLeadsOverMin = 5) => self.leadsBetweenCount(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100);
     // self.leads!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)!size()
 
-    
     derived Integer leadsOver10Count => self.leadsOverWithMinCount(minLeadsOverMin = 10);
     // self.leads!filter(lead | lead.value > 10 and lead.value < 100)!size()
 
