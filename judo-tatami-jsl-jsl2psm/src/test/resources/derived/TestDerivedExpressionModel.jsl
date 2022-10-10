@@ -83,7 +83,7 @@ entity SalesPerson {
     derived Integer strLengthChained => "apple"!substring(offset=1, count=1)!size();
     derived Integer strLengthDerived => self.stringLiteral!substring(offset=1, count=1)!size();
     derived Integer strLengthDerived2 => self.lead.salesPerson.stringLiteral!substring(offset=1, count=1)!size();
-
+    derived Integer strLengthDerived3 => self.lead.salesPerson!filter(d | d.lead.closed == false)!filter(d | d.lead.closed == false).stringLiteral!substring(offset=1, count=1)!size();
 }
 
 entity Customer {
