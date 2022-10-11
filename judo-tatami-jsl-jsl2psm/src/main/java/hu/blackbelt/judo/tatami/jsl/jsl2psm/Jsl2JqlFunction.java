@@ -119,64 +119,74 @@ public class Jsl2JqlFunction {
 	/**
 	 * Keys are function names. Each "function" can have multiple possible parameter lists.
 	 */
-	private static Map<String, Collection<Collection<ParameterValue>>> literalFunctionParameters =
-			ImmutableMap.<String, Collection<Collection<ParameterValue>>>builder()
-					.put("getVariable", ImmutableList.of( ImmutableList.of(
-							ParameterValue.builder().name("category").build(),
-							ParameterValue.builder().name("key").build())))
-					.put("first", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("count").build())))
-					.put("last", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("count").build())))
-					.put("substring", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("count").build(),
-							ParameterValue.builder().name("offset").build())))
-					.put("matches", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("pattern").build())))
-					.put("position", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("substring").build())))
-					.put("like", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("pattern").build())))
-					.put("replace", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("oldstring").build(),
-							ParameterValue.builder().name("newstring").build())))
-					.put("fromMilliseconds", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("milliseconds").build())))
-					.put("of", ImmutableList.of(
-							ImmutableList.of(
-									ParameterValue.builder().name("year").build(),
-									ParameterValue.builder().name("month").build(),
-									ParameterValue.builder().name("day").build()),
-							ImmutableList.of(
-									ParameterValue.builder().name("hour").build(),
-									ParameterValue.builder().name("minute").build(),
-									ParameterValue.builder().name("second").build()),
-							ImmutableList.of(
-									ParameterValue.builder().name("date").build(),
-									ParameterValue.builder().name("time").mandatory(false).build())))
-					.put("plus", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("years").mandatory(false).build(),
-							ParameterValue.builder().name("months").mandatory(false).build(),
-							ParameterValue.builder().name("days").mandatory(false).build(),
-							ParameterValue.builder().name("hours").mandatory(false).build(),
-							ParameterValue.builder().name("minutes").mandatory(false).build(),
-							ParameterValue.builder().name("seconds").mandatory(false).build(),
-							ParameterValue.builder().name("milliseconds").mandatory(false).build())))
-					.put("typeOf", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("entityType").build())))
-					.put("kindOf", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("entityType").build())))
-					.put("asCollection", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("entityType").build())))
-					.put("container", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("entityType").build())))
-					.put("asType", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("entityType").build())))
-					.put("memberOf", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("instances").build())))
-					.put("contains", ImmutableList.of(ImmutableList.of(
-							ParameterValue.builder().name("instance").build())))
-					.build();
+    private static Map<String, Collection<Collection<ParameterValue>>> literalFunctionParameters =
+            ImmutableMap.<String, Collection<Collection<ParameterValue>>>builder()
+                    .put("getVariable", ImmutableList.of( ImmutableList.of(
+                            ParameterValue.builder().name("category").build(),
+                            ParameterValue.builder().name("key").build())))
+                    .put("round", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("scale").mandatory(false).build())))
+                    .put("first", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("count").build())))
+                    .put("last", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("count").build())))
+                    .put("substring", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("count").build(),
+                            ParameterValue.builder().name("offset").build())))
+                    .put("matches", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("pattern").build())))
+                    .put("position", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("substring").build())))
+                    .put("like", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("pattern").build())))
+                    .put("lpad", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("size").build(),
+                            ParameterValue.builder().name("padstring").mandatory(false).build())))
+                    .put("rpad", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("size").build(),
+                            ParameterValue.builder().name("padstring").mandatory(false).build())))
+                    .put("replace", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("oldstring").build(),
+                            ParameterValue.builder().name("newstring").build())))
+                    .put("fromMilliseconds", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("milliseconds").build())))
+                    .put("fromSeconds", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("seconds").build())))
+                    .put("of", ImmutableList.of(
+                            ImmutableList.of(
+                                    ParameterValue.builder().name("year").build(),
+                                    ParameterValue.builder().name("month").build(),
+                                    ParameterValue.builder().name("day").build()),
+                            ImmutableList.of(
+                                    ParameterValue.builder().name("hour").build(),
+                                    ParameterValue.builder().name("minute").build(),
+                                    ParameterValue.builder().name("second").build()),
+                            ImmutableList.of(
+                                    ParameterValue.builder().name("date").build(),
+                                    ParameterValue.builder().name("time").mandatory(false).build())))
+                    .put("plus", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("years").mandatory(false).build(),
+                            ParameterValue.builder().name("months").mandatory(false).build(),
+                            ParameterValue.builder().name("days").mandatory(false).build(),
+                            ParameterValue.builder().name("hours").mandatory(false).build(),
+                            ParameterValue.builder().name("minutes").mandatory(false).build(),
+                            ParameterValue.builder().name("seconds").mandatory(false).build(),
+                            ParameterValue.builder().name("milliseconds").mandatory(false).build())))
+                    .put("typeOf", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("entityType").build())))
+                    .put("kindOf", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("entityType").build())))
+                    .put("asCollection", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("entityType").build())))
+                    .put("container", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("entityType").build())))
+                    .put("asType", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("entityType").build())))
+                    .put("memberOf", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("instances").build())))
+                    .put("contains", ImmutableList.of(ImmutableList.of(
+                            ParameterValue.builder().name("instance").build())))
+                    .build();
 
 	private static String getEffectiveFunctionName(String functionName, LiteralFunction literalFunction) {
 		if (functionName.equalsIgnoreCase("lower"))  {
@@ -220,10 +230,6 @@ public class Jsl2JqlFunction {
 
 		if (literalFunctionParameters.containsKey(functionName)) {
 			List<String> givenParameterNames = it.getParameters().stream().map(p -> p.getDeclaration().getName()).collect(Collectors.toList());
-			if (givenParameterNames.size() < 1 || givenParameterNames.size() > 7) {
-				throw new IllegalArgumentException(String.format("Invalid number of parameters for '%s'. Got: %s, Expected: min 1, max 7",
-						functionName, givenParameterNames.size()));
-			}
 			List<Collection<ParameterValue>> alignedParameterLists =
 					literalFunctionParameters.get(functionName).stream()
 							.filter(parameterValues -> parameterValues.stream().map(ParameterValue::getName).collect(Collectors.toList()).containsAll(givenParameterNames))
