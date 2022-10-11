@@ -5,7 +5,7 @@ rule CreateUnmappedTransferObjectForEntityQuery
 		guard: s.parameters.size() > 0
 		
         t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectForEntityQuery");
-        t.name = defaultParameterNamePrefix + s.name + defaultParameterNameMidfix + s.name + defaultParameterNamePostfix;
+        t.name = defaultParameterNamePrefix + s.eContainer.name + defaultParameterNameMidfix + s.name + defaultParameterNamePostfix;
 		s.eContainer.eContainer.getModelRoot().elements.add(t);
 		log.debug("Created UnmappedTransferObjectType: " + t.name);
 }
