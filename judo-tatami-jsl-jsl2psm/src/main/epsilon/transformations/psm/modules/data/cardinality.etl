@@ -56,13 +56,13 @@ rule CreateCardinalityForEntityQueryDeclaration
 }
 
 @lazy
-rule CreateCardinalityForQueryDeclaration
+rule CreateCardinalityForStaticQueryDeclaration
     transform s : JSL!QueryDeclaration
     to t : JUDOPSM!Cardinality
     {
       guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
 
-      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForQueryDeclaration");
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForStaticQueryDeclaration");
 
       t.lower = 0;
       t.upper = s.isMany ? -1 : 1;
