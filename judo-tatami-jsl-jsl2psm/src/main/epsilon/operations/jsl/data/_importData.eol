@@ -11,5 +11,6 @@ import "enumDeclaration.eol";
 import "enumLiteral.eol";
 import "errorDeclaration.eol";
 import "errorField.eol";
+import "queryDeclaration.eol";
 import "expression.eol";
 import "modelDeclaration.eol";
