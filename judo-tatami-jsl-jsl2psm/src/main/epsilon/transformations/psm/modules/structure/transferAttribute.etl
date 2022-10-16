@@ -130,7 +130,7 @@ rule AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType
     to t : JUDOPSM!TransferAttribute {
         guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
         t.name = s.name;
-        t.binding = s.equivalent("CreateDataPropertyForQuery");
+        t.binding = s.equivalent("CreateDataPropertyForEntityQuery");
         t.dataType = s.referenceType.getPSMEquivalent();
 }
 
