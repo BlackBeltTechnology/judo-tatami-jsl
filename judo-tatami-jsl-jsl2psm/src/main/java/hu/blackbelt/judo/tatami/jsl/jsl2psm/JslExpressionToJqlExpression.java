@@ -620,6 +620,25 @@ public class JslExpressionToJqlExpression {
         if (it == null) {
             return null;            
         }
+        
+        String functionName = it.getFunctionDeclarationReference().getName();
+
+        if (functionName.equals("first")) {
+            return "head" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + ")";
+        }
+
+        if (functionName.equals("last")) {
+            return "head" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + " DESC)";
+        }
+
+        if (functionName.equals("front")) {
+            return "tail" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + " DESC)";
+        }
+
+        if (functionName.equals("back")) {
+            return "tail" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + ")";
+        }
+
         return it.getFunctionDeclarationReference().getName() + (it.getLambdaArgument() != null 
                 ? ("(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + ")") : "()") ;
    }
