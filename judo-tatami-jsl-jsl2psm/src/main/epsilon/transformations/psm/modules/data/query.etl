@@ -1,0 +1,82 @@
+rule CreateUnmappedTransferObjectForStaticQuery
+    transform s : JSL!QueryDeclaration
+    to t : JUDOPSM!UnmappedTransferObjectType {
+		guard: s.parameters.size() > 0
+		
+        t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectForStaticQuery");
+        t.name = defaultParameterNamePrefix + s.eContainer.name + defaultParameterNameMidfix + s.name + defaultParameterNamePostfix;
+		s.eContainer.getModelRoot().elements.add(t);
+		log.debug("Created UnmappedTransferObjectType: " + t.name);
+}
+
+rule CreateTransferObjectForStaticQueryDeclarationParameter
+    transform s : JSL!QueryDeclarationParameter
+    to t: JUDOPSM!TransferAttribute {
+        guard: s.eContainer.isKindOf(JSL!QueryDeclaration)
+        
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForStaticQueryDeclarationParameter");
+
+        t.name = s.name;
+        t.dataType = s.referenceType.getPSMEquivalent();
+        
+		s.eContainer.equivalent("CreateUnmappedTransferObjectForStaticQuery").attributes.add(t);
+        log.debug("Created Transfer Attribute for Query Declaration: " + s.name);
+}
+
+rule CreateStaticDataForStaticQuery
+    transform s : JSL!QueryDeclaration
+    to t : JUDOPSM!StaticData
+    {
+      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+      t.name = s.name;
+      t.setId("(jsl/" + s.getId() + ")/CreateStaticDataForStaticQuery");
+      t.getterExpression = s.equivalent("CreateGetterExpressionForStaticQueryParametrizedDataType");
+      t.dataType = s.referenceType.getPSMEquivalent();
+
+      s.eContainer.getModelRoot().elements.add(t);
+      log.debug("Created Query Static Data: " + t.name);
+}
+
+rule CreateStaticNavigationForStaticQuery
+    transform s : JSL!QueryDeclaration
+    to t : JUDOPSM!StaticNavigation
+    {
+      guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+      t.name = s.name;
+      t.setId("(jsl/" + s.getId() + ")/CreateStaticNavigationForStaticQuery");
+      t.getterExpression = s.equivalent("CreateGetterExpressionForStaticQueryParametrizedReferenceType");
+	  t.cardinality = s.equivalent("CreateCardinalityForStaticQueryDeclaration");
+      t.target = s.referenceType.getPSMEquivalent();
+
+      s.eContainer.getModelRoot().elements.add(t);
+      log.debug("Created Query Static Navigation: " + t.name);
+}
+
+@lazy
+rule CreateGetterExpressionForStaticQueryParametrizedDataType
+    transform s : JSL!QueryDeclaration
+    to t: JUDOPSM!DataExpressionType {
+        t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForStaticQueryParametrizedDataType");
+        t.expression = expressionUtils.getJqlForStaticQuery(s, entityNamePrefix, entityNamePostfix);
+
+		if (s.parameters.size() > 0) {
+			t.parameterType = s.equivalent("CreateUnmappedTransferObjectForStaticQuery");
+		}
+
+        log.debug("Created Data Expression Type for Parametrized Data Property: " + s.name);
+}
+
+@lazy
+rule CreateGetterExpressionForStaticQueryParametrizedReferenceType
+    transform s : JSL!QueryDeclaration
+    to t: JUDOPSM!ReferenceExpressionType {
+        t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForStaticQueryParametrizedReferenceType");
+        t.expression = expressionUtils.getJqlForStaticQuery(s, entityNamePrefix, entityNamePostfix);
+
+		if (s.parameters.size() > 0) {
+			t.parameterType = s.equivalent("CreateUnmappedTransferObjectForStaticQuery");
+		}
+
+        log.debug("Created Reference Expression Type for Parametrized Reference Type: " + s.name);
+}
+
