@@ -30,6 +30,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.eclipse.debug.core.sourcelookup.containers.ContainerSourceContainer;
+
 public class Jsl2JqlFunction {
 
 	private static class ParameterValue {
@@ -162,6 +164,20 @@ public class Jsl2JqlFunction {
     				ParameterValue.builder().name("instances").build())))
     		.put("contains", ImmutableList.of(ImmutableList.of(
     				ParameterValue.builder().name("instance").build())))  		
+    		.put("head", ImmutableList.of(ImmutableList.of(
+    				ParameterValue.builder().name("member").build(),
+    				ParameterValue.builder().name("reverse").mandatory(false).build())))  		
+    		.put("tail", ImmutableList.of(ImmutableList.of(
+    				ParameterValue.builder().name("member").build(),
+    				ParameterValue.builder().name("reverse").mandatory(false).build())))  		
+    		.put("min", ImmutableList.of(ImmutableList.of(
+    				ParameterValue.builder().name("member").build())))  		
+    		.put("max", ImmutableList.of(ImmutableList.of(
+    				ParameterValue.builder().name("member").build())))  		
+    		.put("avg", ImmutableList.of(ImmutableList.of(
+    				ParameterValue.builder().name("member").build())))  		
+    		.put("sum", ImmutableList.of(ImmutableList.of(
+    				ParameterValue.builder().name("member").build())))  		
     		.build();
     
     private static String getEffectiveFunctionName(String functionName) {
@@ -181,6 +197,8 @@ public class Jsl2JqlFunction {
 
 		if ("plus".equals(functionName)) {
 			return getTimestampPlusFunctionAsJql(it, expressionExtractor, functionName);
+		} else if (Arrays.asList("max", "min", "avg", "sum", "head", "tail").contains(functionName)) {
+			return getLiteralCollectionFunctionAsJql(it, expressionExtractor, functionName);
 		} else {
 			return getFunctionAsJql(it, expressionExtractor, functionName);
 		}
@@ -239,6 +257,11 @@ public class Jsl2JqlFunction {
 			jqlFunctionCall.add(String.format("%s(%s)", getJqlTimestampArithmeticFunctionNameOf(parameterName), expressionExtractor.apply(parameter.getExpression())));
 		}
 		return String.join("!", jqlFunctionCall);
+	}
+
+	private static String getLiteralCollectionFunctionAsJql(LiteralFunction literalFunction, Function<Expression, String> expressionExtractor, String functionName) {
+		literalFunction.getParameters().get(0).getExpression();
+		return String.format("%s(i|i.%s)", getEffectiveFunctionName(functionName), "member"); // FIXME
 	}
 
 	private static String getJqlTimestampArithmeticFunctionNameOf(String parameterName) {
