@@ -138,7 +138,8 @@ public class Jsl2JqlFunction {
                     .put("position", ImmutableList.of(ImmutableList.of(
                             ParameterValue.builder().name("substring").build())))
                     .put("like", ImmutableList.of(ImmutableList.of(
-                            ParameterValue.builder().name("pattern").build())))
+                            ParameterValue.builder().name("pattern").build(),
+							ParameterValue.builder().name("exact").mandatory(false).build())))
                     .put("lpad", ImmutableList.of(ImmutableList.of(
                             ParameterValue.builder().name("size").build(),
                             ParameterValue.builder().name("padstring").mandatory(false).build())))
