@@ -624,11 +624,11 @@ public class JslExpressionToJqlExpression {
         String functionName = it.getFunctionDeclarationReference().getName();
 
         if (functionName.equals("first")) {
-            return "head" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + ")";
+            return "heads" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + ")";
         }
 
         if (functionName.equals("last")) {
-            return "head" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + " DESC)";
+            return "heads" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + " DESC)";
         }
 
         if (functionName.equals("front")) {
