@@ -632,11 +632,11 @@ public class JslExpressionToJqlExpression {
         }
 
         if (functionName.equals("front")) {
-            return "tail" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + " DESC)";
+            return "tails" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + " DESC)";
         }
 
         if (functionName.equals("back")) {
-            return "tail" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + ")";
+            return "tails" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + ")";
         }
 
         return it.getFunctionDeclarationReference().getName() + (it.getLambdaArgument() != null 
