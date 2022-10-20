@@ -126,9 +126,9 @@ public class Jsl2JqlFunction {
                             ParameterValue.builder().name("key").build())))
                     .put("round", ImmutableList.of(ImmutableList.of(
                             ParameterValue.builder().name("scale").mandatory(false).build())))
-                    .put("first", ImmutableList.of(ImmutableList.of(
+                    .put("left", ImmutableList.of(ImmutableList.of(
                             ParameterValue.builder().name("count").build())))
-                    .put("last", ImmutableList.of(ImmutableList.of(
+                    .put("right", ImmutableList.of(ImmutableList.of(
                             ParameterValue.builder().name("count").build())))
                     .put("substring", ImmutableList.of(ImmutableList.of(
                             ParameterValue.builder().name("count").build(),
@@ -191,7 +191,11 @@ public class Jsl2JqlFunction {
                     .build();
 
 	private static String getEffectiveFunctionName(String functionName, LiteralFunction literalFunction) {
-		if (functionName.equalsIgnoreCase("lower"))  {
+		if (functionName.equalsIgnoreCase("right"))  {
+			return "last";
+		} else if (functionName.equalsIgnoreCase("left"))  {
+			return "first";
+		} else if (functionName.equalsIgnoreCase("lower"))  {
 			return "lowerCase";
 		} else  if (functionName.equalsIgnoreCase("upper"))  {
 			return "upperCase";
