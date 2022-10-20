@@ -8,7 +8,7 @@
         <version>${revision}</version>
 	</parent>
     
-    <artifactId>judo-tatami-jsl.docs</artifactId>
+    <artifactId>judo-tatami-jsl-docs</artifactId>
     <name>Judo :: Tatami :: Jsl :: Documentation</name>
 	
     <packaging>jar</packaging>
