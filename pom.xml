@@ -712,6 +712,7 @@
                 </property>
             </activation>
             <modules>
+                <module>docs</module>
                 <module>judo-tatami-jsl-jsl2psm</module>
                 <module>judo-tatami-jsl-workflow</module>
                 <module>judo-tatami-jsl-workflow-maven-plugin</module>
