@@ -10,7 +10,7 @@ transformations.
 == Usage
 
 For usage in projects please check the
-xref:judo-tatami-jsl-workflow-maven-plugin/README.adoc[judo-tatami-jsl-workflow-maven-plugin] documentation.
+xref:docs/pages/judo-tatami-jsl-workflow-maven-plugin.adoc[judo-tatami-jsl-workflow-maven-plugin] documentation.
 
 == Context
 
