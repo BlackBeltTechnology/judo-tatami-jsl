@@ -17,6 +17,10 @@
         <resources>
             <resource>
                 <directory>${basedir}</directory>
+                <includes>
+                    <include>pages/</include>
+                    <include>_attributes.adoc</include>
+                </includes>
             </resource>
         </resources>
 
