@@ -76,14 +76,14 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityUnidirectionalCompositionRelationTypeModel",
-                List.of("model EntityUnidirectionalCompositionRelationTypeModel\n" +
+                List.of("model EntityUnidirectionalCompositionRelationTypeModel;\n" +
                         "\n" +
                         "entity SalesPerson {\n" +
-                        "\tfield Lead[] leads\n" +
+                        "\tfield Lead[] leads;\n" +
                         "}\n" +
                         "\n" +
                         "entity Lead {\n" +
-                        "\tfield required Customer customer\n" +
+                        "\tfield required Customer customer;\n" +
                         "}\n" +
                         "\n" +
                         "entity Customer {\n" +
@@ -131,14 +131,14 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityUnidirectionalCompositionInheritedRelationTypeModel",
-                List.of("model EntityUnidirectionalCompositionInheritedRelationTypeModel\n" +
+                List.of("model EntityUnidirectionalCompositionInheritedRelationTypeModel;\n" +
                         "\n" +
                         "entity SalesPerson {\n" +
-                        "\tfield Lead[] leads\n" +
-                        "\tfield Customer represents\n" +
+                        "\tfield Lead[] leads;\n" +
+                        "\tfield Customer represents;\n" +
                         "}\n" +
                         "entity Lead {\n" +
-                        "\tfield required Customer customer\n" +
+                        "\tfield required Customer customer;\n" +
                         "}\n" +
                         "\n" +
                         "entity SuperSalesPerson extends SalesPerson {\n" +

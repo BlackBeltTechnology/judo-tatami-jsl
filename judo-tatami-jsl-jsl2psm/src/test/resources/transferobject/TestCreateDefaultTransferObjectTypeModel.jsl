@@ -1,38 +1,38 @@
-model DefaultTransferObjectTypeModel
+model DefaultTransferObjectTypeModel;
 
-type string String(max-length = 250)
-type string Name(max-length = 32)
-type numeric Age(precision = 3, scale = 0)
-type numeric Identifier(precision = 8, scale = 0)
+type string String(min-size = 0, max-size = 250);
+type string Name(min-size = 0, max-size = 32);
+type numeric Age(precision = 3, scale = 0);
+type numeric Identifier(precision = 8, scale = 0);
 
 
 entity Address {
-	field String city
+	field String city;
 }
 
 entity Named {
-	field Name name
+	field Name name;
 }
 
 entity PersonWithAge extends Named {
-	field Age age
+	field Age age;
 }
 
 entity abstract Person {
-	identifier Identifier id
-	field Name birthName
-	field Address residentAddress
-	field Address[] postalAddresses
-	derived Address mainPostalAddress => self.postalAddresses!any()
+	identifier Identifier id;
+	field Name birthName;
+	field Address residentAddress;
+	field Address[] postalAddresses;
+	derived Address mainPostalAddress => self.postalAddresses!any();
 }
 
 entity SalesPerson extends Person, PersonWithAge {
 }
 
 entity Customer extends Person {
-	relation Lead[] leads opposite customer
+	relation Lead[] leads opposite customer;
 }
 
 entity Lead {
-	relation Customer customer opposite leads
+	relation Customer customer opposite leads;
 }

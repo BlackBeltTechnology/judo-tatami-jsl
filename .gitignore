@@ -64,3 +64,4 @@ wercker.env
 .flutter
 **/.flattened-pom.xml
 
+/**/diagram/

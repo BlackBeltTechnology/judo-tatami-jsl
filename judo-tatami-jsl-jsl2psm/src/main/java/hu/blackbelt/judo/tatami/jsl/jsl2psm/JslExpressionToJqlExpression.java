@@ -41,6 +41,7 @@ public class JslExpressionToJqlExpression {
     private Deque<EObject> queryCallStack = new ArrayDeque();
     private String entityNamePrefix = "";
     private String entityNamePostfix = "";
+    private boolean selfEnabled = true;
     
     public static  <T> T getContainer(EObject from, Class<T> type) {
         T found = null;
@@ -107,6 +108,7 @@ public class JslExpressionToJqlExpression {
         transformer.queryStackParameterValues.add(parameterValues);
         transformer.entityNamePrefix = entityNamePrefix;
         transformer.entityNamePostfix = entityNamePostfix;
+        transformer.selfEnabled = false;
 
         return transformer.getJql(declaration.getExpression());
     }
@@ -220,9 +222,15 @@ public class JslExpressionToJqlExpression {
      * ;
      */
     private String getJqlDispacher(final UnaryOperation it) {
-        return it != null
-                ? it.getOperator() + ' ' + getJql(it.getOperand())
-                : null;
+    	if (it != null) {
+    		if ("+".equals(it.getOperator())) {
+    			return getJql(it.getOperand());
+    		}
+    		
+    		return it.getOperator() + ' ' + getJql(it.getOperand());
+    	}
+
+    	return null;
     }
 
     /**
@@ -302,7 +310,10 @@ public class JslExpressionToJqlExpression {
      *     ;
      */
     private String getJqlDispacher(final SelfExpression it) {
-
+    	if (!selfEnabled) {
+    		throw new IllegalArgumentException("Self expression is not enabled in this expression");
+    	}
+    	
         if (it == null) {
             return "";
         }
@@ -455,6 +466,9 @@ public class JslExpressionToJqlExpression {
         }
         
         if (queryCallStack.size() > 0 && it.eContainer() instanceof SelfExpression) {
+        	if (!selfEnabled) {
+        		throw new IllegalArgumentException("Self expression is not enabled in this expression");
+        	}
             return repr;            
         } else {
             return "." + repr;
@@ -606,6 +620,25 @@ public class JslExpressionToJqlExpression {
         if (it == null) {
             return null;            
         }
+        
+        String functionName = it.getFunctionDeclarationReference().getName();
+
+        if (functionName.equals("first")) {
+            return "heads" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + ")";
+        }
+
+        if (functionName.equals("last")) {
+            return "heads" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + " DESC)";
+        }
+
+        if (functionName.equals("front")) {
+            return "tails" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + " DESC)";
+        }
+
+        if (functionName.equals("back")) {
+            return "tails" + "(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + ")";
+        }
+
         return it.getFunctionDeclarationReference().getName() + (it.getLambdaArgument() != null 
                 ? ("(" + it.getLambdaArgument().getName() + " | " + getJql(it.getExpression()) + ")") : "()") ;
    }
@@ -729,6 +762,9 @@ public class JslExpressionToJqlExpression {
         } else if (it instanceof QueryCallExpression) {
             return getJqlDispacher((QueryCallExpression) it);
         } else if (it instanceof SelfExpression) {
+        	if (!selfEnabled) {
+        		throw new IllegalArgumentException("Self expression is not enabled in this expression");
+        	}
             return getJqlDispacher((SelfExpression) it);
         } else if (it instanceof NavigationBaseExpression) {
             return getJqlDispacher((NavigationBaseExpression) it);
