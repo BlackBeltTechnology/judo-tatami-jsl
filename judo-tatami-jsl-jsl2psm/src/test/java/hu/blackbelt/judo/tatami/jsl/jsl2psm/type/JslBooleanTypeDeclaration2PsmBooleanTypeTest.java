@@ -67,9 +67,9 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "DeclarationModel",
-                List.of("model DeclarationModel\n" +
+                List.of("model DeclarationModel;\n" +
                         "\n" +
-                        "type boolean Boolean\n"
+                        "type boolean Boolean;\n"
                 )
         );
 
@@ -83,12 +83,12 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberModel",
-                List.of("model EntityMemberModel\n" +
+                List.of("model EntityMemberModel;\n" +
                         "\n" +
-                        "type boolean Vaccinated\n" +
+                        "type boolean Vaccinated;\n" +
                         "\n" +
                         "entity Patient {\n" +
-                        "\tfield Vaccinated vaccinated\n" +
+                        "\tfield Vaccinated vaccinated;\n" +
                         "}"
                 )
         );
@@ -110,12 +110,12 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberRequiredModel",
-                List.of("model EntityMemberRequiredModel\n" +
+                List.of("model EntityMemberRequiredModel;\n" +
                         "\n" +
-                        "type boolean Vaccinated\n" +
+                        "type boolean Vaccinated;\n" +
                         "\n" +
                         "entity Patient {\n" +
-                        "\tfield required Vaccinated vaccinated\n" +
+                        "\tfield required Vaccinated vaccinated;\n" +
                         "}"
                 )
         );
@@ -137,12 +137,12 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "EntityMemberInheritanceModel",
-                List.of("model EntityMemberInheritanceModel\n" +
+                List.of("model EntityMemberInheritanceModel;\n" +
                         "\n" +
-                        "type boolean Vaccinated\n" +
+                        "type boolean Vaccinated;\n" +
                         "\n" +
                         "entity Patient {\n" +
-                        "\tfield Vaccinated vaccinated\n" +
+                        "\tfield Vaccinated vaccinated;\n" +
                         "}\n" +
                         "\n" +
                         "entity SurgentPatient extends Patient {\n" +
@@ -168,12 +168,12 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
     	jslModel = JslParser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
-                List.of("model EntityMemberIdentifierModel\n" +
+                List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
-                        "type boolean Vaccinated\n" +
+                        "type boolean Vaccinated;\n" +
                         "\n" +
                         "entity Patient {\n" +
-                        "\tidentifier Vaccinated vaccinated\n" +
+                        "\tidentifier Vaccinated vaccinated;\n" +
                         "}"
                 )
         );

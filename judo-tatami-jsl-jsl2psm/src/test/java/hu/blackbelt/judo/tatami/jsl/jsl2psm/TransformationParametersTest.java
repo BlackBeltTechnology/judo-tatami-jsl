@@ -93,7 +93,7 @@ public class TransformationParametersTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "Test",
-                List.of("model Test\n" +
+                List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
                         "}\n"
@@ -112,7 +112,7 @@ public class TransformationParametersTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "Test",
-                List.of("model Test\n" +
+                List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
                         "}\n"
@@ -132,7 +132,7 @@ public class TransformationParametersTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "Test",
-                List.of("model Test\n" +
+                List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
                         "}\n"
@@ -153,7 +153,7 @@ public class TransformationParametersTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "Test",
-                List.of("model Test\n" +
+                List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
                         "}\n"
@@ -173,7 +173,7 @@ public class TransformationParametersTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "Test",
-                List.of("model Test\n" +
+                List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
                         "}\n"
@@ -193,12 +193,12 @@ public class TransformationParametersTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "Test",
-                List.of("model Test\n" +
+                List.of("model Test;\n" +
                         "\n" +
-                        "type string String(max-length = 32)\n" +
+                        "type string String(min-size = 0, max-size = 32);\n" +
                         "\n" +
                         "entity T {\n" +
-                        "\tfield String strField = \"hello\"" +
+                        "\tfield String strField = \"hello\";" +
                         "}\n"
                 )
         );
@@ -217,12 +217,12 @@ public class TransformationParametersTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "Test",
-                List.of("model Test\n" +
+                List.of("model Test;\n" +
                         "\n" +
-                        "type string String(max-length = 32)\n" +
+                        "type string String(min-size = 0, max-size = 32);\n" +
                         "\n" +
                         "entity T {\n" +
-                        "\tfield String strField = \"hello\"" +
+                        "\tfield String strField = \"hello\";" +
                         "}\n"
                 )
         );
@@ -241,12 +241,12 @@ public class TransformationParametersTest extends AbstractTest {
 
         jslModel = JslParser.getModelFromStrings(
                 "Test",
-                List.of("model Test\n" +
+                List.of("model Test;\n" +
                         "\n" +
-                        "type string String(max-length = 32)\n" +
+                        "type string String(min-size = 0, max-size = 32);\n" +
                         "\n" +
                         "entity T {\n" +
-                        "\tfield String strField = \"hello\"" +
+                        "\tfield String strField = \"hello\";" +
                         "}\n"
                 )
         );
