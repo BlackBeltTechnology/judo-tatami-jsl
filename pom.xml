@@ -29,7 +29,7 @@
     </developers>
 
     <properties>
-        <revision>1.1.2-SNAPSHOT</revision>
+        <revision>1.1.3-SNAPSHOT</revision>
         <maven>3.8.3</maven>
 
         <project-shortname>judo-tatami-jsl</project-shortname>
