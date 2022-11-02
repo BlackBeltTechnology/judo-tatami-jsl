@@ -5,7 +5,7 @@ operation JSL!ModelDeclaration getPSMEquivalent(): JUDOPSM!Model {
 
 @cached
 operation JSL!ModelDeclaration getModelRoot(): JUDOPSM!Package {	
-    var current : JUDOPSM!Namespace = self.equivalent("CreateModelPackages"); //psmModel;
+    var current : JUDOPSM!Namespace = self.name.equivalent("CreateModelPackages"); //psmModel;
     return current;
 }
 
