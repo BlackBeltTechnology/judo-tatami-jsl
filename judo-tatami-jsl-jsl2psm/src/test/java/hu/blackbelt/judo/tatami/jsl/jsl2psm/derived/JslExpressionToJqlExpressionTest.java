@@ -129,10 +129,14 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         assertEquals("\"String\nString2\"", jqlDerived("SalesPerson", "stringLiteral", "", ""));
         assertEquals("\"Raw\\n\"", jqlDerived("SalesPerson", "stringRawLiteral", "", ""));
         assertEquals("100.12", jqlDerived("SalesPerson", "decimalLiteral", "", ""));
-
         assertEquals("10 * 10 * 10", jqlDerived("SalesPerson", "powerOfTen", "", ""));
 
-    }
+        assertEquals("(self.value!isDefined() ? self.value!abs()!abs() : 10!abs()!abs())", jqlDerived("Lead", "orElseValue", "", ""));
+        assertEquals("(self.value!isDefined() ? (self.value!floor()!isDefined() ? self.value!floor()!abs() : 5!abs()) : (9!floor()!isDefined() ? 9!floor()!abs() : 5!abs()))", jqlDerived("Lead", "orElseValue2", "", ""));
+        assertEquals("(self.value!isDefined() ? self.value!abs() : (9!isDefined() ? 9 : 5)!abs())", jqlDerived("Lead", "orElseValue3", "", ""));
+        assertEquals("(TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(l | l.value < 1000)!any()!isDefined() ? TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(l | l.value < 1000)!any() : TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!any())", jqlDerived("Lead", "orElseValue4", "", ""));
+        assertEquals("(self.value!isDefined() ? self.value : 10)", jqlDerived("Lead", "orElseValue5", "", ""));
+}
 
     private String jqlDerived(String entity, String field, String entityNamePrefix, String entityNamePostfix) {
         return JslExpressionToJqlExpression.getJqlForDerived(
