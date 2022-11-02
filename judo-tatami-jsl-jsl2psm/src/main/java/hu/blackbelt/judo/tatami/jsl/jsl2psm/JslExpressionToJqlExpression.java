@@ -241,7 +241,7 @@ public class JslExpressionToJqlExpression {
      */
     private String getJqlDispacher(final FunctionedExpression it) {
         return it != null
-                ? getJql(it.getOperand()) + getJql(it.getFunctionCall(), getJql(it.getOperand()))
+                ? getJql(it.getFunctionCall(), getJql(it.getOperand()))
                 : null;
     }
 
@@ -395,39 +395,22 @@ public class JslExpressionToJqlExpression {
 				LiteralFunction literalFunction = (LiteralFunction)it.getFunction();
 				
     			if (literalFunction.getFunctionDeclarationReference().getName().equals("orElse")) {
-    				if (it.getCall() != null) {
-    					jqlCall = getJql(it.getCall(), base);
-    				}
-    				String jqlElse = getJql(literalFunction.getParameters().get(0).getExpression());
+    				jqlCall = getJql(it.getCall(), base);
+    				String jqlElse = getJql(it.getCall(), getJql(literalFunction.getParameters().get(0).getExpression()));
 
-    				return String.format("!isDefined() ? (%s) : (%s)", base + jqlCall, jqlElse + jqlCall);
+    				return String.format("(%s!isDefined() ? %s : %s)", base, jqlCall, jqlElse);
     			}
 			}
 			
 			if (it.getCall() != null) {
 				jqlCall = getJql(it.getCall(), base + "!" + getJql(it.getFunction()));
+				return jqlCall;
 			}
 			
-			return jqlFunction + jqlCall;
+			return base + jqlFunction;
 		} else {
-			return null;
+			return base;
 		}
-		
-		/*
-        return it != null
-                ? getJql(it.getFunction()) +
-                // (
-                // 		it.getFeatures() != null
-                //  			? it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining())
-                //				: ""
-                //) +
-                (
-                        it.getCall() != null
-                                ? getJql(it.getCall(), base + getJql(it.getFunction()))
-                                : ""
-                )
-                : null;
-         */
     }
 
 
