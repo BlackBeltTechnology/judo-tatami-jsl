@@ -112,10 +112,12 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5) "
         		+ "and lead.value < 100)", jqlStaticQuery("staticLeadsOverWithMin", "", ""));
-        
-        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
-        		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))", jqlStaticQuery("staticLeadsBetweenAndSalesPersonLeads", "", ""));
 
+        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
+        		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)).salesPerson.leads"
+        		+ "!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
+        		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))", jqlStaticQuery("staticLeadsBetweenAndSalesPersonLeads", "", ""));
+		
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModelImport::EntityNamePrefix_LeadInherited_EntityNamePostfix!filter(lead | "
         		+ "lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))",
         		jqlStaticQuery("staticInheritedLeadsBetween", "EntityNamePrefix_", "_EntityNamePostfix"));
