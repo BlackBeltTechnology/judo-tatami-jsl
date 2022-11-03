@@ -1,6 +1,11 @@
 @cached
 operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
     if (self.primitive.isDefined()) {
+        var byName = self.eContainer.name.equivalent("CreateModelPackages").elements.selectOne(e | e.name == self.name);
+        if (byName.isDefined()) {
+        	return byName;
+        }
+    
         switch (self.primitive) {
             case "numeric":
                 return self.equivalent("CreateNumericType");
