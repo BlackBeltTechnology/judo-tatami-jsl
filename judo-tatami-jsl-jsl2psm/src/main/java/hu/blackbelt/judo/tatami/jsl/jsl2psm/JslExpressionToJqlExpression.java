@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("all")
 public class JslExpressionToJqlExpression {
@@ -252,7 +253,7 @@ public class JslExpressionToJqlExpression {
      */
     private String getJqlDispacher(final FunctionedExpression it) {
         return it != null
-                ? getJql(it.getOperand()) + getJql(it.getFunctionCall())
+                ? getJql(it.getFunctionCall(), getJql(it.getOperand()))
                 : null;
     }
 
@@ -297,7 +298,7 @@ public class JslExpressionToJqlExpression {
     */
     private String getJqlDispacher(final NavigationBaseExpression it) {
 
-        if (it == null) {
+    	if (it == null) {
             return "";
         }
         
@@ -392,15 +393,38 @@ public class JslExpressionToJqlExpression {
      * : {FunctionCall} '!' function=Function features+=Feature* call=FunctionCall?
      * ;
      */
-    private String getJql(final FunctionCall it) {
-        return it != null
-                ? '!' + getJql(it.getFunction()) +
-                (
-                        it.getCall() != null
-                                ? getJql(it.getCall())
-                                : ""
-                )
-                : null;
+    private String getJql(final FunctionCall it, String base) {
+		if (it != null) {
+			String jqlFunction = "!" + getJql(it.getFunction());
+			String jqlCall = "";
+
+			// FIXME: missing of feature list add
+			/*
+            String jqlFeatures = it.getFeatures() != null
+              			? it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining())
+            			: "";
+			*/
+			
+			if (it.getFunction() instanceof LiteralFunction) {
+				LiteralFunction literalFunction = (LiteralFunction)it.getFunction();
+				
+    			if (literalFunction.getFunctionDeclarationReference().getName().equals("orElse")) {
+    				jqlCall = getJql(it.getCall(), base);
+    				String jqlElse = getJql(it.getCall(), getJql(literalFunction.getParameters().get(0).getExpression()));
+
+    				return String.format("(%s!isDefined() ? %s : %s)", base, jqlCall, jqlElse);
+    			}
+			}
+			
+			if (it.getCall() != null) {
+				jqlCall = getJql(it.getCall(), base + "!" + getJql(it.getFunction()));
+				return jqlCall;
+			}
+			
+			return base + jqlFunction;
+		} else {
+			return base;
+		}
     }
 
 
