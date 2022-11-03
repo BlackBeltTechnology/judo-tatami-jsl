@@ -100,7 +100,10 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         
         assertEquals("self.leads!filter(lead | lead.value > (input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5) and lead.value < 100)", 
         		jqlEntityQuery("SalesPerson", "leadsOverWithMin", "", ""));
-        
+
+        assertEquals("self.leads!filter(lead | lead.value > input.minLeadsOverMin and lead.value < 100)", 
+        		jqlEntityQuery("SalesPerson", "leadsOverWithMinWithoutDefault", "", ""));
+
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5) "
         		+ "and lead.value < 100)", jqlEntityQuery("SalesPerson", "leadsOverWithMinStatic", "", ""));
 
