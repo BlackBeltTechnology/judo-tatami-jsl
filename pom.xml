@@ -59,7 +59,7 @@
         <epsilon-runtime-version>1.5.0</epsilon-runtime-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.2.20221104_095627_eb7db5da_develop</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.2.20221103_225618_7d0847de_feaure_JNG_4197_NavigationAfterFunction</judo-meta-jsl-version>
 
         <judo-meta-rdbms-version>1.0.1</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.3.20221027_013031_d715ebc3_develop</judo-meta-jql-version>
