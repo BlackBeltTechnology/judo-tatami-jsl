@@ -79,9 +79,9 @@ public class JslExpressionToJqlExpression {
                 .collect(
                         Collectors.toMap(
                                 e -> e.getName(), 
-                                e -> "(input." + e.getName() + "!isDefined() ? " 
+                                e -> e.getDefault() != null ? "(input." + e.getName() + "!isDefined() ? " 
                                         + "input." + e.getName() 
-                                        + " : " + transformer.getJql(e.getDefault()) + ")", 
+                                        + " : " + transformer.getJql(e.getDefault()) + ")" : "input." + e.getName(), 
                                 (key1, key2)-> key2)));
 
         transformer.queryStackParameterValues.add(parameterValues);
@@ -101,9 +101,9 @@ public class JslExpressionToJqlExpression {
                 .collect(
                         Collectors.toMap(
                                 e -> e.getName(), 
-                                e -> "(input." + e.getName() + "!isDefined() ? " 
+                                e -> e.getDefault() != null ? "(input." + e.getName() + "!isDefined() ? " 
                                         + "input." + e.getName() 
-                                        + " : " + transformer.getJql(e.getDefault()) + ")", 
+                                        + " : " + transformer.getJql(e.getDefault()) + ")" : "input." + e.getName(), 
                                 (key1, key2)-> key2)));
 
         transformer.queryStackParameterValues.add(parameterValues);
@@ -131,6 +131,18 @@ public class JslExpressionToJqlExpression {
         ModelDeclaration modelDeclaration = (ModelDeclaration) getContainer(entityDeclaration, ModelDeclaration.class);
         ModelDeclaration ownerModelDeclaration = (ModelDeclaration) getContainer(owner, ModelDeclaration.class);        
         return getModelDeclarationPSMFullyQualifiedName(modelDeclaration, ownerModelDeclaration) + "::" + entityNamePrefix + entityDeclaration.getName() + entityNamePostfix;
+    }
+
+    public String getDataTypePSMFullyQualifiedName(DataTypeDeclaration dataTypeDeclaration, EObject owner) {
+        ModelDeclaration modelDeclaration = (ModelDeclaration) getContainer(dataTypeDeclaration, ModelDeclaration.class);
+        ModelDeclaration ownerModelDeclaration = (ModelDeclaration) getContainer(owner, ModelDeclaration.class);        
+        return getModelDeclarationPSMFullyQualifiedName(modelDeclaration, ownerModelDeclaration) + "::" + dataTypeDeclaration.getName();
+    }
+
+    public String getEnumTypePSMFullyQualifiedName(EnumDeclaration enumDeclaration, EObject owner) {
+        ModelDeclaration modelDeclaration = (ModelDeclaration) getContainer(enumDeclaration, ModelDeclaration.class);
+        ModelDeclaration ownerModelDeclaration = (ModelDeclaration) getContainer(owner, ModelDeclaration.class);        
+        return getModelDeclarationPSMFullyQualifiedName(modelDeclaration, ownerModelDeclaration) + "::" + enumDeclaration.getName();
     }
     
     /**
@@ -299,8 +311,10 @@ public class JslExpressionToJqlExpression {
             navExpression = ((LambdaVariable) it.getNavigationBaseType()).getName();
         } else if (it.getNavigationBaseType() instanceof QueryDeclarationParameter) {               
             navExpression = resolveQueryDeclarationParameterValue((QueryDeclarationParameter) it.getNavigationBaseType());
-        } else if (it.getNavigationBaseType() instanceof PrimitiveDeclaration) {
-            navExpression = getNameForNamed(it.getNavigationBaseType());            
+        } else if (it.getNavigationBaseType() instanceof DataTypeDeclaration) {
+            navExpression = getDataTypePSMFullyQualifiedName((DataTypeDeclaration) it.getNavigationBaseType(), it);
+        } else if (it.getNavigationBaseType() instanceof EnumDeclaration) {
+            navExpression = getEnumTypePSMFullyQualifiedName((EnumDeclaration) it.getNavigationBaseType(), it);
         }
         return navExpression + it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining());
     }
