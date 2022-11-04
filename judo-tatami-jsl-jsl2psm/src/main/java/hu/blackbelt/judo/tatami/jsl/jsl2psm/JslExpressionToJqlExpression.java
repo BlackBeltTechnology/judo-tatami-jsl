@@ -410,7 +410,7 @@ public class JslExpressionToJqlExpression {
 				
     			if (literalFunction.getFunctionDeclarationReference().getName().equals("orElse")) {
     				jqlCall = getJql(it.getCall(), base);
-    				String jqlElse = getJql(it.getCall(), getJql(literalFunction.getParameters().get(0).getExpression()));
+    				String jqlElse = getJql(it.getCall(), "(" + getJql(literalFunction.getParameters().get(0).getExpression()) + ")");
 
     				return String.format("(%s!isDefined() ? %s : %s)", base, jqlCall, jqlElse);
     			}
@@ -744,13 +744,13 @@ public class JslExpressionToJqlExpression {
 
     private String getJqlDispacher(final DecimalLiteral it) {
         return it != null
-                ? it.getValue().toString()
+                ? (it.isMinus() ? "(-" + it.getValue().toString() + ")" : it.getValue().toString())
                 : null;
     }
 
     private String getJqlDispacher(final IntegerLiteral it) {
         return it != null
-                ? it.getValue().toString()
+                ? (it.isMinus() ? "(-" + it.getValue().toString() + ")" : it.getValue().toString())
                 : null;
     }
 
