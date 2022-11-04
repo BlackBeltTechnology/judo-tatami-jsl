@@ -398,30 +398,27 @@ public class JslExpressionToJqlExpression {
 			String jqlFunction = "!" + getJql(it.getFunction());
 			String jqlCall = "";
 
-			// FIXME: missing of feature list add
-			/*
             String jqlFeatures = it.getFeatures() != null
               			? it.getFeatures().stream().map(p -> getJql(p)).collect(Collectors.joining())
             			: "";
-			*/
 			
 			if (it.getFunction() instanceof LiteralFunction) {
 				LiteralFunction literalFunction = (LiteralFunction)it.getFunction();
 				
     			if (literalFunction.getFunctionDeclarationReference().getName().equals("orElse")) {
-    				jqlCall = getJql(it.getCall(), base);
+    				jqlCall = getJql(it.getCall(), base + jqlFeatures);
     				String jqlElse = getJql(it.getCall(), getJql(literalFunction.getParameters().get(0).getExpression()));
 
-    				return String.format("(%s!isDefined() ? %s : %s)", base, jqlCall, jqlElse);
+    				return String.format("(%s!isDefined() ? %s : %s)", base + jqlFeatures, jqlCall, jqlElse);
     			}
 			}
 			
 			if (it.getCall() != null) {
-				jqlCall = getJql(it.getCall(), base + "!" + getJql(it.getFunction()));
+				jqlCall = getJql(it.getCall(), base + "!" + getJql(it.getFunction()) + jqlFeatures);
 				return jqlCall;
 			}
 			
-			return base + jqlFunction;
+			return base + jqlFunction + jqlFeatures;
 		} else {
 			return base;
 		}
@@ -464,6 +461,7 @@ public class JslExpressionToJqlExpression {
         String repr = null;
         
         if (it.getNavigationTargetType() instanceof EntityQueryDeclaration) {
+        	boolean oldSelfEnabled = selfEnabled;
             EntityQueryDeclaration entityQueryDeclaration = (EntityQueryDeclaration) it.getNavigationTargetType();
             
             // Get parameters which passed from call
@@ -491,7 +489,9 @@ public class JslExpressionToJqlExpression {
             
             queryCallStack.add(entityQueryDeclaration);
             queryStackParameterValues.add(parameterValues);
+            selfEnabled = true;
             repr = getJql((EntityQueryDeclaration) it.getNavigationTargetType());
+            selfEnabled = oldSelfEnabled;
             queryStackParameterValues.poll();
             queryCallStack.poll();            
             
