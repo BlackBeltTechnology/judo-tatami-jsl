@@ -78,7 +78,7 @@ the correct measurement handling.
 [source,xml]
 ----
 <execution>
-    <id>execute-esm-model-from-artifact</id>
+    <id>execute-jsl-transformation</id>
     <phase>compile</phase>
     <goals>
         <goal>default-workflow</goal>

@@ -1,0 +1,9 @@
+model Test;
+
+type string String(min-size = 0, max-size = 128);
+
+entity Person {
+    field String firstName;
+    field String lastName;
+    derived String fullName => self.firstName + " " + self.lastName;
+}
