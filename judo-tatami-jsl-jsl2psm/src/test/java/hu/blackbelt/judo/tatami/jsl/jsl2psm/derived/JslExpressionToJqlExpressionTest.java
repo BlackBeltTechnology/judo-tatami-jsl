@@ -77,7 +77,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
 
         assertEquals("\"apple\"!length()",  jqlDerived("SalesPerson", "strLength", "", ""));
 
-        assertEquals("self.lead.salesPerson!filter(d | d.lead.closed == false)!filter(d | d.lead.closed == false)!substring(1, 1)!length()",  jqlDerived("SalesPerson", "strLengthDerived3", "", ""));
+        assertEquals("self.lead.salesPerson!filter(d | d.lead.closed == false)!filter(d | d.lead.closed == false).stringLiteral!substring(1, 1)!length()",  jqlDerived("SalesPerson", "strLengthDerived3", "", ""));
 
         
         assertEquals("self.leads!count()",  jqlDerived("SalesPerson", "value", "", ""));
