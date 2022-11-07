@@ -70,14 +70,14 @@
         <judo-meta-asm-version>1.1.3.20221102_102348_90786514_develop</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.3.20221027_022134_8acd0df6_develop</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.1</judo-meta-liquibase-version>
-        <judo-dao-api-version>1.0.3.20221104_194316_ecabccde_feature_JNG_4213_AddOffsetSupport</judo-dao-api-version>
+        <judo-dao-api-version>1.0.3.20221107_095029_1a7ed7e4_develop</judo-dao-api-version>
         <judo-sdk-common-version>1.0.2</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.1</judo-operation-utils-version>
         <judo-runtime-core-version>1.0.4.20221103_173918_3ec89d86_develop</judo-runtime-core-version>
         <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
-        <judo-tatami-base-version>1.1.3.20221104_215028_a7613adf_feature_JNG_4213_AddOffsetSupport</judo-tatami-base-version>
+        <judo-tatami-base-version>1.1.3.20221107_100120_7e33687d_develop</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.3.20221102_102439_9ffe11ec_develop</judo-tatami-core-version>
 
 
