@@ -218,17 +218,6 @@ public class JslExpressionToJqlExpression {
     }
 
     /**
-     * SpawnOperation returns Expression
-     * : UnaryOperation (=> ({SpawnOperation.operand=current} 'as' spawnTargetType=LocalName))?
-     * ;
-     */
-    private String getJqlDispacher(final SpawnOperation it) {
-        return it != null
-                ? getJql(it.getOperand()) + " as " + it.getSpawnTargetType()
-                : null;
-    }
-
-    /**
      * UnaryOperation returns Expression
      * : {UnaryOperation} operator=('not' | '-') operand=FunctionedExpression
      * | FunctionedExpression
@@ -785,8 +774,6 @@ public class JslExpressionToJqlExpression {
             return getJqlDispacher((IntegerLiteral) it);
         } else if (it instanceof RawStringLiteral) {
             return getJqlDispacher((RawStringLiteral) it);
-        } else if (it instanceof SpawnOperation) {
-            return getJqlDispacher((SpawnOperation) it);
         } else if (it instanceof TernaryOperation) {
             return getJqlDispacher((TernaryOperation) it);
         } else if (it instanceof TimeLiteral) {

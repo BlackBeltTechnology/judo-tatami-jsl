@@ -72,14 +72,16 @@ entity SalesPerson {
     
     
     derived Integer value => self.leads!size();
-    derived Integer t1 => self.leads!size() > 1;
-    query Customer[] leadsOverQuery(Integer limit = 100) => self.leads!filter(lead | lead.value > limit);
-    derived Customer[] leadsOver => self.leads!filter(lead | lead.value > 100);
-    derived Customer selfDerived => self;
+    derived Boolean t1 => self.leads!size() > 1;
+    query Lead[] leadsOverQuery(Integer limit = 100) => self.leads!filter(lead | lead.value > limit);
+    derived Lead[] leadsOver => self.leads!filter(lead | lead.value > 100);
+
+    derived SalesPerson selfDerived => self;
+
     derived Customer anyCustomer => Customer!any();
-    derived Customer stringConcat => "" + self.value + "test";
-    derived Customer complex => self.leads!size() > 0 ? self.leads!filter(lead | lead.closed)!size() / self.leads!size() : 0;
-    derived Customer arithmetic => ((1 + 2) * 3) / 4;
+    derived String stringConcat => "" + self.value!asString() + "test";
+    derived Integer complex => self.leads!size() > 0 ? self.leads!filter(lead | lead.closed)!size() / self.leads!size() : 0;
+    derived Decimal arithmetic => ((1 + 2) * 3) / 4;
     derived Time timeLiteral => `12:12:11.11`;
     derived Timestamp timestampLiteral => `2020-12-01T12:12:11.11Z`;
     derived Date dateLiteral => `2020-12-01`;

@@ -23,7 +23,6 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import hu.blackbelt.judo.meta.jsl.jsldsl.EntityQueryTargetType;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Feature;
 import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionCall;

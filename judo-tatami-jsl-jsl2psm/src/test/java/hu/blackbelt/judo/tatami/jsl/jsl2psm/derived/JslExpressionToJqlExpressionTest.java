@@ -124,7 +124,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         
         assertEquals("self", jqlDerived("SalesPerson", "selfDerived", "", ""));
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Customer!any()", jqlDerived("SalesPerson", "anyCustomer", "", ""));
-        assertEquals("\"\" + self.value + \"test\"", jqlDerived("SalesPerson", "stringConcat", "", ""));
+        assertEquals("\"\" + self.value!asString() + \"test\"", jqlDerived("SalesPerson", "stringConcat", "", ""));
         assertEquals("self.leads!count() > 0 ? self.leads!filter(lead | lead.closed)!count() / self.leads!count() : 0", jqlDerived("SalesPerson", "complex", "", ""));
         assertEquals("((1 + 2) * 3) / 4", jqlDerived("SalesPerson", "arithmetic", "", ""));
 
