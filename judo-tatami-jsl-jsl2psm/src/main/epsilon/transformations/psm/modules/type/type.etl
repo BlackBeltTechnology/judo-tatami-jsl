@@ -4,7 +4,7 @@ import "../../../../operations/_importAll.eol";
 rule CreateNumericType
 	transform s: JSL!DataTypeDeclaration
 	to t: JUDOPSM!NumericType {
-        guard: s.`primitive` == "numeric"
+        guard: s.`primitive` == "numeric" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
 
         t.setId("(jsl/" + s.getId() + ")/CreateNumericType");
         t.name = s.name;
@@ -17,7 +17,7 @@ rule CreateNumericType
 rule CreateDateType
   transform s: JSL!DataTypeDeclaration
   to t: JUDOPSM!DateType {
-        guard: s.`primitive` == "date"
+        guard: s.`primitive` == "date" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
 
         t.setId("(jsl/" + s.getId() + ")/CreateDateType");
         t.name = s.name;
@@ -28,7 +28,7 @@ rule CreateDateType
 rule CreateTimeType
   transform s: JSL!DataTypeDeclaration
   to t: JUDOPSM!TimeType {
-        guard: s.`primitive` == "time"
+        guard: s.`primitive` == "time" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
 
         t.setId("(jsl/" + s.getId() + ")/CreateTimeType");
         t.name = s.name;
@@ -39,7 +39,7 @@ rule CreateTimeType
 rule CreateTimestampType
 	transform s: JSL!DataTypeDeclaration
 	to t: JUDOPSM!TimestampType {
-        guard: s.`primitive` == "timestamp"
+        guard: s.`primitive` == "timestamp" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
 
         t.setId("(jsl/" + s.getId() + ")/CreateTimestampType");
         t.name = s.name;
@@ -69,7 +69,7 @@ rule CreateEnumerationMember
 rule CreateBooleanType 
 	transform s : JSL!DataTypeDeclaration
 	to t : JUDOPSM!BooleanType {
-        guard: s.`primitive` == "boolean"
+        guard: s.`primitive` == "boolean" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
         
         t.setId("(jsl/" + s.getId() + ")/CreateBooleanType");
         t.name = s.name;
@@ -81,7 +81,7 @@ rule CreateBooleanType
 rule CreateStringType 
 	transform s : JSL!DataTypeDeclaration
 	to t : JUDOPSM!StringType {
-        guard: s.`primitive` == "string"
+        guard: s.`primitive` == "string" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
         
         t.setId("(jsl/" + s.getId() + ")/CreateStringType");
         t.name = s.name;
@@ -98,7 +98,7 @@ rule CreateStringType
 rule CreateBinaryType 
     transform s : JSL!DataTypeDeclaration
     to t : JUDOPSM!BinaryType {
-        guard: s.`primitive` == "binary"
+        guard: s.`primitive` == "binary" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
 		
         t.setId("(jsl/" + s.getId() + ")/CreateBinaryType");
         t.name = s.name;

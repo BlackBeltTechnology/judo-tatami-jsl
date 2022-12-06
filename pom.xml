@@ -29,7 +29,7 @@
     </developers>
 
     <properties>
-        <revision>1.1.2</revision>
+        <revision>1.1.3</revision>
         <maven>3.8.3</maven>
 
         <project-shortname>judo-tatami-jsl</project-shortname>
@@ -54,27 +54,31 @@
         <logback-test-config>${maven.multiModuleProjectDirectory}/logback-test.xml</logback-test-config>
 
         <slf4j-version>1.7.36</slf4j-version>
+        <junit-version>5.5.1</junit-version>
         <surefire-version>3.0.0-M7</surefire-version>
 
         <epsilon-runtime-version>1.5.0</epsilon-runtime-version>
+        <antlr-runtime-version>3.2</antlr-runtime-version>
+        <build-helper-maven-plugin-version>3.3.0</build-helper-maven-plugin-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.1</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.2</judo-meta-jsl-version>
 
         <judo-meta-rdbms-version>1.0.1</judo-meta-rdbms-version>
-        <judo-meta-jql-version>1.0.2</judo-meta-jql-version>
-        <judo-meta-psm-version>1.2.2</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.2</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.2</judo-meta-expression-version>
+        <judo-meta-jql-version>1.0.3</judo-meta-jql-version>
+        <judo-meta-psm-version>1.2.3</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.3</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.4</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.1</judo-meta-liquibase-version>
-        <judo-dao-api-version>1.0.2</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.2</judo-sdk-common-version>
+        <judo-dao-api-version>1.0.3</judo-dao-api-version>
+        <judo-sdk-common-version>1.0.3</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
-        <judo-operation-utils-version>1.1.1</judo-operation-utils-version>
+        <judo-operation-utils-version>1.1.2</judo-operation-utils-version>
+        <judo-runtime-core-version>1.0.5</judo-runtime-core-version>
         <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
-        <judo-tatami-base-version>1.1.2</judo-tatami-base-version>
-        <judo-tatami-core-version>1.1.2</judo-tatami-core-version>
+        <judo-tatami-base-version>1.1.5</judo-tatami-base-version>
+        <judo-tatami-core-version>1.1.3</judo-tatami-core-version>
 
 
         <!-- Code Quality-->
@@ -159,7 +163,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.5.1</version>
+            <version>${junit-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -202,7 +206,7 @@
             <dependency>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr-runtime</artifactId>
-                <version>3.2</version>
+                <version>${antlr-runtime-version}</version>
             </dependency>
 
             <dependency>
@@ -488,7 +492,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>${build-helper-maven-plugin-version}</version>
                 </plugin>
 
                 <plugin>
@@ -716,6 +720,7 @@
                 <module>judo-tatami-jsl-jsl2psm</module>
                 <module>judo-tatami-jsl-workflow</module>
                 <module>judo-tatami-jsl-workflow-maven-plugin</module>
+                <module>judo-tatami-jsl-workflow-maven-plugin-test</module>
             </modules>
         </profile>
 

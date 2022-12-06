@@ -78,15 +78,15 @@ the correct measurement handling.
 [source,xml]
 ----
 <execution>
-    <id>execute-esm-model-from-artifact</id>
+    <id>execute-jsl-transformation</id>
     <phase>compile</phase>
     <goals>
         <goal>default-workflow</goal>
     </goals>
     <configuration>
-        <sources>${project.basedir}/src/main/model</sources> <!--1-->
-        <modelNames/> <!--2-->
-        <destination>${project.basedir}/target/model</destination> <!--3-->
+        <sources>${project.basedir}/src/main/resources/model</sources> <!--1-->
+        <destination>${project.basedir}/target/generated-sources/model</destination> <!--2-->
+        <modelNames/> <!--3-->
         <modelVersion>${project.version}</modelVersion> <!--4-->
 
         <sdkPackagePrefix>my.best.package</sdkPackagePrefix> <!--5-->
@@ -128,14 +128,14 @@ URI type parameters can be file or mvn with the following coordinate:
 
 <1> (Optional) Sources URI. It is a coma separated list. When one or more models are defined, added them, when a directory in a filesystem or artifact is defined scans recursively for .jsl files. 
 +
-(Default: src/model directory inside the project)
+(Default: `src/main/resources/model` directory inside the project)
 
 <2> (Optional) Destination path where the transformation output is generated. It contains intermediate models, traces and source code.
 +
 IMPORTANT: When the source codes have to be compiled, use the `build-helper-plugin` to add source folder, or
 have to enable `compileSdk` and `createSdkJar` option. 
 +
-Default: `${project.basedir}/target/classes/model``.
+(Default: `${project.basedir}/target/generated-sources/model`)
 
 <3> (Optional) Logical model names. When multiple `jsl` files are defined, by default all of them are compiled. Most of the time only one or more dedicated model can be compiled with the list of the names. (the name which is dfined as `model` in the first line of `.jsl`)
 +
