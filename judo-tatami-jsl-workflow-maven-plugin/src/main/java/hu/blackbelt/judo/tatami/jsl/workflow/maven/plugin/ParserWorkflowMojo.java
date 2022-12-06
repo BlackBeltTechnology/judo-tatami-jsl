@@ -78,7 +78,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${plugin}", readonly = true)
 	public PluginDescriptor pluginDescriptor;
 
-	@Parameter(property = "sources", defaultValue = "${project.basedir}/src/main/model")
+	@Parameter(property = "sources", defaultValue = "${project.basedir}/src/main/resources/model")
 	public List<String> sources;
 
 	@Parameter(property = "modelNames")
@@ -144,7 +144,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
 	@Parameter(property = "ignoreAsm2Expression", defaultValue = "false")
 	public Boolean ignoreAsm2Expression = false;
 
-	@Parameter(property = "destination", defaultValue = "${project.basedir}/target/model")
+	@Parameter(property = "destination", defaultValue = "${project.basedir}/target/generated-sources/model")
 	public File destination;
 
 	@Parameter(property = "modelVersion", defaultValue = "${project.version}")

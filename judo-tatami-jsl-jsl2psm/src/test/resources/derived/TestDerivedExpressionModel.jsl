@@ -34,6 +34,11 @@ entity Lead {
     field Integer value = 100000;
     field Boolean closed;
     relation SalesPerson salesPerson opposite leads;
+    derived Integer orElseValue => self.value!orElse(value = 10)!abs()!abs();
+    derived Integer orElseValue2 => self.value!orElse(value = 9)!floor()!orElse(value = 5)!abs();
+    derived Integer orElseValue3 => self.value!orElse(value = 9!orElse(value = 5))!abs();
+    derived Lead orElseValue4 => Lead!filter(l | l.value < 1000)!any()!orElse(value = Lead!any());
+    derived Integer orElseValue5 => self.value!orElse(value = +10);
 }
 
 entity SalesPerson {
@@ -48,6 +53,9 @@ entity SalesPerson {
 
     query Lead[] leadsOverWithMinStatic(Integer minLeadsOverMin = 5) => staticLeadsBetween(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100);
     // Lead!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)
+
+    query Lead[] leadsOverWithMinWithoutDefault(Integer minLeadsOverMin) => self.leadsBetween(minLeadsBetween = minLeadsOverMin , maxLeadsBetween = 100);
+    // self.leads!filter(lead | lead.value > input.minLeadsOverMin and lead.value < 100)
 
     
     derived Lead[] leadsOver10 => self.leadsOverWithMin(minLeadsOverMin = 10);

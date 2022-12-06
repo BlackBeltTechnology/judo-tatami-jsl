@@ -19,6 +19,10 @@ import "modules/derived/entityQuery.etl";
 
 import "modules/type/type.etl";
 
+pre {
+	JUDOPSM.target.resource.contents.add(defaultModelName.equivalent("CreateRootModel"));
+}
+
 post {
 	for (c in JUDOPSM!Cardinality.all()) {
 		c.setId(c.eContainer.getId()+"/cardinality");

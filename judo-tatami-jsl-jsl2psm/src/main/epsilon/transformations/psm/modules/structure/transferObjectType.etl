@@ -28,7 +28,7 @@ rule CreateEntityDefaultTransferObjectType
 	                if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
 						t.attributes.add(im.equivalentWithPrefix("CloneTransferAttributeForDefaultTransferObjectType", t.getId()));
 						if (im.defaultExpression.isDefined()) {
-    						t.attributes.add(im.equivalentWithPrefix("CloneTransferDefaultValueAttributeForDefaultTransferObjectType", t.getId()));
+    						t.attributes.add(im.defaultExpression.equivalentWithPrefix("CloneTransferDefaultValueAttributeForDefaultTransferObjectType", t.getId()));
 						}
 					// Embedded relations
 	                } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
