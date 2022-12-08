@@ -66,7 +66,7 @@
 
         <judo-meta-rdbms-version>1.0.1</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.4.20221202_125903_6302fb21_develop</judo-meta-jql-version>
-        <judo-meta-psm-version>1.2.4.20221130_085646_6f692229_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.2.4.20221208_130618_fd953c86_develop</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.4.20221130_085619_85599a94_develop</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.5.20221206_165458_d89bc42d_develop</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.1</judo-meta-liquibase-version>

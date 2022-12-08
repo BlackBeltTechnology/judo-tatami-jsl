@@ -9,6 +9,30 @@ rule CreateUnmappedTransferObjectForStaticQuery
 		log.debug("Created UnmappedTransferObjectType: " + t.name);
 }
 
+rule CreateOriginalNameAnnotationForStaticQuery
+    transform s : JSL!QueryDeclaration
+    to t : JUDOPSM!Annotation {
+		guard: s.parameters.size() > 0
+
+        t.setId("(jsl/" + s.getId() + ")/CreateOriginalNameAnnotationForStaticQuery");
+        t.name = "OriginalSource";
+        s.equivalent("CreateUnmappedTransferObjectForStaticQuery").annotations.add(t);
+		log.debug("Create OriginalName Annotation for static query: " + t.name);
+}
+
+rule CreateOriginalNameAnnotationDetailForStaticQuery
+    transform s : JSL!QueryDeclaration
+    to t : JUDOPSM!AnnotationDetail {
+		guard: s.parameters.size() > 0
+
+        t.setId("(jsl/" + s.getId() + ")/CreateOriginalNameAnnotationDetailForStaticQuery");
+        t.name = "Name";
+        t.`value` = s.name;
+        s.equivalent("CreateOriginalNameAnnotationForStaticQuery").details.add(t);
+		log.debug("Create OriginalName Annotation for static query: " + t.name);
+}
+
+
 rule CreateTransferObjectForStaticQueryDeclarationParameter
     transform s : JSL!QueryDeclarationParameter
     to t: JUDOPSM!TransferAttribute {
