@@ -66,7 +66,7 @@
 
         <judo-meta-rdbms-version>1.0.1</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.3</judo-meta-jql-version>
-        <judo-meta-psm-version>1.2.3</judo-meta-psm-version>
+        <judo-meta-psm-version>1.2.4.20221208_130618_fd953c86_develop</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.3</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.4</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.1</judo-meta-liquibase-version>
