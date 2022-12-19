@@ -24,20 +24,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.Feature;
+import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionArgument;
 import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionCall;
-import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionedExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaFunction;
-import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunction;
-import hu.blackbelt.judo.meta.jsl.jsldsl.LiteralFunctionParameter;
-import hu.blackbelt.judo.meta.jsl.jsldsl.NavigationExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.SelfExpression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.SingleType;
+import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaCall;
+import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.Navigation;
 
 import hu.blackbelt.judo.meta.jsl.runtime.TypeInfo;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.epsilon.ecl.parse.Ecl_EolParserRules.returnStatement_return;
 
 import java.util.*;
 import java.util.function.Function;
@@ -45,6 +39,8 @@ import java.util.stream.Collectors;
 
 public class Jsl2JqlFunction {
 
+	
+	
 	private static class ParameterValue {
 		private String name;
 		private String defaultValue;
@@ -189,7 +185,7 @@ public class Jsl2JqlFunction {
                             ParameterValue.builder().name("instance").build())))
                     .build();
 
-	private static String getEffectiveFunctionName(String functionName, LiteralFunction literalFunction) {
+	private static String getEffectiveFunctionName(String functionName, Navigation navigation) {
 		if (functionName.equalsIgnoreCase("right"))  {
 			return "last";
 		} else if (functionName.equalsIgnoreCase("left"))  {
@@ -199,8 +195,7 @@ public class Jsl2JqlFunction {
 		} else  if (functionName.equalsIgnoreCase("upper"))  {
 			return "upperCase";
 		} else  if (functionName.equalsIgnoreCase("size"))  {
-			FunctionCall functionCall = (FunctionCall) literalFunction.eContainer();
-			TypeInfo baseType = TypeInfo.getParentFunctionCallReturnType(functionCall);
+			TypeInfo baseType = TypeInfo.getTargetType(navigation.getBase());
 			if (baseType.isPrimitive()) {
 				if (baseType.getPrimitive() == TypeInfo.PrimitiveType.STRING) {
 					return "length";
@@ -218,8 +213,9 @@ public class Jsl2JqlFunction {
 	/**
 	 * Keys are function names. Each "function" can have multiple possible parameter lists.
 	 */
-	public static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor) {
-		String functionName = it.getFunctionDeclarationReference().getName();
+	public static String getFunctionAsJql(FunctionCall it, Function<Expression, String> expressionExtractor) {
+		FunctionDeclaration functionDeclaration = (FunctionDeclaration)it.getDeclaration();
+		String functionName = functionDeclaration.getName();
 
 		if ("plus".equals(functionName)) {
 			return getTimestampPlusFunctionAsJql(it, expressionExtractor, functionName);
@@ -229,21 +225,38 @@ public class Jsl2JqlFunction {
 
 	}
 
-	private static String getFunctionAsJql(LiteralFunction it, Function<Expression, String> expressionExtractor, String functionName) {
+	public static String getLambdaAsJql(LambdaCall it, Function<Expression, String> expressionExtractor) {
+		LambdaDeclaration lambdaDeclaration = (LambdaDeclaration)it.getDeclaration();
+		String lambdaName = lambdaDeclaration.getName();
+		
+		return getLambdaAsJql(it, expressionExtractor, lambdaName);
+	}
+
+	private static String getLambdaAsJql(LambdaCall it, Function<Expression, String> expressionExtractor, String lambdaName) {
+		//      System.out.println(getStack(it));
+		//      System.out.println(TypeInfo.getFunctionCallReferences());
+		LambdaDeclaration lambdaDeclaration = (LambdaDeclaration)it.getDeclaration();
+		
+		return getEffectiveFunctionName(lambdaName, (Navigation)it.eContainer()) + "()";
+}
+	
+	
+	private static String getFunctionAsJql(FunctionCall it, Function<Expression, String> expressionExtractor, String functionName) {
 //                System.out.println(getStack(it));
 //                System.out.println(TypeInfo.getFunctionCallReferences());
+		FunctionDeclaration functionDeclaration = (FunctionDeclaration)it.getDeclaration();
 
 		if (literalFunctionParameters.containsKey(functionName)) {
-			List<String> givenParameterNames = it.getParameters().stream().map(p -> p.getDeclaration().getName()).collect(Collectors.toList());
+			List<String> givenParameterNames = it.getArguments().stream().map(p -> p.getDeclaration().getName()).collect(Collectors.toList());
 			List<Collection<ParameterValue>> alignedParameterLists =
 					literalFunctionParameters.get(functionName).stream()
 							.filter(parameterValues -> parameterValues.stream().map(ParameterValue::getName).collect(Collectors.toList()).containsAll(givenParameterNames))
 							.collect(Collectors.toList());
 			if (alignedParameterLists.size() > 1) {
 				throw new IllegalStateException(String.format("Cannot determine which definition of function '%s' to use with [%s] given parameters",
-						it.getFunctionDeclarationReference().getName(), String.join(", ", givenParameterNames)));
+						functionDeclaration.getName(), String.join(", ", givenParameterNames)));
 			} else if (alignedParameterLists.size() == 1) {
-				Map<String, LiteralFunctionParameter> givenParameters = it.getParameters().stream().collect(Collectors.toMap(p -> p.getDeclaration().getName(), p -> p));
+				Map<String, FunctionArgument> givenParameters = it.getArguments().stream().collect(Collectors.toMap(p -> p.getDeclaration().getName(), p -> p));
 				Collection<ParameterValue> definedParameters = alignedParameterLists.get(0);
 				List<String> jqlParameters = new ArrayList<>();
 				for (ParameterValue definedParameter : definedParameters) {
@@ -258,26 +271,26 @@ public class Jsl2JqlFunction {
 						jqlParameters.add(expressionExtractor.apply(givenParameters.get(definedParameter.getName()).getExpression()));
 					}
 				}
-				return getEffectiveFunctionName(functionName, it) + "(" + String.join(", ", jqlParameters) + ")";
+				return getEffectiveFunctionName(functionName, (Navigation)it.eContainer()) + "(" + String.join(", ", jqlParameters) + ")";
 			}
 		}
 
-		return getEffectiveFunctionName(functionName, it) + "()";
+		return getEffectiveFunctionName(functionName, (Navigation)it.eContainer()) + "()";
 	}
 
-	private static String getTimestampPlusFunctionAsJql(LiteralFunction literalFunction, Function<Expression, String> expressionExtractor, String functionName) {
+	private static String getTimestampPlusFunctionAsJql(FunctionCall it, Function<Expression, String> expressionExtractor, String functionName) {
 		Collection<Collection<ParameterValue>> timestampPlusParameterLists = literalFunctionParameters.get(functionName);
 		if (timestampPlusParameterLists.size() != 1) {
 			throw new IllegalStateException("Unsupported number of timestamp plus definitions: " + timestampPlusParameterLists.size());
 		}
 		Set<String> definedParameters = timestampPlusParameterLists.stream().findFirst().orElseThrow().stream().map(ParameterValue::getName).collect(Collectors.toSet());
 		List<String> jqlFunctionCall = new ArrayList<>();
-		for (LiteralFunctionParameter parameter : literalFunction.getParameters()) {
-			String parameterName = parameter.getDeclaration().getName();
-			if (!definedParameters.contains(parameterName)){
-				throw new IllegalArgumentException("Invalid parameter name: " + parameterName);
+		for (FunctionArgument argument : it.getArguments()) {
+			String argumentName = argument.getDeclaration().getName();
+			if (!definedParameters.contains(argumentName)){
+				throw new IllegalArgumentException("Invalid parameter name: " + argumentName);
 			}
-			jqlFunctionCall.add(String.format("%s(%s)", getJqlTimestampArithmeticFunctionNameOf(parameterName), expressionExtractor.apply(parameter.getExpression())));
+			jqlFunctionCall.add(String.format("%s(%s)", getJqlTimestampArithmeticFunctionNameOf(argumentName), expressionExtractor.apply(argument.getExpression())));
 		}
 		return String.join("!", jqlFunctionCall);
 	}

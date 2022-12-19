@@ -1,14 +1,14 @@
 @cached
-operation JSL!DefaultExpressionType isDefaultValueForEntity(): Boolean {
+operation JSL!Expression isDefaultValueForEntity(): Boolean {
 	return (self.eContainer.isKindOf(JSL!EntityIdentifierDeclaration) or self.eContainer.isKindOf(JSL!EntityFieldDeclaration)) and self.eContainer.defaultExpression == self;
 }
 
 @cached
-operation JSL!DefaultExpressionType isDefaultValueForError(): Boolean {
+operation JSL!Expression isDefaultValueForError(): Boolean {
 	return self.eContainer.isKindOf(JSL!ErrorField) and self.eContainer.defaultExpression == self;
 }
 
 @cached
-operation JSL!DefaultExpressionType getId(): String {
+operation JSL!Expression getId(): String {
 	return (self.eContainer.getId() + "/defaultExpression");
 }

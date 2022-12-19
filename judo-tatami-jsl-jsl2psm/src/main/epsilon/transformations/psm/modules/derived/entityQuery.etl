@@ -10,12 +10,12 @@ rule CreateUnmappedTransferObjectForEntityQuery
 		log.debug("Created UnmappedTransferObjectType: " + t.name);
 }
 
-rule CreateTransferObjectForEntityQueryDeclarationParameter
-    transform s : JSL!QueryDeclarationParameter
+rule CreateTransferObjectForEntityQueryParameterDeclaration
+    transform s : JSL!QueryParameterDeclaration
     to t: JUDOPSM!TransferAttribute {
         guard: s.eContainer.isKindOf(JSL!EntityQueryDeclaration)
         
-        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForEntityQueryDeclarationParameter");
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForEntityQueryParameterDeclaration");
 
         t.name = s.name;
         t.dataType = s.referenceType.getPSMEquivalent();
