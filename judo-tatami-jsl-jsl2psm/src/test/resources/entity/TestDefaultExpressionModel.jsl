@@ -8,31 +8,31 @@ type string String(min-size = 0, max-size = 32);
 type numeric Decimal(precision = 9, scale = 2);
 type boolean Boolean;
 
-//error ErrorWithDefaults {
-//    field String withDefault = "Hello!";
-//}
+error ErrorWithDefaults {
+    field String withDefault = "Hello!";
+}
 
 entity LiteralEntity {
     field Boolean booleanLiteral = true;
-//    field Integer intLiteral = 1;
-//    field Decimal decimalLiteral = 1.23;
-//    field String escapedStringLiteral = "escaped\nstring";
-//    field String rawStringLiteral = r"raw\nstring";
-//    field Date dateLiteral = `2020-02-18`;
-//    field Timestamp timeStampLiteral = `2020-02-18T10:11:12Z`;
-//    field Time timeLiteral = `23:59:59`;
+    field Integer intLiteral = 1;
+    field Decimal decimalLiteral = 1.23;
+    field String escapedStringLiteral = "escaped\nstring";
+    field String rawStringLiteral = r"raw\nstring";
+    field Date dateLiteral = `2020-02-18`;
+    field Timestamp timeStampLiteral = `2020-02-18T10:11:12Z`;
+    field Time timeLiteral = `23:59:59`;
 }
 
-//entity LiteralEntityWithIdentifiers {
-//    identifier Boolean idBooleanLiteral = true;
-//    identifier Integer idIntLiteral = 1;
-//    identifier Decimal idDecimalLiteral = 1.23;
-//    identifier String idEscapedStringLiteral = "escaped\nstring";
-//    identifier String idRawStringLiteral = r"raw\nstring";
-//    identifier Date idDateLiteral = `2020-02-18`;
-//    identifier Timestamp idTimeStampLiteral = `2020-02-18T10:11:12Z`;
-//    identifier Time idTimeLiteral = `23:59:59`;
-//}
+entity LiteralEntityWithIdentifiers {
+    identifier Boolean idBooleanLiteral = true;
+    identifier Integer idIntLiteral = 1;
+    identifier Decimal idDecimalLiteral = 1.23;
+    identifier String idEscapedStringLiteral = "escaped\nstring";
+    identifier String idRawStringLiteral = r"raw\nstring";
+    identifier Date idDateLiteral = `2020-02-18`;
+    identifier Timestamp idTimeStampLiteral = `2020-02-18T10:11:12Z`;
+    identifier Time idTimeLiteral = `23:59:59`;
+}
 
 /*
 entity ComplexDefaultsEntity {

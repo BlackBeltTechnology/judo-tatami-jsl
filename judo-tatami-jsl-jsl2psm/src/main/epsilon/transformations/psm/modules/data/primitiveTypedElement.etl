@@ -20,6 +20,7 @@ rule CreateAttributeFromField
         log.debug("Created Attribute (Field): " + t.name);
     }
 
+@greedy
 rule CreateDefaultDataExpressionTypeForPrimitiveEntityMember
     transform s : JSL!Expression
     to t: JUDOPSM!DataExpressionType {
@@ -32,6 +33,7 @@ rule CreateDefaultDataExpressionTypeForPrimitiveEntityMember
         log.debug("Created DataExpressionType for Default Value: " + t.expression);
     }
 
+@greedy
 rule CreateDefaultValueForPrimitiveEntityMember
     transform s : JSL!Expression
     to t: JUDOPSM!DataProperty {
@@ -47,6 +49,7 @@ rule CreateDefaultValueForPrimitiveEntityMember
         log.debug("Created DataProperty for Default Value: " + s);
     }
 
+@greedy
 rule CreateDefaultDataExpressionTypeForPrimitiveErrorField
     transform s : JSL!Expression
     to t: JUDOPSM!DataExpressionType {
@@ -59,6 +62,7 @@ rule CreateDefaultDataExpressionTypeForPrimitiveErrorField
         log.debug("Created DefaultExpressionType for Default Value: " + t.expression);
     }
 
+@greedy
 rule CreateDefaultValueForPrimitiveErrorField
     transform s : JSL!Expression
     to t: JUDOPSM!StaticData {

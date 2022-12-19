@@ -203,13 +203,14 @@ rule CloneTransferAttributeForErrorTransferObjectType
 rule AbstractCreateTransferDefaultValueAttributeForDefaultTransferObjectType
     transform s: JSL!Expression
     to t: JUDOPSM!TransferAttribute {
-        guard: generateDefaultTransferObject and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        guard: generateDefaultTransferObject and s.isDefaultValueForEntity() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultValueForPrimitiveEntityMember");
         t.dataType = s.eContainer.referenceType.getPSMEquivalent();
 }
 
 // Create default transfer object attribute for default value expression and add it to default transfer object
+@greedy
 rule CreateTransferDefaultValueAttributeForDefaultTransferObjectType
     transform s: JSL!Expression
     to t: JUDOPSM!TransferAttribute
@@ -224,6 +225,7 @@ rule CreateTransferDefaultValueAttributeForDefaultTransferObjectType
 // the caller code have to add it to the corresponding transfer object
 // This method can be used to make clone attributes to inherited transfer objects
 @lazy
+@greedy
 rule CloneTransferDefaultValueAttributeForDefaultTransferObjectType
     transform s: JSL!Expression
     to t: JUDOPSM!TransferAttribute
@@ -240,13 +242,14 @@ rule CloneTransferDefaultValueAttributeForDefaultTransferObjectType
 rule AbstractCreateTransferDefaultValueAttributeForErrorTransferObjectType
     transform s: JSL!Expression
     to t: JUDOPSM!TransferAttribute {
-        guard: generateDefaultTransferObject and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        guard: generateDefaultTransferObject and s.isDefaultValueForError() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultValueForPrimitiveErrorField");
         t.dataType = s.eContainer.referenceType.getPSMEquivalent();
 }
 
 // Create default transfer object attribute for default value expression and add it to default transfer object
+@greedy
 rule CreateTransferDefaultValueAttributeForErrorTransferObjectType
     transform s: JSL!Expression
     to t: JUDOPSM!TransferAttribute
@@ -261,6 +264,7 @@ rule CreateTransferDefaultValueAttributeForErrorTransferObjectType
 // the caller code have to add it to the corresponding transfer object
 // This method can be used to make clone attributes to inherited transfer objects
 @lazy
+@greedy
 rule CloneTransferDefaultValueAttributeForErrorTransferObjectType
     transform s: JSL!Expression
     to t: JUDOPSM!TransferAttribute
