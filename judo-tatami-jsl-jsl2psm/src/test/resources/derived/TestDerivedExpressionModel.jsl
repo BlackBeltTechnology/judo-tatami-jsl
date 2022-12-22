@@ -11,19 +11,19 @@ type numeric Decimal(precision = 9, scale = 2);
 type boolean Boolean;
 
 
-query Lead[] staticLeadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) => Lead!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);
+query Lead[] staticLeadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) => Lead!all()!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);
 // Lead!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
 
 query Lead[] staticLeadsOverWithMin(Integer minLeadsOverMin = 5) => staticLeadsBetween(minLeadsBetween = minLeadsOverMin , maxLeadsBetween = 100);
 // Lead!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)
 
 query Lead[] staticLeadsBetweenAndSalesPersonLeads(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) => (
-	Lead!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)
+	Lead!all()!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)
 		.salesPerson.leadsBetween(minLeadsBetween = minLeadsBetween, maxLeadsBetween = maxLeadsBetween)
 );
 
-query inherited::LeadInherited staticInheritedLeadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) => (
-		inherited::LeadInherited!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)
+query inherited::LeadInherited[] staticInheritedLeadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) => (
+		inherited::LeadInherited!all()!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)
 );
 
 
@@ -37,8 +37,9 @@ entity Lead {
     derived Integer orElseValue => self.value!orElse(value = 10)!abs()!abs();
     derived Integer orElseValue2 => self.value!orElse(value = 9)!floor()!orElse(value = 5)!abs();
     derived Integer orElseValue3 => self.value!orElse(value = 9!orElse(value = 5))!abs();
-    derived Lead orElseValue4 => Lead!filter(l | l.value < 1000)!any()!orElse(value = Lead!any());
+    derived Lead orElseValue4 => Lead!all()!filter(l | l.value < 1000)!any()!orElse(value = Lead!any());
     derived Integer orElseValue5 => self.value!orElse(value = +10);
+    derived Boolean b => self.salesPerson!kindOf(entityType = SalesPerson);
 }
 
 entity SalesPerson {
@@ -72,14 +73,16 @@ entity SalesPerson {
     
     
     derived Integer value => self.leads!size();
-    derived Integer t1 => self.leads!size() > 1;
-    query Customer[] leadsOverQuery(Integer limit = 100) => self.leads!filter(lead | lead.value > limit);
-    derived Customer[] leadsOver => self.leads!filter(lead | lead.value > 100);
-    derived Customer selfDerived => self;
+    derived Boolean t1 => self.leads!size() > 1;
+    query Lead[] leadsOverQuery(Integer limit = 100) => self.leads!filter(lead | lead.value > limit);
+    derived Lead[] leadsOver => self.leads!filter(lead | lead.value > 100);
+
+    derived SalesPerson selfDerived => self;
+
     derived Customer anyCustomer => Customer!any();
-    derived Customer stringConcat => "" + self.value + "test";
-    derived Customer complex => self.leads!size() > 0 ? self.leads!filter(lead | lead.closed)!size() / self.leads!size() : 0;
-    derived Customer arithmetic => ((1 + 2) * 3) / 4;
+    derived String stringConcat => "" + self.value!asString() + "test";
+    derived Integer complex => self.leads!size() > 0 ? self.leads!filter(lead | lead.closed)!size() / self.leads!size() : 0;
+    derived Decimal arithmetic => ((1 + 2) * 3) / 4;
     derived Time timeLiteral => `12:12:11.11`;
     derived Timestamp timestampLiteral => `2020-12-01T12:12:11.11Z`;
     derived Date dateLiteral => `2020-12-01`;
@@ -91,7 +94,7 @@ entity SalesPerson {
     derived Integer strLengthChained => "apple"!substring(offset=1, count=1)!size();
     derived Integer strLengthDerived => self.stringLiteral!substring(offset=1, count=1)!size();
     derived Integer strLengthDerived2 => self.lead.salesPerson.stringLiteral!substring(offset=1, count=1)!size();
-    derived Integer strLengthDerived3 => self.lead.salesPerson!filter(d | d.lead.closed == false)!filter(d | d.lead.closed == false).stringLiteral!substring(offset=1, count=1)!size();
+    derived Integer strLengthDerived3 => self.leads.salesPerson!filter(d | d.lead.closed == false)!filter(d | d.lead.closed == false)!any().stringLiteral!substring(offset=1, count=1)!size();
 }
 
 entity Customer {

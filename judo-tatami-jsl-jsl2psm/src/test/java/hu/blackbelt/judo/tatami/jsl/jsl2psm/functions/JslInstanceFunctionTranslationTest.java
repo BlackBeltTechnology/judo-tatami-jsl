@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -81,11 +82,11 @@ public class JslInstanceFunctionTranslationTest extends AbstractTest {
         assertEquals(3, navigationProperties.size());
   
         assertNavigationProperty("_C", "allCfromAPlainName");
-        assertTrue(assertNavigationProperty("_C", "allCfromAPlainName").isCollection());
-        assertEquals(assertEntityType("_C"), assertNavigationProperty("_C", "allCfromAPlainName").getTarget());
+        assertFalse(assertNavigationProperty("_C", "allCfromAPlainName").isCollection());
+        assertEquals(assertEntityType("_A"), assertNavigationProperty("_C", "allCfromAPlainName").getTarget());
 
-        assertTrue(assertMappedTransferObjectRelation("C", "allCfromAPlainName").isCollection());
-        assertEquals(assertMappedTransferObject("C"), assertMappedTransferObjectRelation("C", "allCfromAPlainName").getTarget());
+        assertFalse(assertMappedTransferObjectRelation("C", "allCfromAPlainName").isCollection());
+        assertEquals(assertMappedTransferObject("A"), assertMappedTransferObjectRelation("C", "allCfromAPlainName").getTarget());
         assertEquals(assertNavigationProperty("_C", "allCfromAPlainName"), assertMappedTransferObjectRelation("C", "allCfromAPlainName").getBinding());
         
         assertEquals("self!container(TestInstanceFunctionModel::TestInstanceFunctionModel::_A)", 
@@ -93,11 +94,11 @@ public class JslInstanceFunctionTranslationTest extends AbstractTest {
 
 
         assertNavigationProperty("_C", "allCfromAFqName");
-        assertTrue(assertNavigationProperty("_C", "allCfromAFqName").isCollection());
-        assertEquals(assertEntityType("_C"), assertNavigationProperty("_C", "allCfromAFqName").getTarget());
+        assertFalse(assertNavigationProperty("_C", "allCfromAFqName").isCollection());
+        assertEquals(assertEntityType("_A"), assertNavigationProperty("_C", "allCfromAFqName").getTarget());
 
-        assertTrue(assertMappedTransferObjectRelation("C", "allCfromAFqName").isCollection());
-        assertEquals(assertMappedTransferObject("C"), assertMappedTransferObjectRelation("C", "allCfromAFqName").getTarget());
+        assertFalse(assertMappedTransferObjectRelation("C", "allCfromAFqName").isCollection());
+        assertEquals(assertMappedTransferObject("A"), assertMappedTransferObjectRelation("C", "allCfromAFqName").getTarget());
         assertEquals(assertNavigationProperty("_C", "allCfromAFqName"), assertMappedTransferObjectRelation("C", "allCfromAFqName").getBinding());
         
         assertEquals("self!container(TestInstanceFunctionModel::TestInstanceFunctionModel::_A)", 
@@ -105,11 +106,11 @@ public class JslInstanceFunctionTranslationTest extends AbstractTest {
 
         
         assertNavigationProperty("_C", "allCfromAImport");
-        assertTrue(assertNavigationProperty("_C", "allCfromAImport").isCollection());
-        assertEquals(assertEntityType("_C"), assertNavigationProperty("_C", "allCfromAImport").getTarget());
+        assertFalse(assertNavigationProperty("_C", "allCfromAImport").isCollection());
+        assertEquals(assertEntityType("_I"), assertNavigationProperty("_C", "allCfromAImport").getTarget());
 
-        assertTrue(assertMappedTransferObjectRelation("C", "allCfromAImport").isCollection());
-        assertEquals(assertMappedTransferObject("C"), assertMappedTransferObjectRelation("C", "allCfromAImport").getTarget());
+        assertFalse(assertMappedTransferObjectRelation("C", "allCfromAImport").isCollection());
+        assertEquals(assertMappedTransferObject("I"), assertMappedTransferObjectRelation("C", "allCfromAImport").getTarget());
         assertEquals(assertNavigationProperty("_C", "allCfromAImport"), assertMappedTransferObjectRelation("C", "allCfromAImport").getBinding());
         
         assertEquals("self!container(TestInstanceFunctionModel::ImportedTestInstanceFunctionModel::_I)", 
