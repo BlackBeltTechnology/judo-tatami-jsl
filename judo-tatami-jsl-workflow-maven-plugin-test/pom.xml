@@ -32,7 +32,7 @@
                         <goals>
                             <goal>parser-workflow</goal>
                         </goals>
-                        <phase>generate-sources</phase>
+                        <phase>generate-test-sources</phase>
                     </execution>
                 </executions>
                 <configuration>
@@ -50,10 +50,10 @@
                 <version>${build-helper-maven-plugin-version}</version>
                 <executions>
                     <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
+                        <id>add-test-source</id>
+                        <phase>generate-test-sources</phase>
                         <goals>
-                            <goal>add-source</goal>
+                            <goal>add-test-source</goal>
                         </goals>
                         <configuration>
                             <sources>
@@ -63,10 +63,10 @@
                     </execution>
 
                     <execution>
-                        <id>add-resource</id>
-                        <phase>generate-resources</phase>
+                        <id>add-test-resource</id>
+                        <phase>generate-test-resources</phase>
                         <goals>
-                            <goal>add-resource</goal>
+                            <goal>add-test-resource</goal>
                         </goals>
                         <configuration>
                             <resources>
@@ -100,12 +100,14 @@
             <groupId>hu.blackbelt.judo.runtime</groupId>
             <artifactId>judo-runtime-core</artifactId>
             <version>${judo-runtime-core-version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.runtime</groupId>
             <artifactId>judo-runtime-core-bootstrap-hsqldb</artifactId> <!-- Using HSQL for the sake of the demo -->
             <version>${judo-runtime-core-version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
