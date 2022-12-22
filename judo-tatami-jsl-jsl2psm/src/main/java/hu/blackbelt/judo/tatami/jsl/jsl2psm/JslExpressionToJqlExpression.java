@@ -719,6 +719,22 @@ public class JslExpressionToJqlExpression {
 		LambdaDeclaration lambdaDeclaration = (LambdaDeclaration)it.getDeclaration();
 		String lambdaName = lambdaDeclaration.getName();
 		
+		if (lambdaName.equals("first")) {
+			return "!heads" + "(" + it.getVariable().getName() + " | " + getJql(it.getLambdaExpression(), args) + ")";
+		}
+		
+		if (lambdaName.equals("last")) {
+			return "!heads" + "(" + it.getVariable().getName() + " | " + getJql(it.getLambdaExpression(), args) + " DESC)";
+		}
+		
+		if (lambdaName.equals("front")) {
+			return "!tails" + "(" + it.getVariable().getName() + " | " + getJql(it.getLambdaExpression(), args) + " DESC)";
+		}
+		
+		if (lambdaName.equals("back")) {
+			return "!tails" + "(" + it.getVariable().getName() + " | " + getJql(it.getLambdaExpression(), args) + ")";
+		}
+		
 		return "!" + Jsl2JqlFunction.getEffectiveLambdaName(it.getDeclaration()) + "(" + it.getVariable().getName() + " | " +  getJql(it.getLambdaExpression(), args) + ")";
    }
 
