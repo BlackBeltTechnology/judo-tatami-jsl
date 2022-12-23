@@ -74,7 +74,7 @@
         <judo-sdk-common-version>1.0.2</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.1</judo-operation-utils-version>
-        <judo-runtime-core-version>1.0.6.20221220_171751_045a404d_feature_JNG_4321_Fix_ereference_relation_without_container</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20221222_150818_9bd77b2a_develop</judo-runtime-core-version>
         <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
         <judo-tatami-base-version>1.1.6.20221209_041725_fe229185_develop</judo-tatami-base-version>
