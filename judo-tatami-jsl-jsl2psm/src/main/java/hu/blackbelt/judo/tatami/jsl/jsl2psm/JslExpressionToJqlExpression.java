@@ -86,7 +86,7 @@ public class JslExpressionToJqlExpression {
     		String value = "input." + queryParameter.getName();
     		
     		if (queryParameter.getDefault() != null) {
-    			value = String.format("%s!isDefined() ? %s : %s", value, value, transformer.getJql(queryParameter.getDefault()));
+    			value = String.format("(%s!isDefined() ? %s : %s)", value, value, transformer.getJql(queryParameter.getDefault()));
     		}
     		
     		passedArgs.put(queryParameter.getName(), value);
@@ -108,7 +108,7 @@ public class JslExpressionToJqlExpression {
     		String value = "input." + queryParameter.getName();
     		
     		if (queryParameter.getDefault() != null) {
-    			value = String.format("%s!isDefined() ? %s : %s", value, value, transformer.getJql(queryParameter.getDefault()));
+    			value = String.format("(%s!isDefined() ? %s : %s)", value, value, transformer.getJql(queryParameter.getDefault()));
     		}
     		
     		passedArgs.put(queryParameter.getName(), value);
@@ -205,8 +205,13 @@ public class JslExpressionToJqlExpression {
 	    		FunctionCall functionCall = (FunctionCall)feature;
 	    		
 	    		if (functionCall.getDeclaration().getName().equals("orElse")) {
-	    	    	String elseExpression = getJql(functionCall.getArguments().get(0).getExpression(), args);	    	    	
-	    	    	return String.format("%s!isDefined() ? (%s) : (%s)", base, getJql(it, featurePos + 1, base, args), getJql(it, featurePos + 1, "(" + elseExpression + ")", args));
+	    	    	String elseExpression = getJql(functionCall.getArguments().get(0).getExpression(), args);
+
+	    	    	if (!(functionCall.getArguments().get(0).getExpression() instanceof Navigation)) {
+	    	    		elseExpression = "(" + elseExpression + ")";
+	    	    	}
+	    	    	
+	    	    	return String.format("(%s!isDefined() ? %s : %s)", base, getJql(it, featurePos + 1, base, args), getJql(it, featurePos + 1, elseExpression, args));
 	    		} else {
 	        		return getJql(it, featurePos + 1, base + getJql(functionCall, args), args);
 	    		}
@@ -266,7 +271,7 @@ public class JslExpressionToJqlExpression {
 
 	private String getJql(final QueryParameterDeclaration it, Map<String, String> args) {
 		if (args.containsKey(it.getName()))
-			return "(" + args.get(it.getName()) + ")";
+			return args.get(it.getName());
 		
 		return getJql(it.getDefault());
 	}
@@ -286,7 +291,11 @@ public class JslExpressionToJqlExpression {
     	HashMap<String, String> passedArgs = new HashMap<String, String>();
     	    	
     	for (QueryArgument queryArgument : it.getArguments()) {
-    		passedArgs.put(queryArgument.getDeclaration().getName(), getJql(queryArgument.getExpression(), args));
+    		String argument = getJql(queryArgument.getExpression(), args);
+    		if (!(queryArgument.getExpression() instanceof Navigation)) {
+    			argument = "(" + argument + ")";
+    		}
+    		passedArgs.put(queryArgument.getDeclaration().getName(), argument);
     	}
     	
         return getJql(it.getDeclaration().getExpression(), passedArgs);
@@ -316,7 +325,11 @@ public class JslExpressionToJqlExpression {
     	passedArgs.put("self", self);
     	
     	for (QueryArgument queryArgument : it.getArguments()) {
-    		passedArgs.put(queryArgument.getDeclaration().getName(), getJql(queryArgument.getExpression(), args));
+    		String argument = getJql(queryArgument.getExpression(), args);
+    		if (!(queryArgument.getExpression() instanceof Navigation)) {
+    			argument = "(" + argument + ")";
+    		}
+    		passedArgs.put(queryArgument.getDeclaration().getName(), argument);
     	}
     	
         return getJql(it.getDeclaration().getExpression(), passedArgs);
