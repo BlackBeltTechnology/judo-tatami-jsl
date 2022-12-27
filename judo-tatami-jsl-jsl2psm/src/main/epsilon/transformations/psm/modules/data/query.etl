@@ -44,12 +44,12 @@ rule CreateOriginalNameAnnotationDetailForStaticQuery
 		log.debug("Create OriginalName Annotation for static query: " + t.name);
 }
 
-rule CreateTransferObjectForStaticQueryDeclarationParameter
-    transform s : JSL!QueryDeclarationParameter
+rule CreateTransferObjectForStaticQueryParameterDeclaration
+    transform s : JSL!QueryParameterDeclaration
     to t: JUDOPSM!TransferAttribute {
         guard: s.eContainer.isKindOf(JSL!QueryDeclaration)
         
-        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForStaticQueryDeclarationParameter");
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForStaticQueryParameterDeclaration");
 
         t.name = s.name;
         t.dataType = s.referenceType.getPSMEquivalent();
