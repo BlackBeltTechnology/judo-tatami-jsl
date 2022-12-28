@@ -122,6 +122,8 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)))",
         		jqlStaticQuery("staticInheritedLeadsBetween", "EntityNamePrefix_", "_EntityNamePostfix"));
         
+        assertEquals("self.leads!filter(lead | lead.value > (20 + 10) and lead.value < (50 + 60))!count()", jqlDerived("SalesPerson", "leadsBetweenWithExpr", "", ""));
+
         assertEquals("self", jqlDerived("SalesPerson", "selfDerived", "", ""));
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Customer!any()", jqlDerived("SalesPerson", "anyCustomer", "", ""));
         assertEquals("\"\" + self.value!asString() + \"test\"", jqlDerived("SalesPerson", "stringConcat", "", ""));
@@ -141,7 +143,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         assertEquals("(self.value!isDefined() ? self.value!abs() : (9!isDefined() ? 9 : 5)!abs())", jqlDerived("Lead", "orElseValue3", "", ""));
         assertEquals("(TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(l | l.value < 1000)!any()!isDefined() ? TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(l | l.value < 1000)!any() : TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!any())", jqlDerived("Lead", "orElseValue4", "", ""));
         assertEquals("(self.value!isDefined() ? self.value : 10)", jqlDerived("Lead", "orElseValue5", "", ""));
-}
+    }
 
     private String jqlDerived(String entity, String field, String entityNamePrefix, String entityNamePostfix) {
         return JslExpressionToJqlExpression.getJqlForDerived(
