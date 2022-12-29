@@ -95,6 +95,8 @@ entity SalesPerson {
     derived Integer strLengthDerived => self.stringLiteral!substring(offset=1, count=1)!size();
     derived Integer strLengthDerived2 => self.lead.salesPerson.stringLiteral!substring(offset=1, count=1)!size();
     derived Integer strLengthDerived3 => self.leads.salesPerson!filter(d | d.lead.closed == false)!filter(d | d.lead.closed == false)!any().stringLiteral!substring(offset=1, count=1)!size();
+
+    derived Integer leadsBetweenWithExpr => self.leadsBetween(minLeadsBetween = 20 + 10, maxLeadsBetween = 50 + 60)!size();
 }
 
 entity Customer {
