@@ -9,12 +9,47 @@ rule CreateUnmappedTransferObjectForStaticQuery
 		log.debug("Created UnmappedTransferObjectType: " + t.name);
 }
 
-rule CreateTransferObjectForStaticQueryDeclarationParameter
-    transform s : JSL!QueryDeclarationParameter
+rule CreateOriginalNameAnnotationForStaticQuery
+    transform s : JSL!QueryDeclaration
+    to t : JUDOPSM!Annotation {
+		guard: s.parameters.size() > 0
+
+        t.setId("(jsl/" + s.getId() + ")/CreateOriginalNameAnnotationForStaticQuery");
+        t.name = "OriginalSource";
+        s.equivalent("CreateUnmappedTransferObjectForStaticQuery").annotations.add(t);
+		log.debug("Create OriginalName Annotation for static query: " + t.name);
+}
+
+rule CreateParameterObjectAnnotationForStaticQuery
+    transform s : JSL!QueryDeclaration
+    to t : JUDOPSM!Annotation {
+		guard: s.parameters.size() > 0
+
+        t.setId("(jsl/" + s.getId() + ")/CreateParameterObjectAnnotationForStaticQuery");
+        t.name = "ParameterObject";
+        s.equivalent("CreateUnmappedTransferObjectForStaticQuery").annotations.add(t);
+		log.debug("Create ParameterObject Annotation for static query: " + t.name);
+}
+
+
+rule CreateOriginalNameAnnotationDetailForStaticQuery
+    transform s : JSL!QueryDeclaration
+    to t : JUDOPSM!AnnotationDetail {
+		guard: s.parameters.size() > 0
+
+        t.setId("(jsl/" + s.getId() + ")/CreateOriginalNameAnnotationDetailForStaticQuery");
+        t.name = "Name";
+        t.`value` = s.name;
+        s.equivalent("CreateOriginalNameAnnotationForStaticQuery").details.add(t);
+		log.debug("Create OriginalName Annotation for static query: " + t.name);
+}
+
+rule CreateTransferObjectForStaticQueryParameterDeclaration
+    transform s : JSL!QueryParameterDeclaration
     to t: JUDOPSM!TransferAttribute {
         guard: s.eContainer.isKindOf(JSL!QueryDeclaration)
         
-        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForStaticQueryDeclarationParameter");
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForStaticQueryParameterDeclaration");
 
         t.name = s.name;
         t.dataType = s.referenceType.getPSMEquivalent();

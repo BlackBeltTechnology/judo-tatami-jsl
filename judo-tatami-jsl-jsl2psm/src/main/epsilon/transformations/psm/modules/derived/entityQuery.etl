@@ -10,12 +10,47 @@ rule CreateUnmappedTransferObjectForEntityQuery
 		log.debug("Created UnmappedTransferObjectType: " + t.name);
 }
 
-rule CreateTransferObjectForEntityQueryDeclarationParameter
-    transform s : JSL!QueryDeclarationParameter
+rule CreateOriginalNameAnnotationForEntityQuery
+    transform s : JSL!EntityQueryDeclaration
+    to t : JUDOPSM!Annotation {
+		guard: s.parameters.size() > 0
+
+        t.setId("(jsl/" + s.getId() + ")/CreateOriginalNameAnnotationForEntityQuery");
+        t.name = "OriginalSource";
+        s.equivalent("CreateUnmappedTransferObjectForEntityQuery").annotations.add(t);
+		log.debug("Create OriginalName Annotation for entity query: " + t.name);
+}
+
+rule CreateParameterObjectAnnotationForEntityQuery
+    transform s : JSL!EntityQueryDeclaration
+    to t : JUDOPSM!Annotation {
+		guard: s.parameters.size() > 0
+
+        t.setId("(jsl/" + s.getId() + ")/CreateParameterObjectAnnotationForEntityQuery");
+        t.name = "ParameterObject";
+        s.equivalent("CreateUnmappedTransferObjectForEntityQuery").annotations.add(t);
+		log.debug("Create ParameterObject Annotation for entity query: " + t.name);
+}
+
+rule CreateOriginalNameAnnotationDetailForEntityQuery
+    transform s : JSL!EntityQueryDeclaration
+    to t : JUDOPSM!AnnotationDetail {
+		guard: s.parameters.size() > 0
+
+        t.setId("(jsl/" + s.getId() + ")/CreateOriginalNameAnnotationDetailForEntityQuery");
+        t.name = "Name";
+        t.`value` = s.name;
+        s.equivalent("CreateOriginalNameAnnotationForEntityQuery").details.add(t);
+		log.debug("Create OriginalName Details Annotation for entity query: " + t.name);
+}
+
+
+rule CreateTransferObjectForEntityQueryParameterDeclaration
+    transform s : JSL!QueryParameterDeclaration
     to t: JUDOPSM!TransferAttribute {
         guard: s.eContainer.isKindOf(JSL!EntityQueryDeclaration)
         
-        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForEntityQueryDeclarationParameter");
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForEntityQueryParameterDeclaration");
 
         t.name = s.name;
         t.dataType = s.referenceType.getPSMEquivalent();

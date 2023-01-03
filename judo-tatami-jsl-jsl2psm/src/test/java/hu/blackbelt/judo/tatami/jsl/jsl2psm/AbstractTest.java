@@ -136,7 +136,6 @@ abstract public class AbstractTest {
         psmModel = buildPsmModel().name(jslModel.getName()).build();
         psmModelWrapper = PsmModelResourceSupport.psmModelResourceSupportBuilder().resourceSet(psmModel.getResourceSet()).build();
         jslModelWrapper = JslDslModelResourceSupport.jslDslModelResourceSupportBuilder().resourceSet(jslModel.getResourceSet()).build();
-
     	
     	assertTrue(jslModel.isValid());
 //        validateJsl(new Slf4jLog(log), jslModel, calculateEsmValidationScriptURI());
@@ -148,7 +147,7 @@ abstract public class AbstractTest {
                 .jslModel(jslModel)
                 .psmModel(psmModel)
                 .createTrace(true)));
-
+        
         assertTrue(psmModel.isValid());
         validatePsm(createLog(), psmModel, calculatePsmValidationScriptURI());
     }
