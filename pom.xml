@@ -73,7 +73,7 @@
         <judo-sdk-common-version>1.0.4.20230115_193703_0b5af77d_develop</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20230115_193707_ea6b9992_develop</judo-operation-utils-version>
-        <judo-runtime-core-version>1.0.6.20230118_162636_eb9620ea_feature_JNG_4184_Static_navigation_causes_SQL_exception_in_derived_attribute</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20230119_154136_52588b52_feature_JNG_4184_Static_navigation_causes_SQL_exception_in_derived_attribute</judo-runtime-core-version>
         <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
         <judo-tatami-base-version>1.1.6.20230115_194502_98f224f9_develop</judo-tatami-base-version>
