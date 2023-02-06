@@ -32,6 +32,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -210,8 +211,10 @@ public abstract class AbstractTatamiPipelineWorkflow {
 		}
 
 		if (parameters.getEnableMetrics()) {
+			int maxRowWidth = metrics.getExecutionTimes().entrySet().stream().map(k -> k.getKey().length()).max(Comparator.comparing(k -> k)).orElse(0);
 			log.info("Workflow summary: {}", metrics.getExecutionTimes().entrySet().stream()
-					.map(e -> "\n  - " + e.getKey() + ": " + e.getValue()).collect(Collectors.joining()));
+					.map(e -> "\n  - " + e.getKey() + " ".repeat(maxRowWidth - e.getKey().length()) + " " + ((double) e.getValue()) / 1000.0f + " s")
+					.collect(Collectors.joining()));
 		}
 
 		return workReport;
