@@ -57,7 +57,7 @@
         <junit-version>5.5.1</junit-version>
         <surefire-version>3.0.0-M7</surefire-version>
 
-        <epsilon-runtime-version>1.5.1.20230104_095653_96994f3f_develop</epsilon-runtime-version>
+        <epsilon-runtime-version>1.5.1.20230206_072506_d82eb27f_feature_JNG_3932_LogVerbosity</epsilon-runtime-version>
         <antlr-runtime-version>3.2</antlr-runtime-version>
         <build-helper-maven-plugin-version>3.3.0</build-helper-maven-plugin-version>
 
@@ -73,11 +73,11 @@
         <judo-sdk-common-version>1.0.4.20230120_214329_b4bd6c11_develop</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20230120_214325_69f302fd_develop</judo-operation-utils-version>
-        <judo-runtime-core-version>1.0.6.20230125_040714_629d69c3_develop</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20230206_080625_d47fb420_feature_JNG_3932_LogVerbosity</judo-runtime-core-version>
         <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
-        <judo-tatami-base-version>1.1.6.20230120_222426_ce1ddca3_develop</judo-tatami-base-version>
-        <judo-tatami-core-version>1.1.4.20230120_213946_6dbe65b7_develop</judo-tatami-core-version>
+        <judo-tatami-base-version>1.1.6.20230206_074140_a12fcb64_feature_JNG_3932_LogVerbosity</judo-tatami-base-version>
+        <judo-tatami-core-version>1.1.4.20230206_073020_6b7a850f_feature_JNG_3932_LogVerbosity</judo-tatami-core-version>
 
 
         <!-- Code Quality-->
