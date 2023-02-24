@@ -218,8 +218,7 @@ public class WorkflowHelper {
                         .inputStream(
                                 of(rdbmsModelSourceURI).orElseThrow(() ->
                                                 new IllegalArgumentException("asmModel or asmModelSourceUri have to be defined"))
-                                        .toURL().openStream())
-                        .name(modelName)))));
+                                        .toURL().openStream())))));
 
         Optional<AsmModel> asmModelFromContext = transformationContext.getByClass(AsmModel.class);
 
