@@ -70,7 +70,7 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
 		jslModel.orElseThrow(() -> new IllegalArgumentException("JSL Model not found in transformation context"));
 
 		PsmModel psmModel = getTransformationContext().getByClass(PsmModel.class)
-				.orElseGet(() -> buildPsmModel().name(jslModel.get().getName()).build());
+				.orElseGet(() -> buildPsmModel().build());
 		getTransformationContext().put(psmModel);
 
 		Jsl2PsmWorkParameter workParam = getTransformationContext().getByClass(Jsl2PsmWorkParameter.class)
