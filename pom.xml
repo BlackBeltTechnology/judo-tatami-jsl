@@ -73,7 +73,7 @@
         <judo-sdk-common-version>1.0.4.20230224_163718_bab24c8f_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20230224_162449_21ccc6f6_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-operation-utils-version>
-        <judo-runtime-core-version>1.0.6.20230224_021621_bb0ef329_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20230224_164839_a3ef0a8d_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-runtime-core-version>
         <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
         <judo-tatami-base-version>1.1.6.20230224_164304_95002377_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-tatami-base-version>
