@@ -50,7 +50,7 @@ public class PsmTestModel {
     public static final String FILE_LOCATION = "target/test-classes/psm/" + MODEL_NAME + "-psm.model";
 
     public static void createPsmModelelAndSave() throws IOException, PsmModel.PsmValidationException {
-        PsmModel psmModel = buildPsmModel().uri(URI.createURI(FILE_LOCATION)).name(MODEL_NAME).build();
+        PsmModel psmModel = buildPsmModel().uri(URI.createURI(FILE_LOCATION)).build();
 
         StringType strType = newStringTypeBuilder().withName("string").withMaxLength(256).build();
         NumericType intType = newNumericTypeBuilder().withName("int").withPrecision(6).withScale(0).build();

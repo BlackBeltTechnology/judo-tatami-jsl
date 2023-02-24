@@ -133,7 +133,7 @@ abstract public class AbstractTest {
     
     protected void transform() throws Exception {
         // Create empty PSM model
-        psmModel = buildPsmModel().name(jslModel.getName()).build();
+        psmModel = buildPsmModel().build();
         psmModelWrapper = PsmModelResourceSupport.psmModelResourceSupportBuilder().resourceSet(psmModel.getResourceSet()).build();
         jslModelWrapper = JslDslModelResourceSupport.jslDslModelResourceSupportBuilder().resourceSet(jslModel.getResourceSet()).build();
     	

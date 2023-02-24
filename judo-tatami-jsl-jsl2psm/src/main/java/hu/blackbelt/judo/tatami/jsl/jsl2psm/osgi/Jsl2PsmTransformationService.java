@@ -55,11 +55,7 @@ public class Jsl2PsmTransformationService {
 
     public PsmModel install(JslDslModel jslModel) throws Exception {
         PsmModel psmModel = PsmModel.buildPsmModel()
-                .name(jslModel.getName())
-                .version(jslModel.getVersion())
                 .uri(URI.createURI("psm:" + jslModel.getName() + ".model"))
-                .checksum(jslModel.getChecksum())
-                .tags(jslModel.getTags())
                 .build();
 
         java.net.URI scriptUri =
