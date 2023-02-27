@@ -113,8 +113,7 @@ public class WorkflowHelper {
                         .inputStream(
                                 of(psmModelSourceURI).orElseThrow(() ->
                                                 new IllegalArgumentException("psmModel or psmModelSourceUri have to be defined"))
-                                        .toURL().openStream())
-                        .name(modelName)))));
+                                        .toURL().openStream())))));
     }
 
     public void loadAsmModel(final String modelName,
@@ -132,8 +131,7 @@ public class WorkflowHelper {
                         .inputStream(
                                 of(asmModelSourceURI).orElseThrow(() ->
                                                 new IllegalArgumentException("asmModel or asmModelSourceUri have to be defined"))
-                                        .toURL().openStream())
-                        .name(modelName)))));
+                                        .toURL().openStream())))));
 
         Optional<PsmModel> psmModelFromContext = transformationContext.getByClass(PsmModel.class);
 
@@ -220,8 +218,7 @@ public class WorkflowHelper {
                         .inputStream(
                                 of(rdbmsModelSourceURI).orElseThrow(() ->
                                                 new IllegalArgumentException("asmModel or asmModelSourceUri have to be defined"))
-                                        .toURL().openStream())
-                        .name(modelName)))));
+                                        .toURL().openStream())))));
 
         Optional<AsmModel> asmModelFromContext = transformationContext.getByClass(AsmModel.class);
 
