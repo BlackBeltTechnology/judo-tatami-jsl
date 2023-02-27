@@ -62,21 +62,21 @@
         <build-helper-maven-plugin-version>3.3.0</build-helper-maven-plugin-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.3.20230224_162019_dda4568a_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-jsl-version>
-        <judo-meta-rdbms-version>1.0.2.20230224_162025_1ec818f1_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-rdbms-version>
-        <judo-meta-jql-version>1.0.4.20230224_162058_76f0cb81_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-jql-version>
+        <judo-meta-jsl-version>1.0.3.20230226_194020_59502526_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-jsl-version>
+        <judo-meta-rdbms-version>1.0.2.20230226_194100_0e33bdf2_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-rdbms-version>
+        <judo-meta-jql-version>1.0.4.20230226_194009_b9ae804e_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-jql-version>
         <judo-meta-psm-version>1.3.0.20230224_162013_e6aa26fe_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.4.20230224_162040_b3edd881_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.5.20230224_162615_2c897271_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-expression-version>
-        <judo-meta-liquibase-version>1.0.2.20230224_162001_9b11cf3e_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-liquibase-version>
+        <judo-meta-asm-version>1.1.4.20230226_193929_e29cf4f3_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.5.20230227_073034_bc09d3f2_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-expression-version>
+        <judo-meta-liquibase-version>1.0.2.20230226_194027_ab1a085e_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.4.20230223_142100_ea2fecf6_develop</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.4.20230224_163718_bab24c8f_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-sdk-common-version>
+        <judo-sdk-common-version>1.0.4.20230227_073039_60ea316c_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
-        <judo-operation-utils-version>1.1.3.20230224_162449_21ccc6f6_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-operation-utils-version>
-        <judo-runtime-core-version>1.0.6.20230224_164839_a3ef0a8d_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-runtime-core-version>
+        <judo-operation-utils-version>1.1.3.20230227_073047_c7c8ad4a_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-operation-utils-version>
+        <judo-runtime-core-version>1.0.6.20230227_073958_b18b58df_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-runtime-core-version>
         <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
-        <judo-tatami-base-version>1.1.6.20230224_164304_95002377_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-tatami-base-version>
+        <judo-tatami-base-version>1.1.6.20230227_073605_31e569bc_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20230222_213740_cdc842a6_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-tatami-core-version>
 
         <!-- Code Quality-->
