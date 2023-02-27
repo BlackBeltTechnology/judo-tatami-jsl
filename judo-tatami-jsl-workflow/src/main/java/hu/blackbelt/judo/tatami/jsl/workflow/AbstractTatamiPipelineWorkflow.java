@@ -75,19 +75,10 @@ public abstract class AbstractTatamiPipelineWorkflow {
 		TransformationContext.TransformationContextVerifier verifier = transformationContext.transformationContextVerifier;
 		WorkflowHelper workflowHelper = new WorkflowHelper(transformationContext, metrics);
 
-		String modelVersion = parameters.getModelVersion();
-		if (modelVersion == null || modelVersion.trim().equals("")) {
-			modelVersion = "1.0.0." + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_SNAPSHOT";
-		} else if (modelVersion.endsWith("-SNAPSHOT")) {
-			modelVersion = modelVersion.replace("-SNAPSHOT", "." +
-					new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_SNAPSHOT");
-		}
-
 		transformationContext.put(Jsl2PsmWork.Jsl2PsmWorkParameter.jsl2PsmWorkParameter().createTrace(!parameters.getIgnoreJsl2PsmTrace()).build());
 
 		transformationContext.put(psm2AsmWorkParameter().createTrace(!parameters.getIgnorePsm2AsmTrace()).build());
-		transformationContext.put(asm2RdbmsWorkParameter().createTrace(!parameters.getIgnoreAsm2Rdbms())
-				.modelVersion(modelVersion).build());
+		transformationContext.put(asm2RdbmsWorkParameter().createTrace(!parameters.getIgnoreAsm2Rdbms()).build());
 
 		transformationContext.put(asm2SDKWorkParameter()
 				.compile(parameters.getCompileSdk())
