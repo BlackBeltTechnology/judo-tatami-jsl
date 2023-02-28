@@ -73,7 +73,7 @@
         <judo-sdk-common-version>1.0.4.20230228_040952_67159333_develop</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20230228_040937_908293d6_develop</judo-operation-utils-version>
-        <judo-runtime-core-version>1.0.6.20230228_041950_c86f9bdd_develop</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20230228_104301_26606948_feature_JNG_4208_run_tests_with_postgres</judo-runtime-core-version>
         <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
         <judo-tatami-base-version>1.1.6.20230228_041547_35222ce6_develop</judo-tatami-base-version>
