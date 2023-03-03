@@ -282,17 +282,45 @@ rule AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration
 }
 
 
-rule CreateTransferObjectEmbeddedRelationForTransferFieldDeclaration
+@greedy
+rule CreateTransferObjectEmbeddedRelationForTransientTransferFieldDeclaration
     transform s: JSL!TransferFieldDeclaration
     to t: JUDOPSM!TransferObjectRelation 
     extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {
-        guard: s.referenceType.isKindOf(JSL!TransferDeclaration)
+        guard: s.referenceType.isKindOf(JSL!TransferDeclaration) and not s.maps.isDefined() and not s.eContainer.automap
 
-        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForTransferFieldDeclaration");
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForTransientTransferFieldDeclaration");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
 
         s.eContainer.getPSMEquivalent().relations.add(t);
 
         log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+
+@greedy
+rule CreateTransferObjectEmbeddedRelationForMappedTransferFieldDeclaration
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferObjectRelation
+    extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {
+      guard: s.referenceType.isKindOf(JSL!TransferDeclaration) and s.maps.isDefined() and not s.eContainer.automap
+
+      t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForMappedTransferFieldDeclaration");
+      t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+      
+      var entityMember = s.maps.features.first.member;
+      
+      if (entityMember.isKindOf(JSL!EntityFieldDeclaration)) {
+	      t.binding = entityMember.equivalent("CreateContainmentFromField");
+      } else if (entityMember.isKindOf(JSL!EntityRelationDeclaration)) {
+	      t.binding = entityMember.equivalent("CreateDeclaredAssociationEnd");      
+      } else if (entityMember.isKindOf(JSL!EntityRelationOppositeInjected)) {
+	      t.binding = entityMember.equivalent("CreateNamedOppositeAssociationEnd");      
+      } else {
+          throw "Invalid member type";
+      }
+            
+      s.eContainer.getPSMEquivalent().relations.add(t);
+      log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 

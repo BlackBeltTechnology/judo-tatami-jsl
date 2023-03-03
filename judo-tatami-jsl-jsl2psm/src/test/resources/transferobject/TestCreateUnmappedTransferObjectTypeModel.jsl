@@ -8,6 +8,10 @@ entity Entity {
 	field Integer attribute;
 }
 
+transfer MappedRelated maps Entity as e {
+	field Integer attributeMapped maps e.attribute;
+}
+
 transfer UnmappedRelated {
 	field String transient;
 }
@@ -22,4 +26,5 @@ transfer Unmapped {
     field required UnmappedRelated unmappedRelatedRequired;
     field UnmappedRelated[] unmappedRelatedCollection;
 
+    field MappedRelated mappedDerived reads Entity!any();
 }

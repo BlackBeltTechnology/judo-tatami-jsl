@@ -3,8 +3,9 @@ operation JSL!TransferDeclaration getPSMEquivalent(): JUDOPSM!TransferObjectType
 
     if (self.map.isUndefined() and not self.automap) {
         return self.equivalent("CreateUnmappedTransferObjectType");
+    } else if (self.map.isDefined() and not self.automap) {
+        return self.equivalent("CreateMappedTransferObjectType");
     }
-    // TODO: JNG-4579  Mapped Tranfer object
 }
 
 @cached

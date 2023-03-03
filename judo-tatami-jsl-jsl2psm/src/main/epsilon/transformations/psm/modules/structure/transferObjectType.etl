@@ -81,10 +81,31 @@ rule CreateUnmappedTransferObjectType
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectType");
 	    
-	  t.name = defaultTransferObjectNamePrefix + s.name + defaultTransferObjectNamePostfix;
+	  t.name = s.name;
 
 	  s.eContainer.getModelRoot().elements.add(t);
 
 	  log.debug("Created UnmappedTransferObjectType: " + t.name);
 }
+
+
+//////////////////////////////////////////////////
+// Mapped transfer object type
+//////////////////////////////////////////////////
+rule CreateMappedTransferObjectType
+	transform s: JSL!TransferDeclaration 
+	to t: JUDOPSM!MappedTransferObjectType {
+	  guard: s.map.isDefined() and not s.automap
+
+      t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferObjectType");
+	    
+	  t.entityType = s.map.entity.getPSMEquivalent();
+	  
+	  t.name = s.name;
+
+	  s.eContainer.getModelRoot().elements.add(t);
+
+	  log.debug("Created MappedTransferObjectType: " + t.name);
+}
+
 

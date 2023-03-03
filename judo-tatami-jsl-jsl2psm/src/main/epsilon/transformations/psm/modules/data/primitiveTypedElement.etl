@@ -106,6 +106,7 @@ rule CreateReadsDataExpressionTypeForTranferFieldDeclaration
     transform s : JSL!Expression
     to t: JUDOPSM!DataExpressionType {
         guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+          and not s.base.isKindOf(JSL!NavigationBaseDeclarationReference)
 
         t.setId("(jsl/" + s.getId() + ")/CreateReadsDataExpressionTypeForTranferFieldDeclaration");
         t.expression = expressionUtils.getJqlForExpression(s, entityNamePrefix, entityNamePostfix);
@@ -119,6 +120,7 @@ rule CreateReadsDataForTranferFieldDeclaration
     transform s : JSL!Expression
     to t: JUDOPSM!StaticData {
         guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+          and not s.base.isKindOf(JSL!NavigationBaseDeclarationReference)
 
         t.setId("(jsl/" + s.getId() + ")/CreateReadsDataForTranferFieldDeclaration");
         t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
@@ -130,19 +132,3 @@ rule CreateReadsDataForTranferFieldDeclaration
         log.debug("Created StaticData for TransferField Reads: " + s);
     }
 
-/* TODO JNG-4579 Mapped transfer object 
-@greedy
-rule CreateMapsDataForTranferFieldDeclaration
-    transform s : JSL!Expression
-    to t: JUDOPSM!DataProperty {
-        guard: s.isExpressionForTransferFieldMaps() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
-
-        t.setId("(jsl/" + s.getId() + ")/CreateMapsDataForTranferFieldDeclaration");
-        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
-        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
-
-        s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
-
-        log.debug("Created DataProperty for TransferField Maps: " + s);
-    }
-*/
