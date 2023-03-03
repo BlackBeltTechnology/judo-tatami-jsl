@@ -1,0 +1,17 @@
+model UnmappedTransferObjectTypeModel;
+
+type string String(min-size = 0, max-size = 250);
+type numeric Integer(precision = 3, scale = 0);
+
+
+entity Entity {
+	field Integer attribute;
+}
+
+transfer Unmapped {
+	field String transient;
+	field required String required;
+
+	field Integer derived reads Entity!any().attribute;
+
+}

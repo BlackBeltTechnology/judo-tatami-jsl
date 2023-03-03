@@ -120,8 +120,22 @@ public class Jsl2Psm {
         @Builder.Default
         @NonNull
         String defaultDefaultNameMidfix = "_Default_";
+    
+        @Builder.Default
+        @NonNull
+        String defaultReadsNamePrefix = "_";
+
+        @Builder.Default
+        @NonNull
+        String defaultReadsNamePostfix = "_Reads";
+
+        @Builder.Default
+        @NonNull
+        String defaultReadsNameMidfix = "_";
+
     }
 
+    
 
     public static Jsl2PsmTransformationTrace executeJsl2PsmTransformation(Jsl2PsmParameter.Jsl2PsmParameterBuilder builder) throws Exception {
         return executeJsl2PsmTransformation(builder.build());
@@ -169,6 +183,9 @@ public class Jsl2Psm {
                             .put("defaultDefaultNamePrefix", parameter.defaultDefaultNamePrefix)
                             .put("defaultDefaultNamePostfix", parameter.defaultDefaultNamePostfix)
                             .put("defaultDefaultNameMidfix", parameter.defaultDefaultNameMidfix)
+                            .put("defaultReadsNamePrefix", parameter.defaultReadsNamePrefix)
+                            .put("defaultReadsNamePostfix", parameter.defaultReadsNamePostfix)
+                            .put("defaultReadsNameMidfix", parameter.defaultReadsNameMidfix)
                             .put("defaultModelName", parameter.jslModel.getName())
                             .put("expressionUtils", new JslExpressionToJqlExpression())
                             .put("ecoreUtil", new EcoreUtil())

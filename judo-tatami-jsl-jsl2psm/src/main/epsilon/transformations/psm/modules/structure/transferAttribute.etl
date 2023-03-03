@@ -22,6 +22,7 @@ rule AbstractCreateTransferAttributeForDefaultTransferObjectType
 
 
 // Create default transfer object attribute and add it to default transfer object
+@greedy
 rule CreateTransferAttributeForDefaultTransferObjectType
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!TransferAttribute
@@ -36,6 +37,7 @@ rule CreateTransferAttributeForDefaultTransferObjectType
 // the caller code have to add it to the corresponding transfer object
 // This method can be used to make clone attributes to inherited transfer objects
 @lazy
+@greedy
 rule CloneTransferAttributeForDefaultTransferObjectType
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!TransferAttribute
@@ -65,6 +67,7 @@ rule AbstractCreateIdentifierTransferAttributeForDefaultTransferObjectType
 
 }
 
+@greedy
 rule CreateIdentifierTransferAttributeForDefaultTransferObjectType
     transform s: JSL!EntityIdentifierDeclaration    
     to t: JUDOPSM!TransferAttribute
@@ -77,6 +80,7 @@ rule CreateIdentifierTransferAttributeForDefaultTransferObjectType
 }
 
 @lazy
+@greedy
 rule CloneIdentifierTransferAttributeForDefaultTransferObjectType
 	transform s: JSL!EntityIdentifierDeclaration
 	to t: JUDOPSM!TransferAttribute
@@ -100,6 +104,7 @@ rule AbstractCreateDerivedTransferAttributeForDefaultTransferObjectType
         t.dataType = s.referenceType.getPSMEquivalent();
 }
 
+@greedy
 rule CreateDerivedTransferAttributeForDefaultTransferObjectType
     transform s: JSL!EntityDerivedDeclaration    
     to t: JUDOPSM!TransferAttribute
@@ -112,6 +117,7 @@ rule CreateDerivedTransferAttributeForDefaultTransferObjectType
 }
 
 @lazy
+@greedy
 rule CloneDerivedTransferAttributeForDefaultTransferObjectType
 	transform s: JSL!EntityDerivedDeclaration
 	to t: JUDOPSM!TransferAttribute
@@ -134,6 +140,7 @@ rule AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType
         t.dataType = s.referenceType.getPSMEquivalent();
 }
 
+@greedy
 rule CreateEntityQueryTransferAttributeForDefaultTransferObjectType
     transform s: JSL!EntityQueryDeclaration    
     to t: JUDOPSM!TransferAttribute
@@ -146,6 +153,7 @@ rule CreateEntityQueryTransferAttributeForDefaultTransferObjectType
 }
 
 @lazy
+@greedy
 rule CloneEntityTransferAttributeForDefaultTransferObjectType
 	transform s: JSL!EntityQueryDeclaration
 	to t: JUDOPSM!TransferAttribute
@@ -173,6 +181,7 @@ rule AbstractCreateTransferAttributeForErrorTransferObjectType
 }
 
 // Create error transfer object attribute and add it to default transfer object
+@greedy
 rule CreateTransferAttributeForErrorTransferObjectType
     transform s: JSL!ErrorField
     to t: JUDOPSM!TransferAttribute
@@ -187,6 +196,7 @@ rule CreateTransferAttributeForErrorTransferObjectType
 // the caller code have to add it to the corresponding transfer object
 // This method can be used to make clone attributes to inherited transfer objects
 @lazy
+@greedy
 rule CloneTransferAttributeForErrorTransferObjectType
     transform s: JSL!ErrorField
     to t: JUDOPSM!TransferAttribute
@@ -272,3 +282,79 @@ rule CloneTransferDefaultValueAttributeForErrorTransferObjectType
         t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForDefaultTransferObjectType");
         log.debug("Clone TransferAttribute Default Value (Field) for ErrorTransferObjectType: [" + t.name + "]");
 }
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Transfer object field
+////////////////////////////////////////////////////////////////////////////////////////////
+@abstract
+rule AbstractCreateTransferAttributeForTransferFieldDeclaration
+    transform s: JSL!TransferFieldDeclaration
+    to t: JUDOPSM!TransferAttribute {
+        guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.required = s.isRequired;
+        t.name = s.name;
+        //t.binding = s.equivalent("CreateAttributeFromField");
+        t.dataType = s.referenceType.getPSMEquivalent();
+
+        //if (s.defaultExpression.isDefined()) {
+        //    t.defaultValue = s.defaultExpression.equivalent("CreateDefaultValueForPrimitiveEntityMember");
+        //}
+}
+
+@greedy
+rule CreateTransientTransferAttribute
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
+      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.maps.isUndefined() and s.reads.isUndefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferAttribute");
+      s.eContainer.getPSMEquivalent().attributes.add(t);
+      log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@greedy
+rule CreateDerivedTransferAttribute
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
+      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.reads.isDefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");
+      
+      t.binding = s.reads.equivalent("CreateReadsDataForTranferFieldDeclaration");
+      
+      s.eContainer.getPSMEquivalent().attributes.add(t);
+      log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+
+/* TODO JNG-4579 Mapped transfer object 
+@greedy
+rule CreateMappedTransferAttribute
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
+      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.maps.isDefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferAttribute");
+      
+      t.binding = s.equivalent("CreateAttributeFromField");
+      
+      // t.binding = s.reads.equivalent("CreateMapsDataForTranferFieldDeclaration");
+      val Navigation navigation = field.maps as Navigation;
+      
+		val MemberReference memberReference = navigation.features.get(0) as MemberReference;
+		
+		if (!(memberReference.member instanceof EntityFieldDeclaration)) {
+			error("Invalid field mapping.",
+                JsldslPackage::eINSTANCE.transferFieldDeclaration_Maps,
+                INVALID_FIELD_MAPPING,
+                JsldslPackage::eINSTANCE.transferFieldDeclaration.name)
+                
+            return;
+		}
+      
+      s.eContainer.getPSMEquivalent().attributes.add(t);
+      log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+*/

@@ -66,3 +66,19 @@ rule CreateEntityDefaultTransferObjectType
         s.eContainer.getModelRoot().elements.add(t);
         log.debug("Created MappedTransferObjectType: " + t.name);
 }
+
+
+rule CreateUnmappedTransferObjectType
+	transform s: JSL!TransferDeclaration 
+	to t: JUDOPSM!UnmappedTransferObjectType {
+	  guard: s.map.isUndefined() and not s.automap
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectType");
+	    
+	  t.name = defaultTransferObjectNamePrefix + s.name + defaultTransferObjectNamePostfix;
+
+	  s.eContainer.getModelRoot().elements.add(t);
+
+	  log.debug("Created UnmappedTransferObjectType: " + t.name);
+}
+

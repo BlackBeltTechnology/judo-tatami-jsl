@@ -1,12 +1,24 @@
 @cached
 operation JSL!Expression isDefaultValueForEntity(): Boolean {
-	return (not self.eContainer.isKindOf(JSL!Expression)) and (self.eContainer.isKindOf(JSL!EntityIdentifierDeclaration) or self.eContainer.isKindOf(JSL!EntityFieldDeclaration)) and self.eContainer.defaultExpression == self;
+	return (self.eContainer.isKindOf(JSL!EntityIdentifierDeclaration) or self.eContainer.isKindOf(JSL!EntityFieldDeclaration)) and self.eContainer.defaultExpression == self;
 }
 
 @cached
 operation JSL!Expression isDefaultValueForError(): Boolean {
-	return (not self.eContainer.isKindOf(JSL!Expression)) and self.eContainer.isKindOf(JSL!ErrorField) and self.eContainer.defaultExpression == self;
+	return self.eContainer.isKindOf(JSL!ErrorField) and self.eContainer.defaultExpression == self;
 }
+
+
+@cached
+operation JSL!Expression isExpressionForTransferFieldReads(): Boolean {
+	return self.eContainer.isKindOf(JSL!TransferFieldDeclaration) and self.eContainer.reads == self;
+}
+
+@cached
+operation JSL!Expression isExpressionForTransferFieldMaps(): Boolean {
+	return self.eContainer.isKindOf(JSL!TransferFieldDeclaration) and self.eContainer.maps == self;
+}
+
 
 @cached
 operation JSL!Expression getId(): String {

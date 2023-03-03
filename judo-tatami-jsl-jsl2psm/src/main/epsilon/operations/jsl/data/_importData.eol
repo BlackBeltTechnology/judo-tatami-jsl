@@ -14,3 +14,4 @@ import "errorField.eol";
 import "queryDeclaration.eol";
 import "expression.eol";
 import "modelDeclaration.eol";
+import "transferDeclaration.eol";
