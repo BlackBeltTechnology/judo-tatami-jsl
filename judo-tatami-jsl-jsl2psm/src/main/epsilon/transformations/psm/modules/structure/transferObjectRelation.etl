@@ -260,3 +260,39 @@ rule CloneTransferObjectQueryRelationForDefaultTransferObjectType
 }
 
 
+///////////////////////////////////////////////////////////////
+// Transfer composite relation
+///////////////////////////////////////////////////////////////
+
+@abstract
+rule AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration
+    transform s: JSL!TransferFieldDeclaration
+    to t: JUDOPSM!TransferObjectRelation {
+        guard: s.referenceType.isKindOf(JSL!TransferDeclaration)
+
+        t.name = s.name;
+        t.target = s.referenceType.getPSMEquivalent();
+
+        // t.embeddedCreate = not s.eContainer.isAbstract;
+        // t.embeddedUpdate = not s.eContainer.isAbstract;
+        // t.embeddedDelete = not s.eContainer.isAbstract;
+        
+		t.embedded = true;
+        // t.binding = s.equivalent("CreateContainmentFromField");
+}
+
+
+rule CreateTransferObjectEmbeddedRelationForTransferFieldDeclaration
+    transform s: JSL!TransferFieldDeclaration
+    to t: JUDOPSM!TransferObjectRelation 
+    extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {
+        guard: s.referenceType.isKindOf(JSL!TransferDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForTransferFieldDeclaration");
+        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+
+        s.eContainer.getPSMEquivalent().relations.add(t);
+
+        log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+

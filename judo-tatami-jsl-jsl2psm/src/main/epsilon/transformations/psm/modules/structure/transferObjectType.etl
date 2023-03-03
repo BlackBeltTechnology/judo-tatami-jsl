@@ -1,5 +1,9 @@
 import "../../../../operations/_importAll.eol";
 
+//////////////////////////////////////////////////
+// Entity's default transfer object type
+//////////////////////////////////////////////////
+
 rule CreateEntityDefaultTransferObjectType
     transform s : JSL!EntityDeclaration
     to t : JUDOPSM!MappedTransferObjectType {
@@ -67,7 +71,9 @@ rule CreateEntityDefaultTransferObjectType
         log.debug("Created MappedTransferObjectType: " + t.name);
 }
 
-
+//////////////////////////////////////////////////
+// Unmapped transfer object type
+//////////////////////////////////////////////////
 rule CreateUnmappedTransferObjectType
 	transform s: JSL!TransferDeclaration 
 	to t: JUDOPSM!UnmappedTransferObjectType {

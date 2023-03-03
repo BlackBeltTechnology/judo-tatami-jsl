@@ -8,10 +8,18 @@ entity Entity {
 	field Integer attribute;
 }
 
+transfer UnmappedRelated {
+	field String transient;
+}
+
 transfer Unmapped {
 	field String transient;
 	field required String required;
 
 	field Integer derived reads Entity!any().attribute;
+
+    field UnmappedRelated unmappedRelated;
+    field required UnmappedRelated unmappedRelatedRequired;
+    field UnmappedRelated[] unmappedRelatedCollection;
 
 }

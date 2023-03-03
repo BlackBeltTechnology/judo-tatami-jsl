@@ -21,9 +21,9 @@ rule CreateAttributeFromField
     }
 
 
-// #####################################################
-//  Primitive Field Default Expression
-// #####################################################    
+//////////////////////////////////////////////////////////////////
+// Primitive Field Default Expression
+//////////////////////////////////////////////////////////////////   
 @greedy
 rule CreateDefaultDataExpressionTypeForPrimitiveEntityMember
     transform s : JSL!Expression
@@ -53,9 +53,9 @@ rule CreateDefaultValueForPrimitiveEntityMember
         log.debug("Created DataProperty for Default Value: " + s);
     }
 
-// #####################################################
-//  Error Field Default Expression
-// #####################################################    
+//////////////////////////////////////////////////////////////////
+// Error Field Default Expression
+//////////////////////////////////////////////////////////////////   
 @greedy
 rule CreateDefaultDataExpressionTypeForPrimitiveErrorField
     transform s : JSL!Expression
@@ -98,9 +98,9 @@ rule CreateAttributeFromIdentifier
     }
     
 
-// #####################################################
-//  Primitive TransferField Reads
-// #####################################################    
+//////////////////////////////////////////////////////////////////
+// Primitive TransferField Reads
+//////////////////////////////////////////////////////////////////   
 @greedy
 rule CreateReadsDataExpressionTypeForTranferFieldDeclaration
     transform s : JSL!Expression
