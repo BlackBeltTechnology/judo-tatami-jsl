@@ -44,6 +44,10 @@ transfer Mapped maps Entity as e {
 	field MappedRelated[] derivedContainmentCollection reads e.containmentCollection;    
     field MappedRelated derivedAssociation reads e.association;
     // field MappedRelated derivedAssociationOpposite maps e.entityRelatedOpposite;
+
+	//field Integer derivedAttributeStatic reads Entity!any().attribute;
+	
+	//Entity!all()!filter(d | d.attribute == 1)!any().attribute;
     
 }
 

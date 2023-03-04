@@ -97,7 +97,7 @@ public class JslUnmappedTranferObject2PsmTransferObjectTypeTest extends Abstract
         StaticData derived = assertStaticData("_derived_Unmapped_Reads");
         assertEquals("UnmappedTransferObjectTypeModel::UnmappedTransferObjectTypeModel::_Entity!any().attribute", derived.getGetterExpression().getExpression());
 
-        assertEquals(3, assertUnmappedTransferObject("Unmapped").getRelations().size());
+        assertEquals(4, assertUnmappedTransferObject("Unmapped").getRelations().size());
         assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelated");
 
         assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelated").getBinding(), IsNull.nullValue());

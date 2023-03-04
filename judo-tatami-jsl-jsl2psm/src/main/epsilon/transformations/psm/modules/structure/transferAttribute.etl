@@ -321,7 +321,11 @@ rule CreateDerivedTransferAttribute
       guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.reads.isDefined()
       t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");
       
-      t.binding = s.reads.equivalent("CreateReadsDataForTranferFieldDeclaration");
+      if (not s.reads.base.reference.isKindOf(JSL!EntityMapDeclaration)) {
+          t.binding = s.reads.equivalent("CreateReadsDataForTranferFieldDeclaration");
+      } else {
+          t.binding = s.reads.features.first.member.equivalent("CreateAttributeFromField");
+      }
       
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");

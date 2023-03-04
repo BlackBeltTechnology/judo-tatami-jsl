@@ -22,5 +22,5 @@ operation JSL!Expression isExpressionForTransferFieldMaps(): Boolean {
 
 @cached
 operation JSL!Expression getId(): String {
-	return (self.eContainer.getId() + "/defaultExpression");
+	return (self.eContainer.getId() + "/expression");
 }

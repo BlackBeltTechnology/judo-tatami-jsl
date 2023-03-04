@@ -92,6 +92,12 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "mappedAttribute").getDataType());
         assertEquals(assertAttribute("_Entity", "attribute"), assertMappedTransferObjectAttribute("Mapped", "mappedAttribute").getBinding());
 
+        assertMappedTransferObjectAttribute("Mapped", "derivedAttribute");
+        assertFalse(assertMappedTransferObjectAttribute("Mapped", "derivedAttribute").isRequired());
+        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "derivedAttribute").getDataType());
+        assertEquals(assertAttribute("_Entity", "attribute"), assertMappedTransferObjectAttribute("Mapped", "derivedAttribute").getBinding());
+
+       
         
         /*
         assertMappedTransferObjectAttribute("Mapped", "transient");
