@@ -251,6 +251,7 @@ public class JslExpressionToJqlExpression {
 	}
 
 	private String getJql(final NavigationBaseDeclarationReference it, Map<String, String> args) {
+		
 		NavigationBaseDeclaration navigationBaseReference = it.getReference();
 		
 		if (navigationBaseReference instanceof EntityDeclaration) {
@@ -263,10 +264,11 @@ public class JslExpressionToJqlExpression {
 			return getDataTypePSMFullyQualifiedName((DataTypeDeclaration) navigationBaseReference, it);
 		} else if (navigationBaseReference instanceof EnumDeclaration) {
 			return getEnumTypePSMFullyQualifiedName((EnumDeclaration) navigationBaseReference, it);
+		} else if (navigationBaseReference instanceof EntityMapDeclaration) {
+			return "self";
 		}
-		
         throw new IllegalArgumentException("Unhandled parameter types: " +
-                Arrays.<Object>asList(it).toString());
+                Arrays.<Object>asList(it.getReference()).toString());
 	}
 
 	private String getJql(final QueryParameterDeclaration it, Map<String, String> args) {
