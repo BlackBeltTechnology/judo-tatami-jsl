@@ -319,12 +319,12 @@ rule CreateDerivedTransferAttribute
     to t : JUDOPSM!TransferAttribute
     extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
       guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.reads.isDefined()
-      t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");
+      t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");      
       
-      if (not s.reads.base.reference.isKindOf(JSL!EntityMapDeclaration)) {
-          t.binding = s.reads.equivalent("CreateReadsDataForTranferFieldDeclaration");
+      if (s.eContainer.map.isDefined()) {
+         t.binding = s.reads.equivalent("CreateReadsDataForMappedTransferObjectTranferFieldDeclaration");
       } else {
-          t.binding = s.reads.features.first.member.equivalent("CreateAttributeFromField");
+         t.binding = s.reads.equivalent("CreateReadsDataForUnmappedTransferObjectTranferFieldDeclaration");
       }
       
       s.eContainer.getPSMEquivalent().attributes.add(t);

@@ -12,3 +12,62 @@ rule CreateContainmentFromField
         s.eContainer.getPSMEquivalent().relations.add(t);
         log.debug("Created Containment: " + t.name);
     }
+
+//////////////////////////////////////////////////////////////////
+// Entity TransferField Reads
+//////////////////////////////////////////////////////////////////   
+@greedy
+rule CreateReadsDataExpressionTypeForTransferRelationDeclaration
+    transform s : JSL!Expression
+    to t: JUDOPSM!ReferenceExpressionType {
+        guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!TransferDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateReadsDataExpressionTypeForTranferRelationDeclaration");
+        t.expression = expressionUtils.getJqlForExpression(s, entityNamePrefix, entityNamePostfix);
+  	    // t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+        // t.target = s.eContainer.referenceType.getPSMEquivalent().entityType;
+        
+        if (s.eContainer.eContainer.map.isDefined()) {    
+            log.debug("Call CreateReadsDataForMappedTransferObjectTransferRelationDeclaration");
+	        s.equivalent("CreateReadsDataForMappedTransferObjectTransferRelationDeclaration").getterExpression = t;
+        } else {
+            log.debug("Call CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration");
+	        s.equivalent("CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration").getterExpression = t;
+        }
+
+        log.debug("Created DataExpressionType for TransferRelation Reads: " + t.expression);
+    }
+
+@greedy
+rule CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration
+    transform s : JSL!Expression
+    to t: JUDOPSM!StaticNavigation {
+        guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!TransferDeclaration)
+           and s.eContainer.eContainer.map.isUndefined()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration");
+        t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
+        t.target = s.eContainer.referenceType.getPSMEquivalent().entityType;
+  	    t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+
+        s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
+
+        log.debug("Created StaticNavigation for TransferRelation Reads: " + s);
+    }
+
+@greedy
+rule CreateReadsDataForMappedTransferObjectTransferRelationDeclaration
+    transform s : JSL!Expression
+    to t: JUDOPSM!NavigationProperty {
+        guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!TransferDeclaration)
+           and s.eContainer.eContainer.map.isDefined()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateReadsDataForMappedTransferObjectTransferRelationDeclaration");
+        t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
+        t.target = s.eContainer.referenceType.getPSMEquivalent().entityType;
+  	    t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+
+		s.eContainer.eContainer.map.entity.getPSMEquivalent().navigationProperties.add(t);
+
+        log.debug("Created NavigationProperty for TransferRelation Reads: " + s);
+    }

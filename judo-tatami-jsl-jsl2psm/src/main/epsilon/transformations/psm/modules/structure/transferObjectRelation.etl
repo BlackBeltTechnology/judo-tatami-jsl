@@ -283,13 +283,13 @@ rule AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration
 
 
 @greedy
-rule CreateTransferObjectEmbeddedRelationForTransientTransferFieldDeclaration
+rule CreateTransientTransferObjectEmbeddedRelationForTransferFieldDeclaration
     transform s: JSL!TransferFieldDeclaration
     to t: JUDOPSM!TransferObjectRelation 
     extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {
-        guard: s.referenceType.isKindOf(JSL!TransferDeclaration) and not s.maps.isDefined() and not s.eContainer.automap
+        guard: s.referenceType.isKindOf(JSL!TransferDeclaration) and not s.maps.isDefined() and not s.reads.isDefined() and not s.eContainer.automap
 
-        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForTransientTransferFieldDeclaration");
+        t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferObjectEmbeddedRelationForTransferFieldDeclaration");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
 
         s.eContainer.getPSMEquivalent().relations.add(t);
@@ -297,9 +297,28 @@ rule CreateTransferObjectEmbeddedRelationForTransientTransferFieldDeclaration
         log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
+@greedy
+rule CreateDerivedTransferObjectEmbeddedRelationForTransferFieldDeclaration
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferObjectRelation
+    extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {
+      guard: s.referenceType.isKindOf(JSL!TransferDeclaration) and s.reads.isDefined() and not s.eContainer.automap
+
+      t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForMappedTransferFieldDeclaration");
+      t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+      
+      if (s.eContainer.map.isDefined()) {
+         t.binding = s.reads.equivalent("CreateReadsDataForMappedTransferObjectTranferRelationDeclaration");
+      } else {
+         t.binding = s.reads.equivalent("CreateReadsDataForUnmappedTransferObjectTranferRelationDeclaration");
+      }
+      
+      s.eContainer.getPSMEquivalent().relations.add(t);
+      log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
 
 @greedy
-rule CreateTransferObjectEmbeddedRelationForMappedTransferFieldDeclaration
+rule CreateMappedTransferObjectEmbeddedRelationForTransferFieldDeclaration
     transform s : JSL!TransferFieldDeclaration
     to t : JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {

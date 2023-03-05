@@ -264,6 +264,8 @@ public class JslExpressionToJqlExpression {
 			return getDataTypePSMFullyQualifiedName((DataTypeDeclaration) navigationBaseReference, it);
 		} else if (navigationBaseReference instanceof EnumDeclaration) {
 			return getEnumTypePSMFullyQualifiedName((EnumDeclaration) navigationBaseReference, it);
+		} else if (navigationBaseReference instanceof EntityMapDeclaration) {
+			return "self";
 		}
         throw new IllegalArgumentException("Unhandled parameter types: " +
                 Arrays.<Object>asList(it.getReference()).toString());
