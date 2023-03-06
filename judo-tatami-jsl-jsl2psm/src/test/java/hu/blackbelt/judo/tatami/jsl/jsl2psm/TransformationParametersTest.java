@@ -65,8 +65,6 @@ public class TransformationParametersTest extends AbstractTest {
             Files.createDirectories(Paths.get(TARGET_TEST_CLASSES));
         }
     }
-
-    // TODO: Unmapped Transfer Field declaration reads / maps
     
     @Override
     public Jsl2PsmParameterBuilder addTransformationParameters(String testName, Jsl2PsmParameterBuilder parameters) {
