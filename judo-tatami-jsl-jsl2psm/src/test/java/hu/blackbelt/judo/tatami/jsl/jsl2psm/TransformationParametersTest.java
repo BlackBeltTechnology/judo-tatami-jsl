@@ -23,8 +23,11 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
+import hu.blackbelt.judo.meta.psm.derived.DataProperty;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.Jsl2PsmParameter.Jsl2PsmParameterBuilder;
+import lombok.Builder;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,6 +38,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Slf4j
 public class TransformationParametersTest extends AbstractTest {
@@ -83,8 +87,13 @@ public class TransformationParametersTest extends AbstractTest {
             return parameters.defaultDefaultNameMidfix("_Default_Mid_");
         } else if (testName.equals("TestDefaultDefaultNamePostfix")) {
             return parameters.defaultDefaultNamePostfix("_post");
+    	} else if (testName.equals("TestDefaultReadsNamePrefix")) {
+            return parameters.defaultReadsNamePrefix("_pre_");
+        } else if (testName.equals("TestDefaultReadsNameMidfix")) {
+            return parameters.defaultReadsNameMidfix("_Default_Mid_");
+        } else if (testName.equals("TestDefaultReadsNamePostfix")) {
+            return parameters.defaultReadsNamePostfix("_post");
         }
-    	
     	return parameters;
     }
     
@@ -259,4 +268,81 @@ public class TransformationParametersTest extends AbstractTest {
         final TransferAttribute strField = assertMappedTransferObjectAttribute("T", "strField");
         assertEquals("_strField_Default_T_post", strField.getDefaultValue().getName());
     }
+
+    @Test
+    void testDefaultReadsNamePrefix() throws Exception {
+        testName = "TestDefaultReadsNamePrefix";
+
+        jslModel = JslParser.getModelFromStrings(
+                "Test",
+                List.of("model Test;\n" +
+                        "\n" +
+                        "type string String(min-size = 0, max-size = 32);\n" +
+                        "\n" +
+						"entity E {\n" +
+                        "    field String strField;\n" +
+                        "}\n" +
+                        "transfer T maps E as e {\n" +
+                        "    field String strField reads e.strField;\n" +
+                        "}\n"
+                
+                )
+        );
+
+        transform();
+
+        assertMappedTransferObjectAttribute("T", "strField");
+        assertDataProperty("_E", "_pre_strField_T_Reads");
+    }
+
+    @Test
+    void testDefaultReadsNameMidfix() throws Exception {
+        testName = "TestDefaultReadsNameMidfix";
+
+        jslModel = JslParser.getModelFromStrings(
+                "Test",
+                List.of("model Test;\n" +
+                        "\n" +
+                        "type string String(min-size = 0, max-size = 32);\n" +
+                        "\n" +
+						"entity E {\n" +
+                        "    field String strField;\n" +
+                        "}\n" +
+                        "transfer T maps E as e {\n" +
+                        "    field String strField reads e.strField;\n" +
+                        "}\n"
+                )
+        );
+
+        transform();
+
+        assertMappedTransferObjectAttribute("T", "strField");
+        assertDataProperty("_E", "_strField_Default_Mid_T_Reads");
+    }
+
+    @Test
+    void testDefaultReadsNamePostfix() throws Exception {
+        testName = "TestDefaultReadsNamePostfix";
+
+        jslModel = JslParser.getModelFromStrings(
+                "Test",
+                List.of("model Test;\n" +
+                        "\n" +
+                        "type string String(min-size = 0, max-size = 32);\n" +
+                        "\n" +
+						"entity E {\n" +
+                        "    field String strField;\n" +
+                        "}\n" +
+                        "transfer T maps E as e {\n" +
+                        "    field String strField reads e.strField;\n" +
+                        "}\n"
+                )
+        );
+
+        transform();
+
+        assertMappedTransferObjectAttribute("T", "strField");
+        assertDataProperty("_E", "_strField_T_post");
+    }
+
 }
