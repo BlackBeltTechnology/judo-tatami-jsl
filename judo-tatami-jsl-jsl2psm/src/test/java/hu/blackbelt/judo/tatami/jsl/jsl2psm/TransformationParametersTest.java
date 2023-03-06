@@ -84,13 +84,13 @@ public class TransformationParametersTest extends AbstractTest {
     	} else if (testName.equals("TestDefaultDefaultNamePrefix")) {
             return parameters.defaultDefaultNamePrefix("_pre_");
         } else if (testName.equals("TestDefaultDefaultNameMidfix")) {
-            return parameters.defaultDefaultNameMidfix("_Default_Mid_");
+            return parameters.defaultDefaultNameMidfix("_mid_");
         } else if (testName.equals("TestDefaultDefaultNamePostfix")) {
             return parameters.defaultDefaultNamePostfix("_post");
     	} else if (testName.equals("TestDefaultReadsNamePrefix")) {
             return parameters.defaultReadsNamePrefix("_pre_");
         } else if (testName.equals("TestDefaultReadsNameMidfix")) {
-            return parameters.defaultReadsNameMidfix("_Default_Mid_");
+            return parameters.defaultReadsNameMidfix("_mid_");
         } else if (testName.equals("TestDefaultReadsNamePostfix")) {
             return parameters.defaultReadsNamePostfix("_post");
         }
@@ -242,7 +242,7 @@ public class TransformationParametersTest extends AbstractTest {
         assertEntityType("_T");
         assertEquals(1, getMappedTransferObjectTypes().size());
         final TransferAttribute strField = assertMappedTransferObjectAttribute("T", "strField");
-        assertEquals("_strField_Default_Mid_T", strField.getDefaultValue().getName());
+        assertEquals("_strField_mid_T", strField.getDefaultValue().getName());
     }
 
     @Test
@@ -292,7 +292,7 @@ public class TransformationParametersTest extends AbstractTest {
         transform();
 
         assertMappedTransferObjectAttribute("T", "strField");
-        assertDataProperty("_E", "_pre_strField_T_Reads");
+        assertDataProperty("_E", "_pre_strField_Reads_T");
     }
 
     @Test
@@ -317,7 +317,7 @@ public class TransformationParametersTest extends AbstractTest {
         transform();
 
         assertMappedTransferObjectAttribute("T", "strField");
-        assertDataProperty("_E", "_strField_Default_Mid_T_Reads");
+        assertDataProperty("_E", "_strField_mid_T");
     }
 
     @Test
@@ -342,7 +342,7 @@ public class TransformationParametersTest extends AbstractTest {
         transform();
 
         assertMappedTransferObjectAttribute("T", "strField");
-        assertDataProperty("_E", "_strField_T_post");
+        assertDataProperty("_E", "_strField_Reads_T_post");
     }
 
 }

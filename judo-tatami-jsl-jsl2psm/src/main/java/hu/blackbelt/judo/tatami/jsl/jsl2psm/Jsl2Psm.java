@@ -127,11 +127,11 @@ public class Jsl2Psm {
 
         @Builder.Default
         @NonNull
-        String defaultReadsNamePostfix = "_Reads";
+        String defaultReadsNamePostfix = "";
 
         @Builder.Default
         @NonNull
-        String defaultReadsNameMidfix = "_";
+        String defaultReadsNameMidfix = "_Reads_";
 
     }
 
