@@ -258,3 +258,88 @@ rule CloneTransferObjectQueryRelationForDefaultTransferObjectType
         
         log.debug("Clone TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "]");
 }
+
+
+///////////////////////////////////////////////////////////////
+// Transfer composite relation
+///////////////////////////////////////////////////////////////
+
+@abstract
+rule AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration
+    transform s: JSL!TransferFieldDeclaration
+    to t: JUDOPSM!TransferObjectRelation {
+        guard: s.referenceType.isKindOf(JSL!TransferDeclaration)
+
+        t.name = s.name;
+        t.target = s.referenceType.getPSMEquivalent();
+
+        // t.embeddedCreate = not s.eContainer.isAbstract;
+        // t.embeddedUpdate = not s.eContainer.isAbstract;
+        // t.embeddedDelete = not s.eContainer.isAbstract;
+        
+		t.embedded = true;
+        // t.binding = s.equivalent("CreateContainmentFromField");
+}
+
+
+@greedy
+rule CreateTransientTransferObjectEmbeddedRelationForTransferFieldDeclaration
+    transform s: JSL!TransferFieldDeclaration
+    to t: JUDOPSM!TransferObjectRelation 
+    extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {
+        guard: s.referenceType.isKindOf(JSL!TransferDeclaration) and not s.maps.isDefined() and not s.reads.isDefined() and not s.eContainer.automap
+
+        t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferObjectEmbeddedRelationForTransferFieldDeclaration");
+        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+
+        s.eContainer.getPSMEquivalent().relations.add(t);
+
+        log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@greedy
+rule CreateDerivedTransferObjectEmbeddedRelationForTransferFieldDeclaration
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferObjectRelation
+    extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {
+      guard: s.referenceType.isKindOf(JSL!TransferDeclaration) and s.reads.isDefined() and not s.eContainer.automap
+
+      t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForMappedTransferFieldDeclaration");
+      t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+      
+      if (s.eContainer.map.isDefined()) {
+         t.binding = s.reads.equivalent("CreateReadsDataForMappedTransferObjectTransferRelationDeclaration");
+      } else {
+         t.binding = s.reads.equivalent("CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration");
+      }
+      
+      s.eContainer.getPSMEquivalent().relations.add(t);
+      log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@greedy
+rule CreateMappedTransferObjectEmbeddedRelationForTransferFieldDeclaration
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferObjectRelation
+    extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {
+      guard: s.referenceType.isKindOf(JSL!TransferDeclaration) and s.maps.isDefined() and not s.eContainer.automap
+
+      t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForMappedTransferFieldDeclaration");
+      t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+      
+      var entityMember = s.maps.features.first.member;
+      
+      if (entityMember.isKindOf(JSL!EntityFieldDeclaration)) {
+	      t.binding = entityMember.equivalent("CreateContainmentFromField");
+      } else if (entityMember.isKindOf(JSL!EntityRelationDeclaration)) {
+	      t.binding = entityMember.equivalent("CreateDeclaredAssociationEnd");      
+      } else if (entityMember.isKindOf(JSL!EntityRelationOppositeInjected)) {
+	      t.binding = entityMember.equivalent("CreateNamedOppositeAssociationEnd");      
+      } else {
+          throw "Invalid member type";
+      }
+            
+      s.eContainer.getPSMEquivalent().relations.add(t);
+      log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
