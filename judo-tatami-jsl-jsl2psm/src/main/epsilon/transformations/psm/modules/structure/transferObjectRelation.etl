@@ -308,9 +308,9 @@ rule CreateDerivedTransferObjectEmbeddedRelationForTransferFieldDeclaration
       t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
       
       if (s.eContainer.map.isDefined()) {
-         t.binding = s.reads.equivalent("CreateReadsDataForMappedTransferObjectTranferRelationDeclaration");
+         t.binding = s.reads.equivalent("CreateReadsDataForMappedTransferObjectTransferRelationDeclaration");
       } else {
-         t.binding = s.reads.equivalent("CreateReadsDataForUnmappedTransferObjectTranferRelationDeclaration");
+         t.binding = s.reads.equivalent("CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration");
       }
       
       s.eContainer.getPSMEquivalent().relations.add(t);

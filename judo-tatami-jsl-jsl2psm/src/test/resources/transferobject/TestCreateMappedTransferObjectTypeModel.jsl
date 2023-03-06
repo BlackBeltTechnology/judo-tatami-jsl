@@ -38,7 +38,7 @@ transfer Mapped maps Entity as e {
 	field MappedRelated mappedContainment maps e.containment;
 	field MappedRelated[] mappedContainmentCollection maps e.containmentCollection;
     // field MappedRelated mappedAssociation maps e.association;
-    // field MappedRelated mappedAssociation maps e.entityRelatedOpposite;
+    // field MappedRelated mappedAssociationOpposite maps e.entityRelatedOpposite;
 
 	field Integer derivedAttribute reads e.attribute;
 	field MappedRelated derivedContainment reads e.containment;
