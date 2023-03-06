@@ -20,6 +20,10 @@ rule CreateAttributeFromField
         log.debug("Created Attribute (Field): " + t.name);
     }
 
+
+//////////////////////////////////////////////////////////////////
+// Primitive Field Default Expression
+//////////////////////////////////////////////////////////////////   
 @greedy
 rule CreateDefaultDataExpressionTypeForPrimitiveEntityMember
     transform s : JSL!Expression
@@ -49,6 +53,9 @@ rule CreateDefaultValueForPrimitiveEntityMember
         log.debug("Created DataProperty for Default Value: " + s);
     }
 
+//////////////////////////////////////////////////////////////////
+// Error Field Default Expression
+//////////////////////////////////////////////////////////////////   
 @greedy
 rule CreateDefaultDataExpressionTypeForPrimitiveErrorField
     transform s : JSL!Expression
@@ -88,4 +95,60 @@ rule CreateAttributeFromIdentifier
         t.identifier = true;
         s.eContainer.getPSMEquivalent().attributes.add(t);
         log.debug("Created Attribute (Identifier): " + t.name);
+    }
+    
+
+//////////////////////////////////////////////////////////////////
+// Primitive TransferField Reads
+//////////////////////////////////////////////////////////////////   
+@greedy
+rule CreateReadsDataExpressionTypeForTransferFieldDeclaration
+    transform s : JSL!Expression
+    to t: JUDOPSM!DataExpressionType {
+        guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateReadsDataExpressionTypeForTransferFieldDeclaration");
+        t.expression = expressionUtils.getJqlForExpression(s, entityNamePrefix, entityNamePostfix);
+        
+        if (s.eContainer.eContainer.map.isDefined()) {    
+	        s.equivalent("CreateReadsDataForMappedTransferObjectTranferFieldDeclaration").getterExpression = t;
+        } else {
+	        s.equivalent("CreateReadsDataForUnmappedTransferObjectTranferFieldDeclaration").getterExpression = t;
+        }
+
+        log.debug("Created DataExpressionType for TransferField Reads: " + t.expression);
+    }
+
+@greedy
+rule CreateReadsDataForUnmappedTransferObjectTranferFieldDeclaration
+    transform s : JSL!Expression
+    to t: JUDOPSM!StaticData {
+        guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+           and s.eContainer.eContainer.map.isUndefined()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateReadsDataForUnmappedTransferObjectTransferFieldDeclaration");
+        t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+        t.required = false;
+
+        s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
+
+        log.debug("Created StaticData for TransferField Reads: " + s);
+    }
+
+@greedy
+rule CreateReadsDataForMappedTransferObjectTranferFieldDeclaration
+    transform s : JSL!Expression
+    to t: JUDOPSM!DataProperty {
+        guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+           and s.eContainer.eContainer.map.isDefined()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateReadsDataForMappedTransferObjectTransferFieldDeclaration");
+        t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+        t.required = false;
+
+		s.eContainer.eContainer.map.entity.getPSMEquivalent().dataProperties.add(t);
+
+        log.debug("Created DataProperty for TransferField Reads: " + s);
     }
