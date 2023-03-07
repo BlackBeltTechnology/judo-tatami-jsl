@@ -1,0 +1,28 @@
+model AutoMappedTransferObjectTypeModel;
+
+type string String(min-size = 0, max-size = 250);
+type numeric Integer(precision = 3, scale = 0);
+
+
+entity EntityAncestor {
+	field Integer attribute;
+	field EntityRelated containment;
+	field EntityRelated[] containmentCollection;
+	relation EntityRelated association;
+}
+
+
+entity Entity extends EntityAncestor {
+	field Integer attribute2;
+	field EntityRelated containment2;
+	field EntityRelated[] containmentCollection2;
+	relation EntityRelated association2;
+}
+
+entity EntityRelated {
+	field Integer attribute;
+	relation Entity entity opposite-add entityRelatedOpposite;
+}
+
+transfer AutoMapped maps Entity as entity;
+transfer AutoMappedRelated maps EntityRelated as related;
