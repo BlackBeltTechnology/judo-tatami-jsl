@@ -68,7 +68,7 @@ public class JslUnmappedTranferObject2PsmTransferObjectTypeTest extends Abstract
     }
 
     @Test
-    void testCreateDefaultTransferObjectType() throws Exception {
+    void testCreateUnmappedTransferObjectType() throws Exception {
         testName = "TestCreateUnmappedTransferObjectType";
 
         

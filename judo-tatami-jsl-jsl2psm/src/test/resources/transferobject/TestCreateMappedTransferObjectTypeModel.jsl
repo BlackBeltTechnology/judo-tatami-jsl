@@ -9,6 +9,12 @@ entity Entity {
 	field EntityRelated containment;
 	field EntityRelated[] containmentCollection;
 	relation EntityRelated association;
+
+	identifier Integer identifier;
+	derived Integer attributeDerived => self.attribute;
+	derived EntityRelated containmentDerived => self.containment;
+	derived EntityRelated[] containmentCollectionDerived => self.containmentCollection;
+	
 }
 
 entity EntityRelated {
@@ -45,6 +51,15 @@ transfer Mapped maps Entity as e {
 	field Integer derivedAttributeStatic reads Entity!any().attribute;    
 	field MappedRelated derivedContainmentStatic reads EntityRelated!any();
 	field MappedRelated[] derivedContainmentCollectionStatic reads EntityRelated!all();
+
+	field Integer mappedAttributeDerived reads e.attributeDerived;
+	field MappedRelated mappedContainmentDerived reads e.containmentDerived;
+	field MappedRelated[] mappedContainmentCollectionDerived reads e.containmentCollectionDerived;
+
+    // TODO: Fix identifier
+	// field Integer mappedIdentifier maps e.identifier;
+	field Integer derivedIdentifier reads e.identifier;
+
 }
 
 transfer MappedRelated maps EntityRelated as e {
