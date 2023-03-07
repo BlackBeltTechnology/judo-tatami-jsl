@@ -1,3 +1,5 @@
+import "../../../../operations/_importAll.eol";
+
 rule CreateContainmentFromField
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!Containment
@@ -17,35 +19,31 @@ rule CreateContainmentFromField
 // Entity TransferField Reads
 //////////////////////////////////////////////////////////////////   
 @greedy
-rule CreateReadsDataExpressionTypeForTransferRelationDeclaration
+rule CreateReadsReferenceExpressionTypeForTransferRelationDeclaration
     transform s : JSL!Expression
     to t: JUDOPSM!ReferenceExpressionType {
         guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!TransferDeclaration)
 
-        t.setId("(jsl/" + s.getId() + ")/CreateReadsDataExpressionTypeForTranferRelationDeclaration");
+        t.setId("(jsl/" + s.getId() + ")/CreateReadsReferenceExpressionTypeForTranferRelationDeclaration");
         t.expression = expressionUtils.getJqlForExpression(s, entityNamePrefix, entityNamePostfix);
-  	    // t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
-        // t.target = s.eContainer.referenceType.getPSMEquivalent().entityType;
         
         if (s.eContainer.eContainer.map.isDefined()) {    
-            log.debug("Call CreateReadsDataForMappedTransferObjectTransferRelationDeclaration");
-	        s.equivalent("CreateReadsDataForMappedTransferObjectTransferRelationDeclaration").getterExpression = t;
+	        s.equivalent("CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclaration").getterExpression = t;
         } else {
-            log.debug("Call CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration");
-	        s.equivalent("CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration").getterExpression = t;
+	        s.equivalent("CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclaration").getterExpression = t;
         }
 
-        log.debug("Created DataExpressionType for TransferRelation Reads: " + t.expression);
+        log.debug("Created ReferenceExpressionType for TransferRelation Reads: " + t.expression);
     }
 
 @greedy
-rule CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration
+rule CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclaration
     transform s : JSL!Expression
     to t: JUDOPSM!StaticNavigation {
         guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!TransferDeclaration)
            and s.eContainer.eContainer.map.isUndefined()
 
-        t.setId("(jsl/" + s.getId() + ")/CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration");
+        t.setId("(jsl/" + s.getId() + ")/CreateReadsReferenceExpressionForUnmappedTransferObjectTransferRelationDeclaration");
         t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
         t.target = s.eContainer.referenceType.getPSMEquivalent().entityType;
   	    t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
@@ -56,13 +54,13 @@ rule CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration
     }
 
 @greedy
-rule CreateReadsDataForMappedTransferObjectTransferRelationDeclaration
+rule CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclaration
     transform s : JSL!Expression
     to t: JUDOPSM!NavigationProperty {
         guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!TransferDeclaration)
            and s.eContainer.eContainer.map.isDefined()
 
-        t.setId("(jsl/" + s.getId() + ")/CreateReadsDataForMappedTransferObjectTransferRelationDeclaration");
+        t.setId("(jsl/" + s.getId() + ")/CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclaration");
         t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
         t.target = s.eContainer.referenceType.getPSMEquivalent().entityType;
   	    t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());

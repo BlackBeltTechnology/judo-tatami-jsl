@@ -322,9 +322,9 @@ rule CreateDerivedTransferAttribute
       t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");      
       
       if (s.eContainer.map.isDefined()) {
-         t.binding = s.reads.equivalent("CreateReadsDataForMappedTransferObjectTranferFieldDeclaration");
+         t.binding = s.reads.equivalent("CreateReadsDataPropertyForMappedTransferObjectTranferFieldDeclaration");
       } else {
-         t.binding = s.reads.equivalent("CreateReadsDataForUnmappedTransferObjectTranferFieldDeclaration");
+         t.binding = s.reads.equivalent("CreateReadsStaticDataForUnmappedTransferObjectTranferFieldDeclaration");
       }
       
       s.eContainer.getPSMEquivalent().attributes.add(t);

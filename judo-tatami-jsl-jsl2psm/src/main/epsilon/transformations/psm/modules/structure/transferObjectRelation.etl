@@ -273,12 +273,12 @@ rule AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration
         t.name = s.name;
         t.target = s.referenceType.getPSMEquivalent();
 
+        // TODO: 
         // t.embeddedCreate = not s.eContainer.isAbstract;
         // t.embeddedUpdate = not s.eContainer.isAbstract;
         // t.embeddedDelete = not s.eContainer.isAbstract;
         
 		t.embedded = true;
-        // t.binding = s.equivalent("CreateContainmentFromField");
 }
 
 
@@ -308,9 +308,9 @@ rule CreateDerivedTransferObjectEmbeddedRelationForTransferFieldDeclaration
       t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
       
       if (s.eContainer.map.isDefined()) {
-         t.binding = s.reads.equivalent("CreateReadsDataForMappedTransferObjectTransferRelationDeclaration");
+         t.binding = s.reads.equivalent("CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclaration");
       } else {
-         t.binding = s.reads.equivalent("CreateReadsDataForUnmappedTransferObjectTransferRelationDeclaration");
+         t.binding = s.reads.equivalent("CreateReadsReferenceExpressionForUnmappedTransferObjectTransferRelationDeclaration");
       }
       
       s.eContainer.getPSMEquivalent().relations.add(t);
@@ -336,7 +336,7 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferFieldDeclaration
       } else if (entityMember.isKindOf(JSL!EntityRelationOppositeInjected)) {
 	      t.binding = entityMember.equivalent("CreateNamedOppositeAssociationEnd");      
       } else {
-          throw "Invalid member type";
+          throw "Invalid member type - " + s.eContainer.name + "." + e.name + " " + entityMember;
       }
             
       s.eContainer.getPSMEquivalent().relations.add(t);

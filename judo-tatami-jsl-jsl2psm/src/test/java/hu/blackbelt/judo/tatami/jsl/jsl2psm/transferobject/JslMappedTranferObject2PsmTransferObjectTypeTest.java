@@ -149,7 +149,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollection").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
 
         
-// TODO: Fix association        
+// TODO: JNG-4603 Fix association        
 //        assertMappedTransferObjectRelation("Mapped", "mappedAssociation");
 //        assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedAssociation").isRequired());
 //        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociation").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "association")));

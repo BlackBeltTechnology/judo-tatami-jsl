@@ -24,12 +24,6 @@ transfer UnmappedRelated {
 transfer Mapped maps Entity as e {
     field Integer unmappedAttribute;
     
-    // It have to be invalid - but it's not'
-	// field UnmappedRelated unmappedContainment maps e.containment;
-	// field UnmappedRelated[] unmappedContainmentCollection maps e.containmentCollection;
-	// field UnmappedRelated unmappedContainment reads e.containment;
-	// field UnmappedRelated[] unmappedContainmentCollection reads e.containmentCollection;
-
 	field UnmappedRelated unmappedContainment;
 	field required UnmappedRelated unmappedContainmentRequired;
 	field UnmappedRelated[] unmappedContainmentCollection;
@@ -37,6 +31,7 @@ transfer Mapped maps Entity as e {
 	field Integer mappedAttribute maps e.attribute;
 	field MappedRelated mappedContainment maps e.containment;
 	field MappedRelated[] mappedContainmentCollection maps e.containmentCollection;
+    // TODO: JNG-4603 Fix associations
     // field MappedRelated mappedAssociation maps e.association;
     // field MappedRelated mappedAssociationOpposite maps e.entityRelatedOpposite;
 
@@ -44,6 +39,7 @@ transfer Mapped maps Entity as e {
 	field MappedRelated derivedContainment reads e.containment;
 	field MappedRelated[] derivedContainmentCollection reads e.containmentCollection;    
     field MappedRelated derivedAssociation reads e.association;
+    // TODO: JNG-4603 Fix associations
     // field MappedRelated derivedAssociationOpposite maps e.entityRelatedOpposite;
 
 	field Integer derivedAttributeStatic reads Entity!any().attribute;    
