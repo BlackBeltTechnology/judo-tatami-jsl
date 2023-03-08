@@ -1,5 +1,9 @@
 import "../../../../operations/_importAll.eol";
 
+//////////////////////////////////////////////////
+// Entity's default transfer object type
+//////////////////////////////////////////////////
+
 rule CreateEntityDefaultTransferObjectType
     transform s : JSL!EntityDeclaration
     to t : JUDOPSM!MappedTransferObjectType {
@@ -66,3 +70,42 @@ rule CreateEntityDefaultTransferObjectType
         s.eContainer.getModelRoot().elements.add(t);
         log.debug("Created MappedTransferObjectType: " + t.name);
 }
+
+//////////////////////////////////////////////////
+// Unmapped transfer object type
+//////////////////////////////////////////////////
+rule CreateUnmappedTransferObjectType
+	transform s: JSL!TransferDeclaration 
+	to t: JUDOPSM!UnmappedTransferObjectType {
+	  guard: s.map.isUndefined() and not s.automap
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectType");
+	    
+	  t.name = s.name;
+
+	  s.eContainer.getModelRoot().elements.add(t);
+
+	  log.debug("Created UnmappedTransferObjectType: " + t.name);
+}
+
+
+//////////////////////////////////////////////////
+// Mapped transfer object type
+//////////////////////////////////////////////////
+rule CreateMappedTransferObjectType
+	transform s: JSL!TransferDeclaration 
+	to t: JUDOPSM!MappedTransferObjectType {
+	  guard: s.map.isDefined() and not s.automap
+
+      t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferObjectType");
+	    
+	  t.entityType = s.map.entity.getPSMEquivalent();
+	  
+	  t.name = s.name;
+
+	  s.eContainer.getModelRoot().elements.add(t);
+
+	  log.debug("Created MappedTransferObjectType: " + t.name);
+}
+
+

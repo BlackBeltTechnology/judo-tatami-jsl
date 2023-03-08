@@ -67,3 +67,18 @@ rule CreateCardinalityForStaticQueryDeclaration
       t.lower = 0;
       t.upper = s.isMany ? -1 : 1;
 }
+
+
+@lazy
+rule CreateCardinalityForTransferFieldDeclaration
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!Cardinality
+    {
+      guard: s.referenceType.isKindOf(JSL!TransferDeclaration)
+
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferFieldDeclaration");
+
+      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = s.isMany ? -1 : 1;
+}
+
