@@ -3,7 +3,7 @@ import "../../../../operations/_importAll.eol";
 //////////////////////////////////////////////////
 // Entity's default transfer object type
 //////////////////////////////////////////////////
-
+@greedy
 rule CreateEntityDefaultTransferObjectType
     transform s : JSL!EntityDeclaration
     to t : JUDOPSM!MappedTransferObjectType {

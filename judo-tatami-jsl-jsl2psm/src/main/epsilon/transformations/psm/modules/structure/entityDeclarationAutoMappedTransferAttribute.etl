@@ -73,7 +73,7 @@ rule CreateIdentifierTransferAttributeForAutoMappedTransferObjectType
         t.setId("(jsl/" + s.getId() + ")/CreateIdentifierTransferAttributeForAutoMappedTransferObjectType");
 
         s.eContainer.equivalent("CreateAutoMappedTransferObjectType").attributes.add(t);
-        log.debug("Created TransferAttribute (Identifier) for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+        log.debug("Created TransferAttribute (Identifier) for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
 @lazy
@@ -82,8 +82,8 @@ rule CloneIdentifierTransferAttributeForAutoMappedTransferObjectType
 	transform s: JSL!EntityIdentifierDeclaration
 	to t: JUDOPSM!TransferAttribute
     extends AbstractCreateIdentifierTransferAttributeForAutoMappedTransferObjectType {
-        t.setId("(jsl/" + s.getId() + ")/CloneIdentifierTransferAttributeForDefaultTransferObjectType");    
-        log.debug("Clone TransferAttribute (Identifier) for DefaultTransferObjectType: [" + t.name + "]");
+        t.setId("(jsl/" + s.getId() + ")/CloneIdentifierTransferAttributeForAutoMappedTransferObjectType");    
+        log.debug("Clone TransferAttribute (Identifier) for AutoMappedTransferObjectType: [" + t.name + "]");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +100,7 @@ rule AbstractCreateTransferDefaultValueAttributeForAutoMappedTransferObjectType
 }
 
 @greedy
-rule CreateDerivedTransferAttributeForDefaultTransferObjectType
+rule CreateDefaultTransferAttributeForAutoMappedTransferObjectType
     transform s: JSL!EntityDerivedDeclaration    
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateTransferDefaultValueAttributeForAutoMappedTransferObjectType {
@@ -108,11 +108,11 @@ rule CreateDerivedTransferAttributeForDefaultTransferObjectType
         t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttributeForAutoMappedTransferObjectType");
 
         s.eContainer.equivalent("CreateEntityAutoMappedTransferObjectType").attributes.add(t);
-        log.debug("Created TransferAttribute (Derived) for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+        log.debug("Created TransferAttribute (Derived) for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
 
-// Create default transfer object default value attribute clone. It creates the attribute on the resource root,
+// Create auto mapped transfer object default value attribute clone. It creates the attribute on the resource root,
 // the caller code have to add it to the corresponding transfer object
 // This method can be used to make clone attributes to inherited transfer objects
 @lazy
