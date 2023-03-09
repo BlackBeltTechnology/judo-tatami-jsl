@@ -56,7 +56,7 @@ transfer Mapped maps Entity as e {
 	field MappedRelated mappedContainmentDerived reads e.containmentDerived;
 	field MappedRelated[] mappedContainmentCollectionDerived reads e.containmentCollectionDerived;
 
-    // TODO: Fix identifier
+    // TODO: JNG-4605 Fix identifier
 	// field Integer mappedIdentifier maps e.identifier;
 	field Integer derivedIdentifier reads e.identifier;
 
