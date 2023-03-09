@@ -134,7 +134,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         assertBinaryType("Picture");        
         assertEquals(assertBinaryType("Picture"), assertAttribute("_User", "profilePicture").getDataType());
-        assertEquals(assertBinaryType("Picture"), assertAttribute("_AdminUser", "profilePicture").getDataType());
+        assertEquals(assertBinaryType("Picture"), assertAllAttribute("_AdminUser", "profilePicture").getDataType());
         
         assertEquals(assertBinaryType("Picture"), assertMappedTransferObjectAttribute("User", "profilePicture").getDataType());
         assertEquals(assertBinaryType("Picture"), assertMappedTransferObjectAttribute("AdminUser", "profilePicture").getDataType());

@@ -1,0 +1,64 @@
+import "../../../../operations/_importAll.eol";
+import "../namespace/namespace.etl";
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Transfer object field
+////////////////////////////////////////////////////////////////////////////////////////////
+@abstract
+rule AbstractCreateTransferAttributeForTransferFieldDeclaration
+    transform s: JSL!TransferFieldDeclaration
+    to t: JUDOPSM!TransferAttribute {
+        guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.required = s.isRequired;
+        t.name = s.name;
+        t.dataType = s.referenceType.getPSMEquivalent();
+
+        //if (s.defaultExpression.isDefined()) {
+        //    t.defaultValue = s.defaultExpression.equivalent("CreateDefaultValueForPrimitiveEntityMember");
+        //}
+}
+
+@greedy
+rule CreateTransientTransferAttribute
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
+      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.maps.isUndefined() and s.reads.isUndefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferAttribute");
+      s.eContainer.getPSMEquivalent().attributes.add(t);
+      log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@greedy
+rule CreateDerivedTransferAttribute
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
+      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.reads.isDefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");      
+      
+      if (s.eContainer.map.isDefined()) {
+         t.binding = s.reads.equivalent("CreateReadsDataPropertyForMappedTransferObjectTranferFieldDeclaration");
+      } else {
+         t.binding = s.reads.equivalent("CreateReadsStaticDataForUnmappedTransferObjectTranferFieldDeclaration");
+      }
+      
+      s.eContainer.getPSMEquivalent().attributes.add(t);
+      log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+
+@greedy
+rule CreateMappedTransferAttribute
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
+      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.maps.isDefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferAttribute");
+      
+      t.binding = s.maps.features.first.member.equivalent("CreateAttributeFromField");
+      
+      s.eContainer.getPSMEquivalent().attributes.add(t);
+      log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}

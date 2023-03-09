@@ -159,7 +159,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
         assertEquals(assertNumericType("Height"), assertAttribute("_Person", "height").getDataType());
         assertEquals(assertNumericType("Height"), assertMappedTransferObjectAttribute("Person", "height").getDataType());
 
-        assertEquals(assertNumericType("Height"), assertAttribute("_StudentPerson", "height").getDataType());
+        assertEquals(assertNumericType("Height"), assertAllAttribute("_StudentPerson", "height").getDataType());
         assertEquals(assertNumericType("Height"), assertMappedTransferObjectAttribute("StudentPerson", "height").getDataType());
 
     }

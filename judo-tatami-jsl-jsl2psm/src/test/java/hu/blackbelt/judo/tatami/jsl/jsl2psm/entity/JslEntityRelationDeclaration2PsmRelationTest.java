@@ -160,20 +160,20 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertEntityType("_SuperSalesPerson");
         assertEntityType("_LazySalesPerson");
 
-        assertFalse(assertRelation("_SuperSalesPerson", "leads").isRequired());
-        assertEquals(0, assertRelation("_SuperSalesPerson", "leads").getCardinality().getLower());
-        assertEquals(-1, assertRelation("_SuperSalesPerson", "leads").getCardinality().getUpper());
-        assertEquals(assertEntityType("_Lead"), assertRelation("_SuperSalesPerson", "leads").getTarget());
+        assertFalse(assertAllRelation("_SuperSalesPerson", "leads").isRequired());
+        assertEquals(0, assertAllRelation("_SuperSalesPerson", "leads").getCardinality().getLower());
+        assertEquals(-1, assertAllRelation("_SuperSalesPerson", "leads").getCardinality().getUpper());
+        assertEquals(assertEntityType("_Lead"), assertAllRelation("_SuperSalesPerson", "leads").getTarget());
 
         assertFalse(assertMappedTransferObjectRelation("SuperSalesPerson", "leads").isRequired());
         assertEquals(0, assertMappedTransferObjectRelation("SuperSalesPerson", "leads").getCardinality().getLower());
         assertEquals(-1, assertMappedTransferObjectRelation("SuperSalesPerson", "leads").getCardinality().getUpper());
         assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SuperSalesPerson", "leads").getTarget());
         
-        assertFalse(assertRelation("_LazySalesPerson", "leads").isRequired());
-        assertEquals(0, assertRelation("_LazySalesPerson", "leads").getCardinality().getLower());
-        assertEquals(-1, assertRelation("_LazySalesPerson", "leads").getCardinality().getUpper());
-        assertEquals(assertEntityType("_Lead"), assertRelation("_SuperSalesPerson", "leads").getTarget());
+        assertFalse(assertAllRelation("_LazySalesPerson", "leads").isRequired());
+        assertEquals(0, assertAllRelation("_LazySalesPerson", "leads").getCardinality().getLower());
+        assertEquals(-1, assertAllRelation("_LazySalesPerson", "leads").getCardinality().getUpper());
+        assertEquals(assertEntityType("_Lead"), assertAllRelation("_SuperSalesPerson", "leads").getTarget());
 
         assertFalse(assertMappedTransferObjectRelation("LazySalesPerson", "leads").isRequired());
         assertEquals(0, assertMappedTransferObjectRelation("LazySalesPerson", "leads").getCardinality().getLower());
