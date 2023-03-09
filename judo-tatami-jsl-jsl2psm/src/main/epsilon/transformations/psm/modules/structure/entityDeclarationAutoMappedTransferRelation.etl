@@ -70,6 +70,7 @@ rule AbstractCreateTransferObjectDerivedRelationForAutoMappedTransferObjectType
 }
 
 
+@greedy
 rule CreateTransferObjectDerivedRelationForAutoMappedTransferObjectType
     transform s: JSL!EntityDerivedDeclaration
     to t: JUDOPSM!TransferObjectRelation
@@ -86,6 +87,7 @@ rule CreateTransferObjectDerivedRelationForAutoMappedTransferObjectType
 }
 
 @lazy
+@greedy
 rule CloneTransferObjectDerivedRelationForAutoMappedTransferObjectType
     transform s: JSL!EntityDerivedDeclaration
     to t: JUDOPSM!TransferObjectRelation 

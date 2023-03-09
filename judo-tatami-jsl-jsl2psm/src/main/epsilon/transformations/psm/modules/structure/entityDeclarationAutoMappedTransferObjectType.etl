@@ -4,7 +4,7 @@ import "../../../../operations/_importAll.eol";
 //////////////////////////////////////////////////
 // Auto mapped transfer object type
 //////////////////////////////////////////////////
-
+@greedy
 rule CreateAutoMappedTransferObjectType
     transform s : JSL!EntityDeclaration
 	to t: JUDOPSM!MappedTransferObjectType {
@@ -18,7 +18,6 @@ rule CreateAutoMappedTransferObjectType
 	    t.name = transfer.name;
         t.optional = false;
         t.queryCustomizer = false;
-
 
         // By default owned attributes are transformed in `transferAttribute.etl`, therefore we only transform inherited
         // members by calling the flattened member list from `entity.getInheritedMembers()`
@@ -42,9 +41,6 @@ rule CreateAutoMappedTransferObjectType
 	                } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
 						t.relations.add(im.equivalentWithPrefix("CloneTransferObjectEmbeddedRelationForAutoMappedTransferObjectType", t.getId()));	                
 	                }
-//                // Relations
-//		        } else if (im.isKindOf(JSL!EntityRelationDeclaration)) {
-//					t.relations.add(im.equivalentWithPrefix("CloneTransferObjectAssociatedRelationForDefaultTransferObjectType", t.getId()));
                 // Derives
 		        } else if (im.isKindOf(JSL!EntityDerivedDeclaration)) {
 					// Primitive derives
@@ -53,23 +49,8 @@ rule CreateAutoMappedTransferObjectType
 	                } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
 						t.relations.add(im.equivalentWithPrefix("CloneTransferObjectDerivedRelationForAutoMappedTransferObjectType", t.getId()));
 	                }
-                // Entity queries
-//		        } else if (im.isKindOf(JSL!EntityQueryDeclaration)) {
-//					// Primitive derives
-//	                if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
-//						t.attributes.add(im.equivalentWithPrefix("CloneEntityQueryTransferAttributeForDefaultTransferObjectType", t.getId()));
-//	                } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
-//						t.relations.add(im.equivalentWithPrefix("CloneTransferObjectEntityQueryRelationForDefaultTransferObjectType", t.getId()));
-//	                }
 		        }
-
             }
-
-			// Opposite added relation            
-//			for (o in JSL!EntityRelationOppositeInjected.all().select(o | o.eContainer.referenceType == entity)) {
-//				t.relations.add(o.equivalent("CloneTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType"));			
-//			}
-
 	  }
 
 	  s.eContainer.getModelRoot().elements.add(t);
