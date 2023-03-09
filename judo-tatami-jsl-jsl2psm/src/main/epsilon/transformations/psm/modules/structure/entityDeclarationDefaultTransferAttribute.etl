@@ -1,0 +1,288 @@
+import "../../../../operations/_importAll.eol";
+import "../namespace/namespace.etl";
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Entity Field 
+////////////////////////////////////////////////////////////////////////////////////////////
+
+@abstract
+rule AbstractCreateTransferAttributeForDefaultTransferObjectType
+    transform s: JSL!EntityFieldDeclaration
+    to t: JUDOPSM!TransferAttribute {
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.required = s.isRequired;
+        t.name = s.name;
+        t.binding = s.equivalent("CreateAttributeFromField");
+        t.dataType = s.referenceType.getPSMEquivalent();
+
+        if (s.defaultExpression.isDefined()) {
+            t.defaultValue = s.defaultExpression.equivalent("CreateDefaultValueForPrimitiveEntityMember");
+        }
+}
+
+
+// Create default transfer object attribute and add it to default transfer object
+@greedy
+rule CreateTransferAttributeForDefaultTransferObjectType
+    transform s: JSL!EntityFieldDeclaration
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForDefaultTransferObjectType {
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferAttributeForDefaultTransferObjectType");
+        s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
+        log.debug("Created TransferAttribute (Field) for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+// Create default transfer object attribute clone. It creates the attribute on the resource root,
+// the caller code have to add it to the corresponding transfer object
+// This method can be used to make clone attributes to inherited transfer objects
+@lazy
+@greedy
+rule CloneTransferAttributeForDefaultTransferObjectType
+    transform s: JSL!EntityFieldDeclaration
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForDefaultTransferObjectType {    
+        t.setId("(jsl/" + s.getId() + ")/CloneTransferAttributeForDefaultTransferObjectType");
+        log.debug("Clone TransferAttribute (Field) for DefaultTransferObjectType: [" + t.name + "]");
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Entity Identifier (Primitive)
+////////////////////////////////////////////////////////////////////////////////////////////
+
+@abstract
+rule AbstractCreateIdentifierTransferAttributeForDefaultTransferObjectType
+    transform s: JSL!EntityIdentifierDeclaration
+    to t: JUDOPSM!TransferAttribute {
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+
+        t.required = s.isRequired;
+        t.name = s.name;
+        t.binding = s.equivalent("CreateAttributeFromIdentifier");
+        t.dataType = s.referenceType.getPSMEquivalent();
+
+        if (s.defaultExpression.isDefined()) {
+            t.defaultValue = s.defaultExpression.equivalent("CreateDefaultValueForPrimitiveEntityMember");
+        }
+
+}
+
+@greedy
+rule CreateIdentifierTransferAttributeForDefaultTransferObjectType
+    transform s: JSL!EntityIdentifierDeclaration    
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateIdentifierTransferAttributeForDefaultTransferObjectType {
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.setId("(jsl/" + s.getId() + ")/CreateIdentifierTransferAttributeForDefaultTransferObjectType");
+
+        s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
+        log.debug("Created TransferAttribute (Identifier) for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@lazy
+@greedy
+rule CloneIdentifierTransferAttributeForDefaultTransferObjectType
+	transform s: JSL!EntityIdentifierDeclaration
+	to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateIdentifierTransferAttributeForDefaultTransferObjectType {
+        t.setId("(jsl/" + s.getId() + ")/CloneIdentifierTransferAttributeForDefaultTransferObjectType");    
+        log.debug("Clone TransferAttribute (Identifier) for DefaultTransferObjectType: [" + t.name + "]");
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Derived (Primitive)
+////////////////////////////////////////////////////////////////////////////////////////////
+
+@abstract
+rule AbstractCreateDerivedTransferAttributeForDefaultTransferObjectType
+    transform s : JSL!EntityDerivedDeclaration
+    to t : JUDOPSM!TransferAttribute {
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.name = s.name;
+        t.binding = s.equivalent("CreateDataProperty");
+        t.dataType = s.referenceType.getPSMEquivalent();
+}
+
+@greedy
+rule CreateDerivedTransferAttributeForDefaultTransferObjectType
+    transform s: JSL!EntityDerivedDeclaration    
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateDerivedTransferAttributeForDefaultTransferObjectType {
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttributeForDefaultTransferObjectType");
+
+        s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
+        log.debug("Created TransferAttribute (Derived) for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@lazy
+@greedy
+rule CloneDerivedTransferAttributeForDefaultTransferObjectType
+	transform s: JSL!EntityDerivedDeclaration
+	to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateDerivedTransferAttributeForDefaultTransferObjectType {
+        t.setId("(jsl/" + s.getId() + ")/CloneDerivedTransferAttributeForDefaultTransferObjectType");    
+        log.debug("Clone TransferAttribute (Derived) for DefaultTransferObjectType: [" + t.name + "]");
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Entity Query (Primitive)
+////////////////////////////////////////////////////////////////////////////////////////////
+
+@abstract
+rule AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType
+    transform s : JSL!EntityQueryDeclaration
+    to t : JUDOPSM!TransferAttribute {
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.name = s.name;
+        t.binding = s.equivalent("CreateDataPropertyForEntityQuery");
+        t.dataType = s.referenceType.getPSMEquivalent();
+}
+
+@greedy
+rule CreateEntityQueryTransferAttributeForDefaultTransferObjectType
+    transform s: JSL!EntityQueryDeclaration    
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType {
+        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.setId("(jsl/" + s.getId() + ")/CreateEntityQueryTransferAttributeForDefaultTransferObjectType");
+
+        s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
+        log.debug("Created TransferAttribute (Entity Query) for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@lazy
+@greedy
+rule CloneEntityTransferAttributeForDefaultTransferObjectType
+	transform s: JSL!EntityQueryDeclaration
+	to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType {
+        t.setId("(jsl/" + s.getId() + ")/CloneEntityQueryTransferAttributeForDefaultTransferObjectType");    
+        log.debug("Clone TransferAttribute (Entity Query) for DefaultTransferObjectType: [" + t.name + "]");
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Primitive and Identifier default value
+////////////////////////////////////////////////////////////////////////////////////////////
+
+@abstract
+rule AbstractCreateTransferDefaultValueAttributeForDefaultTransferObjectType
+    transform s: JSL!Expression
+    to t: JUDOPSM!TransferAttribute {
+        guard: generateDefaultTransferObject and s.isDefaultValueForEntity() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
+        t.binding = s.equivalent("CreateDefaultValueForPrimitiveEntityMember");
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+}
+
+// Create default transfer object attribute for default value expression and add it to default transfer object
+@greedy
+rule CreateTransferDefaultValueAttributeForDefaultTransferObjectType
+    transform s: JSL!Expression
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferDefaultValueAttributeForDefaultTransferObjectType {
+        guard: generateDefaultTransferObject and s.isDefaultValueForEntity() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferDefaultValueAttributeForDefaultTransferObjectType");
+        s.eContainer.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
+        log.debug("Created TransferAttribute DefaultValue (Field) for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+// Create default transfer object default value attribute clone. It creates the attribute on the resource root,
+// the caller code have to add it to the corresponding transfer object
+// This method can be used to make clone attributes to inherited transfer objects
+@lazy
+@greedy
+rule CloneTransferDefaultValueAttributeForDefaultTransferObjectType
+    transform s: JSL!Expression
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferDefaultValueAttributeForDefaultTransferObjectType {
+        t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForDefaultTransferObjectType");
+        log.debug("Clone TransferAttribute Default Value (Field) for DefaultTransferObjectType: [" + t.name + "]");
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Error Field
+////////////////////////////////////////////////////////////////////////////////////////////
+
+@abstract
+rule AbstractCreateTransferAttributeForErrorTransferObjectType
+    transform s: JSL!ErrorField
+    to t: JUDOPSM!TransferAttribute {
+        guard: generateDefaultTransferObject
+        t.name = s.name;
+        t.dataType = s.referenceType.getPSMEquivalent();
+
+        if (s.defaultExpression.isDefined()) {
+            t.defaultValue = s.defaultExpression.equivalent("CreateDefaultValueForPrimitiveErrorField");
+        }
+
+}
+
+// Create error transfer object attribute and add it to default transfer object
+@greedy
+rule CreateTransferAttributeForErrorTransferObjectType
+    transform s: JSL!ErrorField
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForErrorTransferObjectType {
+        guard: generateDefaultTransferObject
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferAttributeForErrorTransferObjectType");
+        s.eContainer.equivalent('CreateUnmappedErrorTransferObjectType').attributes.add(t);
+        log.debug("Created TransferAttribute (Field) for ErrorTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+// Create error transfer object attribute clone. It creates the attribute on the resource root,
+// the caller code have to add it to the corresponding transfer object
+// This method can be used to make clone attributes to inherited transfer objects
+@lazy
+@greedy
+rule CloneTransferAttributeForErrorTransferObjectType
+    transform s: JSL!ErrorField
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForErrorTransferObjectType {
+        t.setId("(jsl/" + s.getId() + ")/CloneTransferAttributeForErrorTransferObjectType");
+        log.debug("Clone TransferAttribute (Field) for DefaultTransferObjectType: [" + t.name + "]");
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Error default value
+////////////////////////////////////////////////////////////////////////////////////////////
+
+@abstract
+rule AbstractCreateTransferDefaultValueAttributeForErrorTransferObjectType
+    transform s: JSL!Expression
+    to t: JUDOPSM!TransferAttribute {
+        guard: generateDefaultTransferObject and s.isDefaultValueForError() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
+        t.binding = s.equivalent("CreateDefaultValueForPrimitiveErrorField");
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+}
+
+// Create default transfer object attribute for default value expression and add it to default transfer object
+@greedy
+rule CreateTransferDefaultValueAttributeForErrorTransferObjectType
+    transform s: JSL!Expression
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferDefaultValueAttributeForErrorTransferObjectType {
+        guard: generateDefaultTransferObject and s.isDefaultValueForError() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferDefaultValueAttributeForErrorTransferObjectType");
+        s.eContainer.eContainer.equivalent("CreateUnmappedErrorTransferObjectType").attributes.add(t);
+        log.debug("Created TransferAttribute DefaultValue (Field) for ErrorTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+// Create default transfer object default value attribute clone. It creates the attribute on the resource root,
+// the caller code have to add it to the corresponding transfer object
+// This method can be used to make clone attributes to inherited transfer objects
+@lazy
+@greedy
+rule CloneTransferDefaultValueAttributeForErrorTransferObjectType
+    transform s: JSL!Expression
+    to t: JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferDefaultValueAttributeForErrorTransferObjectType {
+        t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForDefaultTransferObjectType");
+        log.debug("Clone TransferAttribute Default Value (Field) for ErrorTransferObjectType: [" + t.name + "]");
+}
+
+

@@ -82,17 +82,25 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
 
         
         assertMappedTransferObject("AutoMapped");
-        assertEquals(4, assertMappedTransferObject("AutoMapped").getAttributes().size());
+        assertEquals(3, assertMappedTransferObject("AutoMapped").getAttributes().size());
 
-        assertMappedTransferObjectAttribute("AutoMapped", "unmappedAttribute");
-        assertFalse(assertMappedTransferObjectAttribute("AutoMapped", "unmappedAttribute").isRequired());
-        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("AutoMapped", "unmappedAttribute").getDataType());
 
-        assertMappedTransferObjectAttribute("AutoMapped", "mappedAttribute");
-        assertFalse(assertMappedTransferObjectAttribute("AutoMapped", "mappedAttribute").isRequired());
-        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("AutoMapped", "mappedAttribute").getDataType());
-        assertEquals(assertAttribute("_Entity", "attribute"), assertMappedTransferObjectAttribute("AutoMapped", "mappedAttribute").getBinding());
+        assertMappedTransferObjectAttribute("AutoMapped", "attribute");
+        assertFalse(assertMappedTransferObjectAttribute("AutoMapped", "attribute").isRequired());
+        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("AutoMapped", "attribute").getDataType());
+        assertEquals(assertAttribute("_EntityAncestor", "attribute"), assertMappedTransferObjectAttribute("AutoMapped", "attribute").getBinding());
 
+        assertMappedTransferObjectAttribute("AutoMapped", "identifier");
+        assertFalse(assertMappedTransferObjectAttribute("AutoMapped", "identifier").isRequired());
+        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("AutoMapped", "identifier").getDataType());
+        assertEquals(assertAttribute("_EntityAncestor", "identifier"), assertMappedTransferObjectAttribute("AutoMapped", "identifier").getBinding());
+        
+        assertMappedTransferObjectAttribute("AutoMapped", "attribute2");
+        assertFalse(assertMappedTransferObjectAttribute("AutoMapped", "attribute2").isRequired());
+        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("AutoMapped", "attribute2").getDataType());
+        assertEquals(assertAttribute("_Entity", "attribute2"), assertMappedTransferObjectAttribute("AutoMapped", "attribute2").getBinding());
+
+        /*
         assertMappedTransferObjectAttribute("AutoMapped", "derivedAttribute");
         assertFalse(assertMappedTransferObjectAttribute("AutoMapped", "derivedAttribute").isRequired());
         assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("AutoMapped", "derivedAttribute").getDataType());
@@ -106,48 +114,42 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
         DataProperty derivedAttributeStatic = assertDataProperty("_Entity", "_derivedAttributeStatic_Reads_Mapped");
         assertEquals(derivedAttributeStatic, assertMappedTransferObjectAttribute("AutoMapped", "derivedAttributeStatic").getBinding());
         assertEquals("MappedTransferObjectTypeModel::MappedTransferObjectTypeModel::_Entity!any().attribute", derivedAttributeStatic.getGetterExpression().getExpression());
+		*/
+        
+        assertEquals(4, assertMappedTransferObject("AutoMapped").getRelations().size());
+
+        assertMappedTransferObjectRelation("AutoMapped", "containment");
+        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containment").isRequired());
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment").getBinding(), IsEqual.equalTo(assertRelation("_EntityAncestor", "containment")));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
+
+
+        assertMappedTransferObjectRelation("AutoMapped", "containmentCollection");
+        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection").isRequired());
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection").getBinding(), IsEqual.equalTo(assertRelation("_EntityAncestor", "containmentCollection")));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
 
         
-        assertEquals(10, assertMappedTransferObject("AutoMapped").getRelations().size());
-        assertMappedTransferObjectRelation("AutoMapped", "unmappedContainment");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainment").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainment").getBinding(), IsNull.nullValue());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainment").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainment").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainment").getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
+        assertMappedTransferObjectRelation("AutoMapped", "containment2");
+        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containment2").isRequired());
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment2").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containment2")));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment2").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment2").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
 
 
-        assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentRequired");
-        assertTrue(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentRequired").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentRequired").getBinding(), IsNull.nullValue());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentRequired").getCardinality().getLower(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentRequired").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentRequired").getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
+        assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2");
+        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2").isRequired());
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containmentCollection2")));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
 
-
-        assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentCollection");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentCollection").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentCollection").getBinding(), IsNull.nullValue());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentCollection").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentCollection").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "unmappedContainmentCollection").getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
-
-        
-        assertMappedTransferObjectRelation("AutoMapped", "mappedContainment");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "mappedContainment").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "mappedContainment").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containment")));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "mappedContainment").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "mappedContainment").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "mappedContainment").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-
-
-        assertMappedTransferObjectRelation("AutoMapped", "mappedContainmentCollection");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "mappedContainmentCollection").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "mappedContainmentCollection").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containmentCollection")));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "mappedContainmentCollection").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "mappedContainmentCollection").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "mappedContainmentCollection").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-
+        /*
         
 // TODO: JNG-4603 Fix association        
 //        assertMappedTransferObjectRelation("AutoMapped", "mappedAssociation");
@@ -165,7 +167,7 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
 //        assertThat(assertMappedTransferObjectRelation("AutoMapped", "mappedAssociationOppostite").getCardinality().getUpper(), IsEqual.equalTo(1));
 //        assertThat(assertMappedTransferObjectRelation("AutoMapped", "mappedAssociationOppostite").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
 
-        
+        /*
         assertMappedTransferObjectRelation("AutoMapped", "derivedContainment");
         assertFalse(assertMappedTransferObjectRelation("AutoMapped", "derivedContainment").isRequired());
         assertThat(assertMappedTransferObjectRelation("AutoMapped", "derivedContainment").getCardinality().getLower(), IsEqual.equalTo(0));
@@ -212,7 +214,7 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
         NavigationProperty derivedContainmentCollectionStatic = assertNavigationProperty("_Entity", "_derivedContainmentCollectionStatic_Reads_Mapped");
         assertEquals(derivedContainmentCollectionStatic, assertMappedTransferObjectRelation("AutoMapped", "derivedContainmentCollectionStatic").getBinding());
         assertEquals("MappedTransferObjectTypeModel::MappedTransferObjectTypeModel::_EntityRelated", derivedContainmentCollectionStatic.getGetterExpression().getExpression());
-
+        */
         
     }
     

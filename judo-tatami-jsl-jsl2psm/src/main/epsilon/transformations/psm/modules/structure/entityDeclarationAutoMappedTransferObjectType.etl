@@ -1,0 +1,67 @@
+import "../../../../operations/_importAll.eol";
+
+
+//////////////////////////////////////////////////
+// Auto mapped transfer object type
+//////////////////////////////////////////////////
+
+rule CreateAutoMappedTransferObjectType
+    transform s : JSL!EntityDeclaration
+	to t: JUDOPSM!MappedTransferObjectType {
+	    guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s)
+
+        var transfer = JSL!TransferDeclaration.all().selectOne(t | t.automap and t.map.entity == s);
+        t.setId("(jsl/" + transfer.getId() + ")/CreateAutoMappedTransferObjectType");
+  	    t.entityType = s.getPSMEquivalent();
+	    t.name = transfer.name;
+
+
+            for (im in s.getInheritedMembers()) {
+				// Identifier attribute            
+		        if (im.isKindOf(JSL!EntityIdentifierDeclaration)) {
+					t.attributes.add(im.equivalentWithPrefix("CloneIdentifierTransferAttributeForAutoMappedTransferObjectType", t.getId()));
+				// Field attribute		        
+		        } else if (im.isKindOf(JSL!EntityFieldDeclaration)) {
+					// Primitive attributes
+	                if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
+						t.attributes.add(im.equivalentWithPrefix("CloneTransferAttributeForAutoMappedTransferObjectType", t.getId()));
+						if (im.defaultExpression.isDefined()) {
+    						t.attributes.add(im.defaultExpression.equivalentWithPrefix("CloneTransferDefaultValueAttributeForAutoMappedTransferObjectType", t.getId()));
+						}
+					// Embedded relations
+	                } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
+						t.relations.add(im.equivalentWithPrefix("CloneTransferObjectEmbeddedRelationForAutoMappedTransferObjectType", t.getId()));	                
+	                }
+//                // Relations
+//		        } else if (im.isKindOf(JSL!EntityRelationDeclaration)) {
+//					t.relations.add(im.equivalentWithPrefix("CloneTransferObjectAssociatedRelationForDefaultTransferObjectType", t.getId()));
+                // Derives
+//		        } else if (im.isKindOf(JSL!EntityDerivedDeclaration)) {
+//					// Primitive derives
+//	                if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
+//						t.attributes.add(im.equivalentWithPrefix("CloneDerivedTransferAttributeForDefaultTransferObjectType", t.getId()));
+//	                } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
+//						t.relations.add(im.equivalentWithPrefix("CloneTransferObjectDerivedRelationForDefaultTransferObjectType", t.getId()));
+//	                }
+                // Entity queries
+//		        } else if (im.isKindOf(JSL!EntityQueryDeclaration)) {
+//					// Primitive derives
+//	                if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
+//						t.attributes.add(im.equivalentWithPrefix("CloneEntityQueryTransferAttributeForDefaultTransferObjectType", t.getId()));
+//	                } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
+//						t.relations.add(im.equivalentWithPrefix("CloneTransferObjectEntityQueryRelationForDefaultTransferObjectType", t.getId()));
+//	                }
+		        }
+
+            }
+
+			// Opposite added relation            
+//			for (o in JSL!EntityRelationOppositeInjected.all().select(o | o.eContainer.referenceType == entity)) {
+//				t.relations.add(o.equivalent("CloneTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType"));			
+//			}
+
+
+	  s.eContainer.getModelRoot().elements.add(t);
+	  log.debug("Created AutoMappedTransferObjectType: " + t.name);
+
+}

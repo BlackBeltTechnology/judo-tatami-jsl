@@ -182,7 +182,7 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
         assertEnumerationType("LeadStatus");
         assertEquals(assertEnumerationType("LeadStatus"), assertAttribute("_Lead", "status").getDataType());
         assertEquals(assertEnumerationType("LeadStatus"), assertMappedTransferObjectAttribute("Lead", "status").getDataType());
-        assertEquals(assertEnumerationType("LeadStatus"), assertAttribute("_LeadManager", "status").getDataType());
+        assertEquals(assertEnumerationType("LeadStatus"), assertAllAttribute("_LeadManager", "status").getDataType());
         assertEquals(assertEnumerationType("LeadStatus"), assertMappedTransferObjectAttribute("LeadManager", "status").getDataType());
 
     }
