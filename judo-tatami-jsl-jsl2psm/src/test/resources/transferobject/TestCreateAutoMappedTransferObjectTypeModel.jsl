@@ -5,10 +5,9 @@ type numeric Integer(precision = 3, scale = 0);
 
 
 entity EntityAncestor {
-	field Integer attribute;
+	field Integer attribute = 1;
 	field EntityRelated containment;
 	field EntityRelated[] containmentCollection;
-	relation EntityRelated association;
 
 	identifier Integer identifier;
 	derived Integer attributeDerived => self.attribute;
@@ -18,15 +17,17 @@ entity EntityAncestor {
 
 
 entity Entity extends EntityAncestor {
-	field Integer attribute2;
+	field Integer attribute2 = 2;
 	field EntityRelated containment2;
 	field EntityRelated[] containmentCollection2;
-	relation EntityRelated association2;
+
+	derived Integer attributeDerived2 => self.attribute;
+	derived EntityRelated containmentDerived2 => self.containment;
+	derived EntityRelated[] containmentCollectionDerived2 => self.containmentCollection;
 }
 
 entity EntityRelated {
 	field Integer attribute;
-	relation Entity entity opposite-add entityRelatedOpposite;
 }
 
 transfer AutoMapped maps Entity as entity;
