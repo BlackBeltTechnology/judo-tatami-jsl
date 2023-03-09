@@ -156,7 +156,7 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
         assertEquals(assertBooleanType("Vaccinated"), assertAttribute("_Patient", "vaccinated").getDataType());
         assertEquals(assertBooleanType("Vaccinated"), assertMappedTransferObjectAttribute("Patient", "vaccinated").getDataType());
 
-        assertEquals(assertBooleanType("Vaccinated"), assertAttribute("_SurgentPatient", "vaccinated").getDataType());
+        assertEquals(assertBooleanType("Vaccinated"), assertAllAttribute("_SurgentPatient", "vaccinated").getDataType());
         assertEquals(assertBooleanType("Vaccinated"), assertMappedTransferObjectAttribute("SurgentPatient", "vaccinated").getDataType());
 
     }

@@ -155,7 +155,7 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
 
         assertDateType("Date");
         assertEquals(assertDateType("Date"), assertAttribute("_Patient", "birthDate").getDataType());
-        assertEquals(assertDateType("Date"), assertAttribute("_SurgentPatient", "birthDate").getDataType());
+        assertEquals(assertDateType("Date"), assertAllAttribute("_SurgentPatient", "birthDate").getDataType());
         assertEquals(assertDateType("Date"), assertMappedTransferObjectAttribute("Patient", "birthDate").getDataType());
         assertEquals(assertDateType("Date"), assertMappedTransferObjectAttribute("SurgentPatient", "birthDate").getDataType());
 

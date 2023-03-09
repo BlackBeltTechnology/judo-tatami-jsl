@@ -94,7 +94,7 @@ public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractT
         assertEquals(assertDataProperty("_Test", "value"), assertMappedTransferObjectAttribute("Test", "value").getBinding());
 
         assertMappedTransferObjectAttribute("TestExtended", "value");
-        assertEquals(assertDataProperty("_TestExtended", "value"), assertMappedTransferObjectAttribute("Test", "value").getBinding());
+        assertEquals(assertAllDataProperty("_TestExtended", "value"), assertMappedTransferObjectAttribute("Test", "value").getBinding());
 
     }
 }
