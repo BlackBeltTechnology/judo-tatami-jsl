@@ -14,9 +14,9 @@ rule AbstractCreateTransferAttributeForTransferFieldDeclaration
         t.name = s.name;
         t.dataType = s.referenceType.getPSMEquivalent();
 
-        //if (s.defaultExpression.isDefined()) {
-        //    t.defaultValue = s.defaultExpression.equivalent("CreateDefaultValueForPrimitiveEntityMember");
-        //}
+        if (s.defaultExpression.isDefined()) {
+            t.defaultValue = s.defaultExpression.equivalent("CreateDefaultValueForPrimitiveEntityMember");
+        }
 }
 
 @greedy

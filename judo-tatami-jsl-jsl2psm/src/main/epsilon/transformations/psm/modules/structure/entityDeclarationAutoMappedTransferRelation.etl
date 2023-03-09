@@ -44,8 +44,6 @@ rule CloneTransferObjectEmbeddedRelationForAutoMappedTransferObjectType
         log.debug("Clone TransferObjectRelation for AutoMappedTransferObjectType: [" + t.name + "]");
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////
 // Derived relation
 ///////////////////////////////////////////////////////////////////////////
@@ -53,10 +51,7 @@ rule CloneTransferObjectEmbeddedRelationForAutoMappedTransferObjectType
 @abstract
 rule AbstractCreateTransferObjectDerivedRelationForAutoMappedTransferObjectType
     transform s : JSL!EntityDerivedDeclaration
-    to t : JUDOPSM!TransferObjectRelation
-    {
-      guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!EntityDeclaration)
-
+    to t : JUDOPSM!TransferObjectRelation {
       t.name = s.name;
       t.target = s.referenceType.equivalent("CreateAutoMappedTransferObjectType");
 
@@ -66,9 +61,7 @@ rule AbstractCreateTransferObjectDerivedRelationForAutoMappedTransferObjectType
 
       t.binding = s.equivalent("CreateNavigationProperty");
       t.embedded = false;
-        
 }
-
 
 @greedy
 rule CreateTransferObjectDerivedRelationForAutoMappedTransferObjectType
@@ -82,8 +75,7 @@ rule CreateTransferObjectDerivedRelationForAutoMappedTransferObjectType
 
         s.eContainer.equivalent("CreateAutoMappedTransferObjectType").relations.add(t);
 
-        log.debug("Created TransferObjectRelation for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
-        
+        log.debug("Created TransferObjectRelation (Derived) for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");       
 }
 
 @lazy
@@ -96,7 +88,6 @@ rule CloneTransferObjectDerivedRelationForAutoMappedTransferObjectType
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectDerivedRelationForAutoMappedTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForDerivedDeclaration", t.getId());
         
-        
-        log.debug("Clone TransferObjectRelation for AutoMappedTransferObjectType: [" + t.name + "]");
+        log.debug("Clone TransferObjectRelation (Derived)for AutoMappedTransferObjectType: [" + t.name + "]");
 }
 
