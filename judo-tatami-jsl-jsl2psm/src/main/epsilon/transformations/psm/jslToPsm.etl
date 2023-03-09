@@ -1,8 +1,17 @@
 import "modules/namespace/namespace.etl";
 
-import "modules/structure/transferAttribute.etl";
-import "modules/structure/transferObjectType.etl";
-import "modules/structure/transferObjectRelation.etl";
+import "modules/structure/entityDeclarationDefaultTransferObjectType.etl";
+import "modules/structure/entityDeclarationDefaultTransferAttribute.etl";
+import "modules/structure/entityDeclarationDefaultTransferRelation.etl";
+
+import "modules/structure/entityDeclarationAutoMappedTransferObjectType.etl";
+import "modules/structure/entityDeclarationAutoMappedTransferAttribute.etl";
+import "modules/structure/entityDeclarationAutoMappedTransferRelation.etl";
+
+import "modules/structure/transferDeclarationTransferAttribute.etl";
+import "modules/structure/transferDeclarationTransferObjectType.etl";
+import "modules/structure/transferDeclarationTransferRelation.etl";
+
 
 import "modules/data/cardinality.etl";
 import "modules/data/containment.etl";

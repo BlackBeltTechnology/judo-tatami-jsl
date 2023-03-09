@@ -9,6 +9,11 @@ entity EntityAncestor {
 	field EntityRelated containment;
 	field EntityRelated[] containmentCollection;
 	relation EntityRelated association;
+
+	identifier Integer identifier;
+	derived Integer attributeDerived => self.attribute;
+	derived EntityRelated containmentDerived => self.containment;
+	derived EntityRelated[] containmentCollectionDerived => self.containmentCollection;
 }
 
 
