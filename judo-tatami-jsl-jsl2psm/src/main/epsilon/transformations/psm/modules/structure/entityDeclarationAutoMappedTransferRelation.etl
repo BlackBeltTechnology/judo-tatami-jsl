@@ -6,7 +6,6 @@
 rule AbstractCreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!TransferObjectRelation {
-        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!EntityDeclaration)
 
         t.name = s.name;
         t.target = s.referenceType.equivalent("CreateAutoMappedTransferObjectType");
@@ -19,6 +18,18 @@ rule AbstractCreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType
         t.binding = s.equivalent("CreateContainmentFromField");
 }
 
+@greedy
+rule CreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType
+    transform s: JSL!EntityFieldDeclaration
+    to t: JUDOPSM!TransferObjectRelation 
+    extends AbstractCreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType {
+        guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.referenceType.isKindOf(JSL!EntityDeclaration)
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType");
+        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForFieldDeclaration", t.getId());
+
+        s.eContainer.equivalent("CreateAutoMappedTransferObjectType").relations.add(t);
+        log.debug("Created TransferObjectRelation for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
 
 @lazy
 @greedy

@@ -12,11 +12,21 @@ rule CreateAutoMappedTransferObjectType
 
         var transfer = JSL!TransferDeclaration.all().selectOne(t | t.automap and t.map.entity == s);
         t.setId("(jsl/" + transfer.getId() + ")/CreateAutoMappedTransferObjectType");
-  	    t.entityType = s.getPSMEquivalent();
+
+        t.entityType = s.getPSMEquivalent();
+        
 	    t.name = transfer.name;
+        t.optional = false;
+        t.queryCustomizer = false;
 
 
-            for (im in s.getInheritedMembers()) {
+        // By default owned attributes are transformed in `transferAttribute.etl`, therefore we only transform inherited
+        // members by calling the flattened member list from `entity.getInheritedMembers()`
+        for (entity in s.`extends`) {
+
+            var inheritedMembers = entity.getInheritedMembers();
+
+            for (im in inheritedMembers) {
 				// Identifier attribute            
 		        if (im.isKindOf(JSL!EntityIdentifierDeclaration)) {
 					t.attributes.add(im.equivalentWithPrefix("CloneIdentifierTransferAttributeForAutoMappedTransferObjectType", t.getId()));
@@ -60,6 +70,7 @@ rule CreateAutoMappedTransferObjectType
 //				t.relations.add(o.equivalent("CloneTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType"));			
 //			}
 
+	  }
 
 	  s.eContainer.getModelRoot().elements.add(t);
 	  log.debug("Created AutoMappedTransferObjectType: " + t.name);
