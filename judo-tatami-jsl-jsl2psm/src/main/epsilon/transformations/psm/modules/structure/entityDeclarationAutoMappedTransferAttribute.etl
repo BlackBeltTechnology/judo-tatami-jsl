@@ -101,11 +101,11 @@ rule AbstractCreateTransferDefaultValueAttributeForAutoMappedTransferObjectType
 
 @greedy
 rule CreateDefaultTransferAttributeForAutoMappedTransferObjectType
-    transform s: JSL!EntityDerivedDeclaration    
+    transform s: JSL!Expression    
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateTransferDefaultValueAttributeForAutoMappedTransferObjectType {
         guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
-        t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttributeForAutoMappedTransferObjectType");
+        t.setId("(jsl/" + s.getId() + ")/CreateDefaultTransferAttributeForAutoMappedTransferObjectType");
 
         s.eContainer.equivalent("CreateEntityAutoMappedTransferObjectType").attributes.add(t);
         log.debug("Created TransferAttribute Default Value for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
