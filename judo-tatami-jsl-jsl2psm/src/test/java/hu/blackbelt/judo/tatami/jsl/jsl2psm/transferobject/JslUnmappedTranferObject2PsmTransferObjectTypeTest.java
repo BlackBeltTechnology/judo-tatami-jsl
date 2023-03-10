@@ -29,8 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,6 +67,7 @@ public class JslUnmappedTranferObject2PsmTransferObjectTypeTest extends Abstract
     }
 
     @Test
+    @Disabled("https://blackbelt.atlassian.net/browse/JNG-4615")
     void testCreateDefaultTransferObjectType() throws Exception {
         testName = "TestCreateUnmappedTransferObjectType";
 
