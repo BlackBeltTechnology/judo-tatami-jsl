@@ -69,7 +69,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
     }
 
     @Test
-    void testCreateDefaultTransferObjectType() throws Exception {
+    void testCreateMappedTransferObjectType() throws Exception {
         testName = "TestCreateMappedTransferObjectType";
 
         
@@ -82,7 +82,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
 
         
         assertMappedTransferObject("Mapped");
-        assertEquals(4, assertMappedTransferObject("Mapped").getAttributes().size());
+        assertEquals(6, assertMappedTransferObject("Mapped").getAttributes().size());
 
         assertMappedTransferObjectAttribute("Mapped", "unmappedAttribute");
         assertFalse(assertMappedTransferObjectAttribute("Mapped", "unmappedAttribute").isRequired());
@@ -107,8 +107,28 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         assertEquals(derivedAttributeStatic, assertMappedTransferObjectAttribute("Mapped", "derivedAttributeStatic").getBinding());
         assertEquals("MappedTransferObjectTypeModel::MappedTransferObjectTypeModel::_Entity!any().attribute", derivedAttributeStatic.getGetterExpression().getExpression());
 
+        assertMappedTransferObjectAttribute("Mapped", "mappedAttributeDerived");
+        assertFalse(assertMappedTransferObjectAttribute("Mapped", "mappedAttributeDerived").isRequired());
+        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "mappedAttributeDerived").getDataType());
+        assertEquals(assertDataProperty("_Entity", "_mappedAttributeDerived_Reads_Mapped"), assertMappedTransferObjectAttribute("Mapped", "mappedAttributeDerived").getBinding());
+
+// TODO: JNG-4605 Fix mapped identifier
+//        assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier");
+//        assertFalse(assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier").isRequired());
+//        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier").getDataType());
+//        assertEquals(assertAttribute("_Entity", "identifier"), assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier").getBinding());
+
         
-        assertEquals(10, assertMappedTransferObject("Mapped").getRelations().size());
+        assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier");
+        assertFalse(assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier").isRequired());
+        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier").getDataType());
+        assertEquals(assertDataProperty("_Entity", "_derivedIdentifier_Reads_Mapped"), assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier").getBinding());
+
+        DataProperty derivedIdentifier = assertDataProperty("_Entity", "_derivedIdentifier_Reads_Mapped");
+        assertEquals(derivedIdentifier, assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier").getBinding());
+        assertEquals("self.identifier", derivedIdentifier.getGetterExpression().getExpression());
+
+        assertEquals(12, assertMappedTransferObject("Mapped").getRelations().size());
         assertMappedTransferObjectRelation("Mapped", "unmappedContainment");
         assertFalse(assertMappedTransferObjectRelation("Mapped", "unmappedContainment").isRequired());
         assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainment").getBinding(), IsNull.nullValue());
@@ -213,7 +233,24 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         assertEquals(derivedContainmentCollectionStatic, assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollectionStatic").getBinding());
         assertEquals("MappedTransferObjectTypeModel::MappedTransferObjectTypeModel::_EntityRelated", derivedContainmentCollectionStatic.getGetterExpression().getExpression());
 
+        assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived");
+        assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived").isRequired());
+        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
+        NavigationProperty mappedContainmentDerived = assertNavigationProperty("_Entity", "_mappedContainmentDerived_Reads_Mapped");
+        assertEquals(mappedContainmentDerived, assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived").getBinding());
+        assertEquals("self.containmentDerived", mappedContainmentDerived.getGetterExpression().getExpression());
         
+        assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived");
+        assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").isRequired());
+        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
+        NavigationProperty mappedContainmentCollectionDerived = assertNavigationProperty("_Entity", "_mappedContainmentCollectionDerived_Reads_Mapped");
+        assertEquals(mappedContainmentCollectionDerived, assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").getBinding());
+        assertEquals("self.containmentCollectionDerived", mappedContainmentCollectionDerived.getGetterExpression().getExpression());
+
     }
     
 }
