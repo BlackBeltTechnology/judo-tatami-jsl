@@ -45,7 +45,7 @@ rule CreateDerivedTransferAttribute
       }
       
       s.eContainer.getPSMEquivalent().attributes.add(t);
-      log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+      log.debug("Created TransferAttribute (Derived) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
 

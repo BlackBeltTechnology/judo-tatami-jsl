@@ -43,7 +43,7 @@ rule CreateDerivedTransferObjectEmbeddedRelationForTransferFieldDeclaration
     extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {
       guard: s.referenceType.isKindOf(JSL!TransferDeclaration) and s.reads.isDefined() and not s.eContainer.automap
 
-      t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForMappedTransferFieldDeclaration");
+      t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferObjectEmbeddedRelationForTransferFieldDeclaration");
       t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
       
       if (s.eContainer.map.isDefined()) {
@@ -63,7 +63,7 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferFieldDeclaration
     extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {
       guard: s.referenceType.isKindOf(JSL!TransferDeclaration) and s.maps.isDefined() and not s.eContainer.automap
 
-      t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForMappedTransferFieldDeclaration");
+      t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferObjectEmbeddedRelationForTransferFieldDeclaration");
       t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
       
       var entityMember = s.maps.features.first.member;

@@ -38,7 +38,7 @@ rule CloneTransferObjectEmbeddedRelationForAutoMappedTransferObjectType
     to t: JUDOPSM!TransferObjectRelation 
     extends AbstractCreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType {
     
-        t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectEmbeddedRelationForDefaultTransferObjectType");
+        t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectEmbeddedRelationForAutoMappedTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForFieldDeclaration", t.getId());
 
         log.debug("Clone TransferObjectRelation for AutoMappedTransferObjectType: [" + t.name + "]");

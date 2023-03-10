@@ -26,7 +26,7 @@ rule CreateTransferAttributeForAutoMappedTransferObjectType
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateTransferAttributeForAutoMappedTransferObjectType {
         guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
-        t.setId("(jsl/" + s.getId() + ")/CreateTransferAttributeForAutoTransferObjectType");
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferAttributeForAutoMappedTransferObjectType");
         s.eContainer.equivalent("CreateAutoMappedTransferObjectType").attributes.add(t);
         log.debug("Created TransferAttribute (Field) for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
@@ -108,7 +108,7 @@ rule CreateDefaultTransferAttributeForAutoMappedTransferObjectType
         t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttributeForAutoMappedTransferObjectType");
 
         s.eContainer.equivalent("CreateEntityAutoMappedTransferObjectType").attributes.add(t);
-        log.debug("Created TransferAttribute (Derived) for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+        log.debug("Created TransferAttribute Default Value for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
 

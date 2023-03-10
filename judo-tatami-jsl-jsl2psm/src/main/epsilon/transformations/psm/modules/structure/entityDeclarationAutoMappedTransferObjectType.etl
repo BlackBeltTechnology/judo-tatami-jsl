@@ -43,7 +43,7 @@ rule CreateAutoMappedTransferObjectType
 	                }
                 // Derives
 		        } else if (im.isKindOf(JSL!EntityDerivedDeclaration)) {
-					// Primitive derives
+					// Primitive derived
 	                if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
 						t.attributes.add(im.equivalentWithPrefix("CloneDerivedTransferAttributeForAutoMappedTransferObjectType", t.getId()));
 	                } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
