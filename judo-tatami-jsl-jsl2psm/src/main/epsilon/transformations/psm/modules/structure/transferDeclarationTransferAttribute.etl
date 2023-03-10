@@ -57,7 +57,11 @@ rule CreateMappedTransferAttribute
       guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.maps.isDefined()
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferAttribute");
       
-      t.binding = s.maps.features.first.member.equivalent("CreateAttributeFromField");
+      if (s.maps.features.first.member.isKindOf(JSL!EntityFieldDeclaration)) {
+         t.binding = s.maps.features.first.member.equivalent("CreateAttributeFromField");
+      } else if (s.maps.features.first.member.isKindOf(JSL!EntityIdentifierDeclaration)) {
+         t.binding = s.maps.features.first.member.equivalent("CreateAttributeFromIdentifier");
+      }
       
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");

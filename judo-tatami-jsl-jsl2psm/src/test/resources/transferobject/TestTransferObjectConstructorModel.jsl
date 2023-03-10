@@ -1,0 +1,53 @@
+model TransferObjectConstructorModel;
+
+type string String(min-size = 0, max-size = 250);
+type numeric Integer(precision = 3, scale = 0);
+
+
+entity Entity {
+	field Integer attribute = 1;
+	field EntityRelated containment;
+	field EntityRelated[] containmentCollection;
+	relation EntityRelated association;
+
+	identifier Integer identifier;	
+}
+
+entity EntityRelated {
+	field Integer attribute;
+	relation Entity entity opposite-add entityRelatedOpposite;
+
+}
+
+transfer UnmappedRelated {
+	field String transient;
+	constructor {
+		self.transient = "Test";
+	}
+}
+
+transfer Mapped maps Entity as e {
+    field Integer unmappedAttribute;
+    
+	field UnmappedRelated unmappedContainment;
+	field required UnmappedRelated unmappedContainmentRequired;
+	field UnmappedRelated[] unmappedContainmentCollection;
+
+	field Integer mappedAttribute maps e.attribute;
+	field MappedRelated mappedContainment maps e.containment;
+	field MappedRelated[] mappedContainmentCollection maps e.containmentCollection;
+
+	field MappedRelated mappedAssociation maps e.association;
+	
+	constructor {
+		self.mappedAttribute = 2;
+		self.unmappedContainment = EntityRelated!any();
+		self.mappedContainment = EntityRelated!any();
+		self.mappedContainmentCollection = EntityRelated!all();
+		self.mappedAssociation = EntityRelated!any();
+	}
+}
+
+transfer MappedRelated maps EntityRelated as e {
+	field Integer mappedAttribute maps e.attribute;
+}
