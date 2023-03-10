@@ -219,6 +219,12 @@ abstract public class AbstractTest {
     }
 
     public DataProperty assertDataProperty(String entityName, String propName) {
+    	final Optional<DataProperty> attr = assertEntityType(entityName).getDataProperties().stream().filter(e -> e.getName().equals(propName)).findAny();
+        assertTrue(attr.isPresent());    	
+        return attr.get();
+    }
+
+    public DataProperty assertAllDataProperty(String entityName, String propName) {
     	final Optional<DataProperty> attr = assertEntityType(entityName).getAllDataProperties().stream().filter(e -> e.getName().equals(propName)).findAny();
         assertTrue(attr.isPresent());    	
         return attr.get();
@@ -232,18 +238,36 @@ abstract public class AbstractTest {
 
 
     public NavigationProperty assertNavigationProperty(String entityName, String propName) {
+    	final Optional<NavigationProperty> attr = assertEntityType(entityName).getNavigationProperties().stream().filter(e -> e.getName().equals(propName)).findAny();
+        assertTrue(attr.isPresent());    	
+        return attr.get();
+    }
+
+    public NavigationProperty assertAllNavigationProperty(String entityName, String propName) {
     	final Optional<NavigationProperty> attr = assertEntityType(entityName).getAllNavigationProperties().stream().filter(e -> e.getName().equals(propName)).findAny();
         assertTrue(attr.isPresent());    	
         return attr.get();
     }
 
     public Attribute assertAttribute(String entityName, String attrName) {
+    	final Optional<Attribute> attr = assertEntityType(entityName).getAttributes().stream().filter(e -> e.getName().equals(attrName)).findAny();
+        assertTrue(attr.isPresent());    	
+        return attr.get();
+    }
+
+    public Attribute assertAllAttribute(String entityName, String attrName) {
     	final Optional<Attribute> attr = assertEntityType(entityName).getAllAttributes().stream().filter(e -> e.getName().equals(attrName)).findAny();
         assertTrue(attr.isPresent());    	
         return attr.get();
     }
 
     public Relation assertRelation(String entityName, String relationName) {
+    	Optional<Relation> rel = assertEntityType(entityName).getRelations().stream().filter(r -> r.getName().equals(relationName)).findFirst();
+        assertTrue(rel.isPresent());
+        return rel.get();    	
+    }
+
+    public Relation assertAllRelation(String entityName, String relationName) {
     	Optional<Relation> rel = assertEntityType(entityName).getAllRelations().stream().filter(r -> r.getName().equals(relationName)).findFirst();
         assertTrue(rel.isPresent());
         return rel.get();    	
