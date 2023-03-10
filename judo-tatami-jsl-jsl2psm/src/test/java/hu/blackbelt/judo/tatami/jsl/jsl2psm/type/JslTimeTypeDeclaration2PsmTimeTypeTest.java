@@ -156,7 +156,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
         assertEquals(assertTimeType("MyTime"), assertAttribute("_Person", "arrivalTime").getDataType());
         assertEquals(assertTimeType("MyTime"), assertMappedTransferObjectAttribute("Person", "arrivalTime").getDataType());
 
-        assertEquals(assertTimeType("MyTime"), assertAttribute("_StudentPerson", "arrivalTime").getDataType());
+        assertEquals(assertTimeType("MyTime"), assertAllAttribute("_StudentPerson", "arrivalTime").getDataType());
         assertEquals(assertTimeType("MyTime"), assertMappedTransferObjectAttribute("StudentPerson", "arrivalTime").getDataType());
     }
 
