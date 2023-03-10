@@ -155,7 +155,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
         assertTimestampType("Timestamp");
         assertEquals(assertTimestampType("Timestamp"), assertAttribute("_Email", "receivedAt").getDataType());
         assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("Email", "receivedAt").getDataType());        
-        assertEquals(assertTimestampType("Timestamp"), assertAttribute("_ImportantEmail", "receivedAt").getDataType());
+        assertEquals(assertTimestampType("Timestamp"), assertAllAttribute("_ImportantEmail", "receivedAt").getDataType());
         assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("ImportantEmail", "receivedAt").getDataType());
     }
 
