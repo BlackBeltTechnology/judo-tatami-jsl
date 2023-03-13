@@ -159,7 +159,7 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
         assertEquals(assertStringType("Name"), assertAttribute("_Person", "name").getDataType());
         assertEquals(assertStringType("Name"), assertMappedTransferObjectAttribute("Person", "name").getDataType());
 
-        assertEquals(assertStringType("Name"), assertAttribute("_StudentPerson", "name").getDataType());
+        assertEquals(assertStringType("Name"), assertAllAttribute("_StudentPerson", "name").getDataType());
         assertEquals(assertStringType("Name"), assertMappedTransferObjectAttribute("StudentPerson", "name").getDataType());
 
     }

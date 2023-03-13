@@ -96,21 +96,21 @@ public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
         assertEquals(assertNavigationProperty("_Lead", "keyCustomer"), assertMappedTransferObjectRelation("Lead", "keyCustomer").getBinding());
 
         
-        assertNavigationProperty("_LeadExtended", "keyCustomers");
-        assertTrue(assertNavigationProperty("_LeadExtended", "keyCustomers").isCollection());
-        assertEquals("self.customers!filter(c | c.iskey)", assertNavigationProperty("_LeadExtended", "keyCustomers").getGetterExpression().getExpression());
+        assertAllNavigationProperty("_LeadExtended", "keyCustomers");
+        assertTrue(assertAllNavigationProperty("_LeadExtended", "keyCustomers").isCollection());
+        assertEquals("self.customers!filter(c | c.iskey)", assertAllNavigationProperty("_LeadExtended", "keyCustomers").getGetterExpression().getExpression());
 
         assertMappedTransferObjectRelation("LeadExtended", "keyCustomers");
         assertTrue(assertMappedTransferObjectRelation("LeadExtended", "keyCustomers").isCollection());
-        assertEquals(assertNavigationProperty("_LeadExtended", "keyCustomers"), assertMappedTransferObjectRelation("LeadExtended", "keyCustomers").getBinding());
+        assertEquals(assertAllNavigationProperty("_LeadExtended", "keyCustomers"), assertMappedTransferObjectRelation("LeadExtended", "keyCustomers").getBinding());
         
-        assertNavigationProperty("_LeadExtended", "keyCustomer");
-        assertFalse(assertNavigationProperty("_LeadExtended", "keyCustomer").isCollection());
-        assertEquals("self.customers!filter(c | c.iskey)!any()", assertNavigationProperty("_LeadExtended", "keyCustomer").getGetterExpression().getExpression());
+        assertAllNavigationProperty("_LeadExtended", "keyCustomer");
+        assertFalse(assertAllNavigationProperty("_LeadExtended", "keyCustomer").isCollection());
+        assertEquals("self.customers!filter(c | c.iskey)!any()", assertAllNavigationProperty("_LeadExtended", "keyCustomer").getGetterExpression().getExpression());
 
         assertMappedTransferObjectRelation("LeadExtended", "keyCustomer");
         assertFalse(assertMappedTransferObjectRelation("LeadExtended", "keyCustomer").isCollection());
-        assertEquals(assertNavigationProperty("_LeadExtended", "keyCustomer"), assertMappedTransferObjectRelation("LeadExtended", "keyCustomer").getBinding());
+        assertEquals(assertAllNavigationProperty("_LeadExtended", "keyCustomer"), assertMappedTransferObjectRelation("LeadExtended", "keyCustomer").getBinding());
 
     }
 }
