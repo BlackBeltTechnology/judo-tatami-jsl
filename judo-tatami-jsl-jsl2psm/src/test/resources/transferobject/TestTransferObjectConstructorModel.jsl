@@ -19,7 +19,7 @@ entity EntityRelated {
 
 }
 
-transfer UnmappedRelated {
+transfer Unmapped {
 	field String transient;
 	constructor {
 		self.transient = "Test";
@@ -29,22 +29,19 @@ transfer UnmappedRelated {
 transfer Mapped maps Entity as e {
     field Integer unmappedAttribute;
     
-	field UnmappedRelated unmappedContainment;
-	field required UnmappedRelated unmappedContainmentRequired;
-	field UnmappedRelated[] unmappedContainmentCollection;
-
 	field Integer mappedAttribute maps e.attribute;
-	field MappedRelated mappedContainment maps e.containment;
-	field MappedRelated[] mappedContainmentCollection maps e.containmentCollection;
-
 	field MappedRelated mappedAssociation maps e.association;
+    field MappedRelated mappedAssociationOpposite maps e.entityRelatedOpposite;
+	
+	field Integer mappedIdentifier maps e.identifier;
+
 	
 	constructor {
+		self.unmappedAttribute = 1;
 		self.mappedAttribute = 2;
-		self.unmappedContainment = EntityRelated!any();
-		self.mappedContainment = EntityRelated!any();
-		self.mappedContainmentCollection = EntityRelated!all();
+		self.mappedIdentifier = 3;
 		self.mappedAssociation = EntityRelated!any();
+		self.mappedAssociationOpposite = EntityRelated!any();
 	}
 }
 

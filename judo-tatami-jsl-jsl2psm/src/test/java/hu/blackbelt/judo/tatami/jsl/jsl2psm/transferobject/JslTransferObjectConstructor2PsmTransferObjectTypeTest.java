@@ -25,11 +25,11 @@ import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.derived.DataProperty;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
+import hu.blackbelt.judo.meta.psm.derived.StaticData;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hamcrest.core.IsEqual;
-import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -70,7 +70,7 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
 
     @Test
     void testTransferObjectConstructorModel() throws Exception {
-        testName = "TestCreateMappedTransferObjectType";
+        testName = "TestTransferObjectConstructor";
 
         
         jslModel = JslParser.getModelFromFiles(
@@ -81,94 +81,42 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         transform();
 
         
-        /*
+        assertUnmappedTransferObject("Unmapped");
+        assertEquals(1, assertUnmappedTransferObject("Unmapped").getAttributes().size());
+        
+        assertUnmappedTransferObjectAttribute("Unmapped", "transient");
+        assertFalse(assertUnmappedTransferObjectAttribute("Unmapped", "transient").isRequired());
+        assertEquals(assertStringType("String"), assertUnmappedTransferObjectAttribute("Unmapped", "transient").getDataType());
+
+        
         assertMappedTransferObject("Mapped");
-        assertEquals(6, assertMappedTransferObject("Mapped").getAttributes().size());
+        assertEquals(5, assertMappedTransferObject("Mapped").getAttributes().size());
 
         assertMappedTransferObjectAttribute("Mapped", "unmappedAttribute");
         assertFalse(assertMappedTransferObjectAttribute("Mapped", "unmappedAttribute").isRequired());
         assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "unmappedAttribute").getDataType());
+        StaticData unmappedAttributeDefault = assertStaticData("_unmappedAttribute_Default_Mapped");
+        assertEquals("1", unmappedAttributeDefault.getGetterExpression().getExpression());
 
+        
         assertMappedTransferObjectAttribute("Mapped", "mappedAttribute");
         assertFalse(assertMappedTransferObjectAttribute("Mapped", "mappedAttribute").isRequired());
         assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "mappedAttribute").getDataType());
         assertEquals(assertAttribute("_Entity", "attribute"), assertMappedTransferObjectAttribute("Mapped", "mappedAttribute").getBinding());
+        DataProperty mappedAttributeDefault = assertDataProperty("_Entity", "_mappedAttribute_Default_Mapped");
+        assertEquals(mappedAttributeDefault, assertMappedTransferObjectAttribute("Mapped", "_mappedAttribute_Default_Mapped").getBinding());
+        assertEquals("2", mappedAttributeDefault.getGetterExpression().getExpression());
 
-        assertMappedTransferObjectAttribute("Mapped", "derivedAttribute");
-        assertFalse(assertMappedTransferObjectAttribute("Mapped", "derivedAttribute").isRequired());
-        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "derivedAttribute").getDataType());
-        DataProperty derivedAttribute = assertDataProperty("_Entity", "_derivedAttribute_Reads_Mapped");
-        assertEquals(derivedAttribute, assertMappedTransferObjectAttribute("Mapped", "derivedAttribute").getBinding());
-        assertEquals("self.attribute", derivedAttribute.getGetterExpression().getExpression());
-
-        assertMappedTransferObjectAttribute("Mapped", "derivedAttributeStatic");
-        assertFalse(assertMappedTransferObjectAttribute("Mapped", "derivedAttributeStatic").isRequired());
-        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "derivedAttributeStatic").getDataType());
-        DataProperty derivedAttributeStatic = assertDataProperty("_Entity", "_derivedAttributeStatic_Reads_Mapped");
-        assertEquals(derivedAttributeStatic, assertMappedTransferObjectAttribute("Mapped", "derivedAttributeStatic").getBinding());
-        assertEquals("MappedTransferObjectTypeModel::MappedTransferObjectTypeModel::_Entity!any().attribute", derivedAttributeStatic.getGetterExpression().getExpression());
-
-        assertMappedTransferObjectAttribute("Mapped", "mappedAttributeDerived");
-        assertFalse(assertMappedTransferObjectAttribute("Mapped", "mappedAttributeDerived").isRequired());
-        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "mappedAttributeDerived").getDataType());
-        assertEquals(assertDataProperty("_Entity", "_mappedAttributeDerived_Reads_Mapped"), assertMappedTransferObjectAttribute("Mapped", "mappedAttributeDerived").getBinding());
 
         assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier");
         assertFalse(assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier").isRequired());
         assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier").getDataType());
         assertEquals(assertAttribute("_Entity", "identifier"), assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier").getBinding());
-
-        
-        assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier");
-        assertFalse(assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier").isRequired());
-        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier").getDataType());
-        assertEquals(assertDataProperty("_Entity", "_derivedIdentifier_Reads_Mapped"), assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier").getBinding());
-
-        DataProperty derivedIdentifier = assertDataProperty("_Entity", "_derivedIdentifier_Reads_Mapped");
-        assertEquals(derivedIdentifier, assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier").getBinding());
-        assertEquals("self.identifier", derivedIdentifier.getGetterExpression().getExpression());
-
-        assertEquals(12, assertMappedTransferObject("Mapped").getRelations().size());
-        assertMappedTransferObjectRelation("Mapped", "unmappedContainment");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "unmappedContainment").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainment").getBinding(), IsNull.nullValue());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainment").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainment").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainment").getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
+        DataProperty mappedIdentifierDefault = assertDataProperty("_Entity", "_mappedIdentifier_Default_Mapped");
+        assertEquals(mappedIdentifierDefault, assertMappedTransferObjectAttribute("Mapped", "_mappedIdentifier_Default_Mapped").getBinding());
+        assertEquals("3", mappedIdentifierDefault.getGetterExpression().getExpression());
 
 
-        assertMappedTransferObjectRelation("Mapped", "unmappedContainmentRequired");
-        assertTrue(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentRequired").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentRequired").getBinding(), IsNull.nullValue());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentRequired").getCardinality().getLower(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentRequired").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentRequired").getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
-
-
-        assertMappedTransferObjectRelation("Mapped", "unmappedContainmentCollection");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentCollection").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentCollection").getBinding(), IsNull.nullValue());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentCollection").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentCollection").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentCollection").getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
-
-        
-        assertMappedTransferObjectRelation("Mapped", "mappedContainment");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedContainment").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainment").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containment")));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainment").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainment").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainment").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-
-
-        assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollection");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollection").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollection").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containmentCollection")));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollection").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollection").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollection").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-
-        
         assertMappedTransferObjectRelation("Mapped", "mappedAssociation");
         assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedAssociation").isRequired());
         assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociation").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "association")));
@@ -177,79 +125,13 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociation").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
 
 
-        assertMappedTransferObjectRelation("Mapped", "mappedAssociationOppostite");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOppostite").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOppostite").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "entityRelatedOpposite")));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOppostite").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOppostite").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOppostite").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
+        assertMappedTransferObjectRelation("Mapped", "mappedAssociationOpposite");
+        assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOpposite").isRequired());
+        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOpposite").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "entityRelatedOpposite")));
+        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOpposite").getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOpposite").getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOpposite").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
 
-        
-        assertMappedTransferObjectRelation("Mapped", "derivedContainment");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "derivedContainment").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainment").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainment").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainment").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-        NavigationProperty derivedContainment = assertNavigationProperty("_Entity", "_derivedContainment_Reads_Mapped");
-        assertEquals(derivedContainment, assertMappedTransferObjectRelation("Mapped", "derivedContainment").getBinding());
-        assertEquals("self.containment", derivedContainment.getGetterExpression().getExpression());
-        
-        assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollection");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollection").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollection").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollection").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollection").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-        NavigationProperty derivedContainmentCollection = assertNavigationProperty("_Entity", "_derivedContainmentCollection_Reads_Mapped");
-        assertEquals(derivedContainmentCollection, assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollection").getBinding());
-        assertEquals("self.containmentCollection", derivedContainmentCollection.getGetterExpression().getExpression());
-
-        assertMappedTransferObjectRelation("Mapped", "derivedAssociation");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "derivedAssociation").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedAssociation").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedAssociation").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedAssociation").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-        NavigationProperty derivedAssociation = assertNavigationProperty("_Entity", "_derivedAssociation_Reads_Mapped");
-        assertEquals(derivedAssociation, assertMappedTransferObjectRelation("Mapped", "derivedAssociation").getBinding());
-        assertEquals("self.association", derivedAssociation.getGetterExpression().getExpression());
-
-        assertMappedTransferObjectRelation("Mapped", "derivedContainmentStatic");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "derivedContainmentStatic").isRequired());
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "derivedContainmentStatic").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainmentStatic").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainmentStatic").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainmentStatic").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-        NavigationProperty derivedContainmentStatic = assertNavigationProperty("_Entity", "_derivedContainmentStatic_Reads_Mapped");
-        assertEquals(derivedContainmentStatic, assertMappedTransferObjectRelation("Mapped", "derivedContainmentStatic").getBinding());
-        assertEquals("MappedTransferObjectTypeModel::MappedTransferObjectTypeModel::_EntityRelated!any()", derivedContainmentStatic.getGetterExpression().getExpression());
-
-        assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollectionStatic");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollectionStatic").isRequired());
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollectionStatic").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollectionStatic").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollectionStatic").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollectionStatic").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-        NavigationProperty derivedContainmentCollectionStatic = assertNavigationProperty("_Entity", "_derivedContainmentCollectionStatic_Reads_Mapped");
-        assertEquals(derivedContainmentCollectionStatic, assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollectionStatic").getBinding());
-        assertEquals("MappedTransferObjectTypeModel::MappedTransferObjectTypeModel::_EntityRelated", derivedContainmentCollectionStatic.getGetterExpression().getExpression());
-
-        assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-        NavigationProperty mappedContainmentDerived = assertNavigationProperty("_Entity", "_mappedContainmentDerived_Reads_Mapped");
-        assertEquals(mappedContainmentDerived, assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived").getBinding());
-        assertEquals("self.containmentDerived", mappedContainmentDerived.getGetterExpression().getExpression());
-        
-        assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived");
-        assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").isRequired());
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-        NavigationProperty mappedContainmentCollectionDerived = assertNavigationProperty("_Entity", "_mappedContainmentCollectionDerived_Reads_Mapped");
-        assertEquals(mappedContainmentCollectionDerived, assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").getBinding());
-        assertEquals("self.containmentCollectionDerived", mappedContainmentCollectionDerived.getGetterExpression().getExpression());
-        */
     }
     
 }
