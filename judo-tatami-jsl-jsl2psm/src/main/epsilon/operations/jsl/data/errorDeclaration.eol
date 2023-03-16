@@ -1,11 +1,11 @@
 @cached
 operation JSL!ErrorDeclaration getPSMEquivalent(): JUDOPSM!UnmappedTransferObjectType {
-	return self.equivalent("CreateUnmappedTransferObjectType");
+    return self.equivalent("CreateUnmappedTransferObjectType");
 }
 
 @cached
 operation JSL!ErrorDeclaration getId(): String {
-	return (self.eContainer.getId() + "/" + self.name);
+    return (self.eContainer.getId() + "/" + self.name);
 }
 
 @cached
@@ -22,5 +22,5 @@ operation JSL!ErrorDeclaration getInheritedFields(): Sequence<ErrorField> {
         }
     }
 
-	return fields;
+    return fields;
 }

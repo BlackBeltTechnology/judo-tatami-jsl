@@ -13,15 +13,15 @@ rule AbstractCreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType
         t.embeddedCreate = not s.eContainer.isAbstract;
         t.embeddedUpdate = not s.eContainer.isAbstract;
         t.embeddedDelete = not s.eContainer.isAbstract;
-        
-		t.embedded = true;
+
+        t.embedded = true;
         t.binding = s.equivalent("CreateContainmentFromField");
 }
 
 @greedy
 rule CreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType
     transform s: JSL!EntityFieldDeclaration
-    to t: JUDOPSM!TransferObjectRelation 
+    to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType {
         guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.referenceType.isKindOf(JSL!EntityDeclaration)
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType");
@@ -35,9 +35,9 @@ rule CreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType
 @greedy
 rule CloneTransferObjectEmbeddedRelationForAutoMappedTransferObjectType
     transform s: JSL!EntityFieldDeclaration
-    to t: JUDOPSM!TransferObjectRelation 
+    to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectEmbeddedRelationForAutoMappedTransferObjectType {
-    
+
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectEmbeddedRelationForAutoMappedTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForFieldDeclaration", t.getId());
 
@@ -75,19 +75,19 @@ rule CreateTransferObjectDerivedRelationForAutoMappedTransferObjectType
 
         s.eContainer.equivalent("CreateAutoMappedTransferObjectType").relations.add(t);
 
-        log.debug("Created TransferObjectRelation (Derived) for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");       
+        log.debug("Created TransferObjectRelation (Derived) for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
 @lazy
 @greedy
 rule CloneTransferObjectDerivedRelationForAutoMappedTransferObjectType
     transform s: JSL!EntityDerivedDeclaration
-    to t: JUDOPSM!TransferObjectRelation 
+    to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectDerivedRelationForAutoMappedTransferObjectType {
-    
+
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectDerivedRelationForAutoMappedTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForDerivedDeclaration", t.getId());
-        
+
         log.debug("Clone TransferObjectRelation (Derived)for AutoMappedTransferObjectType: [" + t.name + "]");
 }
 

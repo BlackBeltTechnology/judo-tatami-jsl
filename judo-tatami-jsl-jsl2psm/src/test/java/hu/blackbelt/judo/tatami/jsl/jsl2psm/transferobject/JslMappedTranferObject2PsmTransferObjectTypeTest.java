@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.transferobject;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -72,7 +72,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
     void testCreateMappedTransferObjectType() throws Exception {
         testName = "TestCreateMappedTransferObjectType";
 
-        
+
         jslModel = JslParser.getModelFromFiles(
                 "MappedTransferObjectTypeModel",
                 List.of(new File("src/test/resources/transferobject/TestCreateMappedTransferObjectTypeModel.jsl"))
@@ -80,7 +80,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
 
         transform();
 
-        
+
         assertMappedTransferObject("Mapped");
         assertEquals(6, assertMappedTransferObject("Mapped").getAttributes().size());
 
@@ -118,7 +118,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
 //        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier").getDataType());
 //        assertEquals(assertAttribute("_Entity", "identifier"), assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier").getBinding());
 
-        
+
         assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier");
         assertFalse(assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier").isRequired());
         assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier").getDataType());
@@ -152,7 +152,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentCollection").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(assertMappedTransferObjectRelation("Mapped", "unmappedContainmentCollection").getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
 
-        
+
         assertMappedTransferObjectRelation("Mapped", "mappedContainment");
         assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedContainment").isRequired());
         assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainment").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containment")));
@@ -168,8 +168,8 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollection").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollection").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
 
-        
-// TODO: JNG-4603 Fix association        
+
+// TODO: JNG-4603 Fix association
 //        assertMappedTransferObjectRelation("Mapped", "mappedAssociation");
 //        assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedAssociation").isRequired());
 //        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociation").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "association")));
@@ -185,7 +185,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
 //        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOppostite").getCardinality().getUpper(), IsEqual.equalTo(1));
 //        assertThat(assertMappedTransferObjectRelation("Mapped", "mappedAssociationOppostite").getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
 
-        
+
         assertMappedTransferObjectRelation("Mapped", "derivedContainment");
         assertFalse(assertMappedTransferObjectRelation("Mapped", "derivedContainment").isRequired());
         assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainment").getCardinality().getLower(), IsEqual.equalTo(0));
@@ -194,7 +194,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         NavigationProperty derivedContainment = assertNavigationProperty("_Entity", "_derivedContainment_Reads_Mapped");
         assertEquals(derivedContainment, assertMappedTransferObjectRelation("Mapped", "derivedContainment").getBinding());
         assertEquals("self.containment", derivedContainment.getGetterExpression().getExpression());
-        
+
         assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollection");
         assertFalse(assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollection").isRequired());
         assertThat(assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollection").getCardinality().getLower(), IsEqual.equalTo(0));
@@ -241,7 +241,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         NavigationProperty mappedContainmentDerived = assertNavigationProperty("_Entity", "_mappedContainmentDerived_Reads_Mapped");
         assertEquals(mappedContainmentDerived, assertMappedTransferObjectRelation("Mapped", "mappedContainmentDerived").getBinding());
         assertEquals("self.containmentDerived", mappedContainmentDerived.getGetterExpression().getExpression());
-        
+
         assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived");
         assertFalse(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").isRequired());
         assertThat(assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollectionDerived").getCardinality().getLower(), IsEqual.equalTo(0));
@@ -252,5 +252,5 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         assertEquals("self.containmentCollectionDerived", mappedContainmentCollectionDerived.getGetterExpression().getExpression());
 
     }
-    
+
 }

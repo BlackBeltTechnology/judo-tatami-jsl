@@ -12,19 +12,19 @@ rule AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration
         t.name = s.name;
         t.target = s.referenceType.getPSMEquivalent();
 
-        // TODO: 
+        // TODO:
         // t.embeddedCreate = not s.eContainer.isAbstract;
         // t.embeddedUpdate = not s.eContainer.isAbstract;
         // t.embeddedDelete = not s.eContainer.isAbstract;
-        
-		t.embedded = true;
+
+        t.embedded = true;
 }
 
 
 @greedy
 rule CreateTransientTransferObjectEmbeddedRelationForTransferFieldDeclaration
     transform s: JSL!TransferFieldDeclaration
-    to t: JUDOPSM!TransferObjectRelation 
+    to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectEmbeddedRelationForTransferFieldDeclaration {
         guard: s.referenceType.isKindOf(JSL!TransferDeclaration) and not s.maps.isDefined() and not s.reads.isDefined() and not s.eContainer.automap
 
@@ -45,13 +45,13 @@ rule CreateDerivedTransferObjectEmbeddedRelationForTransferFieldDeclaration
 
       t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferObjectEmbeddedRelationForTransferFieldDeclaration");
       t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
-      
+
       if (s.eContainer.map.isDefined()) {
          t.binding = s.reads.equivalent("CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclaration");
       } else {
          t.binding = s.reads.equivalent("CreateReadsReferenceExpressionForUnmappedTransferObjectTransferRelationDeclaration");
       }
-      
+
       s.eContainer.getPSMEquivalent().relations.add(t);
       log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
@@ -65,19 +65,19 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferFieldDeclaration
 
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferObjectEmbeddedRelationForTransferFieldDeclaration");
       t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
-      
+
       var entityMember = s.maps.features.first.member;
-      
+
       if (entityMember.isKindOf(JSL!EntityFieldDeclaration)) {
-	      t.binding = entityMember.equivalent("CreateContainmentFromField");
+          t.binding = entityMember.equivalent("CreateContainmentFromField");
       } else if (entityMember.isKindOf(JSL!EntityRelationDeclaration)) {
-	      t.binding = entityMember.equivalent("CreateDeclaredAssociationEnd");      
+          t.binding = entityMember.equivalent("CreateDeclaredAssociationEnd");
       } else if (entityMember.isKindOf(JSL!EntityRelationOppositeInjected)) {
-	      t.binding = entityMember.equivalent("CreateNamedOppositeAssociationEnd");      
+          t.binding = entityMember.equivalent("CreateNamedOppositeAssociationEnd");
       } else {
           throw "Invalid member type - " + s.eContainer.name + "." + e.name + " " + entityMember;
       }
-            
+
       s.eContainer.getPSMEquivalent().relations.add(t);
       log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }

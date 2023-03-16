@@ -3,7 +3,7 @@ import "../namespace/namespace.etl";
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-// Auto mapped entity Field 
+// Auto mapped entity Field
 ////////////////////////////////////////////////////////////////////////////////////////////
 @abstract
 rule AbstractCreateTransferAttributeForAutoMappedTransferObjectType
@@ -40,7 +40,7 @@ rule CreateTransferAttributeForAutoMappedTransferObjectType
 rule CloneTransferAttributeForAutoMappedTransferObjectType
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!TransferAttribute
-    extends AbstractCreateTransferAttributeForAutoMappedTransferObjectType {    
+    extends AbstractCreateTransferAttributeForAutoMappedTransferObjectType {
         t.setId("(jsl/" + s.getId() + ")/CloneTransferAttributeForAutoMappedTransferObjectType");
         log.debug("Clone TransferAttribute (Field) for AutoMappedTransferObjectType: [" + t.name + "]");
 }
@@ -52,7 +52,7 @@ rule CloneTransferAttributeForAutoMappedTransferObjectType
 rule AbstractCreateIdentifierTransferAttributeForAutoMappedTransferObjectType
     transform s: JSL!EntityIdentifierDeclaration
     to t: JUDOPSM!TransferAttribute {
-    
+
         t.required = s.isRequired;
         t.name = s.name;
         t.binding = s.equivalent("CreateAttributeFromIdentifier");
@@ -66,7 +66,7 @@ rule AbstractCreateIdentifierTransferAttributeForAutoMappedTransferObjectType
 
 @greedy
 rule CreateIdentifierTransferAttributeForAutoMappedTransferObjectType
-    transform s: JSL!EntityIdentifierDeclaration    
+    transform s: JSL!EntityIdentifierDeclaration
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateIdentifierTransferAttributeForAutoMappedTransferObjectType {
         guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
@@ -79,10 +79,10 @@ rule CreateIdentifierTransferAttributeForAutoMappedTransferObjectType
 @lazy
 @greedy
 rule CloneIdentifierTransferAttributeForAutoMappedTransferObjectType
-	transform s: JSL!EntityIdentifierDeclaration
-	to t: JUDOPSM!TransferAttribute
+    transform s: JSL!EntityIdentifierDeclaration
+    to t: JUDOPSM!TransferAttribute
     extends AbstractCreateIdentifierTransferAttributeForAutoMappedTransferObjectType {
-        t.setId("(jsl/" + s.getId() + ")/CloneIdentifierTransferAttributeForAutoMappedTransferObjectType");    
+        t.setId("(jsl/" + s.getId() + ")/CloneIdentifierTransferAttributeForAutoMappedTransferObjectType");
         log.debug("Clone TransferAttribute (Identifier) for AutoMappedTransferObjectType: [" + t.name + "]");
 }
 
@@ -101,7 +101,7 @@ rule AbstractCreateTransferDefaultValueAttributeForAutoMappedTransferObjectType
 
 @greedy
 rule CreateDefaultTransferAttributeForAutoMappedTransferObjectType
-    transform s: JSL!Expression    
+    transform s: JSL!Expression
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateTransferDefaultValueAttributeForAutoMappedTransferObjectType {
         guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
@@ -140,7 +140,7 @@ rule AbstractCreateDerivedTransferAttributeForAutoMappedTransferObjectType
 
 @greedy
 rule CreateDerivedTransferAttributeForAutoMappedTransferObjectType
-    transform s: JSL!EntityDerivedDeclaration    
+    transform s: JSL!EntityDerivedDeclaration
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateDerivedTransferAttributeForAutoMappedTransferObjectType {
         guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
@@ -154,10 +154,10 @@ rule CreateDerivedTransferAttributeForAutoMappedTransferObjectType
 @lazy
 @greedy
 rule CloneDerivedTransferAttributeForAutoMappedTransferObjectType
-	transform s: JSL!EntityDerivedDeclaration
-	to t: JUDOPSM!TransferAttribute
+    transform s: JSL!EntityDerivedDeclaration
+    to t: JUDOPSM!TransferAttribute
     extends AbstractCreateDerivedTransferAttributeForAutoMappedTransferObjectType {
-        t.setId("(jsl/" + s.getId() + ")/CloneDerivedTransferAttributeForAutoMappedTransferObjectType");    
+        t.setId("(jsl/" + s.getId() + ")/CloneDerivedTransferAttributeForAutoMappedTransferObjectType");
         log.debug("Clone TransferAttribute (Derived) for AutoMappedTransferObjectType: [" + t.name + "]");
 }
 
