@@ -82,3 +82,22 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferFieldDeclaration
       log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+// Relation default value
+////////////////////////////////////////////////////////////////////////////////////////////
+
+@greedy
+rule CreateTransferEntityDefaultValueRelationForMappedTransferObjectConstructor
+    transform s: JSL!TransferDefault
+    to t: JUDOPSM!TransferObjectRelation {
+        guard: s.field.reference.referenceType.isKindOf(JSL!TransferDeclaration) and s.field.reference.maps.isDefined()
+        t.setId("(jsl/" + s.field.reference.getId() + ")/CreateTransferEntityDefaultValueRelationForMappedTransferObjectConstructor");
+        t.name = defaultDefaultNamePrefix + s.field.reference.name + defaultDefaultNameMidfix + s.field.reference.eContainer.name + defaultDefaultNamePostfix;
+        t.binding = s.equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
+        t.target = s.field.reference.referenceType.getPSMEquivalent();        
+        t.cardinality = s.field.reference.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+        s.eContainer.eContainer.getPSMEquivalent().relations.add(t);
+}
+
+
+
