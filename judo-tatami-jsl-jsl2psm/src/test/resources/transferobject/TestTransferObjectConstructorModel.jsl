@@ -10,13 +10,12 @@ entity Entity {
 	field EntityRelated[] containmentCollection;
 	relation EntityRelated association;
 
-	identifier Integer identifier;	
+	identifier Integer identifier = 1;	
 }
 
 entity EntityRelated {
-	field Integer attribute;
+	field Integer attribute ;
 	relation Entity entity opposite-add entityRelatedOpposite;
-
 }
 
 transfer Unmapped {
@@ -34,7 +33,8 @@ transfer Mapped maps Entity as e {
     field MappedRelated mappedAssociationOpposite maps e.entityRelatedOpposite;
 	
 	field Integer mappedIdentifier maps e.identifier;
-
+	field Integer mappedAttributeEntityDefault maps e.attribute;
+	field Integer mappedIdentifierEntityDefault maps e.attribute;
 	
 	constructor {
 		self.unmappedAttribute = 1;
