@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.type;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -75,7 +75,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
 
         transform();
 
-        assertTimestampType("Timestamp");        
+        assertTimestampType("Timestamp");
     }
 
     @Test
@@ -95,7 +95,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
         );
 
         transform();
-        
+
         assertTimestampType("Timestamp");
         assertEquals(assertTimestampType("Timestamp"), assertAttribute("_Email", "receivedAt").getDataType());
         assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("Email", "receivedAt").getDataType());
@@ -127,7 +127,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
         assertEquals(assertTimestampType("Timestamp"), assertAttribute("_Email", "receivedAt").getDataType());
         assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("Email", "receivedAt").getDataType());
 
-        assertTrue(assertAttribute("_Email", "receivedAt").isRequired());        
+        assertTrue(assertAttribute("_Email", "receivedAt").isRequired());
         assertTrue(assertMappedTransferObjectAttribute("Email", "receivedAt").isRequired());
     }
 
@@ -154,7 +154,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
 
         assertTimestampType("Timestamp");
         assertEquals(assertTimestampType("Timestamp"), assertAttribute("_Email", "receivedAt").getDataType());
-        assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("Email", "receivedAt").getDataType());        
+        assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("Email", "receivedAt").getDataType());
         assertEquals(assertTimestampType("Timestamp"), assertAllAttribute("_ImportantEmail", "receivedAt").getDataType());
         assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("ImportantEmail", "receivedAt").getDataType());
     }
@@ -163,7 +163,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
     void testEntityMemberIdentifier() throws Exception {
         testName = "TestEntityMemberIdentifier";
 
-    	jslModel = JslParser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
@@ -179,7 +179,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
 
         assertTimestampType("Timestamp");
         assertEquals(assertTimestampType("Timestamp"), assertAttribute("_Email", "receivedAt").getDataType());
-        assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("Email", "receivedAt").getDataType());        
+        assertEquals(assertTimestampType("Timestamp"), assertMappedTransferObjectAttribute("Email", "receivedAt").getDataType());
         assertTrue(assertAttribute("_Email", "receivedAt").isIdentifier());
     }
 }

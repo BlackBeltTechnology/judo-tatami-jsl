@@ -10,11 +10,11 @@ operation JSL!TransferDeclaration getPSMEquivalent(): JUDOPSM!TransferObjectType
 
 @cached
 operation JSL!TransferDeclaration getId(): String {
-	return (self.eContainer.getId() + "/" + self.name);
+    return (self.eContainer.getId() + "/" + self.name);
 }
 
 @cached
 operation JSL!TransferDeclaration getModelRoot(): JUDOPSM!Package {
-	return self.getPsmEquivalent().getModelRoot();
+    return self.getPsmEquivalent().getModelRoot();
 }
 

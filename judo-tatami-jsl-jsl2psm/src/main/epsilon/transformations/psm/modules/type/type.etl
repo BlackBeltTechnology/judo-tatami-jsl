@@ -2,8 +2,8 @@ import "../namespace/namespace.etl";
 import "../../../../operations/_importAll.eol";
 
 rule CreateNumericType
-	transform s: JSL!DataTypeDeclaration
-	to t: JUDOPSM!NumericType {
+    transform s: JSL!DataTypeDeclaration
+    to t: JUDOPSM!NumericType {
         guard: s.`primitive` == "numeric" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
 
         t.setId("(jsl/" + s.getId() + ")/CreateNumericType");
@@ -37,8 +37,8 @@ rule CreateTimeType
   }
 
 rule CreateTimestampType
-	transform s: JSL!DataTypeDeclaration
-	to t: JUDOPSM!TimestampType {
+    transform s: JSL!DataTypeDeclaration
+    to t: JUDOPSM!TimestampType {
         guard: s.`primitive` == "timestamp" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
 
         t.setId("(jsl/" + s.getId() + ")/CreateTimestampType");
@@ -48,8 +48,8 @@ rule CreateTimestampType
     }
 
 rule CreateEnumerationType
-	transform s: JSL!EnumDeclaration
-	to t: JUDOPSM!EnumerationType {
+    transform s: JSL!EnumDeclaration
+    to t: JUDOPSM!EnumerationType {
         t.setId("(jsl/" + s.getId() + ")/CreateEnumerationType");
         t.name = s.name;
         s.eContainer.getModelRoot().elements.add(t);
@@ -57,49 +57,49 @@ rule CreateEnumerationType
     }
 
 rule CreateEnumerationMember
-	transform s: JSL!EnumLiteral
-	to t: JUDOPSM!EnumerationMember {
+    transform s: JSL!EnumLiteral
+    to t: JUDOPSM!EnumerationMember {
         t.setId("(jsl/" + s.getId() + ")/CreateEnumerationMember");
         t.name = s.name;
         t.ordinal = s.value.intValue();
         s.eContainer.equivalent("CreateEnumerationType").members.add(t);
         log.debug("Created EnumerationMember: " + t.name);
     }
-    
-rule CreateBooleanType 
-	transform s : JSL!DataTypeDeclaration
-	to t : JUDOPSM!BooleanType {
+
+rule CreateBooleanType
+    transform s : JSL!DataTypeDeclaration
+    to t : JUDOPSM!BooleanType {
         guard: s.`primitive` == "boolean" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
-        
+
         t.setId("(jsl/" + s.getId() + ")/CreateBooleanType");
         t.name = s.name;
         s.eContainer.getModelRoot().elements.add(t);
         log.debug("Created BooleanType: " + t.name);
 }
 
-    
-rule CreateStringType 
-	transform s : JSL!DataTypeDeclaration
-	to t : JUDOPSM!StringType {
+
+rule CreateStringType
+    transform s : JSL!DataTypeDeclaration
+    to t : JUDOPSM!StringType {
         guard: s.`primitive` == "string" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
-        
+
         t.setId("(jsl/" + s.getId() + ")/CreateStringType");
         t.name = s.name;
         t.maxLength = s.maxSize.value.intValue();
-        
+
         if (s.regex.isDefined() and s.regex.regex.value.isDefined()) {
-        	t.regExp = s.regex.regex.value;
+            t.regExp = s.regex.regex.value;
         }
-        
+
         s.eContainer.getModelRoot().elements.add(t);
         log.debug("Created StringType: " + t.name);
 }
 
-rule CreateBinaryType 
+rule CreateBinaryType
     transform s : JSL!DataTypeDeclaration
     to t : JUDOPSM!BinaryType {
         guard: s.`primitive` == "binary" and not s.eContainer.name.equivalent("CreateModelPackages").elements.collect(e | e.name).contains(s.name)
-		
+
         t.setId("(jsl/" + s.getId() + ")/CreateBinaryType");
         t.name = s.name;
 
@@ -113,7 +113,7 @@ rule CreateBinaryType
         if (s.maxFileSize.isDefined()) {
             t.maxFileSize = s.maxFileSize.value().longValue();
         }
-         
+
         s.eContainer.getModelRoot().elements.add(t);
         log.debug("Created BinaryType: " + t.name);
 }

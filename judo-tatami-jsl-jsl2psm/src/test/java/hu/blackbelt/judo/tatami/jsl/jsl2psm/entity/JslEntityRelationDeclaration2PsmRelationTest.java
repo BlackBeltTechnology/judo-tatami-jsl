@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -112,16 +112,16 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertEquals(1, assertMappedTransferObjectRelation("Lead", "customer").getCardinality().getLower());
         assertEquals(1, assertMappedTransferObjectRelation("Lead", "customer").getCardinality().getUpper());
         assertEquals(assertMappedTransferObject("Customer"), assertMappedTransferObjectRelation("Lead", "customer").getTarget());
-      
+
         assertFalse(assertRelation("_SalesPerson", "leads").isRequired());
         assertEquals(0, assertRelation("_SalesPerson", "leads").getCardinality().getLower());
         assertEquals(-1, assertRelation("_SalesPerson", "leads").getCardinality().getUpper());
-        assertEquals(assertEntityType("_Lead"), assertRelation("_SalesPerson", "leads").getTarget());        
+        assertEquals(assertEntityType("_Lead"), assertRelation("_SalesPerson", "leads").getTarget());
 
         assertFalse(assertMappedTransferObjectRelation("SalesPerson", "leads").isRequired());
         assertEquals(0, assertMappedTransferObjectRelation("SalesPerson", "leads").getCardinality().getLower());
         assertEquals(-1, assertMappedTransferObjectRelation("SalesPerson", "leads").getCardinality().getUpper());
-        assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SalesPerson", "leads").getTarget());        
+        assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SalesPerson", "leads").getTarget());
 
     }
 
@@ -154,7 +154,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         transform();
 
         assertEquals(5, getEntityTypes().size());
-      
+
         assertEntityType("_Customer");
         assertEntityType("_Lead");
         assertEntityType("_SuperSalesPerson");
@@ -169,7 +169,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertEquals(0, assertMappedTransferObjectRelation("SuperSalesPerson", "leads").getCardinality().getLower());
         assertEquals(-1, assertMappedTransferObjectRelation("SuperSalesPerson", "leads").getCardinality().getUpper());
         assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SuperSalesPerson", "leads").getTarget());
-        
+
         assertFalse(assertAllRelation("_LazySalesPerson", "leads").isRequired());
         assertEquals(0, assertAllRelation("_LazySalesPerson", "leads").getCardinality().getLower());
         assertEquals(-1, assertAllRelation("_LazySalesPerson", "leads").getCardinality().getUpper());
@@ -181,7 +181,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertEquals(assertMappedTransferObject("Lead"), assertMappedTransferObjectRelation("SuperSalesPerson", "leads").getTarget());
 
     }
-    
+
     @Test
     void testEntityAsssociationRelation() throws Exception {
         testName = "AssociationRelationTest";
@@ -195,50 +195,50 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
 
         EntityType lead = assertEntityType("_Lead");
         EntityType customer = assertEntityType("_Customer");
-        
+
         MappedTransferObjectType leadTo = assertMappedTransferObject("Lead");
         MappedTransferObjectType customerTo = assertMappedTransferObject("Customer");
- 
+
         assertThat(leadTo.getEntityType(), IsEqual.equalTo(lead));
         assertThat(customerTo.getEntityType(), IsEqual.equalTo(customer));
-        
+
         Collection<Relation> leadRelations = lead.getRelations();
         Set<String> leadRelationNames = leadRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
-        assertThat(leadRelationNames, 
-        		IsEqual.equalTo(ImmutableSet.of("customer", "customers", 
-        				"customer1", "customers1", 
-        				"customer2", "customers2", 
-        				"injectedCustomer1", "injectedCustomers1", 
-        				"injectedCustomer2", "injectedCustomers2")));
+        assertThat(leadRelationNames,
+                IsEqual.equalTo(ImmutableSet.of("customer", "customers",
+                        "customer1", "customers1",
+                        "customer2", "customers2",
+                        "injectedCustomer1", "injectedCustomers1",
+                        "injectedCustomer2", "injectedCustomers2")));
 
         Collection<TransferObjectRelation> leadToRelations = leadTo.getRelations();
         Set<String> leadToRelationNames = leadToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
-        assertThat(leadToRelationNames, 
-        		IsEqual.equalTo(ImmutableSet.of("customer", "customers", 
-        				"customer1", "customers1", 
-        				"customer2", "customers2", 
-        				"injectedCustomer1", "injectedCustomers1", 
-        				"injectedCustomer2", "injectedCustomers2")));
+        assertThat(leadToRelationNames,
+                IsEqual.equalTo(ImmutableSet.of("customer", "customers",
+                        "customer1", "customers1",
+                        "customer2", "customers2",
+                        "injectedCustomer1", "injectedCustomers1",
+                        "injectedCustomer2", "injectedCustomers2")));
 
         Collection<TransferObjectRelation> leadChildToRelations = leadTo.getRelations();
         Set<String> leadChildToRelationNames = leadChildToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
-        assertThat(leadChildToRelationNames, 
-        		IsEqual.equalTo(ImmutableSet.of("customer", "customers", 
-        				"customer1", "customers1", 
-        				"customer2", "customers2", 
-        				"injectedCustomer1", "injectedCustomers1", 
-        				"injectedCustomer2", "injectedCustomers2")));
+        assertThat(leadChildToRelationNames,
+                IsEqual.equalTo(ImmutableSet.of("customer", "customers",
+                        "customer1", "customers1",
+                        "customer2", "customers2",
+                        "injectedCustomer1", "injectedCustomers1",
+                        "injectedCustomer2", "injectedCustomers2")));
 
         Collection<TransferObjectRelation> leadGrandChildToRelations = leadTo.getRelations();
         Set<String> leadGrandChildToRelationNames = leadGrandChildToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
-        assertThat(leadGrandChildToRelationNames, 
-        		IsEqual.equalTo(ImmutableSet.of("customer", "customers", 
-        				"customer1", "customers1", 
-        				"customer2", "customers2", 
-        				"injectedCustomer1", "injectedCustomers1", 
-        				"injectedCustomer2", "injectedCustomers2")));
+        assertThat(leadGrandChildToRelationNames,
+                IsEqual.equalTo(ImmutableSet.of("customer", "customers",
+                        "customer1", "customers1",
+                        "customer2", "customers2",
+                        "injectedCustomer1", "injectedCustomers1",
+                        "injectedCustomer2", "injectedCustomers2")));
 
-        
+
         assertThat(assertRelation("_Lead", "customer").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertRelation("_Lead", "customer").getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(((AssociationEnd) assertRelation("_Lead", "customer")).getTarget(), IsEqual.equalTo(customer));
@@ -257,7 +257,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Lead", "customers").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(assertMappedTransferObjectRelation("Lead", "customers").getTarget(), IsEqual.equalTo(customerTo));
 
-        
+
         assertThat(assertRelation("_Lead", "customer1").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertRelation("_Lead", "customer1").getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(((AssociationEnd) assertRelation("_Lead", "customer1")).getTarget(), IsEqual.equalTo(customer));
@@ -268,8 +268,8 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Lead", "customer1").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertMappedTransferObjectRelation("Lead", "customer1").getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(assertMappedTransferObjectRelation("Lead", "customer1").getTarget(), IsEqual.equalTo(customerTo));
- 
-        
+
+
         assertThat(assertRelation("_Lead", "customers1").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertRelation("_Lead", "customers1").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(((AssociationEnd) assertRelation("_Lead", "customers1")).getTarget(), IsEqual.equalTo(customer));
@@ -281,7 +281,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Lead", "customers1").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(assertMappedTransferObjectRelation("Lead", "customers1").getTarget(), IsEqual.equalTo(customerTo));
 
-        
+
         assertThat(assertRelation("_Lead", "customer2").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertRelation("_Lead", "customer2").getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(((AssociationEnd) assertRelation("_Lead", "customer2")).getTarget(), IsEqual.equalTo(customer));
@@ -293,7 +293,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Lead", "customer2").getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(assertMappedTransferObjectRelation("Lead", "customer2").getTarget(), IsEqual.equalTo(customerTo));
 
-        
+
         assertThat(assertRelation("_Lead", "customers2").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertRelation("_Lead", "customers2").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(((AssociationEnd) assertRelation("_Lead", "customers2")).getTarget(), IsEqual.equalTo(customer));
@@ -305,7 +305,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Lead", "customers2").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(assertMappedTransferObjectRelation("Lead", "customers2").getTarget(), IsEqual.equalTo(customerTo));
 
-        
+
         assertThat(assertRelation("_Lead", "injectedCustomer1").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertRelation("_Lead", "injectedCustomer1").getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomer1")).getTarget(), IsEqual.equalTo(customer));
@@ -317,7 +317,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer1").getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer1").getTarget(), IsEqual.equalTo(customerTo));
 
-        
+
         assertThat(assertRelation("_Lead", "injectedCustomers1").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertRelation("_Lead", "injectedCustomers1").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomers1")).getTarget(), IsEqual.equalTo(customer));
@@ -329,7 +329,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers1").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers1").getTarget(), IsEqual.equalTo(customerTo));
 
-        
+
         assertThat(assertRelation("_Lead", "injectedCustomer2").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertRelation("_Lead", "injectedCustomer2").getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomer2")).getTarget(), IsEqual.equalTo(customer));
@@ -341,7 +341,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer2").getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomer2").getTarget(), IsEqual.equalTo(customerTo));
 
-        
+
         assertThat(assertRelation("_Lead", "injectedCustomers2").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertRelation("_Lead", "injectedCustomers2").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(((AssociationEnd) assertRelation("_Lead", "injectedCustomers2")).getTarget(), IsEqual.equalTo(customer));
@@ -353,35 +353,35 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers2").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(assertMappedTransferObjectRelation("Lead", "injectedCustomers2").getTarget(), IsEqual.equalTo(customerTo));
 
-        
+
         Collection<Relation> customerRelations = customer.getRelations();
         Set<String> customerRelationNames = customerRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
-        assertThat(customerRelationNames, 
-        		IsEqual.equalTo(ImmutableSet.of("lead", "leads", 
-        				"leads1", "leads2", "leads3", "leads4", "leads5", "leads6", 
-        				"lead1", "lead2")));
+        assertThat(customerRelationNames,
+                IsEqual.equalTo(ImmutableSet.of("lead", "leads",
+                        "leads1", "leads2", "leads3", "leads4", "leads5", "leads6",
+                        "lead1", "lead2")));
 
         Collection<TransferObjectRelation> customerToRelations = customerTo.getRelations();
         Set<String> customerToRelationNames = customerToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
-        assertThat(customerToRelationNames, 
-        		IsEqual.equalTo(ImmutableSet.of("lead", "leads", 
-        				"leads1", "leads2", "leads3", "leads4", "leads5", "leads6", 
-        				"lead1", "lead2")));
+        assertThat(customerToRelationNames,
+                IsEqual.equalTo(ImmutableSet.of("lead", "leads",
+                        "leads1", "leads2", "leads3", "leads4", "leads5", "leads6",
+                        "lead1", "lead2")));
 
         Collection<TransferObjectRelation> customerChildToRelations = customerTo.getRelations();
         Set<String> customerChildToRelationNames = customerChildToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
-        assertThat(customerChildToRelationNames, 
-        		IsEqual.equalTo(ImmutableSet.of("lead", "leads", 
-        				"leads1", "leads2", "leads3", "leads4", "leads5", "leads6", 
-        				"lead1", "lead2")));
+        assertThat(customerChildToRelationNames,
+                IsEqual.equalTo(ImmutableSet.of("lead", "leads",
+                        "leads1", "leads2", "leads3", "leads4", "leads5", "leads6",
+                        "lead1", "lead2")));
 
 
         Collection<TransferObjectRelation> customerGrandChildToRelations = customerTo.getRelations();
         Set<String> customerGrandChildToRelationNames = customerGrandChildToRelations.stream().map(r -> r.getName()).collect(Collectors.toSet());
-        assertThat(customerGrandChildToRelationNames, 
-        		IsEqual.equalTo(ImmutableSet.of("lead", "leads", 
-        				"leads1", "leads2", "leads3", "leads4", "leads5", "leads6", 
-        				"lead1", "lead2")));
+        assertThat(customerGrandChildToRelationNames,
+                IsEqual.equalTo(ImmutableSet.of("lead", "leads",
+                        "leads1", "leads2", "leads3", "leads4", "leads5", "leads6",
+                        "lead1", "lead2")));
 
 
         assertThat(assertRelation("_Customer", "lead").getCardinality().getLower(), IsEqual.equalTo(0));
@@ -393,7 +393,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Customer", "lead").getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(assertMappedTransferObjectRelation("Customer", "lead").getTarget(), IsEqual.equalTo(leadTo));
 
-        
+
         assertThat(assertRelation("_Customer", "leads").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertRelation("_Customer", "leads").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(((AssociationEnd) assertRelation("_Customer", "leads")).getTarget(), IsEqual.equalTo(lead));
@@ -403,7 +403,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Customer", "leads").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(assertMappedTransferObjectRelation("Customer", "leads").getTarget(), IsEqual.equalTo(leadTo));
 
-        
+
         assertThat(assertRelation("_Customer", "leads1").getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertRelation("_Customer", "leads1").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(((AssociationEnd) assertRelation("_Customer", "leads1")).getTarget(), IsEqual.equalTo(lead));
@@ -494,6 +494,6 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         assertThat(assertMappedTransferObjectRelation("Customer", "lead2").getTarget(), IsEqual.equalTo(leadTo));
 
     }
-    
-    
+
+
 }

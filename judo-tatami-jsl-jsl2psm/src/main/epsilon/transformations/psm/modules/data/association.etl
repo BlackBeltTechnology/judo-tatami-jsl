@@ -2,18 +2,18 @@ rule CreateNamedOppositeAssociationEnd
     transform s: JSL!EntityRelationOppositeInjected
     to t: JUDOPSM!AssociationEnd
     {
-    	var relationAddedFrom = s.eContainer;
-    	var entityToAdd = relationAddedFrom.referenceType;
-    
+        var relationAddedFrom = s.eContainer;
+        var entityToAdd = relationAddedFrom.referenceType;
+
         t.setId("(jsl/" + s.getId() + ")/CreateNamedOppositeAssociationEnd");
         t.name = s.name;
         t.target = relationAddedFrom.eContainer.getPSMEquivalent();
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForOppositeAddedRelation", t.getId());
 
-		// Reverse cascade delete not supported yet
-		t.reverseCascadeDelete = false;
-		
-		t.partner = relationAddedFrom.equivalent("CreateDeclaredAssociationEnd");
+        // Reverse cascade delete not supported yet
+        t.reverseCascadeDelete = false;
+
+        t.partner = relationAddedFrom.equivalent("CreateDeclaredAssociationEnd");
 
         entityToAdd.getPSMEquivalent().relations.add(t);
         log.debug("Created Association End (named opposite): " + t.name);
@@ -30,15 +30,15 @@ rule CreateDeclaredAssociationEnd
         t.target = s.referenceType.getPSMEquivalent();
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForRelationDeclaration", t.getId());
 
-		// Reverse cascade delete not supported yet
-		t.reverseCascadeDelete = false;
-		
-		if (s.opposite?.oppositeType.isDefined()) {
-			t.partner = s.opposite.oppositeType.equivalent("CreateDeclaredAssociationEnd");
-		}
-		if (s.opposite?.name.isDefined()) {
-			t.partner = s.opposite.equivalent("CreateNamedOppositeAssociationEnd");
-		}
+        // Reverse cascade delete not supported yet
+        t.reverseCascadeDelete = false;
+
+        if (s.opposite?.oppositeType.isDefined()) {
+            t.partner = s.opposite.oppositeType.equivalent("CreateDeclaredAssociationEnd");
+        }
+        if (s.opposite?.name.isDefined()) {
+            t.partner = s.opposite.equivalent("CreateNamedOppositeAssociationEnd");
+        }
 
         s.eContainer.getPSMEquivalent().relations.add(t);
         log.debug("Created Association End: (declared)" + t.name);

@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.type;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -84,9 +84,9 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
         assertEnumerationType("LeadStatus");
 
         assertEquals(
-        		ImmutableSet.of("OPPORTUNITY", "LEAD", "PROJECT"), 
-        		assertEnumerationType("LeadStatus").getMembers().stream().map(m -> m.getName()).collect(Collectors.toSet())
-		);
+                ImmutableSet.of("OPPORTUNITY", "LEAD", "PROJECT"),
+                assertEnumerationType("LeadStatus").getMembers().stream().map(m -> m.getName()).collect(Collectors.toSet())
+        );
 
         assertEquals(0, assertEnumerationMember("LeadStatus", "OPPORTUNITY").getOrdinal());
         assertEquals(1, assertEnumerationMember("LeadStatus", "LEAD").getOrdinal());
@@ -114,7 +114,7 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
         );
 
         transform();
-        
+
         assertEnumerationType("LeadStatus");
         assertEquals(assertEnumerationType("LeadStatus"), assertAttribute("_Lead", "status").getDataType());
         assertEquals(assertEnumerationType("LeadStatus"), assertMappedTransferObjectAttribute("Lead", "status").getDataType());
@@ -122,7 +122,7 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
         assertFalse(assertAttribute("_Lead", "status").isRequired());
         assertFalse(assertMappedTransferObjectAttribute("Lead", "status").isRequired());
 
-    
+
     }
 
     @Test
@@ -178,7 +178,7 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
         );
 
         transform();
-        
+
         assertEnumerationType("LeadStatus");
         assertEquals(assertEnumerationType("LeadStatus"), assertAttribute("_Lead", "status").getDataType());
         assertEquals(assertEnumerationType("LeadStatus"), assertMappedTransferObjectAttribute("Lead", "status").getDataType());
