@@ -97,73 +97,28 @@ rule CreateMappedTransferAttributeEntityDefault
 }
 
 
-@abstract
-rule AbstractCreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor
+@greedy
+rule CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor
     transform s: JSL!TransferDefault
     to t: JUDOPSM!TransferAttribute {
         guard: s.field.reference.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.field.reference.eContainer.map.isDefined()
         t.name = defaultDefaultNamePrefix + s.field.reference.name + defaultDefaultNameMidfix + s.field.reference.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultDataPropertyForMappedTransferObjectConstructor");	  
         t.dataType = s.field.reference.referenceType.getPSMEquivalent();
-}
-
-// Create default transfer object attribute for default value expression and add it to default transfer object
-@greedy
-rule CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor
-    transform s: JSL!TransferDefault
-    to t: JUDOPSM!TransferAttribute 
-    extends AbstractCreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor {
-        guard: s.field.reference.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.field.reference.eContainer.map.isDefined()
         t.setId("(jsl/" + s.field.reference.getId() + ")/CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor");
         s.eContainer.eContainer.getPSMEquivalent().attributes.add(t);
         log.debug("Created TransferAttribute DefaultValue (Field) for MappedTransferObjectConstructor: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
-//It creates the attribute on the resource root,
-// the caller code have to add it to the corresponding transfer object
-// This method can be used to make clone attributes to inherited transfer objects
-@lazy
 @greedy
-rule CloneTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor
-    transform s: JSL!Expression
-    to t: JUDOPSM!TransferAttribute
-    extends AbstractCreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor {
-        t.setId("(jsl/" + s.getId() + ")/CloneTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor");
-        log.debug("Clone TransferAttribute Default Value (Field) for MappedTransferObjectConstructor: [" + t.name + "]");
-}
-
-@abstract
-rule AbstractTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor
+rule CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor
     transform s: JSL!TransferDefault
     to t: JUDOPSM!TransferAttribute {
         guard: s.field.reference.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.field.reference.eContainer.map.isUndefined()
         t.name = defaultDefaultNamePrefix + s.field.reference.name + defaultDefaultNameMidfix + s.field.reference.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultStaticDataForUnmappedTransferObjectConstructor");	  
         t.dataType = s.field.reference.referenceType.getPSMEquivalent();
-}
-
-// Create default transfer object attribute for default value expression and add it to default transfer object
-@greedy
-rule CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor
-    transform s: JSL!TransferDefault
-    to t: JUDOPSM!TransferAttribute
-    extends AbstractTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor {
-        guard: s.field.reference.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.field.reference.eContainer.map.isUndefined()
         t.setId("(jsl/" + s.field.reference.getId() + ")/CreateTransferEntityDefaultValueRelationForUnmappedTransferObjectConstructor");
         s.eContainer.eContainer.getPSMEquivalent().attributes.add(t);
         log.debug("Created TransferAttribute DefaultValue (Field) for UnmappedTransferObjectConstructor: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
-
-// It creates the attribute on the resource root,
-// the caller code have to add it to the corresponding transfer object
-// This method can be used to make clone attributes to inherited transfer objects
-@lazy
-@greedy
-rule CloneTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor
-    transform s: JSL!Expression
-    to t: JUDOPSM!TransferAttribute
-    extends AbstractTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor {
-        t.setId("(jsl/" + s.getId() + ")/CloneTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor");
-        log.debug("Clone TransferAttribute Default Value (Field) for UnmappedTransferObjectConstructor: [" + t.name + "]");
-}
-
