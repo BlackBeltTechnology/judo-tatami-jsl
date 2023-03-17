@@ -167,6 +167,7 @@ rule CloneEntityTransferAttributeForDefaultTransferObjectType
 // Primitive and Identifier default value
 ////////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 @abstract
 rule AbstractCreateTransferDefaultValueAttributeForDefaultTransferObjectType
     transform s: JSL!Expression
@@ -201,6 +202,7 @@ rule CloneTransferDefaultValueAttributeForDefaultTransferObjectType
         t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForDefaultTransferObjectType");
         log.debug("Clone TransferAttribute Default Value (Field) for DefaultTransferObjectType: [" + t.name + "]");
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Error Field
@@ -249,7 +251,7 @@ rule CloneTransferAttributeForErrorTransferObjectType
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Error default value
 ////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 @abstract
 rule AbstractCreateTransferDefaultValueAttributeForErrorTransferObjectType
     transform s: JSL!Expression
@@ -284,5 +286,5 @@ rule CloneTransferDefaultValueAttributeForErrorTransferObjectType
         t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForDefaultTransferObjectType");
         log.debug("Clone TransferAttribute Default Value (Field) for ErrorTransferObjectType: [" + t.name + "]");
 }
-
+*/
 

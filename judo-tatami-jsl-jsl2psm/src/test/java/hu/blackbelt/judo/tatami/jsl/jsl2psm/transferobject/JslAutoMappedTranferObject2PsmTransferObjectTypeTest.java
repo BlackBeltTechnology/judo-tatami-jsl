@@ -25,6 +25,8 @@ import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.derived.DataProperty;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
+import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -81,103 +83,103 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
         transform();
         
         assertMappedTransferObject("AutoMapped");
-        assertEquals(6, assertMappedTransferObject("AutoMapped").getAttributes().size());
+        assertEquals(5, assertMappedTransferObject("AutoMapped").getAttributes().size());
 
-        assertMappedTransferObjectAttribute("AutoMapped", "attribute");
-        assertFalse(assertMappedTransferObjectAttribute("AutoMapped", "attribute").isRequired());
-        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("AutoMapped", "attribute").getDataType());
-        assertEquals(assertAttribute("_EntityAncestor", "attribute"), assertMappedTransferObjectAttribute("AutoMapped", "attribute").getBinding());
+        TransferAttribute attribute = assertMappedTransferObjectAttribute("AutoMapped", "attribute");
+        assertFalse(attribute.isRequired());
+        assertEquals(assertNumericType("Integer"), attribute.getDataType());
+        assertEquals(assertAttribute("_EntityAncestor", "attribute"), attribute.getBinding());
 
-        assertMappedTransferObjectAttribute("AutoMapped", "identifier");
-        assertFalse(assertMappedTransferObjectAttribute("AutoMapped", "identifier").isRequired());
-        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("AutoMapped", "identifier").getDataType());
-        assertEquals(assertAttribute("_EntityAncestor", "identifier"), assertMappedTransferObjectAttribute("AutoMapped", "identifier").getBinding());
+        TransferAttribute identifier = assertMappedTransferObjectAttribute("AutoMapped", "identifier");
+        assertFalse(identifier.isRequired());
+        assertEquals(assertNumericType("Integer"), identifier.getDataType());
+        assertEquals(assertAttribute("_EntityAncestor", "identifier"), identifier.getBinding());
         
-        assertMappedTransferObjectAttribute("AutoMapped", "attribute2");
-        assertFalse(assertMappedTransferObjectAttribute("AutoMapped", "attribute2").isRequired());
-        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("AutoMapped", "attribute2").getDataType());
-        assertEquals(assertAttribute("_Entity", "attribute2"), assertMappedTransferObjectAttribute("AutoMapped", "attribute2").getBinding());
+        TransferAttribute attribute2 = assertMappedTransferObjectAttribute("AutoMapped", "attribute2");
+        assertFalse(attribute2.isRequired());
+        assertEquals(assertNumericType("Integer"), attribute2.getDataType());
+        assertEquals(assertAttribute("_Entity", "attribute2"), attribute2.getBinding());
 
-        assertMappedTransferObjectAttribute("AutoMapped", "attributeDerived");
-        assertFalse(assertMappedTransferObjectAttribute("AutoMapped", "attributeDerived").isRequired());
-        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("AutoMapped", "attributeDerived").getDataType());
-        DataProperty attributeDerived = assertDataProperty("_EntityAncestor", "attributeDerived");
-        assertEquals(attributeDerived, assertMappedTransferObjectAttribute("AutoMapped", "attributeDerived").getBinding());
-        assertEquals("self.attribute", attributeDerived.getGetterExpression().getExpression());
+        TransferAttribute attributeDerived = assertMappedTransferObjectAttribute("AutoMapped", "attributeDerived");
+        assertFalse(attributeDerived.isRequired());
+        assertEquals(assertNumericType("Integer"), attributeDerived.getDataType());
+        DataProperty attributeDerivedProperty = assertDataProperty("_EntityAncestor", "attributeDerived");
+        assertEquals(attributeDerivedProperty, attributeDerived.getBinding());
+        assertEquals("self.attribute", attributeDerivedProperty.getGetterExpression().getExpression());
 
-        assertMappedTransferObjectAttribute("AutoMapped", "attributeDerived2");
-        assertFalse(assertMappedTransferObjectAttribute("AutoMapped", "attributeDerived2").isRequired());
-        assertEquals(assertNumericType("Integer"), assertMappedTransferObjectAttribute("AutoMapped", "attributeDerived2").getDataType());
-        DataProperty attributeDerived2 = assertDataProperty("_Entity", "attributeDerived2");
-        assertEquals(attributeDerived2, assertMappedTransferObjectAttribute("AutoMapped", "attributeDerived2").getBinding());
-        assertEquals("self.attribute", attributeDerived2.getGetterExpression().getExpression());
+        TransferAttribute attributeDerived2 = assertMappedTransferObjectAttribute("AutoMapped", "attributeDerived2");
+        assertFalse(attributeDerived2.isRequired());
+        assertEquals(assertNumericType("Integer"), attributeDerived2.getDataType());
+        DataProperty attributeDerived2Property = assertDataProperty("_Entity", "attributeDerived2");
+        assertEquals(attributeDerived2Property, attributeDerived2.getBinding());
+        assertEquals("self.attribute", attributeDerived2Property.getGetterExpression().getExpression());
 
         
         assertEquals(8, assertMappedTransferObject("AutoMapped").getRelations().size());
 
-        assertMappedTransferObjectRelation("AutoMapped", "containment");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containment").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment").getBinding(), IsEqual.equalTo(assertRelation("_EntityAncestor", "containment")));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
+        TransferObjectRelation containment = assertMappedTransferObjectRelation("AutoMapped", "containment");
+        assertFalse(containment.isRequired());
+        assertThat(containment.getBinding(), IsEqual.equalTo(assertRelation("_EntityAncestor", "containment")));
+        assertThat(containment.getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(containment.getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(containment.getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
 
-        assertMappedTransferObjectRelation("AutoMapped", "containmentCollection");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection").getBinding(), IsEqual.equalTo(assertRelation("_EntityAncestor", "containmentCollection")));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
+        TransferObjectRelation containmentCollection = assertMappedTransferObjectRelation("AutoMapped", "containmentCollection");
+        assertFalse(containmentCollection.isRequired());
+        assertThat(containmentCollection.getBinding(), IsEqual.equalTo(assertRelation("_EntityAncestor", "containmentCollection")));
+        assertThat(containmentCollection.getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(containmentCollection.getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(containmentCollection.getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
         
-        assertMappedTransferObjectRelation("AutoMapped", "containment2");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containment2").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment2").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containment2")));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment2").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment2").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containment2").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
+        TransferObjectRelation containment2 = assertMappedTransferObjectRelation("AutoMapped", "containment2");
+        assertFalse(containment2.isRequired());
+        assertThat(containment2.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containment2")));
+        assertThat(containment2.getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(containment2.getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(containment2.getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
 
-        assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2").getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containmentCollection2")));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
+        TransferObjectRelation containmentCollection2 = assertMappedTransferObjectRelation("AutoMapped", "containmentCollection2");
+        assertFalse(containmentCollection2.isRequired());
+        assertThat(containmentCollection2.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containmentCollection2")));
+        assertThat(containmentCollection2.getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(containmentCollection2.getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(containmentCollection2.getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
 
-        assertMappedTransferObjectRelation("AutoMapped", "containmentDerived");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containmentDerived").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentDerived").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentDerived").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentDerived").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
-        NavigationProperty containmentDerived = assertNavigationProperty("_EntityAncestor", "containmentDerived");
-        assertEquals(containmentDerived, assertMappedTransferObjectRelation("AutoMapped", "containmentDerived").getBinding());
-        assertEquals("self.containment", containmentDerived.getGetterExpression().getExpression());
+        TransferObjectRelation containmentDerived = assertMappedTransferObjectRelation("AutoMapped", "containmentDerived");
+        assertFalse(containmentDerived.isRequired());
+        assertThat(containmentDerived.getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(containmentDerived.getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(containmentDerived.getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
+        NavigationProperty containmentDerivedProperty = assertNavigationProperty("_EntityAncestor", "containmentDerived");
+        assertEquals(containmentDerivedProperty, containmentDerived.getBinding());
+        assertEquals("self.containment", containmentDerivedProperty.getGetterExpression().getExpression());
 
-        assertMappedTransferObjectRelation("AutoMapped", "containmentDerived2");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containmentDerived2").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentDerived2").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentDerived2").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentDerived2").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
-        NavigationProperty containmentDerived2 = assertNavigationProperty("_Entity", "containmentDerived2");
-        assertEquals(containmentDerived2, assertMappedTransferObjectRelation("AutoMapped", "containmentDerived2").getBinding());
-        assertEquals("self.containment", containmentDerived2.getGetterExpression().getExpression());
+        TransferObjectRelation containmentDerived2 = assertMappedTransferObjectRelation("AutoMapped", "containmentDerived2");
+        assertFalse(containmentDerived2.isRequired());
+        assertThat(containmentDerived2.getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(containmentDerived2.getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(containmentDerived2.getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
+        NavigationProperty containmentDerived2Property = assertNavigationProperty("_Entity", "containmentDerived2");
+        assertEquals(containmentDerived2Property, containmentDerived2.getBinding());
+        assertEquals("self.containment", containmentDerived2Property.getGetterExpression().getExpression());
 
-        assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived").getCardinality().getLower(), IsEqual.equalTo(0));
+        TransferObjectRelation containmentCollectionDerived = assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived");
+        assertFalse(containmentCollectionDerived.isRequired());
+        assertThat(containmentCollectionDerived.getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived").getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
-        NavigationProperty containmentCollectionDerived = assertNavigationProperty("_EntityAncestor", "containmentCollectionDerived");
-        assertEquals(containmentCollectionDerived, assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived").getBinding());
-        assertEquals("self.containmentCollection", containmentCollectionDerived.getGetterExpression().getExpression());
+        NavigationProperty containmentCollectionDerivedProperty = assertNavigationProperty("_EntityAncestor", "containmentCollectionDerived");
+        assertEquals(containmentCollectionDerivedProperty, containmentCollectionDerived.getBinding());
+        assertEquals("self.containmentCollection", containmentCollectionDerivedProperty.getGetterExpression().getExpression());
 
-        assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived2");
-        assertFalse(assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived2").isRequired());
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived2").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived2").getCardinality().getUpper(), IsEqual.equalTo(-1));
+        TransferObjectRelation containmentCollectionDerived2 = assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived2");
+        assertFalse(containmentCollectionDerived2.isRequired());
+        assertThat(containmentCollectionDerived2.getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(containmentCollectionDerived2.getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived2").getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
-        NavigationProperty containmentCollectionDerived2 = assertNavigationProperty("_Entity", "containmentCollectionDerived2");
-        assertEquals(containmentCollectionDerived2, assertMappedTransferObjectRelation("AutoMapped", "containmentCollectionDerived2").getBinding());
-        assertEquals("self.containmentCollection", containmentCollectionDerived2.getGetterExpression().getExpression());
+        NavigationProperty containmentCollectionDerived2Property = assertNavigationProperty("_Entity", "containmentCollectionDerived2");
+        assertEquals(containmentCollectionDerived2Property, containmentCollectionDerived2.getBinding());
+        assertEquals("self.containmentCollection", containmentCollectionDerived2Property.getGetterExpression().getExpression());
         
     }
     

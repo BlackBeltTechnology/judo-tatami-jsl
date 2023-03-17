@@ -31,6 +31,11 @@ rule CreateTransientTransferObjectEmbeddedRelationForTransferFieldDeclaration
         t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferObjectEmbeddedRelationForTransferFieldDeclaration");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
 
+        var def = JSL!TransferDefault.all().selectOne(d | d.field.reference == s);
+        if (def.isDefined()) {
+           t.defaultValue = def.equivalent("CreateDefaultStaticNavigationForTransferObjectConstructor");
+        }      
+
         s.eContainer.getPSMEquivalent().relations.add(t);
 
         log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
@@ -51,7 +56,7 @@ rule CreateDerivedTransferObjectEmbeddedRelationForTransferFieldDeclaration
       } else {
          t.binding = s.reads.equivalent("CreateReadsReferenceExpressionForUnmappedTransferObjectTransferRelationDeclaration");
       }
-      
+
       s.eContainer.getPSMEquivalent().relations.add(t);
       log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
@@ -77,8 +82,12 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferFieldDeclaration
       } else {
           throw "Invalid member type - " + s.eContainer.name + "." + e.name + " " + entityMember;
       }
-            
+
+      var def = JSL!TransferDefault.all().selectOne(d | d.field.reference == s);
+      if (def.isDefined()) {
+        t.defaultValue = def.equivalent("CreateDefaultStaticNavigationForTransferObjectConstructor");
+      }      
+      
       s.eContainer.getPSMEquivalent().relations.add(t);
       log.debug("Created TransferObjectRelation for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
-

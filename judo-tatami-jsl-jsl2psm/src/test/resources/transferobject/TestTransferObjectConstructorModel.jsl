@@ -1,0 +1,81 @@
+model TransferObjectConstructorModel;
+
+type string String(min-size = 0, max-size = 250);
+type numeric Integer(precision = 3, scale = 0);
+
+
+enum MyEnum {
+    Atomic = 0;
+    Bombastic = 1;
+    Crazy = 2;
+}
+
+entity EntityAncestor {
+	field Integer attributeAncestor = -1;
+	identifier Integer identifierAncestor = -1;	
+	field MyEnum enumAncestor = MyEnum#Bombastic;
+}
+
+entity Entity extends EntityAncestor {
+	field Integer attribute = 1;
+	field EntityRelated containment;
+	field EntityRelated[] containmentCollection;
+	field MyEnum enum = MyEnum#Bombastic;
+	
+	relation EntityRelated association;
+	relation EntityRelated[] associationCollection;
+
+	identifier Integer identifier = 1;	
+}
+
+entity EntityRelated {
+	field Integer attribute ;
+	relation Entity entity opposite-add entityRelatedOpposite;
+	relation Entity entityCollection opposite-add entityRelatedOppositeCollection[];
+}
+
+transfer Unmapped {
+	field String transient;
+	constructor {
+		self.transient = "Test";
+	}
+}
+
+transfer Mapped maps Entity as e {
+    field Integer unmappedAttribute;
+	field Integer mappedAttribute maps e.attribute;
+	field Integer mappedIdentifier maps e.identifier;
+	field Integer mappedAttributeEntityDefault maps e.attribute;
+	field Integer mappedIdentifierEntityDefault maps e.identifier;
+	field Integer mappedAttributeAncestorEntityDefault maps e.attributeAncestor;
+	field Integer mappedIdentifierAncestorEntityDefault maps e.identifierAncestor;
+    field MyEnum mappedEnum maps e.enum;
+    field MyEnum mappedEnumEntityDefault maps e.enum;
+    field MyEnum mappedEnumAncestorEntityDefault maps e.enum;
+
+	field MappedRelated mappedAssociation maps e.association;
+	field MappedRelated[] mappedAssociationCollection maps e.associationCollection;
+    field MappedRelated mappedAssociationOpposite maps e.entityRelatedOpposite;
+    field MappedRelated[] mappedAssociationOppositeCollection maps e.entityRelatedOppositeCollection;
+
+    field MappedRelated transientRelation;
+    field MappedRelated[] transientRelationCollection;
+
+	
+	constructor {
+		self.unmappedAttribute = 1;
+		self.mappedAttribute = 2;
+		self.mappedIdentifier = 3;
+		self.mappedEnum = MyEnum#Crazy;
+		self.mappedAssociation = EntityRelated!any();
+		self.mappedAssociationCollection = EntityRelated!all();
+		self.mappedAssociationOpposite = EntityRelated!any();
+		self.mappedAssociationOppositeCollection = EntityRelated!all();
+		self.transientRelation = EntityRelated!any();
+		self.transientRelationCollection = EntityRelated!all();
+	}
+}
+
+transfer MappedRelated maps EntityRelated as e {
+	field Integer mappedAttribute maps e.attribute;
+}

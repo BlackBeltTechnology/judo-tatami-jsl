@@ -13,10 +13,6 @@ rule AbstractCreateTransferAttributeForTransferFieldDeclaration
         t.required = s.isRequired;
         t.name = s.name;
         t.dataType = s.referenceType.getPSMEquivalent();
-
-        if (s.defaultExpression.isDefined()) {
-            t.defaultValue = s.defaultExpression.equivalent("CreateDefaultValueForPrimitiveEntityMember");
-        }
 }
 
 @greedy
@@ -26,6 +22,12 @@ rule CreateTransientTransferAttribute
     extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
       guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.maps.isUndefined() and s.reads.isUndefined()
       t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferAttribute");
+
+      var def = JSL!TransferDefault.all().selectOne(d | d.field.reference == s);
+      if (def.isDefined()) {
+         t.defaultValue = def.equivalent("CreateDefaultStaticDataForTransferObjectConstructor");
+      }
+
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
@@ -57,8 +59,19 @@ rule CreateMappedTransferAttribute
       guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.maps.isDefined()
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferAttribute");
       
-      t.binding = s.maps.features.first.member.equivalent("CreateAttributeFromField");
+      if (s.maps.features.first.member.isKindOf(JSL!EntityFieldDeclaration)) {
+         t.binding = s.maps.features.first.member.equivalent("CreateAttributeFromField");         
+      } else if (s.maps.features.first.member.isKindOf(JSL!EntityIdentifierDeclaration)) {
+         t.binding = s.maps.features.first.member.equivalent("CreateAttributeFromIdentifier");
+      }
       
+      var def = JSL!TransferDefault.all().selectOne(d | d.field.reference == s);
+      if (def.isDefined()) {
+         t.defaultValue = def.equivalent("CreateDefaultStaticDataForTransferObjectConstructor");
+      } else if (s.maps.features.first.member.defaultExpression.isDefined()) {
+         t.defaultValue = s.maps.features.first.member.defaultExpression.equivalent("CreateDefaultValueForPrimitiveEntityMember");
+      }      
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
+
