@@ -130,7 +130,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
 
 
         final Set<DataProperty> dataProperties = psmModelWrapper.getStreamOfPsmDerivedDataProperty().collect(Collectors.toSet());
-        assertEquals(6, dataProperties.size());
+        assertEquals(7, dataProperties.size());
         
         assertDataProperty("_SalesPerson", "leadsBetweenCount");
         assertEquals(assertNumericType("Integer"), assertDataProperty("_SalesPerson", "leadsBetweenCount").getDataType());

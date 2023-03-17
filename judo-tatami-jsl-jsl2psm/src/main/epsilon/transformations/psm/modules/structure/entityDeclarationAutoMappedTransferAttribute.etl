@@ -89,7 +89,6 @@ rule CloneIdentifierTransferAttributeForAutoMappedTransferObjectType
 ////////////////////////////////////////////////////////////////////////////////////////////
 // AutoMapped Primitive and Identifier default value
 ////////////////////////////////////////////////////////////////////////////////////////////
-/*
 @abstract
 rule AbstractCreateTransferDefaultValueAttributeForAutoMappedTransferObjectType
     transform s: JSL!Expression
@@ -124,7 +123,6 @@ rule CloneTransferDefaultValueAttributeForAutoMappedTransferObjectType
         t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForAutoMappedTransferObjectType");
         log.debug("Clone TransferAttribute Default Value (Field) for AutoMappedTransferObjectType: [" + t.name + "]");
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Derived (Primitive)

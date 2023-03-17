@@ -83,7 +83,7 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
         transform();
         
         assertMappedTransferObject("AutoMapped");
-        assertEquals(5, assertMappedTransferObject("AutoMapped").getAttributes().size());
+        assertEquals(6, assertMappedTransferObject("AutoMapped").getAttributes().size());
 
         TransferAttribute attribute = assertMappedTransferObjectAttribute("AutoMapped", "attribute");
         assertFalse(attribute.isRequired());
