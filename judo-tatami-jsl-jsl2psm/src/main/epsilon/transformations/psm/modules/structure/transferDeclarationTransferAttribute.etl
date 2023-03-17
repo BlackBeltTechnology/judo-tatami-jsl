@@ -82,6 +82,20 @@ rule CreateMappedTransferAttribute
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Primitive and Identifier default value
 ////////////////////////////////////////////////////////////////////////////////////////////
+@greedy
+rule CreateMappedTransferAttributeEntityDefault
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferAttribute
+    extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
+      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.maps.isDefined() 
+        and s.maps.features.first.member.defaultExpression.isDefined() and not JSL!TransferDefault.all().exists(d | d.field.reference == s)
+      t.name = defaultDefaultNamePrefix + s.name + defaultDefaultNameMidfix + s.eContainer.name + defaultDefaultNamePostfix;
+      t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferAttributeEntityDefault");      
+      t.binding = s.maps.features.first.member.defaultExpression.equivalent("CreateDefaultValueForPrimitiveEntityMember");               
+      s.eContainer.getPSMEquivalent().attributes.add(t);
+      log.debug("Created TransferAttribute DefaultValue (Field) for EntityDefault: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
 
 @abstract
 rule AbstractCreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor
