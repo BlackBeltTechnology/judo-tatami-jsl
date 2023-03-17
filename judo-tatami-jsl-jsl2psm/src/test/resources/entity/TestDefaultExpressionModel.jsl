@@ -30,7 +30,7 @@ entity LiteralEntityWithIdentifiers {
     identifier String idEscapedStringLiteral = "escaped\nstring";
     identifier String idRawStringLiteral = r"raw\nstring";
     identifier Date idDateLiteral = `2020-02-18`;
-    identifier Timestamp idTimeStampLiteral = `2020-02-18T10:11:12Z`;
+    identifier Timestamp idTimestampLiteral = `2020-02-18T10:11:12Z`;
     identifier Time idTimeLiteral = `23:59:59`;
 }
 
