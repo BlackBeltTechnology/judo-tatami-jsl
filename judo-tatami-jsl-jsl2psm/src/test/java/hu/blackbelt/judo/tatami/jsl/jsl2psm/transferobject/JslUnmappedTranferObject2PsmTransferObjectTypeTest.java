@@ -24,6 +24,8 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.derived.StaticData;
+import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -82,40 +84,41 @@ public class JslUnmappedTranferObject2PsmTransferObjectTypeTest extends Abstract
         assertUnmappedTransferObject("Unmapped");
         assertEquals(3, assertUnmappedTransferObject("Unmapped").getAttributes().size());
         
-        assertUnmappedTransferObjectAttribute("Unmapped", "transient");
-        assertFalse(assertUnmappedTransferObjectAttribute("Unmapped", "transient").isRequired());
-        assertEquals(assertStringType("String"), assertUnmappedTransferObjectAttribute("Unmapped", "transient").getDataType());
+        TransferAttribute transientAtttribute = assertUnmappedTransferObjectAttribute("Unmapped", "transient");
+        assertFalse(transientAtttribute.isRequired());
+        assertEquals(assertStringType("String"), transientAtttribute.getDataType());
 
-        assertUnmappedTransferObjectAttribute("Unmapped", "required");
-        assertTrue(assertUnmappedTransferObjectAttribute("Unmapped", "required").isRequired());
-        assertEquals(assertStringType("String"), assertUnmappedTransferObjectAttribute("Unmapped", "required").getDataType());
+        TransferAttribute required = assertUnmappedTransferObjectAttribute("Unmapped", "required");
+        assertTrue(required.isRequired());
+        assertEquals(assertStringType("String"), required.getDataType());
 
-        assertUnmappedTransferObjectAttribute("Unmapped", "derived");
-        assertFalse(assertUnmappedTransferObjectAttribute("Unmapped", "derived").isRequired());
-        assertEquals(assertNumericType("Integer"), assertUnmappedTransferObjectAttribute("Unmapped", "derived").getDataType());
+        TransferAttribute derived = assertUnmappedTransferObjectAttribute("Unmapped", "derived");
+        assertFalse(derived.isRequired());
+        assertEquals(assertNumericType("Integer"), derived.getDataType());
 
-        StaticData derived = assertStaticData("_derived_Reads_Unmapped");
-        assertEquals("UnmappedTransferObjectTypeModel::UnmappedTransferObjectTypeModel::_Entity!any().attribute", derived.getGetterExpression().getExpression());
+        StaticData derivedProperty = assertStaticData("_derived_Reads_Unmapped");
+        assertEquals(derivedProperty, derived.getBinding());
+        assertEquals("UnmappedTransferObjectTypeModel::UnmappedTransferObjectTypeModel::_Entity!any().attribute", derivedProperty.getGetterExpression().getExpression());
 
         assertEquals(4, assertUnmappedTransferObject("Unmapped").getRelations().size());
-        assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelated");
 
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelated").getBinding(), IsNull.nullValue());
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelated").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelated").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelated").getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
+        TransferObjectRelation unmappedRelated = assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelated");
+        assertThat(unmappedRelated.getBinding(), IsNull.nullValue());
+        assertThat(unmappedRelated.getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(unmappedRelated.getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(unmappedRelated.getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
 
-        assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedRequired");
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedRequired").getBinding(), IsNull.nullValue());
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedRequired").getCardinality().getLower(), IsEqual.equalTo(1));
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedRequired").getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedRequired").getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
+        TransferObjectRelation unmappedRelatedRequired = assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedRequired");
+        assertThat(unmappedRelatedRequired.getBinding(), IsNull.nullValue());
+        assertThat(unmappedRelatedRequired.getCardinality().getLower(), IsEqual.equalTo(1));
+        assertThat(unmappedRelatedRequired.getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(unmappedRelatedRequired.getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
 
-        assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedCollection");
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedCollection").getBinding(), IsNull.nullValue());
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedCollection").getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedCollection").getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedCollection").getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
+        TransferObjectRelation unmappedRelatedCollection = assertUnmappedTransferObjectRelation("Unmapped", "unmappedRelatedCollection");
+        assertThat(unmappedRelatedCollection.getBinding(), IsNull.nullValue());
+        assertThat(unmappedRelatedCollection.getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(unmappedRelatedCollection.getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(unmappedRelatedCollection.getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
 
         
     }
