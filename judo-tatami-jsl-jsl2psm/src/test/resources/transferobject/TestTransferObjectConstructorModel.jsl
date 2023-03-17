@@ -13,7 +13,7 @@ enum MyEnum {
 entity EntityAncestor {
 	field Integer attributeAncestor = -1;
 	identifier Integer identifierAncestor = -1;	
-	field MyEnum enumAncestor = MyEnum#Bombastic;
+	field MyEnum enumAncestor = MyEnum#Atomic;
 }
 
 entity Entity extends EntityAncestor {
@@ -45,13 +45,13 @@ transfer Mapped maps Entity as e {
     field Integer unmappedAttribute;
 	field Integer mappedAttribute maps e.attribute;
 	field Integer mappedIdentifier maps e.identifier;
+    field MyEnum mappedEnum maps e.enum;
 	field Integer mappedAttributeEntityDefault maps e.attribute;
 	field Integer mappedIdentifierEntityDefault maps e.identifier;
+    field MyEnum mappedEnumEntityDefault maps e.enum;
 	field Integer mappedAttributeAncestorEntityDefault maps e.attributeAncestor;
 	field Integer mappedIdentifierAncestorEntityDefault maps e.identifierAncestor;
-    field MyEnum mappedEnum maps e.enum;
-    field MyEnum mappedEnumEntityDefault maps e.enum;
-    field MyEnum mappedEnumAncestorEntityDefault maps e.enum;
+    field MyEnum mappedEnumAncestorEntityDefault maps e.enumAncestor;
 
 	field MappedRelated mappedAssociation maps e.association;
 	field MappedRelated[] mappedAssociationCollection maps e.associationCollection;
@@ -67,6 +67,7 @@ transfer Mapped maps Entity as e {
 		self.mappedAttribute = 2;
 		self.mappedIdentifier = 3;
 		self.mappedEnum = MyEnum#Crazy;
+
 		self.mappedAssociation = EntityRelated!any();
 		self.mappedAssociationCollection = EntityRelated!all();
 		self.mappedAssociationOpposite = EntityRelated!any();
