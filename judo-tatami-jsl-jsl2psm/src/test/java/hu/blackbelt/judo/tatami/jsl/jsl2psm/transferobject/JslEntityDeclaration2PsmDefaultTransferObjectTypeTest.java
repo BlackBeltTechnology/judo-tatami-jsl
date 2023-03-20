@@ -23,6 +23,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.transferobject;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
+import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -86,21 +87,21 @@ public class JslEntityDeclaration2PsmDefaultTransferObjectTypeTest extends Abstr
         assertEquals(4, assertMappedTransferObject("SalesPerson").getAttributes().size());
 
         
-        assertMappedTransferObjectAttribute("SalesPerson", "id");
-        assertFalse(assertMappedTransferObjectAttribute("SalesPerson", "id").isRequired());
-        assertEquals(assertNumericType("Identifier"), assertMappedTransferObjectAttribute("SalesPerson", "id").getDataType());
+        TransferAttribute id = assertMappedTransferObjectAttribute("SalesPerson", "id");
+        assertFalse(id.isRequired());
+        assertEquals(assertNumericType("Identifier"), id.getDataType());
 
-        assertMappedTransferObjectAttribute("SalesPerson", "name");
-        assertFalse(assertMappedTransferObjectAttribute("SalesPerson", "name").isRequired());
-        assertEquals(assertStringType("Name"), assertMappedTransferObjectAttribute("SalesPerson", "name").getDataType());
+        TransferAttribute name = assertMappedTransferObjectAttribute("SalesPerson", "name");
+        assertFalse(name.isRequired());
+        assertEquals(assertStringType("Name"), name.getDataType());
 
-        assertMappedTransferObjectAttribute("SalesPerson", "birthName");
-        assertFalse(assertMappedTransferObjectAttribute("SalesPerson", "birthName").isRequired());
-        assertEquals(assertStringType("Name"), assertMappedTransferObjectAttribute("SalesPerson", "birthName").getDataType());
+        TransferAttribute birthName = assertMappedTransferObjectAttribute("SalesPerson", "birthName");
+        assertFalse(birthName.isRequired());
+        assertEquals(assertStringType("Name"), birthName.getDataType());
 
-        assertMappedTransferObjectAttribute("SalesPerson", "age");
-        assertFalse(assertMappedTransferObjectAttribute("SalesPerson", "age").isRequired());
-        assertEquals(assertNumericType("Age"), assertMappedTransferObjectAttribute("SalesPerson", "age").getDataType());
+        TransferAttribute age = assertMappedTransferObjectAttribute("SalesPerson", "age");
+        assertFalse(age.isRequired());
+        assertEquals(assertNumericType("Age"), age.getDataType());
 
     }
     
