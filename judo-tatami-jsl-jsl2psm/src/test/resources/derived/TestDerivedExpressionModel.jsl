@@ -14,6 +14,13 @@ type boolean Boolean;
 query Lead[] staticLeadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) => Lead!all()!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);
 // Lead!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
 
+
+query Lead[] staticLeadsBetweenWithDefaultTernary(Integer minLeadsBetween = 1, Integer maxLeadsBetween = SalesPerson!any()!isDefined() ? 50 : 50 + 1) => Lead!all()!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);
+// Lead!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
+
+query Lead[] staticLeadsBetweenWithDefaultExpression(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 1 + (SalesPerson!any()!isDefined() ? 50 : 50 + 1)) => Lead!all()!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);
+// Lead!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
+
 query Lead[] staticLeadsOverWithMin(Integer minLeadsOverMin = 5) => staticLeadsBetween(minLeadsBetween = minLeadsOverMin , maxLeadsBetween = 100);
 // Lead!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)
 

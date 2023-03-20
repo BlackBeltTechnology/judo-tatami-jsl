@@ -427,7 +427,7 @@ public class JslExpressionToJqlExpression {
 
     private String getJql(final EnumLiteralReference it) {
         return it != null
-                ? it.getEnumDeclaration().getName() + "#" + it.getEnumLiteral().getName()
+                ? getEnumTypePSMFullyQualifiedName(it.getEnumDeclaration(), it) + "#" + it.getEnumLiteral().getName()
                 : null;
     }
 
