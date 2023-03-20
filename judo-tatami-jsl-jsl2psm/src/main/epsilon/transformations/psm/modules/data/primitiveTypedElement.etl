@@ -214,4 +214,3 @@ rule CreateDefaultStaticDataForUnmappedTransferObjectConstructor
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
         log.debug("Created StaticData for Transfer Object Default Value: " + s);
     }
-    

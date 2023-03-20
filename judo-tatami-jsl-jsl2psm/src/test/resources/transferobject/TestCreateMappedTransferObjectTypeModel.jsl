@@ -5,61 +5,61 @@ type numeric Integer(precision = 3, scale = 0);
 
 
 entity Entity {
-	field Integer attribute;
-	field EntityRelated containment;
-	field EntityRelated[] containmentCollection;
-	relation EntityRelated association;
+    field Integer attribute;
+    field EntityRelated containment;
+    field EntityRelated[] containmentCollection;
+    relation EntityRelated association;
 
-	identifier Integer identifier;
-	derived Integer attributeDerived => self.attribute;
-	derived EntityRelated containmentDerived => self.containment;
-	derived EntityRelated[] containmentCollectionDerived => self.containmentCollection;
-	
+    identifier Integer identifier;
+    derived Integer attributeDerived => self.attribute;
+    derived EntityRelated containmentDerived => self.containment;
+    derived EntityRelated[] containmentCollectionDerived => self.containmentCollection;
+    
 }
 
 entity EntityRelated {
-	field Integer attribute;
-	relation Entity entity opposite-add entityRelatedOpposite;
+    field Integer attribute;
+    relation Entity entity opposite-add entityRelatedOpposite;
 
 }
 
 transfer UnmappedRelated {
-	field String transient;
+    field String transient;
 }
 
 transfer Mapped maps Entity as e {
     field Integer unmappedAttribute;
     
-	field UnmappedRelated unmappedContainment;
-	field required UnmappedRelated unmappedContainmentRequired;
-	field UnmappedRelated[] unmappedContainmentCollection;
+    field UnmappedRelated unmappedContainment;
+    field required UnmappedRelated unmappedContainmentRequired;
+    field UnmappedRelated[] unmappedContainmentCollection;
 
-	field Integer mappedAttribute maps e.attribute;
-	field MappedRelated mappedContainment maps e.containment;
-	field MappedRelated[] mappedContainmentCollection maps e.containmentCollection;
+    field Integer mappedAttribute maps e.attribute;
+    field MappedRelated mappedContainment maps e.containment;
+    field MappedRelated[] mappedContainmentCollection maps e.containmentCollection;
 
     field MappedRelated mappedAssociation maps e.association;
     field MappedRelated mappedAssociationOpposite maps e.entityRelatedOpposite;
 
-	field Integer derivedAttribute reads e.attribute;
-	field MappedRelated derivedContainment reads e.containment;
-	field MappedRelated[] derivedContainmentCollection reads e.containmentCollection;    
+    field Integer derivedAttribute reads e.attribute;
+    field MappedRelated derivedContainment reads e.containment;
+    field MappedRelated[] derivedContainmentCollection reads e.containmentCollection;    
     field MappedRelated derivedAssociation reads e.association;
     field MappedRelated derivedAssociationOpposite maps e.entityRelatedOpposite;
 
-	field Integer derivedAttributeStatic reads Entity!any().attribute;    
-	field MappedRelated derivedContainmentStatic reads EntityRelated!any();
-	field MappedRelated[] derivedContainmentCollectionStatic reads EntityRelated!all();
+    field Integer derivedAttributeStatic reads Entity!any().attribute;    
+    field MappedRelated derivedContainmentStatic reads EntityRelated!any();
+    field MappedRelated[] derivedContainmentCollectionStatic reads EntityRelated!all();
 
-	field Integer mappedAttributeDerived reads e.attributeDerived;
-	field MappedRelated mappedContainmentDerived reads e.containmentDerived;
-	field MappedRelated[] mappedContainmentCollectionDerived reads e.containmentCollectionDerived;
+    field Integer mappedAttributeDerived reads e.attributeDerived;
+    field MappedRelated mappedContainmentDerived reads e.containmentDerived;
+    field MappedRelated[] mappedContainmentCollectionDerived reads e.containmentCollectionDerived;
 
-	field Integer mappedIdentifier maps e.identifier;
-	field Integer derivedIdentifier reads e.identifier;
+    field Integer mappedIdentifier maps e.identifier;
+    field Integer derivedIdentifier reads e.identifier;
 
 }
 
 transfer MappedRelated maps EntityRelated as e {
-	field Integer mappedAttribute maps e.attribute;
+    field Integer mappedAttribute maps e.attribute;
 }
