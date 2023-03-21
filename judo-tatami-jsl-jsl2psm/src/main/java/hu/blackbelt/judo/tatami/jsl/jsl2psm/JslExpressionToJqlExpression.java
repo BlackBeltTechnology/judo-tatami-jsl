@@ -382,7 +382,7 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    private String getJql(final TimeStampLiteral it) {
+    private String getJql(final TimestampLiteral it) {
         return it != null
               ? "`" + it.getValue() + "`"
 
@@ -446,8 +446,8 @@ public class JslExpressionToJqlExpression {
 	  		return getJql((DateLiteral) it);
 		} else if (it instanceof TimeLiteral) {
 	  		return getJql((TimeLiteral) it);
-		} else if (it instanceof TimeStampLiteral) {
-	  		return getJql((TimeStampLiteral) it);
+		} else if (it instanceof TimestampLiteral) {
+	  		return getJql((TimestampLiteral) it);
 		} else if (it instanceof EnumLiteralReference) {
 	  		return getJql((EnumLiteralReference) it);
 		}
