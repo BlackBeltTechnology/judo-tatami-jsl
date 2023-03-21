@@ -249,7 +249,6 @@ rule CloneTransferAttributeForErrorTransferObjectType
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Error default value
 ////////////////////////////////////////////////////////////////////////////////////////////
-
 @abstract
 rule AbstractCreateTransferDefaultValueAttributeForErrorTransferObjectType
     transform s: JSL!Expression
@@ -284,5 +283,4 @@ rule CloneTransferDefaultValueAttributeForErrorTransferObjectType
         t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForDefaultTransferObjectType");
         log.debug("Clone TransferAttribute Default Value (Field) for ErrorTransferObjectType: [" + t.name + "]");
 }
-
 
