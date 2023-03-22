@@ -84,7 +84,7 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
         assertDefault("LiteralEntity", "escapedStringLiteral", "\"escaped\nstring\"", () -> assertStringType("String"));
         assertDefault("LiteralEntity", "rawStringLiteral", "\"raw\\nstring\"", () -> assertStringType("String"));
         assertDefault("LiteralEntity", "dateLiteral", "`2020-02-18`", () -> assertDateType("Date"));
-        assertDefault("LiteralEntity", "timeStampLiteral", "`2020-02-18T10:11:12Z`", () -> assertTimestampType("Timestamp"));
+        assertDefault("LiteralEntity", "timestampLiteral", "`2020-02-18T10:11:12Z`", () -> assertTimestampType("Timestamp"));
         assertDefault("LiteralEntity", "timeLiteral", "`23:59:59`", () -> assertTimeType("Time"));
 
         assertDefault("LiteralEntityWithIdentifiers", "idBooleanLiteral", "true", () -> assertBooleanType("Boolean"));
@@ -93,7 +93,7 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
         assertDefault("LiteralEntityWithIdentifiers", "idEscapedStringLiteral", "\"escaped\nstring\"", () -> assertStringType("String"));
         assertDefault("LiteralEntityWithIdentifiers", "idRawStringLiteral", "\"raw\\nstring\"", () -> assertStringType("String"));
         assertDefault("LiteralEntityWithIdentifiers", "idDateLiteral", "`2020-02-18`", () -> assertDateType("Date"));
-        assertDefault("LiteralEntityWithIdentifiers", "idTimeStampLiteral", "`2020-02-18T10:11:12Z`", () -> assertTimestampType("Timestamp"));
+        assertDefault("LiteralEntityWithIdentifiers", "idTimestampLiteral", "`2020-02-18T10:11:12Z`", () -> assertTimestampType("Timestamp"));
         assertDefault("LiteralEntityWithIdentifiers", "idTimeLiteral", "`23:59:59`", () -> assertTimeType("Time"));
 
         // assertDefault("ComplexDefaultsEntity", "parenthesizedField", "((1 + 2) * 3) / 4", () -> assertNumericType("Decimal"));

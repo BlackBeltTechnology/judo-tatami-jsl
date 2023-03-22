@@ -147,17 +147,19 @@ public class Jsl2JqlFunction {
                             ParameterValue.builder().name("newstring").build())))
                     .put("fromMilliseconds", ImmutableList.of(ImmutableList.of(
                             ParameterValue.builder().name("milliseconds").build())))
-                    .put("fromSeconds", ImmutableList.of(ImmutableList.of(
-                            ParameterValue.builder().name("seconds").build())))
                     .put("of", ImmutableList.of(
+							// date
                             ImmutableList.of(
                                     ParameterValue.builder().name("year").build(),
                                     ParameterValue.builder().name("month").build(),
                                     ParameterValue.builder().name("day").build()),
+							// time
                             ImmutableList.of(
                                     ParameterValue.builder().name("hour").build(),
                                     ParameterValue.builder().name("minute").build(),
-                                    ParameterValue.builder().name("second").build()),
+                                    ParameterValue.builder().name("second").mandatory(false).build(),
+                                    ParameterValue.builder().name("millisecond").mandatory(false).build()),
+							// timestamp
                             ImmutableList.of(
                                     ParameterValue.builder().name("date").build(),
                                     ParameterValue.builder().name("time").mandatory(false).build())))
