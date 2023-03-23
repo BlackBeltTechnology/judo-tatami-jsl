@@ -14,15 +14,15 @@ rule AbstractCreateTransferObjectEmbeddedRelationForDefaultTransferObjectType
         t.embeddedCreate = not s.eContainer.isAbstract;
         t.embeddedUpdate = not s.eContainer.isAbstract;
         t.embeddedDelete = not s.eContainer.isAbstract;
-        
-		t.embedded = true;
+
+        t.embedded = true;
         t.binding = s.equivalent("CreateContainmentFromField");
 }
 
 
 rule CreateTransferObjectEmbeddedRelationForDefaultTransferObjectType
     transform s: JSL!EntityFieldDeclaration
-    to t: JUDOPSM!TransferObjectRelation 
+    to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectEmbeddedRelationForDefaultTransferObjectType {
         guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!EntityDeclaration)
 
@@ -38,9 +38,9 @@ rule CreateTransferObjectEmbeddedRelationForDefaultTransferObjectType
 @lazy
 rule CloneTransferObjectEmbeddedRelationForDefaultTransferObjectType
     transform s: JSL!EntityFieldDeclaration
-    to t: JUDOPSM!TransferObjectRelation 
+    to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectEmbeddedRelationForDefaultTransferObjectType {
-    
+
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectEmbeddedRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForFieldDeclaration", t.getId());
 
@@ -56,8 +56,8 @@ rule AbstractCreateTransferObjectAssociatedOppositeRelationForDefaultTransferObj
     to t: JUDOPSM!TransferObjectRelation {
         guard: generateDefaultTransferObject
 
-    	var relationAddedFrom = s.eContainer;
-    	var entityToAdd = relationAddedFrom.referenceType;
+        var relationAddedFrom = s.eContainer;
+        var entityToAdd = relationAddedFrom.referenceType;
 
         t.name = s.name;
         t.target = relationAddedFrom.eContainer.equivalent("CreateEntityDefaultTransferObjectType");
@@ -65,10 +65,10 @@ rule AbstractCreateTransferObjectAssociatedOppositeRelationForDefaultTransferObj
         t.embeddedCreate = not entityToAdd.isAbstract;
         t.embeddedUpdate = not entityToAdd.isAbstract;
         t.embeddedDelete = not entityToAdd.isAbstract;
-        
-		t.embedded = false;
-		
-		t.binding = s.equivalent("CreateNamedOppositeAssociationEnd");		
+
+        t.embedded = false;
+
+        t.binding = s.equivalent("CreateNamedOppositeAssociationEnd");
 }
 
 rule CreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType
@@ -77,8 +77,8 @@ rule CreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType
     extends AbstractCreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType {
         guard: generateDefaultTransferObject
 
-    	var relationAddedFrom = s.eContainer;
-    	var entityToAdd = relationAddedFrom.referenceType;
+        var relationAddedFrom = s.eContainer;
+        var entityToAdd = relationAddedFrom.referenceType;
 
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForOppositeAddedRelation", t.getId());
@@ -93,8 +93,8 @@ rule CloneTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType {
 
-    	var relationAddedFrom = s.eContainer;
-    	var entityToAdd = relationAddedFrom.referenceType;
+        var relationAddedFrom = s.eContainer;
+        var entityToAdd = relationAddedFrom.referenceType;
 
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForOppositeAddedRelation", t.getId());
@@ -119,9 +119,9 @@ rule AbstractCreateTransferObjectAssociatedRelationForDefaultTransferObjectType
         t.embeddedUpdate = not s.eContainer.isAbstract;
         t.embeddedDelete = not s.eContainer.isAbstract;
 
-        t.binding = s.equivalent("CreateDeclaredAssociationEnd");      
-		t.embedded = false;
-          
+        t.binding = s.equivalent("CreateDeclaredAssociationEnd");
+        t.embedded = false;
+
 }
 
 
@@ -138,19 +138,19 @@ rule CreateTransferObjectAssociatedRelationForDefaultTransferObjectType
 
 
         log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
-        
+
 }
 
 @lazy
 rule CloneTransferObjectAssociatedRelationForDefaultTransferObjectType
     transform s: JSL!EntityRelationDeclaration
-    to t: JUDOPSM!TransferObjectRelation 
+    to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectAssociatedRelationForDefaultTransferObjectType {
-    
+
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectAssociatedRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForRelationDeclaration", t.getId());
-        
-        
+
+
         log.debug("Clone TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "]");
 }
 
@@ -175,7 +175,7 @@ rule AbstractCreateTransferObjectDerivedRelationForDefaultTransferObjectType
 
       t.binding = s.equivalent("CreateNavigationProperty");
       t.embedded = false;
-        
+
 }
 
 
@@ -191,19 +191,19 @@ rule CreateTransferObjectDerivedRelationForDefaultTransferObjectType
         s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").relations.add(t);
 
         log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
-        
+
 }
 
 @lazy
 rule CloneTransferObjectDerivedRelationForDefaultTransferObjectType
     transform s: JSL!EntityDerivedDeclaration
-    to t: JUDOPSM!TransferObjectRelation 
+    to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectDerivedRelationForDefaultTransferObjectType {
-    
+
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectDerivedRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForDerivedDeclaration", t.getId());
-        
-        
+
+
         log.debug("Clone TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "]");
 }
 
@@ -227,7 +227,7 @@ rule AbstractCreateTransferObjectEntityQueryRelationForDefaultTransferObjectType
 
       t.binding = s.equivalent("CreateNavigationPropertyForEntityQuery");
       t.embedded = false;
-        
+
 }
 
 
@@ -243,19 +243,19 @@ rule CreateTransferObjectEntityQueryRelationForDefaultTransferObjectType
         s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").relations.add(t);
 
         log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
-        
+
 }
 
 @lazy
 rule CloneTransferObjectQueryRelationForDefaultTransferObjectType
     transform s: JSL!EntityQueryDeclaration
-    to t: JUDOPSM!TransferObjectRelation 
+    to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectEntityQueryRelationForDefaultTransferObjectType {
-    
+
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectEntityQueryRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForEntityQueryDeclaration", t.getId());
-        
-        
+
+
         log.debug("Clone TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "]");
 }
 
