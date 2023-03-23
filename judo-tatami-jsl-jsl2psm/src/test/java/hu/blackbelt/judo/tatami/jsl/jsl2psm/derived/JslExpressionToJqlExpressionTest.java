@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -79,33 +79,33 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
 
         assertEquals("self.leads.salesPerson!filter(d | d.lead.closed == false)!filter(d | d.lead.closed == false)!any().stringLiteral!substring(1, 1)!length()",  jqlDerived("SalesPerson", "strLengthDerived3", "", ""));
 
-        
+
         assertEquals("self.leads!count()",  jqlDerived("SalesPerson", "value", "", ""));
 
         assertEquals("self.leads!count() > 1", jqlDerived("SalesPerson", "t1", "", ""));
 
         assertEquals("self.leads!filter(lead | lead.value > 10 and lead.value < 100)", jqlDerived("SalesPerson", "leadsOver10", "", ""));
-        
+
         assertEquals("self.leads!filter(lead | lead.value > 20 and lead.value < 50)", jqlDerived("SalesPerson", "leadsOver20", "", ""));
 
-        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > 10 and lead.value < 100)", 
-        		jqlDerived("SalesPerson", "leadsOver10Static", "", ""));
-        
-        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > 20 and lead.value < 50)", 
-        		jqlDerived("SalesPerson", "leadsOver20Static", "", ""));
-        
-        assertEquals("self.leads!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
-        		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))", 
-        		jqlEntityQuery("SalesPerson", "leadsBetween", "", ""));
-        
-        assertEquals("self.leads!filter(lead | lead.value > (input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5) and lead.value < 100)", 
-        		jqlEntityQuery("SalesPerson", "leadsOverWithMin", "", ""));
+        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > 10 and lead.value < 100)",
+                jqlDerived("SalesPerson", "leadsOver10Static", "", ""));
 
-        assertEquals("self.leads!filter(lead | lead.value > input.minLeadsOverMin and lead.value < 100)", 
-        		jqlEntityQuery("SalesPerson", "leadsOverWithMinWithoutDefault", "", ""));
+        assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > 20 and lead.value < 50)",
+                jqlDerived("SalesPerson", "leadsOver20Static", "", ""));
+
+        assertEquals("self.leads!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
+                + "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))",
+                jqlEntityQuery("SalesPerson", "leadsBetween", "", ""));
+
+        assertEquals("self.leads!filter(lead | lead.value > (input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5) and lead.value < 100)",
+                jqlEntityQuery("SalesPerson", "leadsOverWithMin", "", ""));
+
+        assertEquals("self.leads!filter(lead | lead.value > input.minLeadsOverMin and lead.value < 100)",
+                jqlEntityQuery("SalesPerson", "leadsOverWithMinWithoutDefault", "", ""));
 
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5) and lead.value < 100)",
-        		jqlEntityQuery("SalesPerson", "leadsOverWithMinStatic", "", ""));
+                jqlEntityQuery("SalesPerson", "leadsOverWithMinStatic", "", ""));
 
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))",
         		jqlStaticQuery("staticLeadsBetween", "", ""));
@@ -120,10 +120,10 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         		jqlStaticQuery("staticLeadsBetweenWithDefaultTernary", "", ""));
 
         assertEquals("(TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
-        		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)).salesPerson.leads!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
-        		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)))",
-        		jqlStaticQuery("staticLeadsBetweenAndSalesPersonLeads", "", ""));
-		
+                + "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)).salesPerson.leads!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
+                + "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)))",
+                jqlStaticQuery("staticLeadsBetweenAndSalesPersonLeads", "", ""));
+
         assertEquals("(TestDerivedExpressionModel::TestDerivedExpressionModelImport::EntityNamePrefix_LeadInherited_EntityNamePostfix!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
         		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)))",
         		jqlStaticQuery("staticInheritedLeadsBetween", "EntityNamePrefix_", "_EntityNamePostfix"));

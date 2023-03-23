@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.functions;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -80,7 +80,7 @@ public class JslInstanceFunctionTranslationTest extends AbstractTest {
 
         final Set<NavigationProperty> navigationProperties = psmModelWrapper.getStreamOfPsmDerivedNavigationProperty().collect(Collectors.toSet());
         assertEquals(3, navigationProperties.size());
-  
+
         assertNavigationProperty("_C", "allCfromAPlainName");
         assertFalse(assertNavigationProperty("_C", "allCfromAPlainName").isCollection());
         assertEquals(assertEntityType("_A"), assertNavigationProperty("_C", "allCfromAPlainName").getTarget());
@@ -88,9 +88,9 @@ public class JslInstanceFunctionTranslationTest extends AbstractTest {
         assertFalse(assertMappedTransferObjectRelation("C", "allCfromAPlainName").isCollection());
         assertEquals(assertMappedTransferObject("A"), assertMappedTransferObjectRelation("C", "allCfromAPlainName").getTarget());
         assertEquals(assertNavigationProperty("_C", "allCfromAPlainName"), assertMappedTransferObjectRelation("C", "allCfromAPlainName").getBinding());
-        
-        assertEquals("self!container(TestInstanceFunctionModel::TestInstanceFunctionModel::_A)", 
-        		assertNavigationProperty("_C", "allCfromAPlainName").getGetterExpression().getExpression());
+
+        assertEquals("self!container(TestInstanceFunctionModel::TestInstanceFunctionModel::_A)",
+                assertNavigationProperty("_C", "allCfromAPlainName").getGetterExpression().getExpression());
 
 
         assertNavigationProperty("_C", "allCfromAFqName");
@@ -100,11 +100,11 @@ public class JslInstanceFunctionTranslationTest extends AbstractTest {
         assertFalse(assertMappedTransferObjectRelation("C", "allCfromAFqName").isCollection());
         assertEquals(assertMappedTransferObject("A"), assertMappedTransferObjectRelation("C", "allCfromAFqName").getTarget());
         assertEquals(assertNavigationProperty("_C", "allCfromAFqName"), assertMappedTransferObjectRelation("C", "allCfromAFqName").getBinding());
-        
-        assertEquals("self!container(TestInstanceFunctionModel::TestInstanceFunctionModel::_A)", 
-        		assertNavigationProperty("_C", "allCfromAFqName").getGetterExpression().getExpression());
 
-        
+        assertEquals("self!container(TestInstanceFunctionModel::TestInstanceFunctionModel::_A)",
+                assertNavigationProperty("_C", "allCfromAFqName").getGetterExpression().getExpression());
+
+
         assertNavigationProperty("_C", "allCfromAImport");
         assertFalse(assertNavigationProperty("_C", "allCfromAImport").isCollection());
         assertEquals(assertEntityType("_I"), assertNavigationProperty("_C", "allCfromAImport").getTarget());
@@ -112,9 +112,9 @@ public class JslInstanceFunctionTranslationTest extends AbstractTest {
         assertFalse(assertMappedTransferObjectRelation("C", "allCfromAImport").isCollection());
         assertEquals(assertMappedTransferObject("I"), assertMappedTransferObjectRelation("C", "allCfromAImport").getTarget());
         assertEquals(assertNavigationProperty("_C", "allCfromAImport"), assertMappedTransferObjectRelation("C", "allCfromAImport").getBinding());
-        
-        assertEquals("self!container(TestInstanceFunctionModel::ImportedTestInstanceFunctionModel::_I)", 
-        		assertNavigationProperty("_C", "allCfromAImport").getGetterExpression().getExpression());
+
+        assertEquals("self!container(TestInstanceFunctionModel::ImportedTestInstanceFunctionModel::_I)",
+                assertNavigationProperty("_C", "allCfromAImport").getGetterExpression().getExpression());
 
     }
 }

@@ -9,13 +9,13 @@ package hu.judo.tatami.jsl.workflow;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -40,8 +40,8 @@ import static hu.judo.tatami.jsl.workflow.JslTestModel.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JslDefaultWorkflowTest {
-	
-	JslDefaultWorkflow defaultWorkflow;
+
+    JslDefaultWorkflow defaultWorkflow;
 
     public static final File TARGET_TEST_CLASSES = new File("target/test-classes/jsl");
 
@@ -49,65 +49,65 @@ public class JslDefaultWorkflowTest {
 
     private WorkReport workReport;
 
-	private File psmModel;
+    private File psmModel;
 
-	@BeforeEach
-	void setUp() throws IOException, JslDslModel.JslDslValidationException {
-		createJslModelAndSave();
+    @BeforeEach
+    void setUp() throws IOException, JslDslModel.JslDslValidationException {
+        createJslModelAndSave();
 
-		psmModel = new File(TARGET_CLASSES, MODEL_NAME + "-psm.model");
-		psmModel.delete();
+        psmModel = new File(TARGET_CLASSES, MODEL_NAME + "-psm.model");
+        psmModel.delete();
 
-		defaultWorkflow = new JslDefaultWorkflow(
-				DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
-						.jslModelSourceURI(new File(FILE_LOCATION).toURI())
-						.dialectList(ImmutableList.of("hsqldb"))
-						.modelName(MODEL_NAME)
-		);
-		workReport = defaultWorkflow.startDefaultWorkflow();
-		saveModels(defaultWorkflow.getTransformationContext(), TARGET_TEST_CLASSES, ImmutableList.of("hsqldb"));
-	}
+        defaultWorkflow = new JslDefaultWorkflow(
+                DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
+                        .jslModelSourceURI(new File(FILE_LOCATION).toURI())
+                        .dialectList(ImmutableList.of("hsqldb"))
+                        .modelName(MODEL_NAME)
+        );
+        workReport = defaultWorkflow.startDefaultWorkflow();
+        saveModels(defaultWorkflow.getTransformationContext(), TARGET_TEST_CLASSES, ImmutableList.of("hsqldb"));
+    }
 
-	@Test
-	void testDefaultWorkflow() {
-		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
+    @Test
+    void testDefaultWorkflow() {
+        assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 
-		assertTrue(psmModel.exists());
-	}
+        assertTrue(psmModel.exists());
+    }
 
-	@Test
-	void testTransformationContextLoad() {
-		// Test reload
-		defaultWorkflow = new JslDefaultWorkflow(
-				DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
-						.jslModelSourceURI(new File(FILE_LOCATION).toURI())
-						.dialectList(ImmutableList.of("hsqldb"))
-						.modelName(MODEL_NAME)
-		);
+    @Test
+    void testTransformationContextLoad() {
+        // Test reload
+        defaultWorkflow = new JslDefaultWorkflow(
+                DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
+                        .jslModelSourceURI(new File(FILE_LOCATION).toURI())
+                        .dialectList(ImmutableList.of("hsqldb"))
+                        .modelName(MODEL_NAME)
+        );
 
-		WorkflowHelper workflowHelper = new WorkflowHelper(defaultWorkflow);
+        WorkflowHelper workflowHelper = new WorkflowHelper(defaultWorkflow);
 
-		workflowHelper.loadJslModel(MODEL_NAME, null, new File(TARGET_CLASSES, MODEL_NAME + "-jsl.model").toURI());
+        workflowHelper.loadJslModel(MODEL_NAME, null, new File(TARGET_CLASSES, MODEL_NAME + "-jsl.model").toURI());
 
-		workflowHelper.loadPsmModel(MODEL_NAME, null, new File(TARGET_CLASSES, MODEL_NAME + "-psm.model").toURI());
+        workflowHelper.loadPsmModel(MODEL_NAME, null, new File(TARGET_CLASSES, MODEL_NAME + "-psm.model").toURI());
 
-		workReport = defaultWorkflow.startDefaultWorkflow();
-	}
+        workReport = defaultWorkflow.startDefaultWorkflow();
+    }
 
-	@Test
-	void testTransformationContextPartialLoad() {
-		// Test reload
-		defaultWorkflow = new JslDefaultWorkflow(
-				DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
-						.jslModelSourceURI(new File(FILE_LOCATION).toURI())
-						.dialectList(ImmutableList.of("hsqldb"))
-						.modelName(MODEL_NAME)
-		);
+    @Test
+    void testTransformationContextPartialLoad() {
+        // Test reload
+        defaultWorkflow = new JslDefaultWorkflow(
+                DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
+                        .jslModelSourceURI(new File(FILE_LOCATION).toURI())
+                        .dialectList(ImmutableList.of("hsqldb"))
+                        .modelName(MODEL_NAME)
+        );
 
-		WorkflowHelper workflowHelper = new WorkflowHelper(defaultWorkflow);
+        WorkflowHelper workflowHelper = new WorkflowHelper(defaultWorkflow);
 
-		workflowHelper.loadJslModel(MODEL_NAME, null, new File(TARGET_CLASSES, MODEL_NAME + "-jsl.model").toURI());
+        workflowHelper.loadJslModel(MODEL_NAME, null, new File(TARGET_CLASSES, MODEL_NAME + "-jsl.model").toURI());
 
-		workflowHelper.loadPsmModel(MODEL_NAME, null, new File(TARGET_CLASSES, MODEL_NAME + "-psm.model").toURI());
-	}
+        workflowHelper.loadPsmModel(MODEL_NAME, null, new File(TARGET_CLASSES, MODEL_NAME + "-psm.model").toURI());
+    }
 }

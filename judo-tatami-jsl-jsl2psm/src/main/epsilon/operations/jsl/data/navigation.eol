@@ -1,6 +1,6 @@
 @cached
 operation JSL!Navigation getId(): String {
-	return self.eContainer.getId() + "/navigation";
+    return self.eContainer.getId() + "/navigation";
 }
 
 

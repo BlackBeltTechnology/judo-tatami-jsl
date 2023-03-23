@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.importmodel;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -76,66 +76,66 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
         testName = "TestImportModelTest";
 
         jslModel = JslParser.getModelFromStrings("ns2::c", ImmutableList.of(
-        		"model ns1::a;\n"
-        		+ "\n"
-        		+ "type string String(min-size = 0, max-size = 32);",
-        		
-        		"model ns2::b;\n"
-        		+ "\n"
-        		+ "import ns1::a as modela;\n"
-        		+ "\n"
-        		+ "entity B {\n"
-        		+ "	field modela::String f1;\n"
-        		+ "}",
+                "model ns1::a;\n"
+                + "\n"
+                + "type string String(min-size = 0, max-size = 32);",
 
-        		"model ns2::c;\n"
-        		+ "\n"
-        		+ "import ns1::a;\n"
-        		+ "\n"
-        		+ "entity C {\n"
-        		+ "	field String f1;\n"
-        		+ "}"
+                "model ns2::b;\n"
+                + "\n"
+                + "import ns1::a as modela;\n"
+                + "\n"
+                + "entity B {\n"
+                + "    field modela::String f1;\n"
+                + "}",
 
-        		
-        		));
-        
+                "model ns2::c;\n"
+                + "\n"
+                + "import ns1::a;\n"
+                + "\n"
+                + "entity C {\n"
+                + "    field String f1;\n"
+                + "}"
+
+
+                ));
+
         transform();
 
         final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
         assertEquals(2, psmEntityTypes.size());
 
-        assertThat(psmEntityTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()), 
-        		IsEqual.equalTo(ImmutableSet.of("_B", "_C")));
+        assertThat(psmEntityTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()),
+                IsEqual.equalTo(ImmutableSet.of("_B", "_C")));
 
         final Set<Model> models = psmModelWrapper.getStreamOfPsmNamespaceModel().collect(Collectors.toSet());
         assertEquals(1, models.size());
-        
+
         Model psmModel = models.iterator().next();
-        
+
         assertThat(psmModel.getPackages().stream().map(NamedElement::getName).
-        		collect(Collectors.toSet()), 
-        		IsEqual.equalTo(ImmutableSet.of("ns1", "ns2")));
+                collect(Collectors.toSet()),
+                IsEqual.equalTo(ImmutableSet.of("ns1", "ns2")));
 
         Package ns1 = psmModel.getPackages().stream().filter(p -> p.getName().equals("ns1")).findFirst().get();
         final Set<String> ns1PackageNames = ns1.getPackages().stream().map(NamedElement::getName).collect(Collectors.toSet());
-        assertThat(ns1PackageNames, 
-        		IsEqual.equalTo(ImmutableSet.of("a")));
+        assertThat(ns1PackageNames,
+                IsEqual.equalTo(ImmutableSet.of("a")));
 
-        Package a = ns1.getPackages().stream().filter(p -> p.getName().equals("a")).findFirst().get();        
+        Package a = ns1.getPackages().stream().filter(p -> p.getName().equals("a")).findFirst().get();
         assertTrue(a.getElements().stream().filter(p -> p.getName().equals("String")).map(e -> (StringType) e).findFirst().isPresent());
 
-        
-        Package ns2 = psmModel.getPackages().stream().filter(p -> p.getName().equals("ns2")).findFirst().get();
-        assertThat(ns2.getPackages().stream().map(NamedElement::getName).collect(Collectors.toSet()), 
-        		IsEqual.equalTo(ImmutableSet.of("b", "c")));
 
-        Package b = ns2.getPackages().stream().filter(p -> p.getName().equals("b")).findFirst().get();        
+        Package ns2 = psmModel.getPackages().stream().filter(p -> p.getName().equals("ns2")).findFirst().get();
+        assertThat(ns2.getPackages().stream().map(NamedElement::getName).collect(Collectors.toSet()),
+                IsEqual.equalTo(ImmutableSet.of("b", "c")));
+
+        Package b = ns2.getPackages().stream().filter(p -> p.getName().equals("b")).findFirst().get();
         assertTrue(b.getElements().stream().filter(p -> p.getName().equals("_B")).map(e -> (EntityType) e).findFirst().isPresent());
 
-        Package c = ns2.getPackages().stream().filter(p -> p.getName().equals("c")).findFirst().get();        
+        Package c = ns2.getPackages().stream().filter(p -> p.getName().equals("c")).findFirst().get();
         assertTrue(c.getElements().stream().filter(p -> p.getName().equals("_C")).map(e -> (EntityType) e).findFirst().isPresent());
 
-        
+
     }
 
 
