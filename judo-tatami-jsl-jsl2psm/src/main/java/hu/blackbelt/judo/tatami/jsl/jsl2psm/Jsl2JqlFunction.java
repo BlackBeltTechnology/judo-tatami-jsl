@@ -157,8 +157,8 @@ public class Jsl2JqlFunction {
                             ImmutableList.of(
                                     ParameterValue.builder().name("hour").build(),
                                     ParameterValue.builder().name("minute").build(),
-                                    ParameterValue.builder().name("second").mandatory(false).build(),
-                                    ParameterValue.builder().name("millisecond").mandatory(false).build()),
+                                    ParameterValue.builder().name("second").defaultValue("0").mandatory(false).build(),
+                                    ParameterValue.builder().name("millisecond").defaultValue("0").mandatory(false).build()),
 							// timestamp
                             ImmutableList.of(
                                     ParameterValue.builder().name("date").build(),
