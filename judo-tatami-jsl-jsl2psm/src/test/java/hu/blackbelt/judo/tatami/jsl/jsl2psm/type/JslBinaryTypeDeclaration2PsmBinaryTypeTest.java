@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.type;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -101,7 +101,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         transform();
 
-        assertBinaryType("Picture");        
+        assertBinaryType("Picture");
         assertEquals(assertBinaryType("Picture").getMimeTypes(), Arrays.asList("image/png", "image/*"));
         assertEquals(assertBinaryType("Picture").getMaxFileSize(), 1048576);
         assertEquals(assertBinaryType("Picture"), assertAttribute("_User", "profilePicture").getDataType());
@@ -132,20 +132,20 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         transform();
 
-        assertBinaryType("Picture");        
+        assertBinaryType("Picture");
         assertEquals(assertBinaryType("Picture"), assertAttribute("_User", "profilePicture").getDataType());
         assertEquals(assertBinaryType("Picture"), assertAllAttribute("_AdminUser", "profilePicture").getDataType());
-        
+
         assertEquals(assertBinaryType("Picture"), assertMappedTransferObjectAttribute("User", "profilePicture").getDataType());
         assertEquals(assertBinaryType("Picture"), assertMappedTransferObjectAttribute("AdminUser", "profilePicture").getDataType());
-        
+
     }
-    
+
     @Test
     void testEntityMemberIdentifier() throws Exception {
         testName = "TestEntityMemberIdentifier";
 
-    	jslModel = JslParser.getModelFromStrings(
+        jslModel = JslParser.getModelFromStrings(
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
@@ -159,9 +159,9 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
         transform();
 
-        assertBinaryType("Picture");        
+        assertBinaryType("Picture");
         assertEquals(assertBinaryType("Picture"), assertAttribute("_User", "profilePicture").getDataType());
-        assertEquals(assertBinaryType("Picture"), assertMappedTransferObjectAttribute("User", "profilePicture").getDataType());        
+        assertEquals(assertBinaryType("Picture"), assertMappedTransferObjectAttribute("User", "profilePicture").getDataType());
 
         assertTrue(assertAttribute("_User", "profilePicture").isIdentifier());
 

@@ -39,81 +39,81 @@ import java.util.stream.Collectors;
 
 public class Jsl2JqlFunction {
 
-	
-	
-	private static class ParameterValue {
-		private String name;
-		private String defaultValue;
-		private Boolean mandatory = true;
 
-		ParameterValue(String name, String defaultValue, Boolean mandatory) {
-			this.name = name;
-			this.defaultValue = defaultValue;
-			this.mandatory = mandatory;
-		}
 
-		private static Boolean $default$mandatory() {
-			return true;
-		}
+    private static class ParameterValue {
+        private String name;
+        private String defaultValue;
+        private Boolean mandatory = true;
 
-		public static ParameterValueBuilder builder() {
-			return new ParameterValueBuilder();
-		}
+        ParameterValue(String name, String defaultValue, Boolean mandatory) {
+            this.name = name;
+            this.defaultValue = defaultValue;
+            this.mandatory = mandatory;
+        }
 
-		public String getName() {
-			return this.name;
-		}
+        private static Boolean $default$mandatory() {
+            return true;
+        }
 
-		public String getDefaultValue() {
-			return this.defaultValue;
-		}
+        public static ParameterValueBuilder builder() {
+            return new ParameterValueBuilder();
+        }
 
-		public Boolean getMandatory() {
-			return this.mandatory;
-		}
+        public String getName() {
+            return this.name;
+        }
 
-		public static class ParameterValueBuilder {
-			private String name;
-			private String defaultValue;
-			private Boolean mandatory$value;
-			private boolean mandatory$set;
+        public String getDefaultValue() {
+            return this.defaultValue;
+        }
 
-			ParameterValueBuilder() {
-			}
+        public Boolean getMandatory() {
+            return this.mandatory;
+        }
 
-			public ParameterValueBuilder name(String name) {
-				this.name = name;
-				return this;
-			}
+        public static class ParameterValueBuilder {
+            private String name;
+            private String defaultValue;
+            private Boolean mandatory$value;
+            private boolean mandatory$set;
 
-			public ParameterValueBuilder defaultValue(String defaultValue) {
-				this.defaultValue = defaultValue;
-				return this;
-			}
+            ParameterValueBuilder() {
+            }
 
-			public ParameterValueBuilder mandatory(Boolean mandatory) {
-				this.mandatory$value = mandatory;
-				this.mandatory$set = true;
-				return this;
-			}
+            public ParameterValueBuilder name(String name) {
+                this.name = name;
+                return this;
+            }
 
-			public ParameterValue build() {
-				Boolean mandatory$value = this.mandatory$value;
-				if (!this.mandatory$set) {
-					mandatory$value = ParameterValue.$default$mandatory();
-				}
-				return new ParameterValue(name, defaultValue, mandatory$value);
-			}
+            public ParameterValueBuilder defaultValue(String defaultValue) {
+                this.defaultValue = defaultValue;
+                return this;
+            }
 
-			public String toString() {
-				return "Jsl2JqlFunction.ParameterValue.ParameterValueBuilder(name=" + this.name + ", defaultValue=" + this.defaultValue + ", mandatory$value=" + this.mandatory$value + ")";
-			}
-		}
-	}
+            public ParameterValueBuilder mandatory(Boolean mandatory) {
+                this.mandatory$value = mandatory;
+                this.mandatory$set = true;
+                return this;
+            }
 
-	/**
-	 * Keys are function names. Each "function" can have multiple possible parameter lists.
-	 */
+            public ParameterValue build() {
+                Boolean mandatory$value = this.mandatory$value;
+                if (!this.mandatory$set) {
+                    mandatory$value = ParameterValue.$default$mandatory();
+                }
+                return new ParameterValue(name, defaultValue, mandatory$value);
+            }
+
+            public String toString() {
+                return "Jsl2JqlFunction.ParameterValue.ParameterValueBuilder(name=" + this.name + ", defaultValue=" + this.defaultValue + ", mandatory$value=" + this.mandatory$value + ")";
+            }
+        }
+    }
+
+    /**
+     * Keys are function names. Each "function" can have multiple possible parameter lists.
+     */
     private static Map<String, Collection<Collection<ParameterValue>>> literalFunctionParameters =
             ImmutableMap.<String, Collection<Collection<ParameterValue>>>builder()
                     .put("getVariable", ImmutableList.of( ImmutableList.of(
@@ -187,102 +187,102 @@ public class Jsl2JqlFunction {
                             ParameterValue.builder().name("instance").build())))
                     .build();
 
-	public static String getEffectiveFunctionName(FunctionDeclaration function) {
-		if (function.getName().equalsIgnoreCase("right"))  {
-			return "last";
-		} else if (function.getName().equalsIgnoreCase("left"))  {
-			return "first";
-		} else if (function.getName().equalsIgnoreCase("lower"))  {
-			return "lowerCase";
-		} else  if (function.getName().equalsIgnoreCase("upper"))  {
-			return "upperCase";
-		} else  if (function.getName().equalsIgnoreCase("size"))  {
-			TypeInfo baseType = TypeInfo.getTargetType(function.getBaseType());
-			if (baseType.isPrimitive()) {
-				if (baseType.getPrimitive() == TypeInfo.PrimitiveType.STRING) {
-					return "length";
-				}
-			} else if (baseType.isCollection()) {
-				return "count";
-			}
-			return "count";
-		} else {
-			return function.getName();
-		}
-	}
+    public static String getEffectiveFunctionName(FunctionDeclaration function) {
+        if (function.getName().equalsIgnoreCase("right"))  {
+            return "last";
+        } else if (function.getName().equalsIgnoreCase("left"))  {
+            return "first";
+        } else if (function.getName().equalsIgnoreCase("lower"))  {
+            return "lowerCase";
+        } else  if (function.getName().equalsIgnoreCase("upper"))  {
+            return "upperCase";
+        } else  if (function.getName().equalsIgnoreCase("size"))  {
+            TypeInfo baseType = TypeInfo.getTargetType(function.getBaseType());
+            if (baseType.isPrimitive()) {
+                if (baseType.getPrimitive() == TypeInfo.PrimitiveType.STRING) {
+                    return "length";
+                }
+            } else if (baseType.isCollection()) {
+                return "count";
+            }
+            return "count";
+        } else {
+            return function.getName();
+        }
+    }
 
-	public static String getEffectiveLambdaName(LambdaDeclaration lambda) {
-		return lambda.getName();
-	}
+    public static String getEffectiveLambdaName(LambdaDeclaration lambda) {
+        return lambda.getName();
+    }
 
-	/**
-	 * Keys are function names. Each "function" can have multiple possible parameter lists.
-	 */	
-	
-	public static String getFunctionAsJql(FunctionCall it, Function<Expression, String> expressionExtractor, String functionName) {
+    /**
+     * Keys are function names. Each "function" can have multiple possible parameter lists.
+     */
+
+    public static String getFunctionAsJql(FunctionCall it, Function<Expression, String> expressionExtractor, String functionName) {
 //                System.out.println(getStack(it));
 //                System.out.println(TypeInfo.getFunctionCallReferences());
-		FunctionDeclaration functionDeclaration = (FunctionDeclaration)it.getDeclaration();
+        FunctionDeclaration functionDeclaration = (FunctionDeclaration)it.getDeclaration();
 
-		if (literalFunctionParameters.containsKey(functionName)) {
-			List<String> givenParameterNames = it.getArguments().stream().map(p -> p.getDeclaration().getName()).collect(Collectors.toList());
-			List<Collection<ParameterValue>> alignedParameterLists =
-					literalFunctionParameters.get(functionName).stream()
-							.filter(parameterValues -> parameterValues.stream().map(ParameterValue::getName).collect(Collectors.toList()).containsAll(givenParameterNames))
-							.collect(Collectors.toList());
-			if (alignedParameterLists.size() > 1) {
-				throw new IllegalStateException(String.format("Cannot determine which definition of function '%s' to use with [%s] given parameters",
-						functionDeclaration.getName(), String.join(", ", givenParameterNames)));
-			} else if (alignedParameterLists.size() == 1) {
-				Map<String, FunctionArgument> givenParameters = it.getArguments().stream().collect(Collectors.toMap(p -> p.getDeclaration().getName(), p -> p));
-				Collection<ParameterValue> definedParameters = alignedParameterLists.get(0);
-				List<String> jqlParameters = new ArrayList<>();
-				for (ParameterValue definedParameter : definedParameters) {
-					if (definedParameter.getMandatory() && !givenParameterNames.contains(definedParameter.getName())) {
-						throw new IllegalArgumentException(String.format("Parameter '%s' is required for '%s' function", definedParameter.getName(), functionName));
-					} else if (!definedParameter.getMandatory() && !givenParameterNames.contains(definedParameter.getName())) {
-						String defaultValue = definedParameter.getDefaultValue();
-						if (defaultValue != null) {
-							jqlParameters.add(defaultValue);
-						}
-					} else if (givenParameterNames.contains(definedParameter.getName())) {
-						jqlParameters.add(expressionExtractor.apply(givenParameters.get(definedParameter.getName()).getExpression()));
-					}
-				}
-				return getEffectiveFunctionName(it.getDeclaration()) + "(" + String.join(", ", jqlParameters) + ")";
-			}
-		}
+        if (literalFunctionParameters.containsKey(functionName)) {
+            List<String> givenParameterNames = it.getArguments().stream().map(p -> p.getDeclaration().getName()).collect(Collectors.toList());
+            List<Collection<ParameterValue>> alignedParameterLists =
+                    literalFunctionParameters.get(functionName).stream()
+                            .filter(parameterValues -> parameterValues.stream().map(ParameterValue::getName).collect(Collectors.toList()).containsAll(givenParameterNames))
+                            .collect(Collectors.toList());
+            if (alignedParameterLists.size() > 1) {
+                throw new IllegalStateException(String.format("Cannot determine which definition of function '%s' to use with [%s] given parameters",
+                        functionDeclaration.getName(), String.join(", ", givenParameterNames)));
+            } else if (alignedParameterLists.size() == 1) {
+                Map<String, FunctionArgument> givenParameters = it.getArguments().stream().collect(Collectors.toMap(p -> p.getDeclaration().getName(), p -> p));
+                Collection<ParameterValue> definedParameters = alignedParameterLists.get(0);
+                List<String> jqlParameters = new ArrayList<>();
+                for (ParameterValue definedParameter : definedParameters) {
+                    if (definedParameter.getMandatory() && !givenParameterNames.contains(definedParameter.getName())) {
+                        throw new IllegalArgumentException(String.format("Parameter '%s' is required for '%s' function", definedParameter.getName(), functionName));
+                    } else if (!definedParameter.getMandatory() && !givenParameterNames.contains(definedParameter.getName())) {
+                        String defaultValue = definedParameter.getDefaultValue();
+                        if (defaultValue != null) {
+                            jqlParameters.add(defaultValue);
+                        }
+                    } else if (givenParameterNames.contains(definedParameter.getName())) {
+                        jqlParameters.add(expressionExtractor.apply(givenParameters.get(definedParameter.getName()).getExpression()));
+                    }
+                }
+                return getEffectiveFunctionName(it.getDeclaration()) + "(" + String.join(", ", jqlParameters) + ")";
+            }
+        }
 
-		return getEffectiveFunctionName(it.getDeclaration()) + "()";
-	}
+        return getEffectiveFunctionName(it.getDeclaration()) + "()";
+    }
 
-	public static String getTimestampPlusFunctionAsJql(FunctionCall it, Function<Expression, String> expressionExtractor, String functionName) {
-		Collection<Collection<ParameterValue>> timestampPlusParameterLists = literalFunctionParameters.get(functionName);
-		if (timestampPlusParameterLists.size() != 1) {
-			throw new IllegalStateException("Unsupported number of timestamp plus definitions: " + timestampPlusParameterLists.size());
-		}
-		Set<String> definedParameters = timestampPlusParameterLists.stream().findFirst().orElseThrow().stream().map(ParameterValue::getName).collect(Collectors.toSet());
-		List<String> jqlFunctionCall = new ArrayList<>();
-		for (FunctionArgument argument : it.getArguments()) {
-			String argumentName = argument.getDeclaration().getName();
-			if (!definedParameters.contains(argumentName)){
-				throw new IllegalArgumentException("Invalid parameter name: " + argumentName);
-			}
-			jqlFunctionCall.add(String.format("%s(%s)", getJqlTimestampArithmeticFunctionNameOf(argumentName), expressionExtractor.apply(argument.getExpression())));
-		}
-		return String.join("!", jqlFunctionCall);
-	}
+    public static String getTimestampPlusFunctionAsJql(FunctionCall it, Function<Expression, String> expressionExtractor, String functionName) {
+        Collection<Collection<ParameterValue>> timestampPlusParameterLists = literalFunctionParameters.get(functionName);
+        if (timestampPlusParameterLists.size() != 1) {
+            throw new IllegalStateException("Unsupported number of timestamp plus definitions: " + timestampPlusParameterLists.size());
+        }
+        Set<String> definedParameters = timestampPlusParameterLists.stream().findFirst().orElseThrow().stream().map(ParameterValue::getName).collect(Collectors.toSet());
+        List<String> jqlFunctionCall = new ArrayList<>();
+        for (FunctionArgument argument : it.getArguments()) {
+            String argumentName = argument.getDeclaration().getName();
+            if (!definedParameters.contains(argumentName)){
+                throw new IllegalArgumentException("Invalid parameter name: " + argumentName);
+            }
+            jqlFunctionCall.add(String.format("%s(%s)", getJqlTimestampArithmeticFunctionNameOf(argumentName), expressionExtractor.apply(argument.getExpression())));
+        }
+        return String.join("!", jqlFunctionCall);
+    }
 
-	private static String getJqlTimestampArithmeticFunctionNameOf(String parameterName) {
-		switch (parameterName){
-			case "years": return "plusYears";
-			case "months": return "plusMonths";
-			case "days": return "plusDays";
-			case "hours": return "plusHours";
-			case "minutes": return "plusMinutes";
-			case "seconds": return "plusSeconds";
-			case "milliseconds": return "plusMilliseconds";
-			default: throw new IllegalArgumentException("Unsupported timestamp arithmetic function (from parameter name): " + parameterName);
-		}
-	}
+    private static String getJqlTimestampArithmeticFunctionNameOf(String parameterName) {
+        switch (parameterName){
+            case "years": return "plusYears";
+            case "months": return "plusMonths";
+            case "days": return "plusDays";
+            case "hours": return "plusHours";
+            case "minutes": return "plusMinutes";
+            case "seconds": return "plusSeconds";
+            case "milliseconds": return "plusMilliseconds";
+            default: throw new IllegalArgumentException("Unsupported timestamp arithmetic function (from parameter name): " + parameterName);
+        }
+    }
 }

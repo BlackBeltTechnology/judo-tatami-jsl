@@ -1,16 +1,16 @@
 @cached
 operation JSL!EntityDeclaration getPSMEquivalent(): JUDOPSM!EntityType {
-	return self.equivalent("CreateEntityType");
+    return self.equivalent("CreateEntityType");
 }
 
 @cached
 operation JSL!EntityDeclaration getId(): String {
-	return (self.eContainer.getId() + "/" + self.name);
+    return (self.eContainer.getId() + "/" + self.name);
 }
 
 @cached
 operation JSL!EntityDeclaration getModelRoot(): JUDOPSM!Package {
-	return self.getPsmEquivalent().getModelRoot();
+    return self.getPsmEquivalent().getModelRoot();
 }
 
 
@@ -28,5 +28,5 @@ operation JSL!EntityDeclaration getInheritedMembers(): Sequence<EntityMemberDecl
         }
     }
 
-	return members;
+    return members;
 }
