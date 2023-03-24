@@ -3,9 +3,9 @@ operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
     if (self.primitive.isDefined()) {
         var byName = self.eContainer.name.equivalent("CreateModelPackages").elements.selectOne(e | e.name == self.name);
         if (byName.isDefined()) {
-        	return byName;
+            return byName;
         }
-    
+
         switch (self.primitive) {
             case "numeric":
                 return self.equivalent("CreateNumericType");
@@ -15,12 +15,12 @@ operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
                 return self.equivalent("CreateTimeType");
             case "timestamp":
                 return self.equivalent("CreateTimestampType");
-			case "boolean":
-				return self.equivalent("CreateBooleanType");
-			case "string":
-				return self.equivalent("CreateStringType");
-			case "binary":
-				return self.equivalent("CreateBinaryType");
+            case "boolean":
+                return self.equivalent("CreateBooleanType");
+            case "string":
+                return self.equivalent("CreateStringType");
+            case "binary":
+                return self.equivalent("CreateBinaryType");
             default:
                 throw "Unsupported primitive type: " + self.primitive;
         }

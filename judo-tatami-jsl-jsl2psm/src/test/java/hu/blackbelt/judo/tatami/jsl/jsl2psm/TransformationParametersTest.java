@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -65,36 +65,36 @@ public class TransformationParametersTest extends AbstractTest {
             Files.createDirectories(Paths.get(TARGET_TEST_CLASSES));
         }
     }
-    
+
     @Override
     public Jsl2PsmParameterBuilder addTransformationParameters(String testName, Jsl2PsmParameterBuilder parameters) {
 
-    	if (testName.equals("TestNoDefaultTransferObject")) {
-    		return parameters.generateDefaultTransferObject(false);
-    	} else if (testName.equals("TestEntityPrefix")) {
-    		return parameters.entityNamePrefix("_Entity_");
-    	} else if (testName.equals("TestEntityPostfix")) {
-    		return parameters.entityNamePrefix("").entityNamePostfix("_Entity");
-    	} else if (testName.equals("TestTransferObjectPrefix")) {
-    		return parameters.defaultTransferObjectNamePrefix("_DefaultTransferObject");
-    	} else if (testName.equals("TestTransferObjectPostfix")) {
-    		return parameters.defaultTransferObjectNamePostfix("_DefaultTransferObject");
-    	} else if (testName.equals("TestDefaultDefaultNamePrefix")) {
+        if (testName.equals("TestNoDefaultTransferObject")) {
+            return parameters.generateDefaultTransferObject(false);
+        } else if (testName.equals("TestEntityPrefix")) {
+            return parameters.entityNamePrefix("_Entity_");
+        } else if (testName.equals("TestEntityPostfix")) {
+            return parameters.entityNamePrefix("").entityNamePostfix("_Entity");
+        } else if (testName.equals("TestTransferObjectPrefix")) {
+            return parameters.defaultTransferObjectNamePrefix("_DefaultTransferObject");
+        } else if (testName.equals("TestTransferObjectPostfix")) {
+            return parameters.defaultTransferObjectNamePostfix("_DefaultTransferObject");
+        } else if (testName.equals("TestDefaultDefaultNamePrefix")) {
             return parameters.defaultDefaultNamePrefix("_pre_");
         } else if (testName.equals("TestDefaultDefaultNameMidfix")) {
             return parameters.defaultDefaultNameMidfix("_mid_");
         } else if (testName.equals("TestDefaultDefaultNamePostfix")) {
             return parameters.defaultDefaultNamePostfix("_post");
-    	} else if (testName.equals("TestDefaultReadsNamePrefix")) {
+        } else if (testName.equals("TestDefaultReadsNamePrefix")) {
             return parameters.defaultReadsNamePrefix("_pre_");
         } else if (testName.equals("TestDefaultReadsNameMidfix")) {
             return parameters.defaultReadsNameMidfix("_mid_");
         } else if (testName.equals("TestDefaultReadsNamePostfix")) {
             return parameters.defaultReadsNamePostfix("_post");
         }
-    	return parameters;
+        return parameters;
     }
-    
+
     @Test
     void testNoDefaultTransferObject() throws Exception {
         testName = "TestNoDefaultTransferObject";
@@ -105,7 +105,7 @@ public class TransformationParametersTest extends AbstractTest {
                         "\n" +
                         "entity T {\n" +
                         "}\n"
-                		)
+                        )
         );
 
         transform();
@@ -124,7 +124,7 @@ public class TransformationParametersTest extends AbstractTest {
                         "\n" +
                         "entity T {\n" +
                         "}\n"
-                		)
+                        )
         );
 
         transform();
@@ -144,7 +144,7 @@ public class TransformationParametersTest extends AbstractTest {
                         "\n" +
                         "entity T {\n" +
                         "}\n"
-                		)
+                        )
         );
 
         transform();
@@ -153,8 +153,8 @@ public class TransformationParametersTest extends AbstractTest {
         assertEquals(1, getMappedTransferObjectTypes().size());
         assertMappedTransferObject("T");
     }
-    
-    
+
+
     @Test
     void testTransferObjectPrefix() throws Exception {
         testName = "TestTransferObjectPrefix";
@@ -165,7 +165,7 @@ public class TransformationParametersTest extends AbstractTest {
                         "\n" +
                         "entity T {\n" +
                         "}\n"
-                		)
+                        )
         );
 
         transform();
@@ -185,7 +185,7 @@ public class TransformationParametersTest extends AbstractTest {
                         "\n" +
                         "entity T {\n" +
                         "}\n"
-                		)
+                        )
         );
 
         transform();
@@ -277,13 +277,13 @@ public class TransformationParametersTest extends AbstractTest {
                         "\n" +
                         "type string String(min-size = 0, max-size = 32);\n" +
                         "\n" +
-						"entity E {\n" +
+                        "entity E {\n" +
                         "    field String strField;\n" +
                         "}\n" +
                         "transfer T maps E as e {\n" +
                         "    field String strField reads e.strField;\n" +
                         "}\n"
-                
+
                 )
         );
 
@@ -303,7 +303,7 @@ public class TransformationParametersTest extends AbstractTest {
                         "\n" +
                         "type string String(min-size = 0, max-size = 32);\n" +
                         "\n" +
-						"entity E {\n" +
+                        "entity E {\n" +
                         "    field String strField;\n" +
                         "}\n" +
                         "transfer T maps E as e {\n" +
@@ -328,7 +328,7 @@ public class TransformationParametersTest extends AbstractTest {
                         "\n" +
                         "type string String(min-size = 0, max-size = 32);\n" +
                         "\n" +
-						"entity E {\n" +
+                        "entity E {\n" +
                         "    field String strField;\n" +
                         "}\n" +
                         "transfer T maps E as e {\n" +
