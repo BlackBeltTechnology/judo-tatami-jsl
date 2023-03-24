@@ -382,7 +382,7 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    private String getJql(final TimeStampLiteral it) {
+    private String getJql(final TimestampLiteral it) {
         return it != null
               ? "`" + it.getValue() + "`"
 
@@ -431,26 +431,26 @@ public class JslExpressionToJqlExpression {
                 : null;
     }
 
-    private String getJql(final Literal it) {
-          if (it instanceof IntegerLiteral) {
-              return getJql((IntegerLiteral) it);
-        } else if (it instanceof DecimalLiteral) {
-              return getJql((DecimalLiteral) it);
-        } else if (it instanceof BooleanLiteral) {
-              return getJql((BooleanLiteral) it);
-        } else if (it instanceof EscapedStringLiteral) {
-              return getJql((EscapedStringLiteral) it);
-        } else if (it instanceof RawStringLiteral) {
-              return getJql((RawStringLiteral) it);
-        } else if (it instanceof DateLiteral) {
-              return getJql((DateLiteral) it);
-        } else if (it instanceof TimeLiteral) {
-              return getJql((TimeLiteral) it);
-        } else if (it instanceof TimeStampLiteral) {
-              return getJql((TimeStampLiteral) it);
-        } else if (it instanceof EnumLiteralReference) {
-              return getJql((EnumLiteralReference) it);
-        }
+	private String getJql(final Literal it) {
+	  	if (it instanceof IntegerLiteral) {
+	  		return getJql((IntegerLiteral) it);
+		} else if (it instanceof DecimalLiteral) {
+	  		return getJql((DecimalLiteral) it);
+		} else if (it instanceof BooleanLiteral) {
+	  		return getJql((BooleanLiteral) it);
+		} else if (it instanceof EscapedStringLiteral) {
+	  		return getJql((EscapedStringLiteral) it);
+		} else if (it instanceof RawStringLiteral) {
+	  		return getJql((RawStringLiteral) it);
+		} else if (it instanceof DateLiteral) {
+	  		return getJql((DateLiteral) it);
+		} else if (it instanceof TimeLiteral) {
+	  		return getJql((TimeLiteral) it);
+		} else if (it instanceof TimestampLiteral) {
+	  		return getJql((TimestampLiteral) it);
+		} else if (it instanceof EnumLiteralReference) {
+	  		return getJql((EnumLiteralReference) it);
+		}
 
         throw new IllegalArgumentException("Unhandled parameter types: " +
                 Arrays.<Object>asList(it).toString());
