@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -96,7 +96,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
 
         assertTrue(assertEntityType("_Person").isAbstract());
         assertEntityType("_SalesPerson");
-                
+
         final Set<String> psmEntityType3SuperTypeNames = assertEntityType("_SalesPerson").getSuperEntityTypes().stream().map(NamedElement::getName).collect(Collectors.toSet());
         final Set<String> jslEntityType3SuperTypeNames = ImmutableSet.of("_Person", "_Test");
         assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(jslEntityType3SuperTypeNames));

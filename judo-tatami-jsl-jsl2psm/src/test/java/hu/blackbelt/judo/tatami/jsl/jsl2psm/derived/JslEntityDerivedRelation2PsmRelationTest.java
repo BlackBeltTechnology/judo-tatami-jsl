@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.derived;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -75,7 +75,7 @@ public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
 
         transform();
 
-        
+
         final Set<NavigationProperty> navigationProperties = psmModelWrapper.getStreamOfPsmDerivedNavigationProperty().collect(Collectors.toSet());
         assertEquals(2, navigationProperties.size());
 
@@ -86,7 +86,7 @@ public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
         assertMappedTransferObjectRelation("Lead", "keyCustomers");
         assertTrue(assertMappedTransferObjectRelation("Lead", "keyCustomers").isCollection());
         assertEquals(assertNavigationProperty("_Lead", "keyCustomers"), assertMappedTransferObjectRelation("Lead", "keyCustomers").getBinding());
-        
+
         assertNavigationProperty("_Lead", "keyCustomer");
         assertFalse(assertNavigationProperty("_Lead", "keyCustomer").isCollection());
         assertEquals("self.customers!filter(c | c.iskey)!any()", assertNavigationProperty("_Lead", "keyCustomer").getGetterExpression().getExpression());
@@ -95,7 +95,7 @@ public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
         assertFalse(assertMappedTransferObjectRelation("Lead", "keyCustomer").isCollection());
         assertEquals(assertNavigationProperty("_Lead", "keyCustomer"), assertMappedTransferObjectRelation("Lead", "keyCustomer").getBinding());
 
-        
+
         assertAllNavigationProperty("_LeadExtended", "keyCustomers");
         assertTrue(assertAllNavigationProperty("_LeadExtended", "keyCustomers").isCollection());
         assertEquals("self.customers!filter(c | c.iskey)", assertAllNavigationProperty("_LeadExtended", "keyCustomers").getGetterExpression().getExpression());
@@ -103,7 +103,7 @@ public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
         assertMappedTransferObjectRelation("LeadExtended", "keyCustomers");
         assertTrue(assertMappedTransferObjectRelation("LeadExtended", "keyCustomers").isCollection());
         assertEquals(assertAllNavigationProperty("_LeadExtended", "keyCustomers"), assertMappedTransferObjectRelation("LeadExtended", "keyCustomers").getBinding());
-        
+
         assertAllNavigationProperty("_LeadExtended", "keyCustomer");
         assertFalse(assertAllNavigationProperty("_LeadExtended", "keyCustomer").isCollection());
         assertEquals("self.customers!filter(c | c.iskey)!any()", assertAllNavigationProperty("_LeadExtended", "keyCustomer").getGetterExpression().getExpression());

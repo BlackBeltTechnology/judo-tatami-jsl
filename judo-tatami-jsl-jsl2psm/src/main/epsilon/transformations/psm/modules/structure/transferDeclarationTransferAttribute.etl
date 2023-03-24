@@ -42,14 +42,14 @@ rule CreateDerivedTransferAttribute
     to t : JUDOPSM!TransferAttribute
     extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
       guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.reads.isDefined()
-      t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");      
-      
+      t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");
+
       if (s.eContainer.map.isDefined()) {
          t.binding = s.reads.equivalent("CreateReadsDataPropertyForMappedTransferObjectTranferFieldDeclaration");
       } else {
          t.binding = s.reads.equivalent("CreateReadsStaticDataForUnmappedTransferObjectTranferFieldDeclaration");
       }
-      
+
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created TransferAttribute (Derived) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }

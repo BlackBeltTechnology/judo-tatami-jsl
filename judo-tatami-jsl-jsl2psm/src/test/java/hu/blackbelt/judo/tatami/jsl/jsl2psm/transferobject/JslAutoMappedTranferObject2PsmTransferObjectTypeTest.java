@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.transferobject;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -74,14 +74,14 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
     void testCreateAutoMappedTransferObjectType() throws Exception {
         testName = "TestCreateAutoMappedTransferObjectType";
 
-        
+
         jslModel = JslParser.getModelFromFiles(
                 "AutoMappedTransferObjectTypeModel",
                 List.of(new File("src/test/resources/transferobject/TestCreateAutoMappedTransferObjectTypeModel.jsl"))
         );
 
         transform();
-        
+
         assertMappedTransferObject("AutoMapped");
         assertEquals(6, assertMappedTransferObject("AutoMapped").getAttributes().size());
 
@@ -114,7 +114,7 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
         assertEquals(attributeDerived2Property, attributeDerived2.getBinding());
         assertEquals("self.attribute", attributeDerived2Property.getGetterExpression().getExpression());
 
-        
+
         assertEquals(8, assertMappedTransferObject("AutoMapped").getRelations().size());
 
         TransferObjectRelation containment = assertMappedTransferObjectRelation("AutoMapped", "containment");
@@ -182,5 +182,5 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
         assertEquals("self.containmentCollection", containmentCollectionDerived2Property.getGetterExpression().getExpression());
         
     }
-    
+
 }
