@@ -73,7 +73,7 @@
         <judo-sdk-common-version>1.0.4.20230324_115033_3b2a92fb_develop</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20230324_114642_660d83a9_develop</judo-operation-utils-version>
-        <judo-runtime-core-version>1.0.6.20230325_041742_04bc0dbd_develop</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20230327_105853_6a79f54a_feature_JNG_4623_Sequences_with_reserved_names</judo-runtime-core-version>
         <structured-map-proxy-version>1.2.0</structured-map-proxy-version>
 
         <judo-tatami-base-version>1.1.6.20230325_041340_1ed06fe8_develop</judo-tatami-base-version>
