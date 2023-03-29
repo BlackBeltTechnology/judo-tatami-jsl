@@ -1,0 +1,24 @@
+model hello;
+
+import judo::types;
+
+entity Other {
+	field String hello;
+}
+
+entity Test {
+	field required String email;
+	field Integer age;
+	field Other other;
+}
+
+view TestView maps Test as test {
+	widget String email = test.email;
+	widget Integer age = test.age;
+}
+
+service TestService {
+	function TestView[] getAllTests => Test!all();
+}
+
+actor UiTest exports TestService;

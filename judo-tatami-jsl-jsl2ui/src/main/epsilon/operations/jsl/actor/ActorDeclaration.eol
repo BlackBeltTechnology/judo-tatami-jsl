@@ -1,0 +1,32 @@
+operation JSL!ActorDeclaration mapClassType(application : UI!ui::Application) : UI!ui::data::ClassType {
+    var clazz = application.dataElements.selectOne(r | r.name = self.name);
+    if (clazz.isUndefined()) {
+        clazz = self.createClassType(application);
+    }
+    return clazz;
+}
+
+operation JSL!ActorDeclaration createClassType(application : UI!ui::Application) : UI!ui::data::ClassType {
+    var clazz = new UI!ui::data::ClassType();
+
+    clazz.~application = application;
+    clazz.~originalActorType = self;
+
+    clazz.name = self.name; // TODO: introduce fqName
+    clazz.simpleName = self.name;
+    clazz.setPackageNameTokens(self);
+
+    application.dataElements.add(clazz);
+    clazz.isActor = true;
+
+    //for (access in self.accesses.select(a | not a.isQuery)) {
+    //    access.createRelationTypeForClass(application, clazz);
+    //}
+
+    if (self.identity.isDefined()) {
+        self.identity.mapClassType(application);
+    }
+
+    log.debug("Create class type: " + clazz.name);
+    return clazz;
+}
