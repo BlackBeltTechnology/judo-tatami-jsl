@@ -1,0 +1,44 @@
+import "../../../../operations/_importAll.eol";
+
+rule Application
+    transform s : JSL!ActorDeclaration
+    to t : UI!ui::Application {
+        // guard: s.kind = ESM!esm::accesspoint::ActorKind#HUMAN
+
+        log.debug("Application: " + s.name);
+        t.name = s.name;
+
+        var defaultLayout = new UI!ui::LayoutType();
+        defaultLayout.cols = applicationColumns;
+        defaultLayout.name = "default";
+        defaultLayout.original = true;
+
+        // t.version = jslUtils.getModel(s).version;
+        t.layoutTypes.add(defaultLayout);
+        t.actor = s.mapClassType(t);
+}
+
+rule ApplicationDashboardPage
+    transform s: JSL!ActorDeclaration
+    to t : UI!ui::PageDefinition {
+
+        log.debug("ApplicationDashboardPage: " + s.name);
+
+        var application = s.equivalent("Application");
+        log.debug("ApplicationDashboardPage: " + s.name);
+        t.name = s.name.anchor("Dashboard");
+        t.pageType = UI!ui::PageType#DASHBOARD;
+
+        var pageContainer = new UI!ui::PageContainer();
+        pageContainer.layoutType = application.layoutTypes.first;
+        pageContainer.name = "default";
+        pageContainer.direction = UI!Axis#VERTICAL;
+        pageContainer.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        pageContainer.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+        pageContainer.col = applicationColumns.asReal();
+
+        t.containers.add(pageContainer);
+
+        application.pages.add(t);
+        application.dashboard = t;
+}

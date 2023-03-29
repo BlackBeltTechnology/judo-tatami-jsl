@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>hu.blackbelt.judo.tatami</groupId>
+        <artifactId>judo-tatami-jsl-parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>judo-tatami-jsl-jsl2ui</artifactId>
+    <packaging>bundle</packaging>
+    <name>Judo :: Tatami :: JSL :: Jsl2Ui</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-scripts</id>
+                        <!-- here the phase you need -->
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes/tatami/jsl2ui</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/epsilon</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy-models</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes/tatami/jsl2ui/model</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>model</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+			<plugin>
+			   <groupId>org.codehaus.mojo</groupId>
+			   <artifactId>build-helper-maven-plugin</artifactId>
+			   <executions>
+			       <execution>
+			           <id>add-source</id>
+			           <phase>generate-sources</phase>
+			           <goals>
+			               <goal>add-source</goal>
+			           </goals>
+			           <configuration>
+			               <sources>
+			                   <source>${project.basedir}/src/main/epsilon/</source>
+			               </sources>
+			           </configuration>
+			       </execution>
+			   </executions>
+			</plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <obrRepository>NONE</obrRepository>
+                    <instructions>
+                        <Export-Package>
+                            tatami/jsl2ui;version=${project.version},
+                            hu.blackbelt.judo.tatami.jsl.jsl2ui.*;version=${project.version}
+                        </Export-Package>
+                        <Include-Resource>
+                            {maven-resources},
+                            tatami=target/classes/tatami
+                        </Include-Resource>
+                        <Import-Package>
+                            ${osgi-default-import},
+                            *
+                        </Import-Package>
+                        <Jsl2Psm-Transformation-ModelRoot>tatami/jsl2ui/model</Jsl2Psm-Transformation-ModelRoot>
+                        <Jsl2Psm-Transformation-ScriptRoot>tatami/jsl2ui/transformations/psm</Jsl2Psm-Transformation-ScriptRoot>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>hu.blackbelt.epsilon</groupId>
+            <artifactId>epsilon-runtime-execution</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.epsilon</groupId>
+            <artifactId>epsilon-runtime-osgi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.jsl.model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.ui.model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.3</version>
+        </dependency>
+    </dependencies>
+</project>

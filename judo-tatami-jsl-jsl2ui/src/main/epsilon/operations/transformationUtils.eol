@@ -1,0 +1,85 @@
+operation String anchor(anchor1 : String, anchor2 : String) : String {
+    if (anchor1.isUndefined()) {
+        return self;
+    } else {
+        if (anchor2.isUndefined()) {
+            return self + "#" + anchor1;
+        } else {
+            return self.anchor(anchor1, null) + "/" + anchor2;
+        }
+    }
+} 
+
+operation String anchor(anchor1 : String) : String {
+    return self.anchor(anchor1, null);
+}
+
+operation createHorizontalFlex(name : String, col : Real, row : Real) : UI!ui::Flex {
+    var ret : UI!ui::Flex = new UI!ui::Flex();
+    ret.name = name;
+    ret.col = col;
+    ret.row = row;
+    ret.direction = UI!ui::Axis#HORIZONTAL;
+    return ret;
+}
+
+operation createVerticalFlex(name : String, col : Real, row : Real) : UI!ui::Flex {
+    var ret : UI!ui::Flex = new UI!ui::Flex();
+    ret.name = name;
+    ret.col = col;
+    ret.row = row;
+    ret.direction = UI!ui::Axis#VERTICAL;
+    return ret;
+}
+
+operation createGeneratedActionButton(name : String, label : String, icon : String, action : UI!ui::Action) : UI!ui::Button {
+    var ret : UI!ui::Button = new UI!ui::Button();
+    ret.name = name;
+    ret.col = 2d;
+    ret.row = 1d;
+    ret.action = action;
+    ret.stretch = UI!ui::Stretch#NONE;
+
+    ret.label = label;
+    ret.icon = new UI!ui::Icon();
+    ret.icon.name = icon;
+
+    return ret;
+}
+
+operation createGeneratedCreateAction(owner : UI!ui::PageDefinition, target : UI!ui::PageDefinition, dataElement : UI!ui::data::DataElement, isTransient : Boolean, type : Any) : UI!ui::CreateAction {
+    var action = mapCreateAction(dataElement, owner, "Create", "note_add", type);
+    action.target = target;
+    action.isTransient = isTransient;
+    return action;
+}
+
+operation createGeneratedEditAction(owner : UI!ui::PageDefinition, target : UI!ui::PageDefinition, dataElement : UI!ui::data::DataElement, isTransient : Boolean, type : Any) : UI!ui::EditAction {
+    var action = mapEditAction(dataElement, owner, "Edit", "edit", type);
+    action.target = target;
+    action.isTransient = isTransient;
+    return action;
+}
+
+operation createGeneratedViewAction(owner : UI!ui::PageDefinition, target : UI!ui::PageDefinition, dataElement : UI!ui::data::DataElement, isTransient : Boolean, type : Any) : UI!ui::ViewAction {
+    var action = mapViewAction(dataElement, owner, "View", "visibility", type);
+    action.target = target;
+    action.isTransient = isTransient;
+    return action;
+}
+
+operation UI!ui::data::ClassType setPackageNameTokens(source : JSL!ViewDeclaration) {
+    var container = source.eContainer();
+    while (container.isTypeOf(JSL!ModelDeclaration)) {
+        self.packageNameTokens.add(0, container.name);
+        container = container.eContainer();
+    }
+}
+
+operation UI!ui::data::ClassType setPackageNameTokens(source : JSL!ActorDeclaration) {
+    var container = source.eContainer();
+    while (container.isTypeOf(JSL!ModelDeclaration)) {
+        self.packageNameTokens.add(0, container.name);
+        container = container.eContainer();
+    }
+}
