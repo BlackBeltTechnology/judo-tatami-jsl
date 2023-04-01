@@ -58,7 +58,7 @@
         <surefire-version>3.0.0-M7</surefire-version>
 
         <epsilon-runtime-version>1.5.1.20230310_040746_cc563145_develop</epsilon-runtime-version>
-        <antlr-runtime-version>3.2</antlr-runtime-version>
+        <antlr-runtime-version>3.5.3</antlr-runtime-version>
         <build-helper-maven-plugin-version>3.3.0</build-helper-maven-plugin-version>
 
         <!-- Model versions -->
