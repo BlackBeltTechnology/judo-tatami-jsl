@@ -36,4 +36,14 @@ post {
     for (c in JUDOPSM!Cardinality.all()) {
         c.setId(c.eContainer.getId()+"/cardinality");
     }
+
+    // Collect primitive types which are not directly referenced as field types
+    for (c in JSL!NavigationBaseDeclarationReference.all().select(n | n.reference.isKindOf(JSL!PrimitiveDeclaration))) {
+         var dummy = c.reference.getPSMEquivalent();
+    }
+    for (c in JSL!QueryParameterDeclaration.all()) {
+         var dummy = c.referenceType.getPSMEquivalent();
+    }
+
+
 }
