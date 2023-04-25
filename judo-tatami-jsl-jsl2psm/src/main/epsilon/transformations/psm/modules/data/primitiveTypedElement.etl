@@ -111,16 +111,16 @@ rule CreateReadsDataExpressionTypeForTransferFieldDeclaration
         t.expression = expressionUtils.getJqlForExpression(s, entityNamePrefix, entityNamePostfix);
 
         if (s.eContainer.eContainer.map.isDefined()) {
-            s.equivalent("CreateReadsDataPropertyForMappedTransferObjectTranferFieldDeclaration").getterExpression = t;
+            s.equivalent("CreateReadsDataPropertyForMappedTransferObjectTransferFieldDeclaration").getterExpression = t;
         } else {
-            s.equivalent("CreateReadsStaticDataForUnmappedTransferObjectTranferFieldDeclaration").getterExpression = t;
+            s.equivalent("CreateReadsStaticDataForUnmappedTransferObjectTransferFieldDeclaration").getterExpression = t;
         }
 
         log.debug("Created DataExpressionType for TransferField Reads: " + t.expression);
     }
 
 @greedy
-rule CreateReadsStaticDataForUnmappedTransferObjectTranferFieldDeclaration
+rule CreateReadsStaticDataForUnmappedTransferObjectTransferFieldDeclaration
     transform s : JSL!Expression
     to t: JUDOPSM!StaticData {
         guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)
@@ -137,7 +137,7 @@ rule CreateReadsStaticDataForUnmappedTransferObjectTranferFieldDeclaration
     }
 
 @greedy
-rule CreateReadsDataPropertyForMappedTransferObjectTranferFieldDeclaration
+rule CreateReadsDataPropertyForMappedTransferObjectTransferFieldDeclaration
     transform s : JSL!Expression
     to t: JUDOPSM!DataProperty {
         guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!PrimitiveDeclaration)

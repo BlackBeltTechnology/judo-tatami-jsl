@@ -61,8 +61,7 @@ rule CreateTransferObjectForEntityQueryParameterDeclaration
 
 rule CreateDataPropertyForEntityQuery
     transform s : JSL!EntityQueryDeclaration
-    to t : JUDOPSM!DataProperty
-    {
+    to t : JUDOPSM!DataProperty {
       guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateDataPropertyForEntityQuery");
@@ -75,11 +74,10 @@ rule CreateDataPropertyForEntityQuery
 
 rule CreateNavigationPropertyForEntityQuery
     transform s : JSL!EntityQueryDeclaration
-    to t : JUDOPSM!NavigationProperty
-    {
+    to t : JUDOPSM!NavigationProperty {
       guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
       t.name = s.name;
-      t.setId("(jsl/" + s.getId() + ")/NavigationProperty");
+      t.setId("(jsl/" + s.getId() + ")/CreateNavigationPropertyForEntityQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForEntityQueryParametrizedReferenceType");
       t.cardinality = s.equivalent("CreateCardinalityForEntityQueryDeclaration");
       t.target = s.referenceType.getPSMEquivalent();
