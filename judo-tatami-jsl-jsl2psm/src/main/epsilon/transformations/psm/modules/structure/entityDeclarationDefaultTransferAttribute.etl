@@ -154,7 +154,7 @@ rule CreateEntityQueryTransferAttributeForDefaultTransferObjectType
 
 @lazy
 @greedy
-rule CloneEntityTransferAttributeForDefaultTransferObjectType
+rule CloneEntityQueryTransferAttributeForDefaultTransferObjectType
     transform s: JSL!EntityQueryDeclaration
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType {
@@ -280,7 +280,7 @@ rule CloneTransferDefaultValueAttributeForErrorTransferObjectType
     transform s: JSL!Expression
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateTransferDefaultValueAttributeForErrorTransferObjectType {
-        t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForDefaultTransferObjectType");
+        t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForErrorTransferObjectType");
         log.debug("Clone TransferAttribute Default Value (Field) for ErrorTransferObjectType: [" + t.name + "]");
 }
 
