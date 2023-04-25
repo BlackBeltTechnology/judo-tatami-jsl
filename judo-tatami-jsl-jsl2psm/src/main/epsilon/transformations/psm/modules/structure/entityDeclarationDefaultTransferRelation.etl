@@ -252,7 +252,7 @@ rule CloneTransferObjectQueryRelationForDefaultTransferObjectType
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectEntityQueryRelationForDefaultTransferObjectType {
 
-        t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectEntityQueryRelationForDefaultTransferObjectType");
+        t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectQueryRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForEntityQueryDeclaration", t.getId());
 
 

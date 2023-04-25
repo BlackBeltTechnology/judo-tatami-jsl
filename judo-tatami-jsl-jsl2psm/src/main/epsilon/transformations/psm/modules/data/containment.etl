@@ -24,7 +24,7 @@ rule CreateReadsReferenceExpressionTypeForTransferRelationDeclaration
     to t: JUDOPSM!ReferenceExpressionType {
         guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!TransferDeclaration)
 
-        t.setId("(jsl/" + s.getId() + ")/CreateReadsReferenceExpressionTypeForTranferRelationDeclaration");
+        t.setId("(jsl/" + s.getId() + ")/CreateReadsReferenceExpressionTypeForTransferRelationDeclaration");
         t.expression = expressionUtils.getJqlForExpression(s, entityNamePrefix, entityNamePostfix);
 
         if (s.eContainer.eContainer.map.isDefined()) {
@@ -43,7 +43,7 @@ rule CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclara
         guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!TransferDeclaration)
            and s.eContainer.eContainer.map.isUndefined()
 
-        t.setId("(jsl/" + s.getId() + ")/CreateReadsReferenceExpressionForUnmappedTransferObjectTransferRelationDeclaration");
+        t.setId("(jsl/" + s.getId() + ")/CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclaration");
         t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
         t.target = s.eContainer.referenceType.getPSMEquivalent().entityType;
           t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
