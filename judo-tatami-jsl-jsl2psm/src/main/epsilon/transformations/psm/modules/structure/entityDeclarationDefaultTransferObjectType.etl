@@ -55,7 +55,7 @@ rule CreateEntityDefaultTransferObjectType
                     if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
                         t.attributes.add(im.equivalentWithPrefix("CloneEntityQueryTransferAttributeForDefaultTransferObjectType", t.getId()));
                     } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
-                        t.relations.add(im.equivalentWithPrefix("CloneTransferObjectEntityQueryRelationForDefaultTransferObjectType", t.getId()));
+                        t.relations.add(im.equivalentWithPrefix("CloneTransferObjectQueryRelationForDefaultTransferObjectType", t.getId()));
                     }
                 }
 
