@@ -45,8 +45,6 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveA
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork.getAsm2RdbmsTrace;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork.getRdbmsModel;
-import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.getSdkInternalStream;
-import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.getSdkStream;
 import static hu.blackbelt.judo.tatami.jsl.workflow.ThrowingCosumerWrapper.executeWrapper;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2LiquibaseWork.getLiquibaseModel;
 
@@ -115,16 +113,6 @@ public class DefaultWorkflowSave {
 
         dialectList.forEach(dialect -> getAsm2RdbmsTrace(transformationContext, dialect)
                 .ifPresent(executeWrapper(catchError, (m) -> m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "asm2rdbms_" + dialect + ".model"))))));
-
-        getSdkStream(transformationContext).ifPresent(executeWrapper(catchError, (m) -> {
-            Files.copy(m, deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "asm2sdk.jar")).toPath());
-            m.close();
-        }));
-
-        getSdkInternalStream(transformationContext).ifPresent(executeWrapper(catchError, (m) -> {
-            Files.copy(m, deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "asm2sdk-internal.jar")).toPath());
-            m.close();
-        }));
 
     }
 

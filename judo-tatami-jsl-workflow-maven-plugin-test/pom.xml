@@ -38,8 +38,6 @@
                 <configuration>
                     <sources>${basedir}/src/main/resources/model</sources>
                     <destination>${basedir}/target/generated-sources/model</destination>
-                    <sdkPackagePrefix>my.test</sdkPackagePrefix>
-                    <generateSdkGuice>true</generateSdkGuice>
                     <saveModels>true</saveModels>
                 </configuration>
             </plugin>
