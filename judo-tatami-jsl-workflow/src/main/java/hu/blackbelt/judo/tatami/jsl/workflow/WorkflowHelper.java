@@ -32,7 +32,6 @@ import hu.blackbelt.judo.meta.rdbms.support.RdbmsModelResourceSupport;
 import hu.blackbelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork;
-import hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork;
 import hu.blackbelt.judo.tatami.expression.asm.validation.ExpressionValidationOnAsmWork;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmWork;
 import hu.blackbelt.judo.tatami.psm.validation.PsmValidationWork;
@@ -64,8 +63,6 @@ import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.LoadArguments.rdbm
 import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport.registerRdbmsDataTypesMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
-import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.*;
-import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.verifySdkInternalStream;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ConditionalFlow.Builder.aNewConditionalFlow;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static java.util.Optional.of;
@@ -266,49 +263,7 @@ public class WorkflowHelper {
         if (sdk == null && sdkSourceURI == null || sdkInternal == null && sdkInternalSourceURI == null ) {
             return;
         }
-        Asm2SDKWorkParameter params =
-                transformationContext.getByClass(Asm2SDKWorkParameter.class)
-                        .orElseGet(() -> Asm2SDKWorkParameter.asm2SDKWorkParameter().build());
-
-        putSdkStream(transformationContext, ofNullable(sdk).orElseGet(
-                ThrowingSupplier.sneaky(() -> of(sdkSourceURI).orElseThrow(() ->
-                                new IllegalArgumentException("sdk or sdkSourceURI have to be defined"))
-                        .toURL().openStream())));
-
-        putSdkInternalStream(transformationContext, ofNullable(sdkInternal).orElseGet(
-                ThrowingSupplier.sneaky(() -> of(sdkInternalSourceURI).orElseThrow(() ->
-                                new IllegalArgumentException("sdkInternal or sdkInternalSourceURI have to be defined"))
-                        .toURL().openStream())));
-
-        if (params.getGenerateGuice()) {
-            putSdkGuiceStream(transformationContext, ofNullable(sdkGuice).orElseGet(
-                    ThrowingSupplier.sneaky(() -> of(sdkGuiceSourceURI).orElseThrow(() ->
-                                    new IllegalArgumentException("sdkGuice or sdkGuiceSourceURI have to be defined"))
-                            .toURL().openStream())));
-
-        }
-
-        if (params.getGenerateSpring()) {
-            putSdkSpringStream(transformationContext, ofNullable(sdkSpring).orElseGet(
-                    ThrowingSupplier.sneaky(() -> of(sdkSpringSourceURI).orElseThrow(() ->
-                                    new IllegalArgumentException("sdkGuice or sdkGuiceSourceURI have to be defined"))
-                            .toURL().openStream())));
-
-        }
-
     }
-
-
-//    public Work createJslValidateWork() {
-//        return aNewConditionalFlow()
-//                .named("Conditional when Jsl model exists then Execute JslValidation")
-//                .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyClassPresent(JslDslModel.class)))
-//                .when(WorkReportPredicate.COMPLETED)
-//                .then(
-//                        new JslDslValidationWork(transformationContext).withMetricsCollector(workflowMetrics))
-//                .otherwise(new NoOpWork())
-//                .build();
-//    }
 
     public Work createPsmValidateWork() {
         return aNewConditionalFlow()
@@ -409,33 +364,6 @@ public class WorkflowHelper {
                                                 ).filter(Optional::isPresent).map(Optional::get).toArray(Work[]::new)
                                         ).build(),
                                         new CheckWork(asm2ExpressionOutputPredicate())
-                                )
-                                .build()
-                )
-                .otherwise(new NoOpWork())
-                .build();
-    }
-
-    public Supplier<Boolean> asm2SDKPredicate() {
-        return () -> verifySdkStream(transformationContext) && verifySdkInternalStream(transformationContext);
-    }
-
-    public Supplier<Boolean> asm2SDKOutputPredicate() {
-        return () -> asm2SDKPredicate().get() || transformationContext.getByClass(Asm2SDKWork.Asm2SDKWorkParameter.class).orElseGet(() -> Asm2SDKWork.Asm2SDKWorkParameter.asm2SDKWorkParameter().build()).getOutputDirectory() != null;
-    }
-
-    public Work createAsm2SDKWork() {
-
-        return     aNewConditionalFlow()
-                .named("Conditional when Asm model exists then Execute Asm2SDK")
-                .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyClassPresent(AsmModel.class)))
-                .when(WorkReportPredicate.COMPLETED)
-                .then(
-                        aNewSequentialFlow()
-                                .named("Execute Asm2SDK")
-                                .execute(
-                                        new Asm2SDKWork(transformationContext).withMetricsCollector(workflowMetrics),
-                                        new CheckWork(asm2SDKOutputPredicate())
                                 )
                                 .build()
                 )

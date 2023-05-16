@@ -353,12 +353,6 @@
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-asm2sdk</artifactId>
-                <version>${judo-tatami-base-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-psm2asm</artifactId>
                 <version>${judo-tatami-base-version}</version>
             </dependency>
