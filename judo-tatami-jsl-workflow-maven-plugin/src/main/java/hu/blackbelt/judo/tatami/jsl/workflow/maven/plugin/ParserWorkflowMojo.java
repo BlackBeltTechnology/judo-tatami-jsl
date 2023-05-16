@@ -87,36 +87,6 @@ public class ParserWorkflowMojo extends AbstractMojo {
     @Parameter(property = "boolean", defaultValue = "false")
     public Boolean useDependencies = false;
 
-    @Parameter(property = "createSdkJar", defaultValue = "false")
-    public Boolean createSdkJar = false;
-
-    @Parameter(property = "compileSdk", defaultValue = "false")
-    public Boolean compileSdk = false;
-
-    @Parameter(property = "sdkOutputDirectory")
-    private File sdkOutputDirectory = null;
-
-    @Parameter(property = "sdkPackagePrefix")
-    private String sdkPackagePrefix = null;
-
-    @Parameter(property = "sdkAddSourceToJar", defaultValue = "true")
-    private Boolean sdkAddSourceToJar = true;
-
-    @Parameter(property = "generateSdk", defaultValue = "true")
-    private Boolean generateSdk = true;
-
-    @Parameter(property = "generateSdkInternal", defaultValue = "true")
-    private Boolean generateSdkInternal = true;
-
-    @Parameter(property = "generateSdkGuice", defaultValue = "false")
-    private Boolean generateSdkGuice = false;
-
-    @Parameter(property = "generateSdkSpring", defaultValue = "false")
-    private Boolean generateSdkSpring = false;
-
-    @Parameter(property = "generateOptionalTypes", defaultValue = "true")
-    private Boolean generateOptionalTypes = true;
-
     @Parameter(property = "ignorePsm2Asm", defaultValue = "false")
     public Boolean ignorePsm2Asm = false;
 
@@ -137,9 +107,6 @@ public class ParserWorkflowMojo extends AbstractMojo {
 
     @Parameter(property = "ignoreRdbms2Liquibase", defaultValue = "false")
     public Boolean ignoreRdbms2Liquibase = false;
-
-    @Parameter(property = "ignoreAsm2sdk", defaultValue = "false")
-    public Boolean ignoreAsm2sdk = false;
 
     @Parameter(property = "ignoreAsm2Expression", defaultValue = "false")
     public Boolean ignoreAsm2Expression = false;
@@ -303,19 +270,6 @@ public class ParserWorkflowMojo extends AbstractMojo {
                                 .collect(Collectors.toList()));
 
                 DefaultWorkflow defaultWorkflow;
-                File sdkOutputDirectory = this.sdkOutputDirectory;
-                if (destination != null && this.sdkOutputDirectory == null) {
-                    sdkOutputDirectory = new File(new File(destination, "sdk"), modelName.replaceAll("::", "_"));
-                    sdkOutputDirectory.mkdirs();
-                }
-
-                String packagePrefix = sdkPackagePrefix;
-                if (packagePrefix == null) {
-                    packagePrefix = "";
-                } else if (!packagePrefix.endsWith(".")) {
-                    packagePrefix = packagePrefix + ".";
-                }
-                packagePrefix = packagePrefix + modelName.replaceAll("::", ".").toLowerCase() + ".";
 
                 DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder parameters =
                         DefaultWorkflowSetupParameters
@@ -327,7 +281,6 @@ public class ParserWorkflowMojo extends AbstractMojo {
                                 .ignorePsm2Asm(ignorePsm2Asm)
                                 .ignorePsm2Measure(ignorePsm2Measure)
                                 .ignoreAsm2Rdbms(ignoreAsm2Rdbms)
-                                .ignoreAsm2sdk(ignoreAsm2sdk)
                                 .ignoreAsm2Expression(ignoreAsm2Expression)
                                 .ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
                                 .ignorePsm2AsmTrace(ignorePsm2AsmTrace)
@@ -336,17 +289,7 @@ public class ParserWorkflowMojo extends AbstractMojo {
                                 .ignoreJsl2PsmTrace(ignoreJsl2PsmTrace)
                                 .validateModels(validateModels)
                                 .modelName(modelName)
-                                .dialectList(dialects)
-                                .compileSdk(compileSdk)
-                                .createSdkJar(createSdkJar)
-                                .sdkOutputDirectory(sdkOutputDirectory)
-                                .sdkPackagePrefix(packagePrefix)
-                                .addSourceToJar(sdkAddSourceToJar)
-                                .generateSdk(generateSdk)
-                                .generateInternal(generateSdkInternal)
-                                .generateGuice(generateSdkGuice)
-                                .generateSpring(generateSdkSpring)
-                                .generateOptionalTypes(generateOptionalTypes);
+                                .dialectList(dialects);
 
                 defaultWorkflow = new DefaultWorkflow(parameters);
 

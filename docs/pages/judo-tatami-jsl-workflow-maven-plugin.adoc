@@ -57,7 +57,7 @@ JSL -> PSM: Jsl2Psm
 PSM -> ASM: Psm2Asm
 PSM -> Measure: Psm2Measure
 ASM -> RDBMS: Asm2Rdbms (hsqldb, postgresql)
-ASM -> SDK: Asm2Sdk (hsqldb, postgresql)
+PSM -> SDK: Psm2Sdk (hsqldb, postgresql)
 RDBMS -> Liquibase: Rdbms2Liquibase (hsqldb, postgresql)
 
 @enduml
@@ -103,7 +103,6 @@ the correct measurement handling.
         <ignoreAsm2Rdbms>false</ignoreAsm2Rdbms> <!--14-->
         <ignoreAsm2RdbmsTrace>false</ignoreAsm2RdbmsTrace> <!--15-->
         <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase> <!--16-->
-        <ignoreAsm2sdk>false</ignoreAsm2sdk> <!--17-->
         <ignoreAsm2Expression>false</ignoreAsm2Expression> <!--18-->
         <runInParallel>true</runInParallel> <!--19-->
         <saveModels>true</saveModels> <!--20-->
@@ -201,11 +200,7 @@ Default: `false`
 +
 Default: `false`
 
-<17> (Optional) Ignore Asm2sdk work. 
-+
-Default: `false`
-
-<18> (Optional) Ignore Asm2Expression work. 
+<18> (Optional) Ignore Asm2Expression work.
 +
 Default: `false`
 
