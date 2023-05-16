@@ -65,7 +65,7 @@
         <judo-meta-jsl-version>1.0.3.20230419_151046_a3d6a5ee_develop</judo-meta-jsl-version>
         <judo-meta-rdbms-version>1.0.2.20230310_041341_56224215_develop</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.4.20230324_114617_9ab032bf_develop</judo-meta-jql-version>
-        <judo-meta-psm-version>1.3.0.20230516_011751_c962ac92_feature_JNG_4840_FixPayloadValidator</judo-meta-psm-version>
+        <judo-meta-psm-version>1.3.0.20230516_100351_2fb48f5a_develop</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.4.20230310_041340_c5dd0888_develop</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.5.20230331_085629_d1784f31_develop</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.2.20230310_041415_ea38c15a_develop</judo-meta-liquibase-version>
@@ -73,10 +73,10 @@
         <judo-sdk-common-version>1.0.4.20230330_222100_3c176073_develop</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20230324_114642_660d83a9_develop</judo-operation-utils-version>
-        <judo-runtime-core-version>1.0.6.20230516_012728_6add8c42_feature_JNG_4840_FixPayloadValidator</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20230516_101259_765b6a3a_develop</judo-runtime-core-version>
         <structured-map-proxy-version>2.0.0.20230330_221859_8a965acd_develop</structured-map-proxy-version>
 
-        <judo-tatami-base-version>1.1.6.20230516_012322_3c120fd1_feature_JNG_4840_FixPayloadValidator</judo-tatami-base-version>
+        <judo-tatami-base-version>1.1.6.20230516_100846_d859bb3e_develop</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20230313_135716_09605f6a_develop</judo-tatami-core-version>
 
         <!-- Code Quality-->
