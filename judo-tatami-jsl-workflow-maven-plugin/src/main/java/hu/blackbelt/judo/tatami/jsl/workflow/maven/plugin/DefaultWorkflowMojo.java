@@ -129,9 +129,6 @@ public class DefaultWorkflowMojo extends AbstractMojo {
     @Parameter(property = "ignoreRdbms2Liquibase", defaultValue = "false")
     private Boolean ignoreRdbms2Liquibase = false;
 
-    @Parameter(property = "ignoreAsm2sdk", defaultValue = "false")
-    private Boolean ignoreAsm2sdk = false;
-
     @Parameter(property = "ignoreAsm2Expression", defaultValue = "false")
     private Boolean ignoreAsm2Expression = false;
 
@@ -273,7 +270,6 @@ public class DefaultWorkflowMojo extends AbstractMojo {
                         .ignorePsm2Asm(ignorePsm2Asm)
                         .ignorePsm2Measure(ignoreAsm2Measure)
                         .ignoreAsm2Rdbms(ignoreAsm2Rdbms)
-                        .ignoreAsm2sdk(ignoreAsm2sdk)
                         .ignoreAsm2Expression(ignoreAsm2Expression)
                         .ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
                         .ignorePsm2AsmTrace(ignorePsm2AsmTrace)
@@ -281,14 +277,7 @@ public class DefaultWorkflowMojo extends AbstractMojo {
                         .ignoreAsm2RdbmsTrace(ignoreAsm2RdbmsTrace)
                         .validateModels(validateModels)
                         .modelName(modelName)
-                        .dialectList(dialectList)
-                        .addSourceToJar(sdkAddSourceToJar)
-                        .generateSdk(generateSdk)
-                        .generateInternal(generateSdkInternal)
-                        .generateGuice(generateSdkGuice)
-                        .generateSpring(generateSdkSpring)
-                        .generateOptionalTypes(generateOptionalTypes)
-                        .generateDaoPayloadValidator(generateSdkPayloadValidator);
+                        .dialectList(dialectList);
 
         defaultWorkflow = new DefaultWorkflow(parameters);
 
