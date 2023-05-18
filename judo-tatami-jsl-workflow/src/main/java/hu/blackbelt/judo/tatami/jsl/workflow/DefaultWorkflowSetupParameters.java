@@ -57,36 +57,6 @@ public class DefaultWorkflowSetupParameters {
     private List<String> dialectList;
 
     @Builder.Default
-    private Boolean createSdkJar = true;
-
-    @Builder.Default
-    private Boolean compileSdk = true;
-
-    @Builder.Default
-    private File sdkOutputDirectory = null;
-
-    @Builder.Default
-    private String sdkPackagePrefix = null;
-
-    @Builder.Default
-    private Boolean addSourceToJar = true;
-
-    @Builder.Default
-    private Boolean generateSdk = true;
-
-    @Builder.Default
-    private Boolean generateInternal = true;
-
-    @Builder.Default
-    private Boolean generateGuice = false;
-
-    @Builder.Default
-    private Boolean generateSpring = false;
-
-    @Builder.Default
-    private Boolean generateOptionalTypes = true;
-
-    @Builder.Default
     private Boolean runInParallel = true;
 
     @Builder.Default
@@ -120,15 +90,9 @@ public class DefaultWorkflowSetupParameters {
     private Boolean ignoreRdbms2Liquibase = false;
 
     @Builder.Default
-    private Boolean ignoreAsm2sdk = false;
-
-    @Builder.Default
     private Boolean ignoreAsm2Expression = false;
 
     @Builder.Default
     private Boolean validateModels = false;
-
-    @Builder.Default
-    private Boolean generateDaoPayloadValidator = true;
 
 }

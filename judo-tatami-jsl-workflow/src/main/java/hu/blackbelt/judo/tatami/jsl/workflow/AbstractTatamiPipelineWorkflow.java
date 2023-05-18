@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork.Asm2RdbmsWorkParameter.asm2RdbmsWorkParameter;
-import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.Asm2SDKWorkParameter.asm2SDKWorkParameter;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
@@ -80,19 +79,6 @@ public abstract class AbstractTatamiPipelineWorkflow {
         transformationContext.put(psm2AsmWorkParameter().createTrace(!parameters.getIgnorePsm2AsmTrace()).build());
         transformationContext.put(asm2RdbmsWorkParameter().createTrace(!parameters.getIgnoreAsm2Rdbms()).build());
 
-        transformationContext.put(asm2SDKWorkParameter()
-                .compile(parameters.getCompileSdk())
-                .createJar(parameters.getCreateSdkJar())
-                .packagePrefix(parameters.getSdkPackagePrefix())
-                .addSourceToJar(parameters.getAddSourceToJar())
-                .generateSdk(parameters.getGenerateSdk())
-                .generateInternal(parameters.getGenerateInternal())
-                .generateGuice(parameters.getGenerateGuice())
-                .generateSpring(parameters.getGenerateSpring())
-                .generateOptionalTypes(parameters.getGenerateOptionalTypes())
-                .generatePayloadValidator(parameters.getGenerateDaoPayloadValidator())
-                .outputDirectory(parameters.getSdkOutputDirectory()).build());
-
         loadModels(workflowHelper, metrics, transformationContext, parameters);
 
 //        Optional<Work> validateJslWork = parameters.getValidateModels() && verifier.verifyClassPresent(JslDslModel.class) ?
@@ -118,10 +104,6 @@ public abstract class AbstractTatamiPipelineWorkflow {
         Optional<Work> createExpressionWork = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2Expression() || workflowHelper.asm2ExpressionOutputPredicate().get() ?
                 Optional.empty() :
                 Optional.of(workflowHelper.createAsm2ExpressionWork(parameters.getValidateModels()));
-
-        Optional<Work> createSDKWork = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2sdk() || workflowHelper.asm2SDKPredicate().get() ?
-                Optional.empty() :
-                Optional.of(workflowHelper.createAsm2SDKWork());
 
         Stream<Optional<Work>> createRdbmsWorks = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2Rdbms() ?
                 Stream.empty() :
@@ -166,7 +148,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
                                     aNewParallelFlow()
                                             .named("Parallel ASM Transformations")
                                             .execute(Stream.concat(
-                                                    Stream.of(createExpressionWork, createSDKWork),
+                                                    Stream.of(createExpressionWork),
                                                     createRdbmsWorks
                                             ))
                                             .build()),
@@ -188,8 +170,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
                                         createPsmWork,
                                         createMeasureWork,
                                         createAsmWork,
-                                        createExpressionWork,
-                                        createSDKWork),
+                                        createExpressionWork),
                                 Stream.concat(createRdbmsWorks, createLiquibaseWorks))
                             ).build();
         }
