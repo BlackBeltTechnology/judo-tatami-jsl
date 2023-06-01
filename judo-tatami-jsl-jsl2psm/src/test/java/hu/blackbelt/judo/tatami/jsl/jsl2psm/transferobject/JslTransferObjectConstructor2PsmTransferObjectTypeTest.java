@@ -26,9 +26,8 @@ import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.derived.DataProperty;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
 import hu.blackbelt.judo.meta.psm.derived.StaticData;
-import hu.blackbelt.judo.meta.psm.derived.StaticNavigation;
-import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
-import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
+import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
+import hu.blackbelt.judo.meta.psm.service.*;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,11 +40,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.isNull;
 
 @Slf4j
 public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends AbstractTest {
@@ -149,7 +147,7 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         DataProperty mappedAttributeEntityDefaultDefault = assertDataProperty("_Entity", "_attribute_Default_Entity");
         assertEquals("1", mappedAttributeEntityDefaultDefault.getGetterExpression().getExpression());
         assertEquals(mappedAttributeEntityDefaultDefault, mappedAttributeEntityDefault.getDefaultValue());
-        TransferAttribute mappedAttributeEntityDefaultDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedAttributeEntityDefault_Default_Mapped");
+        TransferAttribute mappedAttributeEntityDefaultDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedAttributeEntityDefault_Default_Entity");
         assertEquals(mappedAttributeEntityDefaultDefaultAttribute.getBinding(), mappedAttributeEntityDefaultDefault);
 
         TransferAttribute mappedIdentifierEntityDefault = assertMappedTransferObjectAttribute("Mapped", "mappedIdentifierEntityDefault");
@@ -159,7 +157,7 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         DataProperty mappedIdentifierEntityDefaultDefault = assertDataProperty("_Entity", "_identifier_Default_Entity");
         assertEquals("1", mappedIdentifierEntityDefaultDefault.getGetterExpression().getExpression());
         assertEquals(mappedIdentifierEntityDefaultDefault, mappedIdentifierEntityDefault.getDefaultValue());
-        TransferAttribute mappedIdentifierEntityDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedIdentifierEntityDefault_Default_Mapped");
+        TransferAttribute mappedIdentifierEntityDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedIdentifierEntityDefault_Default_Entity");
         assertEquals(mappedIdentifierEntityDefaultAttribute.getBinding(), mappedIdentifierEntityDefaultDefault);
 
         TransferAttribute mappedEnumEntityDefault = assertMappedTransferObjectAttribute("Mapped", "mappedEnumEntityDefault");
@@ -169,7 +167,7 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         DataProperty mappedEnumEntityDefaultDefault = assertDataProperty("_Entity", "_enum_Default_Entity");
         assertEquals("TransferObjectConstructorModel::TransferObjectConstructorModel::MyEnum#Bombastic", mappedEnumEntityDefaultDefault.getGetterExpression().getExpression());
         assertEquals(mappedEnumEntityDefaultDefault, mappedEnumEntityDefault.getDefaultValue());
-        TransferAttribute mappedEnumEntityDefaultDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedEnumEntityDefault_Default_Mapped");
+        TransferAttribute mappedEnumEntityDefaultDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedEnumEntityDefault_Default_Entity");
         assertEquals(mappedEnumEntityDefaultDefaultAttribute.getBinding(), mappedEnumEntityDefaultDefault);        
 
         TransferAttribute mappedEnumAncestorEntityDefault = assertMappedTransferObjectAttribute("Mapped", "mappedEnumAncestorEntityDefault");
@@ -179,7 +177,7 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         DataProperty mappedEnumAncestorEntityDefaultDefault = assertDataProperty("_EntityAncestor", "_enumAncestor_Default_EntityAncestor");
         assertEquals("TransferObjectConstructorModel::TransferObjectConstructorModel::MyEnum#Atomic", mappedEnumAncestorEntityDefaultDefault.getGetterExpression().getExpression());
         assertEquals(mappedEnumAncestorEntityDefaultDefault, mappedEnumAncestorEntityDefault.getDefaultValue());
-        TransferAttribute mappedEnumAncestorEntityDefaultDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedEnumAncestorEntityDefault_Default_Mapped");
+        TransferAttribute mappedEnumAncestorEntityDefaultDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedEnumAncestorEntityDefault_Default_EntityAncestor");
         assertEquals(mappedEnumAncestorEntityDefaultDefaultAttribute.getBinding(), mappedEnumAncestorEntityDefaultDefault);        
 
         TransferAttribute mappedAttributeAncestorEntityDefault = assertMappedTransferObjectAttribute("Mapped", "mappedAttributeAncestorEntityDefault");
@@ -189,7 +187,7 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         DataProperty mappedAttributeAncestorEntityDefaultDefault = assertDataProperty("_EntityAncestor", "_attributeAncestor_Default_EntityAncestor");
         assertEquals("(-1)", mappedAttributeAncestorEntityDefaultDefault.getGetterExpression().getExpression());
         assertEquals(mappedAttributeAncestorEntityDefaultDefault, mappedAttributeAncestorEntityDefault.getDefaultValue());
-        TransferAttribute mappedAttributeAncestorEntityDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedAttributeAncestorEntityDefault_Default_Mapped");
+        TransferAttribute mappedAttributeAncestorEntityDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedAttributeAncestorEntityDefault_Default_EntityAncestor");
         assertEquals(mappedAttributeAncestorEntityDefaultAttribute.getBinding(), mappedAttributeAncestorEntityDefaultDefault);
 
         TransferAttribute mappedIdentifierAncestorEntityDefault = assertMappedTransferObjectAttribute("Mapped", "mappedIdentifierAncestorEntityDefault");
@@ -199,7 +197,7 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         DataProperty mappedIdentifierAncestorEntityDefaultDefault = assertDataProperty("_EntityAncestor", "_identifierAncestor_Default_EntityAncestor");
         assertEquals("(-1)", mappedIdentifierAncestorEntityDefaultDefault.getGetterExpression().getExpression());
         assertEquals(mappedIdentifierAncestorEntityDefaultDefault, mappedIdentifierAncestorEntityDefault.getDefaultValue());
-        TransferAttribute mappedIdentifierAncestorEntityDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedIdentifierAncestorEntityDefault_Default_Mapped");
+        TransferAttribute mappedIdentifierAncestorEntityDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedIdentifierAncestorEntityDefault_Default_EntityAncestor");
         assertEquals(mappedIdentifierAncestorEntityDefaultAttribute.getBinding(), mappedIdentifierAncestorEntityDefaultDefault);
 
         
