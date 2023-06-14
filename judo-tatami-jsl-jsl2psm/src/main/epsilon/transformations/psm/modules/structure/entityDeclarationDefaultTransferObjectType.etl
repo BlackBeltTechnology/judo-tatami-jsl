@@ -23,38 +23,35 @@ rule CreateEntityDefaultTransferObjectType
             var inheritedMembers = entity.getInheritedMembers();
 
             for (im in inheritedMembers) {
-                // Identifier attribute
-                if (im.isKindOf(JSL!EntityIdentifierDeclaration)) {
-                    t.attributes.add(im.equivalentWithPrefix("CloneIdentifierTransferAttributeForDefaultTransferObjectType", t.getId()));
                 // Field attribute
-                } else if (im.isKindOf(JSL!EntityFieldDeclaration)) {
+                if (im.isKindOf(JSL!EntityStoredFieldDeclaration)) {
                     // Primitive attributes
-                    if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
+                    if (im.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
                         t.attributes.add(im.equivalentWithPrefix("CloneTransferAttributeForDefaultTransferObjectType", t.getId()));
-                        if (im.defaultExpression.isDefined()) {
-                            t.attributes.add(im.defaultExpression.equivalentWithPrefix("CloneTransferDefaultValueAttributeForDefaultTransferObjectType", t.getId()));
+                        if (im.defaultExpr.isDefined()) {
+                            t.attributes.add(im.defaultExpr.equivalentWithPrefix("CloneTransferDefaultValueAttributeForDefaultTransferObjectType", t.getId()));
                         }
                     // Embedded relations
-                    } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
+                    } else if (im.getReferenceType().isKindOf(JSL!EntityDeclaration)) {
                         t.relations.add(im.equivalentWithPrefix("CloneTransferObjectEmbeddedRelationForDefaultTransferObjectType", t.getId()));
                     }
                 // Relations
-                } else if (im.isKindOf(JSL!EntityRelationDeclaration)) {
+                } else if (im.isKindOf(JSL!EntityStoredRelationDeclaration)) {
                     t.relations.add(im.equivalentWithPrefix("CloneTransferObjectAssociatedRelationForDefaultTransferObjectType", t.getId()));
                 // Derives
-                } else if (im.isKindOf(JSL!EntityDerivedDeclaration)) {
+                } else if (im.isKindOf(JSL!EntityCalculatedMemberDeclaration)) {
                     // Primitive derives
-                    if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
+                    if (im.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
                         t.attributes.add(im.equivalentWithPrefix("CloneDerivedTransferAttributeForDefaultTransferObjectType", t.getId()));
-                    } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
+                    } else if (im.getReferenceType().isKindOf(JSL!EntityDeclaration)) {
                         t.relations.add(im.equivalentWithPrefix("CloneTransferObjectDerivedRelationForDefaultTransferObjectType", t.getId()));
                     }
                 // Entity queries
                 } else if (im.isKindOf(JSL!EntityQueryDeclaration)) {
                     // Primitive derives
-                    if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
+                    if (im.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
                         t.attributes.add(im.equivalentWithPrefix("CloneEntityQueryTransferAttributeForDefaultTransferObjectType", t.getId()));
-                    } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
+                    } else if (im.getReferenceType().isKindOf(JSL!EntityDeclaration)) {
                         t.relations.add(im.equivalentWithPrefix("CloneTransferObjectQueryRelationForDefaultTransferObjectType", t.getId()));
                     }
                 }
@@ -62,7 +59,7 @@ rule CreateEntityDefaultTransferObjectType
             }
 
             // Opposite added relation
-            for (o in JSL!EntityRelationOppositeInjected.all().select(o | o.eContainer.referenceType == entity)) {
+            for (o in JSL!EntityRelationOppositeInjected.all().select(o | o.eContainer.getReferenceType() == entity)) {
                 t.relations.add(o.equivalent("CloneTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType"));
             }
         }

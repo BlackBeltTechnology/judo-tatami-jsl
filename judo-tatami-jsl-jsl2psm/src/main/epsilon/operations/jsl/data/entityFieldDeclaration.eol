@@ -1,4 +1,4 @@
 @cached
-operation JSL!EntityFieldDeclaration getId(): String {
+operation JSL!EntityStoredFieldDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }

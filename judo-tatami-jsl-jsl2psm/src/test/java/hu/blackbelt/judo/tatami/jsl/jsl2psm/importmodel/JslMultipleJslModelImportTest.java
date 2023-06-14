@@ -78,7 +78,7 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
         jslModel = JslParser.getModelFromStrings("ns2::c", ImmutableList.of(
                 "model ns1::a;\n"
                 + "\n"
-                + "type string String(min-size = 0, max-size = 32);",
+                + "type string String min-size:0 max-size:32;",
 
                 "model ns2::b;\n"
                 + "\n"

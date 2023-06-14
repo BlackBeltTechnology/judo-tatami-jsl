@@ -27,26 +27,26 @@ rule CreateAutoMappedTransferObjectType
 
             for (im in inheritedMembers) {
                 // Identifier attribute
-                if (im.isKindOf(JSL!EntityIdentifierDeclaration)) {
-                    t.attributes.add(im.equivalentWithPrefix("CloneIdentifierTransferAttributeForAutoMappedTransferObjectType", t.getId()));
+//                if (im.isKindOf(JSL!EntityIdentifierDeclaration)) {
+//                    t.attributes.add(im.equivalentWithPrefix("CloneIdentifierTransferAttributeForAutoMappedTransferObjectType", t.getId()));
                 // Field attribute
-                } else if (im.isKindOf(JSL!EntityFieldDeclaration)) {
+                if (im.isKindOf(JSL!EntityStoredFieldDeclaration)) {
                     // Primitive attributes
-                    if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
+                    if (im.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
                         t.attributes.add(im.equivalentWithPrefix("CloneTransferAttributeForAutoMappedTransferObjectType", t.getId()));
-                        if (im.defaultExpression.isDefined()) {
-                            t.attributes.add(im.defaultExpression.equivalentWithPrefix("CloneTransferDefaultValueAttributeForAutoMappedTransferObjectType", t.getId()));
+                        if (im.defaultExpr.isDefined()) {
+                            t.attributes.add(im.defaultExpr.equivalentWithPrefix("CloneTransferDefaultValueAttributeForAutoMappedTransferObjectType", t.getId()));
                         }
                     // Embedded relations
-                    } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
+                    } else if (im.getReferenceType().isKindOf(JSL!EntityDeclaration)) {
                         t.relations.add(im.equivalentWithPrefix("CloneTransferObjectEmbeddedRelationForAutoMappedTransferObjectType", t.getId()));
                     }
                 // Derives
-                } else if (im.isKindOf(JSL!EntityDerivedDeclaration)) {
+                } else if (im.isKindOf(JSL!EntityCalculatedMemberDeclaration)) {
                     // Primitive derived
-                    if (im.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
+                    if (im.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
                         t.attributes.add(im.equivalentWithPrefix("CloneDerivedTransferAttributeForAutoMappedTransferObjectType", t.getId()));
-                    } else if (im.referenceType.isKindOf(JSL!EntityDeclaration)) {
+                    } else if (im.getReferenceType().isKindOf(JSL!EntityDeclaration)) {
                         t.relations.add(im.equivalentWithPrefix("CloneTransferObjectDerivedRelationForAutoMappedTransferObjectType", t.getId()));
                     }
                 }

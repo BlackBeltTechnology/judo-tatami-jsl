@@ -1,4 +1,4 @@
-@cached
-operation JSL!EntityQueryDeclaration getId(): String {
-    return (self.eContainer.getId() + "/" + self.name);
-}
+//@cached
+//operation JSL!EntityQueryDeclaration getId(): String {
+//    return (self.eContainer.getId() + "/" + self.name);
+//}
