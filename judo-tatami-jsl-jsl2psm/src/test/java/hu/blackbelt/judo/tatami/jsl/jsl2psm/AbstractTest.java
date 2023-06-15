@@ -120,7 +120,7 @@ abstract public class AbstractTest {
             }
         }
 
-        jslModel.saveJslDslModel(jslDslSaveArgumentsBuilder().file(new File(getTargetTestClasses(), testName + "-jsl.model")));
+        jslModel.saveJslDslModel(jslDslSaveArgumentsBuilder().validateModel(false).file(new File(getTargetTestClasses(), testName + "-jsl.model")));
 
         if (psmModel != null) {
             psmModel.savePsmModel(psmSaveArgumentsBuilder().validateModel(false).file(new File(getTargetTestClasses(), testName + "-psm.model")));

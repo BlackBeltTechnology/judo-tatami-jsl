@@ -3,7 +3,7 @@ rule CreateNamedOppositeAssociationEnd
     to t: JUDOPSM!AssociationEnd
     {
         var relationAddedFrom = s.eContainer;
-        var entityToAdd = relationAddedFrom.referenceType;
+        var entityToAdd = relationAddedFrom.getReferenceType();
 
         t.setId("(jsl/" + s.getId() + ")/CreateNamedOppositeAssociationEnd");
         t.name = s.name;
@@ -20,14 +20,14 @@ rule CreateNamedOppositeAssociationEnd
     }
 
 rule CreateDeclaredAssociationEnd
-    transform s: JSL!EntityRelationDeclaration
+    transform s: JSL!EntityStoredRelationDeclaration
     to t: JUDOPSM!AssociationEnd
     {
-        guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+        guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration)
 
         t.setId("(jsl/" + s.getId() + ")/CreateDeclaredAssociationEnd");
         t.name = s.name;
-        t.target = s.referenceType.getPSMEquivalent();
+        t.target = s.getReferenceType().getPSMEquivalent();
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForRelationDeclaration", t.getId());
 
         // Reverse cascade delete not supported yet

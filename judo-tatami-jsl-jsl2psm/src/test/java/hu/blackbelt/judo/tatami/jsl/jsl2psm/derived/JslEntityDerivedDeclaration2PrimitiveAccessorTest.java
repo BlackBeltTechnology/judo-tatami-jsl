@@ -71,13 +71,13 @@ public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractT
                 "PrimitiveDerivedDeclarationModel",
                 List.of("model PrimitiveDerivedDeclarationModel;\n" +
                         "\n" +
-                        "type numeric Integer(precision = 9, scale = 0);\n" +
+                        "type numeric Integer precision:9 scale:0;\n" +
                         "entity Lead {\n" +
                         "  field Integer value;\n" +
                         "}\n" +
                         "entity Test {\n" +
                         "  relation Lead[] leads;\n" +
-                        "  derived Integer value => self.leads!size();\n" +
+                        "  field Integer value <= self.leads!size();\n" +
                         "}\n" +
                         "entity TestExtended extends Test {\n" +
                         "}\n"
