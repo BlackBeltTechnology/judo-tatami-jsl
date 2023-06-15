@@ -96,24 +96,22 @@ rule CloneTransferAttributeForDefaultTransferObjectType
 
 @abstract
 rule AbstractCreateDerivedTransferAttributeForDefaultTransferObjectType
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityCalculatedFieldDeclaration
     to t : JUDOPSM!TransferAttribute {
-        guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)
+        guard: generateDefaultTransferObject and not s.isQuery()
+
         t.name = s.name;
-        if (s.isQuery()) {
-	        t.binding = s.equivalent("CreateDataPropertyForEntityQuery");
-        } else {
-	        t.binding = s.equivalent("CreateDataProperty");
-        }
+        t.binding = s.equivalent("CreateDataProperty");
         t.dataType = s.getReferenceType().getPSMEquivalent();
 }
 
 @greedy
 rule CreateDerivedTransferAttributeForDefaultTransferObjectType
-    transform s: JSL!EntityCalculatedMemberDeclaration
+    transform s: JSL!EntityCalculatedFieldDeclaration
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateDerivedTransferAttributeForDefaultTransferObjectType {
-        guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)
+        guard: generateDefaultTransferObject and not s.isQuery()
+
         t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttributeForDefaultTransferObjectType");
 
         s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
@@ -123,9 +121,11 @@ rule CreateDerivedTransferAttributeForDefaultTransferObjectType
 @lazy
 @greedy
 rule CloneDerivedTransferAttributeForDefaultTransferObjectType
-    transform s: JSL!EntityCalculatedMemberDeclaration
+    transform s: JSL!EntityCalculatedFieldDeclaration
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateDerivedTransferAttributeForDefaultTransferObjectType {
+        guard: generateDefaultTransferObject and not s.isQuery()
+
         t.setId("(jsl/" + s.getId() + ")/CloneDerivedTransferAttributeForDefaultTransferObjectType");
         log.debug("Clone TransferAttribute (Derived) for DefaultTransferObjectType: [" + t.name + "]");
 }
@@ -134,38 +134,42 @@ rule CloneDerivedTransferAttributeForDefaultTransferObjectType
 // Entity Query (Primitive)
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-//@abstract
-//rule AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType
-//    transform s : JSL!EntityQueryDeclaration
-//    to t : JUDOPSM!TransferAttribute {
-//        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
-//        t.name = s.name;
-//        t.binding = s.equivalent("CreateDataPropertyForEntityQuery");
-//        t.dataType = s.referenceType.getPSMEquivalent();
-//}
-//
-//@greedy
-//rule CreateEntityQueryTransferAttributeForDefaultTransferObjectType
-//    transform s: JSL!EntityQueryDeclaration
-//    to t: JUDOPSM!TransferAttribute
-//    extends AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType {
-//        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
-//        t.setId("(jsl/" + s.getId() + ")/CreateEntityQueryTransferAttributeForDefaultTransferObjectType");
-//
-//        s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
-//        log.debug("Created TransferAttribute (Entity Query) for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
-//}
-//
-//@lazy
-//@greedy
-//rule CloneEntityQueryTransferAttributeForDefaultTransferObjectType
-//    transform s: JSL!EntityQueryDeclaration
-//    to t: JUDOPSM!TransferAttribute
-//    extends AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType {
-//        t.setId("(jsl/" + s.getId() + ")/CloneEntityQueryTransferAttributeForDefaultTransferObjectType");
-//        log.debug("Clone TransferAttribute (Entity Query) for DefaultTransferObjectType: [" + t.name + "]");
-//}
-//
+@abstract
+rule AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType
+    transform s : JSL!EntityCalculatedFieldDeclaration
+    to t : JUDOPSM!TransferAttribute {
+        guard: generateDefaultTransferObject and s.isQuery()
+
+        t.name = s.name;
+        t.binding = s.equivalent("CreateDataPropertyForEntityQuery");
+        t.dataType = s.getReferenceType().getPSMEquivalent();
+}
+
+@greedy
+rule CreateEntityQueryTransferAttributeForDefaultTransferObjectType
+    transform s : JSL!EntityCalculatedFieldDeclaration
+    to t : JUDOPSM!TransferAttribute
+    extends AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType {
+        guard: generateDefaultTransferObject and s.isQuery()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateEntityQueryTransferAttributeForDefaultTransferObjectType");
+
+        s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
+        log.debug("Created TransferAttribute (Entity Query) for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@lazy
+@greedy
+rule CloneEntityQueryTransferAttributeForDefaultTransferObjectType
+    transform s : JSL!EntityCalculatedFieldDeclaration
+    to t : JUDOPSM!TransferAttribute
+    extends AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType {
+        guard: generateDefaultTransferObject and s.isQuery()
+
+        t.setId("(jsl/" + s.getId() + ")/CloneEntityQueryTransferAttributeForDefaultTransferObjectType");
+        log.debug("Clone TransferAttribute (Entity Query) for DefaultTransferObjectType: [" + t.name + "]");
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Primitive and Identifier default value

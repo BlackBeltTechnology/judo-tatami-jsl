@@ -161,8 +161,7 @@ rule CloneTransferObjectAssociatedRelationForDefaultTransferObjectType
 @abstract
 rule AbstractCreateTransferObjectDerivedRelationForDefaultTransferObjectType
     transform s : JSL!EntityCalculatedRelationDeclaration
-    to t : JUDOPSM!TransferObjectRelation
-    {
+    to t : JUDOPSM!TransferObjectRelation {
       guard: generateDefaultTransferObject and not s.isQuery()
     
       t.name = s.name;
