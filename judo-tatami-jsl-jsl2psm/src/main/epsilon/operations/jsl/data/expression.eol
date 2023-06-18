@@ -1,22 +1,32 @@
 @cached
 operation JSL!Expression isDefaultValueForEntity(): Boolean {
-    return (self.eContainer.isKindOf(JSL!EntityIdentifierDeclaration) or self.eContainer.isKindOf(JSL!EntityFieldDeclaration)) and self.eContainer.defaultExpression == self;
+    return self.eContainer.isKindOf(JSL!EntityStoredFieldDeclaration) and self.eContainer.defaultExpr == self;
 }
 
 @cached
 operation JSL!Expression isDefaultValueForError(): Boolean {
-    return self.eContainer.isKindOf(JSL!ErrorField) and self.eContainer.defaultExpression == self;
+    return self.eContainer.isKindOf(JSL!ErrorField) and self.eContainer.defaultExpr == self;
 }
 
 
 @cached
 operation JSL!Expression isExpressionForTransferFieldReads(): Boolean {
-    return self.eContainer.isKindOf(JSL!TransferFieldDeclaration) and self.eContainer.reads == self;
+    return self.eContainer.isKindOf(JSL!TransferFieldDeclaration) and self.eContainer.reads and self.eContainer.getterExpr == self;
 }
 
 @cached
 operation JSL!Expression isExpressionForTransferFieldMaps(): Boolean {
-    return self.eContainer.isKindOf(JSL!TransferFieldDeclaration) and self.eContainer.maps == self;
+    return self.eContainer.isKindOf(JSL!TransferFieldDeclaration) and self.eContainer.maps and self.eContainer.getterExpr == self;
+}
+
+@cached
+operation JSL!Expression isExpressionForTransferRelationReads(): Boolean {
+    return self.eContainer.isKindOf(JSL!TransferRelationDeclaration) and self.eContainer.reads and self.eContainer.getterExpr == self;
+}
+
+@cached
+operation JSL!Expression isExpressionForTransferRelationMaps(): Boolean {
+    return self.eContainer.isKindOf(JSL!TransferRelationDeclaration) and self.eContainer.maps and self.eContainer.getterExpr == self;
 }
 
 

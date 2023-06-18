@@ -70,7 +70,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 "DeclarationModel",
                 List.of("model DeclarationModel;\n" +
                         "\n" +
-                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB);\n"
+                        "type binary Picture mime-type:[\"image/png\", \"image/*\"] max-file-size:1024 KiB;\n"
                 )
         );
 
@@ -91,7 +91,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel;\n" +
                         "\n" +
-                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB);\n" +
+                        "type binary Picture mime-type:[\"image/png\", \"image/*\"] max-file-size:1024 KiB;\n" +
                         "\n" +
                         "entity User {\n" +
                         "\tfield required Picture profilePicture;\n" +
@@ -119,7 +119,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel;\n" +
                         "\n" +
-                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB);\n" +
+                        "type binary Picture mime-type:[\"image/png\", \"image/*\"] max-file-size:1024 KiB;\n" +
                         "\n" +
                         "entity User {\n" +
                         "\tfield Picture profilePicture;\n" +
@@ -149,7 +149,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
-                        "type binary Picture(mime-types = [\"image/png\", \"image/*\"], max-file-size = 1024 KiB);\n" +
+                        "type binary Picture mime-type : [\"image/png\", \"image/*\"] max-file-size : 1024 KiB;\n" +
                         "\n" +
                         "entity User {\n" +
                         "\tidentifier Picture profilePicture;\n" +

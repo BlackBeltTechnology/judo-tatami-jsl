@@ -1,8 +1,26 @@
 operation Any setId(id: String) {
-    self.eResource.setId(self, id);
+ 	if (id.isUndefined()) {
+ 		throw "ID is not defined" + self;
+ 	}
+ 	if (self.isUndefined()) {
+ 		throw "Could not determinate ID of " + self;
+ 	}
+ 	var r = self.eResource;
+    if (r.isUndefined()) {
+    	throw "Object is not added to resource " + self;
+    }
+    r.setId(self, id);
 }
 
 operation Any getId() : String {
-     return self.eResource.getId(self);
+ 	if (self.isUndefined()) {
+ 		throw "Could not determinate ID of " + self;
+ 	}
+ 	var r = self.eResource;
+    if (r.isUndefined()) {
+    	throw "Object is not added to resource " + self;
+    }
+
+    return r.getId(self);
 }
 

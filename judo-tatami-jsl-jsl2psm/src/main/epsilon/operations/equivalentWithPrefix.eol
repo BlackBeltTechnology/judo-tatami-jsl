@@ -7,8 +7,15 @@
 // created target to containers, so the best practice to create a special to clone.
 operation Any equivalentWithPrefix(transformation : String, prefix : String) : Any {
     var f = self.equivalent(transformation);
+    if (f.isUndefined()) {
+    	throw "Could not instantiate equivalent Rule: " + transformation + " Prefix: " + prefix;
+    }
     var id = f.getId();
     var r = f.eResource;
+    if (r.isUndefined()) {
+    	throw "Object is not added to resource Rule: " + transformation + " Prefix: " + prefix + " Id: " + id;
+    }
+
     if (f.eContainer != null) {
         f = ecoreUtil.copy(f);
         r.contents.add(f);
