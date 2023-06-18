@@ -1,6 +1,6 @@
 @lazy
 rule CreateCardinalityForRelationDeclaration
-    transform s: JSL!EntityRelationDeclaration
+    transform s: JSL!EntityStoredRelationDeclaration
     to t: JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForRelationDeclaration");
 
@@ -10,7 +10,7 @@ rule CreateCardinalityForRelationDeclaration
 
 @lazy
 rule CreateCardinalityForFieldDeclaration
-    transform s: JSL!EntityFieldDeclaration
+    transform s: JSL!EntityStoredFieldDeclaration
     to t: JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForFieldDeclaration");
 
@@ -31,10 +31,10 @@ rule CreateCardinalityForOppositeAddedRelation
 
 @lazy
 rule CreateCardinalityForDerivedDeclaration
-    transform s : JSL!EntityDerivedDeclaration
+    transform s : JSL!EntityCalculatedRelationDeclaration
     to t : JUDOPSM!Cardinality
     {
-      guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+      guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration)
 
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForDerivedDeclaration");
 
@@ -44,10 +44,10 @@ rule CreateCardinalityForDerivedDeclaration
 
 @lazy
 rule CreateCardinalityForEntityQueryDeclaration
-    transform s : JSL!EntityQueryDeclaration
+    transform s : JSL!EntityCalculatedRelationDeclaration
     to t : JUDOPSM!Cardinality
     {
-      guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+      guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!EntityDeclaration)
 
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForEntityQueryDeclaration");
 
@@ -70,13 +70,11 @@ rule CreateCardinalityForStaticQueryDeclaration
 
 
 @lazy
-rule CreateCardinalityForTransferFieldDeclaration
-    transform s : JSL!TransferFieldDeclaration
+rule CreateCardinalityForTransferRelationDeclaration
+    transform s : JSL!TransferRelationDeclaration
     to t : JUDOPSM!Cardinality
     {
-      guard: s.referenceType.isKindOf(JSL!TransferDeclaration)
-
-      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferFieldDeclaration");
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferRelationDeclaration");
 
       t.lower = s.isRequired and not s.isMany ? 1 : 0;
       t.upper = s.isMany ? -1 : 1;

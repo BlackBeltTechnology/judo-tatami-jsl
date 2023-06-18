@@ -1,7 +1,7 @@
 model UnmappedTransferObjectTypeModel;
 
-type string String(min-size = 0, max-size = 250);
-type numeric Integer(precision = 3, scale = 0);
+type string String min-size:0 max-size:250;
+type numeric Integer precision:3 scale:0;
 
 
 entity Entity {
@@ -9,7 +9,7 @@ entity Entity {
 }
 
 transfer MappedRelated maps Entity as e {
-	field Integer attributeMapped maps e.attribute;
+	field Integer attributeMapped <=> e.attribute;
 }
 
 transfer UnmappedRelated {
@@ -18,13 +18,13 @@ transfer UnmappedRelated {
 
 transfer Unmapped {
 	field String transient;
-	field required String required;
+	field required String `required`;
 
-	field Integer derived reads Entity!any().attribute;
+	field Integer derived <= Entity!any().attribute;
 
-    field UnmappedRelated unmappedRelated;
-    field required UnmappedRelated unmappedRelatedRequired;
-    field UnmappedRelated[] unmappedRelatedCollection;
+    relation UnmappedRelated unmappedRelated;
+    relation required UnmappedRelated unmappedRelatedRequired;
+    relation UnmappedRelated[] unmappedRelatedCollection;
 
-    field MappedRelated mappedDerived reads Entity!any();
+    relation MappedRelated mappedDerived <= Entity!any();
 }

@@ -1,10 +1,9 @@
 import "dataTypeDeclaration.eol";
 import "entityDeclaration.eol";
 import "entityFieldDeclaration.eol";
+import "entityMemberDeclaration.eol";
 import "entityRelationDeclaration.eol";
 import "entityDerivedDeclaration.eol";
-import "entityQueryDeclaration.eol";
-import "entityIdentifierDeclaration.eol";
 import "entityRelationOpposite.eol";
 import "primitiveDeclaration.eol";
 import "enumDeclaration.eol";
@@ -15,5 +14,6 @@ import "queryDeclaration.eol";
 import "modelDeclaration.eol";
 import "transferDeclaration.eol";
 import "transferFieldDeclaration.eol";
+import "transferRelationDeclaration.eol";
 import "expression.eol";
 import "navigation.eol";

@@ -203,7 +203,7 @@ public class TransformationParametersTest extends AbstractTest {
                 "Test",
                 List.of("model Test;\n" +
                         "\n" +
-                        "type string String(min-size = 0, max-size = 32);\n" +
+                        "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity T {\n" +
                         "\tfield String strField = \"hello\";" +
@@ -227,7 +227,7 @@ public class TransformationParametersTest extends AbstractTest {
                 "Test",
                 List.of("model Test;\n" +
                         "\n" +
-                        "type string String(min-size = 0, max-size = 32);\n" +
+                        "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity T {\n" +
                         "\tfield String strField = \"hello\";" +
@@ -251,7 +251,7 @@ public class TransformationParametersTest extends AbstractTest {
                 "Test",
                 List.of("model Test;\n" +
                         "\n" +
-                        "type string String(min-size = 0, max-size = 32);\n" +
+                        "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity T {\n" +
                         "\tfield String strField = \"hello\";" +
@@ -275,13 +275,13 @@ public class TransformationParametersTest extends AbstractTest {
                 "Test",
                 List.of("model Test;\n" +
                         "\n" +
-                        "type string String(min-size = 0, max-size = 32);\n" +
+                        "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity E {\n" +
                         "    field String strField;\n" +
                         "}\n" +
                         "transfer T maps E as e {\n" +
-                        "    field String strField reads e.strField;\n" +
+                        "    field String strField <= e.strField;\n" +
                         "}\n"
 
                 )
@@ -301,13 +301,13 @@ public class TransformationParametersTest extends AbstractTest {
                 "Test",
                 List.of("model Test;\n" +
                         "\n" +
-                        "type string String(min-size = 0, max-size = 32);\n" +
+                        "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity E {\n" +
                         "    field String strField;\n" +
                         "}\n" +
                         "transfer T maps E as e {\n" +
-                        "    field String strField reads e.strField;\n" +
+                        "    field String strField <= e.strField;\n" +
                         "}\n"
                 )
         );
@@ -326,13 +326,13 @@ public class TransformationParametersTest extends AbstractTest {
                 "Test",
                 List.of("model Test;\n" +
                         "\n" +
-                        "type string String(min-size = 0, max-size = 32);\n" +
+                        "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity E {\n" +
                         "    field String strField;\n" +
                         "}\n" +
                         "transfer T maps E as e {\n" +
-                        "    field String strField reads e.strField;\n" +
+                        "    field String strField <= e.strField;\n" +
                         "}\n"
                 )
         );

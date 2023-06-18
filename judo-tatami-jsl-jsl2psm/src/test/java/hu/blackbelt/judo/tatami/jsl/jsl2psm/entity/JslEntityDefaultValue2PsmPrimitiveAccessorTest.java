@@ -111,10 +111,11 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
                 .psmModel(psmModel)
                 .build();
         String propName = params.getDefaultDefaultNamePrefix() + attrName + params.getDefaultDefaultNameMidfix() + toName + params.getDefaultDefaultNamePostfix();
-
+        
         assertDataProperty(params.getEntityNamePrefix() + toName, propName);
         assertEquals(call.get(), assertDataProperty(params.getEntityNamePrefix() + toName, propName).getDataType());
         final PrimitiveAccessor literal = assertMappedTransferObjectAttribute(toName, attrName).getDefaultValue();
+        
         assertEquals(call.get(), literal.getDataType());
         assertEquals(defaultValue, literal.getGetterExpression().getExpression());
     }

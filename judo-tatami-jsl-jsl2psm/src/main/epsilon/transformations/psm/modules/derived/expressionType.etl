@@ -2,7 +2,7 @@ import "../../../../operations/_importAll.eol";
 
 @lazy
 rule CreateGetterExpressionForDataType
-    transform s : JSL!EntityDerivedDeclaration
+    transform s : JSL!EntityCalculatedFieldDeclaration
     to t: JUDOPSM!DataExpressionType {
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForDataType");
         t.expression = expressionUtils.getJqlForDerived(s, entityNamePrefix, entityNamePostfix);
@@ -11,7 +11,7 @@ rule CreateGetterExpressionForDataType
 
 @lazy
 rule CreateGetterExpressionForReferenceType
-    transform s : JSL!EntityDerivedDeclaration
+    transform s : JSL!EntityCalculatedRelationDeclaration
     to t: JUDOPSM!ReferenceExpressionType {
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForReferenceType");
         t.expression = expressionUtils.getJqlForDerived(s, entityNamePrefix, entityNamePostfix);

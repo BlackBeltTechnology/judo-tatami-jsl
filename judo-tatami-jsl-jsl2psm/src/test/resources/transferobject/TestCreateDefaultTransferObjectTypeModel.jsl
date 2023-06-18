@@ -1,9 +1,9 @@
 model DefaultTransferObjectTypeModel;
 
-type string String(min-size = 0, max-size = 250);
-type string Name(min-size = 0, max-size = 32);
-type numeric Age(precision = 3, scale = 0);
-type numeric Identifier(precision = 8, scale = 0);
+type string String min-size:0 max-size:250;
+type string Name min-size:0 max-size:32;
+type numeric Age precision:3 scale:0;
+type numeric Identifier precision:8 scale:0;
 
 
 entity Address {
@@ -23,16 +23,16 @@ entity abstract Person {
 	field Name birthName;
 	field Address residentAddress;
 	field Address[] postalAddresses;
-	derived Address mainPostalAddress => self.postalAddresses!any();
+	relation Address mainPostalAddress <= self.postalAddresses!any();
 }
 
 entity SalesPerson extends Person, PersonWithAge {
 }
 
 entity Customer extends Person {
-	relation Lead[] leads opposite customer;
+	relation Lead[] leads opposite:customer;
 }
 
 entity Lead {
-	relation Customer customer opposite leads;
+	relation Customer customer opposite:leads;
 }

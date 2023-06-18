@@ -1,14 +1,14 @@
 import "../../../../operations/_importAll.eol";
 
 rule CreateContainmentFromField
-    transform s: JSL!EntityFieldDeclaration
+    transform s: JSL!EntityStoredFieldDeclaration
     to t: JUDOPSM!Containment
     {
-        guard: s.referenceType.isKindOf(JSL!EntityDeclaration)
+        guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration)
 
         t.setId("(jsl/" + s.getId() + ")/CreateContainmentFromField");
         t.name = s.name;
-        t.target = s.referenceType.getPSMEquivalent();
+        t.target = s.getReferenceType().getPSMEquivalent();
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForFieldDeclaration", t.getId());
 
         s.eContainer.getPSMEquivalent().relations.add(t);
@@ -22,7 +22,7 @@ rule CreateContainmentFromField
 rule CreateReadsReferenceExpressionTypeForTransferRelationDeclaration
     transform s : JSL!Expression
     to t: JUDOPSM!ReferenceExpressionType {
-        guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!TransferDeclaration)
+        guard: s.isExpressionForTransferRelationReads() and s.eContainer.getReferenceType().isKindOf(JSL!TransferDeclaration)
 
         t.setId("(jsl/" + s.getId() + ")/CreateReadsReferenceExpressionTypeForTransferRelationDeclaration");
         t.expression = expressionUtils.getJqlForExpression(s, entityNamePrefix, entityNamePostfix);
@@ -40,13 +40,13 @@ rule CreateReadsReferenceExpressionTypeForTransferRelationDeclaration
 rule CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclaration
     transform s : JSL!Expression
     to t: JUDOPSM!StaticNavigation {
-        guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!TransferDeclaration)
+        guard: s.isExpressionForTransferRelationReads() and s.eContainer.getReferenceType().isKindOf(JSL!TransferDeclaration)
            and s.eContainer.eContainer.map.isUndefined()
 
         t.setId("(jsl/" + s.getId() + ")/CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclaration");
         t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
-        t.target = s.eContainer.referenceType.getPSMEquivalent().entityType;
-          t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+        t.target = s.eContainer.getReferenceType().getPSMEquivalent().entityType;
+          t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
 
@@ -57,13 +57,13 @@ rule CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclara
 rule CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclaration
     transform s : JSL!Expression
     to t: JUDOPSM!NavigationProperty {
-        guard: s.isExpressionForTransferFieldReads() and s.eContainer.referenceType.isKindOf(JSL!TransferDeclaration)
+        guard: s.isExpressionForTransferRelationReads() and s.eContainer.getReferenceType().isKindOf(JSL!TransferDeclaration)
            and s.eContainer.eContainer.map.isDefined()
 
         t.setId("(jsl/" + s.getId() + ")/CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclaration");
         t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
-        t.target = s.eContainer.referenceType.getPSMEquivalent().entityType;
-          t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+        t.target = s.eContainer.getReferenceType().getPSMEquivalent().entityType;
+        t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
         s.eContainer.eContainer.map.entity.getPSMEquivalent().navigationProperties.add(t);
 
@@ -78,9 +78,9 @@ rule CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclara
 rule CreateDefaultReferenceExpressionTypeForMappedTransferObjectConstructor
     transform s : JSL!TransferDefault
     to t: JUDOPSM!ReferenceExpressionType {
-        guard: s.field.reference.referenceType.isKindOf(JSL!TransferDeclaration) and s.field.reference.eContainer.map.isDefined()
+        guard: s.member.reference.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.member.reference.eContainer.map.isDefined()
 
-        t.setId("(jsl/" + s.field.reference.getId() + ")/CreateDefaultReferenceExpressionTypeForMappedTransferObjectConstructor");
+        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultReferenceExpressionTypeForMappedTransferObjectConstructor");
         t.expression = expressionUtils.getJqlForExpression(s.rightValue, entityNamePrefix, entityNamePostfix);
         s.equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor").getterExpression = t;
 
@@ -91,13 +91,13 @@ rule CreateDefaultReferenceExpressionTypeForMappedTransferObjectConstructor
 rule CreateDefaultNavigationPropertyForMappedTransferObjectConstructor
     transform s : JSL!TransferDefault
     to t: JUDOPSM!NavigationProperty {
-        guard: s.field.reference.referenceType.isKindOf(JSL!TransferDeclaration) and s.field.reference.eContainer.map.isDefined()
+        guard: s.member.reference.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.member.reference.eContainer.map.isDefined()
 
-        t.setId("(jsl/" + s.field.reference.getId() + ")/CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
-        t.name = defaultDefaultNamePrefix + s.field.reference.name + defaultDefaultNameMidfix + s.field.reference.eContainer.name + defaultDefaultNamePostfix;
-        t.target = s.field.reference.referenceType.getPSMEquivalent().entityType;
-  	    t.cardinality = s.field.reference.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
-        s.field.reference.eContainer.map.entity.getPSMEquivalent().navigationProperties.add(t);
+        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
+        t.name = defaultDefaultNamePrefix + s.member.reference.name + defaultDefaultNameMidfix + s.member.reference.eContainer.name + defaultDefaultNamePostfix;
+        t.target = s.member.reference.getReferenceType().getPSMEquivalent().entityType;
+  	    t.cardinality = s.member.reference.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
+        s.member.reference.eContainer.map.entity.getPSMEquivalent().navigationProperties.add(t);
 
         log.debug("Created NavigationProperty for Transfer Object Default Value: " + s);
     }
@@ -106,9 +106,9 @@ rule CreateDefaultNavigationPropertyForMappedTransferObjectConstructor
 rule CreateDefaultReferenceExpressionTypeForUnmappedTransferObjectConstructor
     transform s : JSL!TransferDefault
     to t: JUDOPSM!ReferenceExpressionType {
-        guard: s.field.reference.referenceType.isKindOf(JSL!TransferDeclaration) and s.field.reference.eContainer.map.isUndefined()
+        guard: s.member.reference.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.member.reference.eContainer.map.isUndefined()
         
-        t.setId("(jsl/" + s.field.reference.getId() + ")/CreateDefaultReferenceExpressionTypeForUnmappedTransferObjectConstructor");
+        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultReferenceExpressionTypeForUnmappedTransferObjectConstructor");
         t.expression = expressionUtils.getJqlForExpression(s.rightValue, entityNamePrefix, entityNamePostfix);
         s.equivalent("CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor").getterExpression = t;
 
@@ -119,12 +119,12 @@ rule CreateDefaultReferenceExpressionTypeForUnmappedTransferObjectConstructor
 rule CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor
     transform s : JSL!TransferDefault
     to t: JUDOPSM!StaticNavigation {
-        guard: s.field.reference.referenceType.isKindOf(JSL!TransferDeclaration) and s.field.reference.eContainer.map.isUndefined()
+        guard: s.member.reference.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.member.reference.eContainer.map.isUndefined()
 
-        t.setId("(jsl/" + s.field.reference.getId() + ")/CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
-        t.name = defaultDefaultNamePrefix + s.field.reference.name + defaultDefaultNameMidfix + s.field.reference.eContainer.name + defaultDefaultNamePostfix;
-        t.target = s.field.reference.referenceType.getPSMEquivalent().entityType;
-  	    t.cardinality = s.field.reference.equivalentWithPrefix("CreateCardinalityForTransferFieldDeclaration", t.getId());
+        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
+        t.name = defaultDefaultNamePrefix + s.member.reference.name + defaultDefaultNameMidfix + s.member.reference.eContainer.name + defaultDefaultNamePostfix;
+        t.target = s.member.reference.getReferenceType().getPSMEquivalent().entityType;
+  	    t.cardinality = s.member.reference.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
         
