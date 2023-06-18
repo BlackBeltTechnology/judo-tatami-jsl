@@ -47,50 +47,6 @@ rule CloneTransferAttributeForDefaultTransferObjectType
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-// Entity Identifier (Primitive)
-////////////////////////////////////////////////////////////////////////////////////////////
-
-//@abstract
-//rule AbstractCreateIdentifierTransferAttributeForDefaultTransferObjectType
-//    transform s: JSL!EntityIdentifierDeclaration
-//    to t: JUDOPSM!TransferAttribute {
-//        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
-//
-//        t.required = s.isRequired;
-//        t.name = s.name;
-//        t.binding = s.equivalent("CreateAttributeFromIdentifier");
-//        t.dataType = s.referenceType.getPSMEquivalent();
-//
-//        if (s.defaultExpression.isDefined()) {
-//            t.defaultValue = s.defaultExpression.equivalent("CreateDefaultValueForPrimitiveEntityMember");
-//        }
-//
-//}
-//
-//@greedy
-//rule CreateIdentifierTransferAttributeForDefaultTransferObjectType
-//    transform s: JSL!EntityIdentifierDeclaration
-//    to t: JUDOPSM!TransferAttribute
-//    extends AbstractCreateIdentifierTransferAttributeForDefaultTransferObjectType {
-//        guard: generateDefaultTransferObject and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
-//        t.setId("(jsl/" + s.getId() + ")/CreateIdentifierTransferAttributeForDefaultTransferObjectType");
-//
-//        s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").attributes.add(t);
-//        log.debug("Created TransferAttribute (Identifier) for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
-//}
-//
-//@lazy
-//@greedy
-//rule CloneIdentifierTransferAttributeForDefaultTransferObjectType
-//    transform s: JSL!EntityIdentifierDeclaration
-//    to t: JUDOPSM!TransferAttribute
-//    extends AbstractCreateIdentifierTransferAttributeForDefaultTransferObjectType {
-//        t.setId("(jsl/" + s.getId() + ")/CloneIdentifierTransferAttributeForDefaultTransferObjectType");
-//        log.debug("Clone TransferAttribute (Identifier) for DefaultTransferObjectType: [" + t.name + "]");
-//}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////
 // Derived (Primitive)
 ////////////////////////////////////////////////////////////////////////////////////////////
 

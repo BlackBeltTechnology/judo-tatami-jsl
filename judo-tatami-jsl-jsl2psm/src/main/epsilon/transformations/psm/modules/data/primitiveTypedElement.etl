@@ -21,19 +21,6 @@ rule CreateAttributeFromField
         s.eContainer.getPSMEquivalent().attributes.add(t);
         log.debug("Created Attribute (Field): " + t.name);
     }
-//
-//rule CreateAttributeFromIdentifier
-//    transform s: JSL!EntityIdentifierDeclaration
-//    to t: JUDOPSM!Attribute
-//    extends CreatePrimitiveTypedElement {
-//        t.setId("(jsl/" + s.getId() + ")/CreateAttributeFromIdentifier");
-//
-//        t.dataType = s.getReferenceType().getPSMEquivalent();
-//        t.identifier = true;
-//        s.eContainer.getPSMEquivalent().attributes.add(t);
-//        log.debug("Created Attribute (Identifier): " + t.name);
-//    }
-//    
 
 //////////////////////////////////////////////////////////////////
 // Primitive Field Default Expression

@@ -26,9 +26,6 @@ rule CreateAutoMappedTransferObjectType
             var inheritedMembers = entity.getInheritedMembers();
 
             for (im in inheritedMembers) {
-                // Identifier attribute
-//                if (im.isKindOf(JSL!EntityIdentifierDeclaration)) {
-//                    t.attributes.add(im.equivalentWithPrefix("CloneIdentifierTransferAttributeForAutoMappedTransferObjectType", t.getId()));
                 // Field attribute
                 if (im.isKindOf(JSL!EntityStoredFieldDeclaration)) {
                     // Primitive attributes

@@ -67,10 +67,6 @@ rule CreateMappedTransferAttribute
          t.binding = s.getterExpr.features.first.member.equivalent("CreateAttributeFromField");         
       }
       
-//      else if (s.maps.features.first.member.isKindOf(JSL!EntityIdentifierDeclaration)) {
-//         t.binding = s.maps.features.first.member.equivalent("CreateAttributeFromIdentifier");
-//      }
-      
       var def = JSL!TransferDefault.all().selectOne(d | d.member.reference == s);
       if (def.isDefined()) {
          t.defaultValue = def.equivalent("CreateDefaultDataPropertyForMappedTransferObjectConstructor");
