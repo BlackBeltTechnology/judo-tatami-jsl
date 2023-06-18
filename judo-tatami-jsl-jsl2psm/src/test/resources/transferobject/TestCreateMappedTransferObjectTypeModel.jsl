@@ -1,7 +1,7 @@
 model MappedTransferObjectTypeModel;
 
-type string String(min-size = 0, max-size = 250);
-type numeric Integer(precision = 3, scale = 0);
+type string String min-size:0 max-size:250;
+type numeric Integer precision:3 scale:0;
 
 
 entity Entity {
@@ -11,15 +11,15 @@ entity Entity {
     relation EntityRelated association;
 
     identifier Integer identifier;
-    derived Integer attributeDerived => self.attribute;
-    derived EntityRelated containmentDerived => self.containment;
-    derived EntityRelated[] containmentCollectionDerived => self.containmentCollection;
+    field Integer attributeDerived <= self.attribute;
+    relation EntityRelated containmentDerived <= self.containment;
+    relation EntityRelated[] containmentCollectionDerived <= self.containmentCollection;
     
 }
 
 entity EntityRelated {
     field Integer attribute;
-    relation Entity entity opposite-add entityRelatedOpposite;
+    relation Entity entity opposite-add:entityRelatedOpposite;
 
 }
 
@@ -30,36 +30,36 @@ transfer UnmappedRelated {
 transfer Mapped maps Entity as e {
     field Integer unmappedAttribute;
     
-    field UnmappedRelated unmappedContainment;
-    field required UnmappedRelated unmappedContainmentRequired;
-    field UnmappedRelated[] unmappedContainmentCollection;
+    relation UnmappedRelated unmappedContainment;
+    relation required UnmappedRelated unmappedContainmentRequired;
+    relation UnmappedRelated[] unmappedContainmentCollection;
 
-    field Integer mappedAttribute maps e.attribute;
-    field MappedRelated mappedContainment maps e.containment;
-    field MappedRelated[] mappedContainmentCollection maps e.containmentCollection;
+    field Integer mappedAttribute <=> e.attribute;
+    relation MappedRelated mappedContainment <=> e.containment;
+    relation MappedRelated[] mappedContainmentCollection <=> e.containmentCollection;
 
-    field MappedRelated mappedAssociation maps e.association;
-    field MappedRelated mappedAssociationOpposite maps e.entityRelatedOpposite;
+    relation MappedRelated mappedAssociation <=> e.association;
+    relation MappedRelated mappedAssociationOpposite <=> e.entityRelatedOpposite;
 
-    field Integer derivedAttribute reads e.attribute;
-    field MappedRelated derivedContainment reads e.containment;
-    field MappedRelated[] derivedContainmentCollection reads e.containmentCollection;    
-    field MappedRelated derivedAssociation reads e.association;
-    field MappedRelated derivedAssociationOpposite maps e.entityRelatedOpposite;
+    field Integer derivedAttribute <= e.attribute;
+    relation MappedRelated derivedContainment <= e.containment;
+    relation MappedRelated[] derivedContainmentCollection <= e.containmentCollection;    
+    relation MappedRelated derivedAssociation <= e.association;
+    relation MappedRelated derivedAssociationOpposite <=> e.entityRelatedOpposite;
 
-    field Integer derivedAttributeStatic reads Entity!any().attribute;    
-    field MappedRelated derivedContainmentStatic reads EntityRelated!any();
-    field MappedRelated[] derivedContainmentCollectionStatic reads EntityRelated!all();
+    field Integer derivedAttributeStatic <= Entity!any().attribute;    
+    relation MappedRelated derivedContainmentStatic <= EntityRelated!any();
+    relation MappedRelated[] derivedContainmentCollectionStatic <= EntityRelated!all();
 
-    field Integer mappedAttributeDerived reads e.attributeDerived;
-    field MappedRelated mappedContainmentDerived reads e.containmentDerived;
-    field MappedRelated[] mappedContainmentCollectionDerived reads e.containmentCollectionDerived;
+    field Integer mappedAttributeDerived <= e.attributeDerived;
+    relation MappedRelated mappedContainmentDerived <= e.containmentDerived;
+    relation MappedRelated[] mappedContainmentCollectionDerived <= e.containmentCollectionDerived;
 
-    field Integer mappedIdentifier maps e.identifier;
-    field Integer derivedIdentifier reads e.identifier;
+    field Integer mappedIdentifier <=> e.identifier;
+    field Integer derivedIdentifier <= e.identifier;
 
 }
 
 transfer MappedRelated maps EntityRelated as e {
-    field Integer mappedAttribute maps e.attribute;
+    field Integer mappedAttribute <=> e.attribute;
 }

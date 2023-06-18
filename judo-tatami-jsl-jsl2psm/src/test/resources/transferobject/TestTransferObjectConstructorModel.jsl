@@ -1,7 +1,7 @@
 model TransferObjectConstructorModel;
 
-type string String(min-size = 0, max-size = 250);
-type numeric Integer(precision = 3, scale = 0);
+type string String min-size:0 max-size:250;
+type numeric Integer precision:3 scale:0;
 
 
 enum MyEnum {
@@ -30,8 +30,8 @@ entity Entity extends EntityAncestor {
 
 entity EntityRelated {
 	field Integer attribute ;
-	relation Entity entity opposite-add entityRelatedOpposite;
-	relation Entity entityCollection opposite-add entityRelatedOppositeCollection[];
+	relation Entity entity opposite-add:entityRelatedOpposite;
+	relation Entity entityCollection opposite-add:entityRelatedOppositeCollection[];
 }
 
 transfer Unmapped {
@@ -43,23 +43,23 @@ transfer Unmapped {
 
 transfer Mapped maps Entity as e {
     field Integer unmappedAttribute;
-	field Integer mappedAttribute maps e.attribute;
-	field Integer mappedIdentifier maps e.identifier;
-    field MyEnum mappedEnum maps e.enum;
-	field Integer mappedAttributeEntityDefault maps e.attribute;
-	field Integer mappedIdentifierEntityDefault maps e.identifier;
-    field MyEnum mappedEnumEntityDefault maps e.enum;
-	field Integer mappedAttributeAncestorEntityDefault maps e.attributeAncestor;
-	field Integer mappedIdentifierAncestorEntityDefault maps e.identifierAncestor;
-    field MyEnum mappedEnumAncestorEntityDefault maps e.enumAncestor;
+	field Integer mappedAttribute <=> e.attribute;
+	field Integer mappedIdentifier <=> e.identifier;
+    field MyEnum mappedEnum <=> e.enum;
+	field Integer mappedAttributeEntityDefault <=> e.attribute;
+	field Integer mappedIdentifierEntityDefault <=> e.identifier;
+    field MyEnum mappedEnumEntityDefault <=> e.enum;
+	field Integer mappedAttributeAncestorEntityDefault <=> e.attributeAncestor;
+	field Integer mappedIdentifierAncestorEntityDefault <=> e.identifierAncestor;
+    field MyEnum mappedEnumAncestorEntityDefault <=> e.enumAncestor;
 
-	field MappedRelated mappedAssociation maps e.association;
-	field MappedRelated[] mappedAssociationCollection maps e.associationCollection;
-    field MappedRelated mappedAssociationOpposite maps e.entityRelatedOpposite;
-    field MappedRelated[] mappedAssociationOppositeCollection maps e.entityRelatedOppositeCollection;
+	relation MappedRelated mappedAssociation <=> e.association;
+	relation MappedRelated[] mappedAssociationCollection <=> e.associationCollection;
+    relation MappedRelated mappedAssociationOpposite <=> e.entityRelatedOpposite;
+    relation MappedRelated[] mappedAssociationOppositeCollection <=> e.entityRelatedOppositeCollection;
 
-    field MappedRelated transientRelation;
-    field MappedRelated[] transientRelationCollection;
+    relation MappedRelated transientRelation;
+    relation MappedRelated[] transientRelationCollection;
 
 	
 	constructor {
@@ -78,5 +78,5 @@ transfer Mapped maps Entity as e {
 }
 
 transfer MappedRelated maps EntityRelated as e {
-	field Integer mappedAttribute maps e.attribute;
+	field Integer mappedAttribute <=> e.attribute;
 }
