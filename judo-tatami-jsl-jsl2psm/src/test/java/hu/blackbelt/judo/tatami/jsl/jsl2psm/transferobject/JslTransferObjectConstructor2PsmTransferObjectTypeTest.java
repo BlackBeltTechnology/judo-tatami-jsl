@@ -95,8 +95,8 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         assertEquals(transientAttribute.getDefaultValue(), transientDefault);
         TransferAttribute transientDefaultAttribute = assertUnmappedTransferObjectAttribute("Unmapped", "_transient_Default_Unmapped");
         assertEquals(transientDefaultAttribute.getBinding(), transientDefault);
-        //assertEquals(1, transientDefaultAttribute.getAnnotations().size());
-        //assertEquals("TransferObjectAttributeWithDefaultValue", transientDefaultAttribute.getAnnotations().get(0).getName());
+        assertEquals(1, transientDefaultAttribute.getAnnotations().size());
+        assertEquals("TransferObjectAttributeWithDefaultValue", transientDefaultAttribute.getAnnotations().get(0).getName());
 
         
         assertMappedTransferObject("Mapped");
