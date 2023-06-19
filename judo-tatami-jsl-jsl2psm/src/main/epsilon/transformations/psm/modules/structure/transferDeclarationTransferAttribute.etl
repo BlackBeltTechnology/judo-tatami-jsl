@@ -127,6 +127,7 @@ rule CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObje
     transform s : JSL!TransferDefault
     to t : JUDOPSM!Annotation {
         guard: s.field.reference.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.field.reference.eContainer.map.isDefined()
+
         t.name = "TransferObjectAttributeWithDefaultValue";
         t.setId("(jsl/" + s.field.reference.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor");
         s.equivalent("CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor").annotations.add(t);
@@ -137,6 +138,7 @@ rule CreateAnnotationForTransferEntityDefaultValueAttributeForUnmappedTransferOb
     transform s : JSL!TransferDefault
     to t : JUDOPSM!Annotation {
         guard: s.field.reference.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.field.reference.eContainer.map.isUndefined()
+
         t.name = "TransferObjectAttributeWithDefaultValue";
         t.setId("(jsl/" + s.field.reference.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor");
         s.equivalent("CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor").annotations.add(t);
