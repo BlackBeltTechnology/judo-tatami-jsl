@@ -123,6 +123,7 @@ rule CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstruct
         log.debug("Created TransferAttribute DefaultValue (Field) for UnmappedTransferObjectConstructor: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
+@greedy
 rule CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor
     transform s : JSL!TransferDefault
     to t : JUDOPSM!Annotation {
