@@ -124,10 +124,10 @@ rule CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstruct
 rule CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor
     transform s : JSL!TransferDefault
     to t : JUDOPSM!Annotation {
-        guard: s.field.reference.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.field.reference.eContainer.map.isDefined()
+        guard: s.member.reference.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.member.reference.eContainer.map.isDefined()
 
         t.name = "TransferObjectAttributeWithDefaultValue";
-        t.setId("(jsl/" + s.field.reference.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor");
+        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor");
         s.equivalent("CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor").annotations.add(t);
         log.debug("Created annotation for TransferAttribute DefaultValue (Field) for MappedTransferObjectConstructor: [" + t.name + "]");
 }
@@ -135,10 +135,10 @@ rule CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObje
 rule CreateAnnotationForTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor
     transform s : JSL!TransferDefault
     to t : JUDOPSM!Annotation {
-        guard: s.field.reference.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.field.reference.eContainer.map.isUndefined()
+        guard: s.member.reference.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.member.reference.eContainer.map.isUndefined()
 
         t.name = "TransferObjectAttributeWithDefaultValue";
-        t.setId("(jsl/" + s.field.reference.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor");
+        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor");
         s.equivalent("CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor").annotations.add(t);
         log.debug("Created annotation for TransferAttribute DefaultValue (Field) for UnmappedTransferObjectConstructor: [" + t.name + "]");
 }
