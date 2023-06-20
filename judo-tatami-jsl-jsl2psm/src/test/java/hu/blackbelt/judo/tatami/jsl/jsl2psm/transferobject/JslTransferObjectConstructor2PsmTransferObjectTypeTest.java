@@ -95,6 +95,8 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         assertEquals(transientAttribute.getDefaultValue(), transientDefault);
         TransferAttribute transientDefaultAttribute = assertUnmappedTransferObjectAttribute("Unmapped", "_transient_Default_Unmapped");
         assertEquals(transientDefaultAttribute.getBinding(), transientDefault);
+        //assertEquals(1, transientDefaultAttribute.getAnnotations().size());
+        //assertEquals("TransferObjectAttributeWithDefaultValue", transientDefaultAttribute.getAnnotations().get(0).getName());
 
         
         assertMappedTransferObject("Mapped");
@@ -108,6 +110,8 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         assertEquals(unmappedAttribute.getDefaultValue(), unmappedAttributeDefault);
         TransferAttribute unmappedAttributeDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_unmappedAttribute_Default_Mapped");
         assertEquals(unmappedAttributeDefaultAttribute.getBinding(), unmappedAttributeDefault);
+        //assertEquals(1, unmappedAttributeDefaultAttribute.getAnnotations().size());
+        //assertEquals("TransferObjectAttributeWithDefaultValue", unmappedAttributeDefaultAttribute.getAnnotations().get(0).getName());
 
         
         TransferAttribute mappedAttribute = assertMappedTransferObjectAttribute("Mapped", "mappedAttribute");
@@ -119,6 +123,8 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         assertEquals(mappedAttributeDefault, mappedAttribute.getDefaultValue());
         TransferAttribute mappedAttributeDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedAttribute_Default_Mapped");
         assertEquals(mappedAttributeDefaultAttribute.getBinding(), mappedAttributeDefault);
+        //assertEquals(1, mappedAttributeDefaultAttribute.getAnnotations().size());
+        //assertEquals("TransferObjectAttributeWithDefaultValue", mappedAttributeDefaultAttribute.getAnnotations().get(0).getName());
 
         TransferAttribute mappedIdentifier = assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier");
         assertFalse(mappedIdentifier.isRequired());
@@ -129,6 +135,8 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         assertEquals(mappedIdentifierDefault, mappedIdentifier.getDefaultValue());
         TransferAttribute mappedIdentifierDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedIdentifier_Default_Mapped");
         assertEquals(mappedIdentifierDefaultAttribute.getBinding(), mappedIdentifierDefault);
+        //assertEquals(1, mappedIdentifierDefaultAttribute.getAnnotations().size());
+        //assertEquals("TransferObjectAttributeWithDefaultValue", mappedIdentifierDefaultAttribute.getAnnotations().get(0).getName());
 
         TransferAttribute mappedEnum = assertMappedTransferObjectAttribute("Mapped", "mappedEnum");
         assertFalse(mappedEnum.isRequired());
@@ -139,6 +147,8 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         assertEquals(mappedEnumDefault, mappedEnum.getDefaultValue());
         TransferAttribute mappedEnumDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedEnum_Default_Mapped");
         assertEquals(mappedEnumDefaultAttribute.getBinding(), mappedEnumDefault);
+        //assertEquals(1, mappedEnumDefaultAttribute.getAnnotations().size());
+        //assertEquals("TransferObjectAttributeWithDefaultValue", mappedEnumDefaultAttribute.getAnnotations().get(0).getName());
 
         TransferAttribute mappedAttributeEntityDefault = assertMappedTransferObjectAttribute("Mapped", "mappedAttributeEntityDefault");
         assertFalse(mappedAttributeEntityDefault.isRequired());
@@ -226,7 +236,7 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         assertEquals("TransferObjectConstructorModel::TransferObjectConstructorModel::_EntityRelated", mappedAssociationCollectionDefault.getGetterExpression().getExpression());
         TransferObjectRelation mappedAssociationCollectionDefaultAttribute = assertMappedTransferObjectRelation("Mapped", "_mappedAssociationCollection_Default_Mapped");
         assertEquals(mappedAssociationCollectionDefaultAttribute.getBinding(), mappedAssociationCollectionDefault);
-        
+
         TransferObjectRelation mappedAssociationOpposite = assertMappedTransferObjectRelation("Mapped", "mappedAssociationOpposite");
         assertFalse(mappedAssociationOpposite.isRequired());
         assertThat(mappedAssociationOpposite.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "entityRelatedOpposite")));
