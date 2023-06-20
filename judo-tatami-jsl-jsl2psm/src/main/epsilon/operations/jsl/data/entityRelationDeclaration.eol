@@ -1,4 +1,4 @@
 @cached
-operation JSL!EntityRelationDeclaration getId(): String {
+operation JSL!EntityStoredRelationDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }

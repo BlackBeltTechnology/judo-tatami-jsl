@@ -4,6 +4,7 @@ import "../../../../operations/_importAll.eol";
 //////////////////////////////////////////////////
 // Unmapped transfer object type
 //////////////////////////////////////////////////
+@greedy
 rule CreateUnmappedTransferObjectType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!UnmappedTransferObjectType {
@@ -22,6 +23,7 @@ rule CreateUnmappedTransferObjectType
 //////////////////////////////////////////////////
 // Mapped transfer object type
 //////////////////////////////////////////////////
+@greedy
 rule CreateMappedTransferObjectType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!MappedTransferObjectType {

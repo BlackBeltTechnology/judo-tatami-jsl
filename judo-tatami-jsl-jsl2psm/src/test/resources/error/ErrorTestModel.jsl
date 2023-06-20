@@ -1,7 +1,7 @@
 model ErrorTypeCreateModel;
 
-type numeric Integer(precision = 9, scale = 0);
-type string String(min-size = 0, max-size = 128);
+type numeric Integer precision:9 scale:0;
+type string String min-size:0 max-size:128;
 
 error MyError {
     field Integer code;
