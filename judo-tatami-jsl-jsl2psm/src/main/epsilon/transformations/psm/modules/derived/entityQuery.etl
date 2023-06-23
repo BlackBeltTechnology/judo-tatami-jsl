@@ -43,7 +43,7 @@ rule CreateOriginalNameAnnotationDetailForEntityQuery
 
         t.setId("(jsl/" + s.getId() + ")/CreateOriginalNameAnnotationDetailForEntityQuery");
         t.name = "Name";
-        t.`value` = s.name;
+        t.`value` = s.eContainer.name + "::" + s.name;
         s.equivalent("CreateOriginalNameAnnotationForEntityQuery").details.add(t);
         log.debug("Create OriginalName Details Annotation for entity query: " + t.name);
 }
