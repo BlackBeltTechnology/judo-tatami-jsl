@@ -10,7 +10,6 @@ type string String min-size:0 max-size:32;
 type numeric Decimal precision:9 scale:2;
 type boolean Boolean;
 
-
 query Lead[] staticLeadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) <= Lead!all()!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);
 // Lead!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
 
