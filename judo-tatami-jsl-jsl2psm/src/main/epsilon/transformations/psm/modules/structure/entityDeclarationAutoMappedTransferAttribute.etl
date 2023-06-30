@@ -101,7 +101,7 @@ rule CreateDerivedTransferAttributeForAutoMappedTransferObjectType
     transform s: JSL!EntityCalculatedFieldDeclaration
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateDerivedTransferAttributeForAutoMappedTransferObjectType {
-        guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)
+        guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and not s.isQuery()
 
         t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttributeForAutoMappedTransferObjectType");
 
