@@ -10,7 +10,6 @@ type string String min-size:0 max-size:32;
 type numeric Decimal precision:9 scale:2;
 type boolean Boolean;
 
-
 query Lead[] staticLeadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) <= Lead!all()!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);
 // Lead!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
 
@@ -54,19 +53,19 @@ entity SalesPerson {
     relation Lead lead;
     relation Lead[] leads opposite:salesPerson;
     
-    @Lazy
+    @Query
     relation Lead[] leadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) <= self.leads!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);
     // self.leads!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
 
-    @Lazy
+    @Query
     relation Lead[] leadsOverWithMin(Integer minLeadsOverMin = 5) <= self.leadsBetween(minLeadsBetween = minLeadsOverMin , maxLeadsBetween = 100);
     // self.leads!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)
 
-    @Lazy
+    @Query
     relation Lead[] leadsOverWithMinStatic(Integer minLeadsOverMin = 5) <= staticLeadsBetween(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100);
     // Lead!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)
 
-    @Lazy
+    @Query
     relation Lead[] leadsOverWithMinWithoutDefault(Integer minLeadsOverMin) <= self.leadsBetween(minLeadsBetween = minLeadsOverMin , maxLeadsBetween = 100);
     // self.leads!filter(lead | lead.value > input.minLeadsOverMin and lead.value < 100)
 
@@ -85,7 +84,7 @@ entity SalesPerson {
     
     field Integer value <= self.leads!size();
     field Boolean t1 <= self.leads!size() > 1;
-    @Lazy
+    @Query
     relation Lead[] leadsOverQuery(Integer limit = 100) <= self.leads!filter(lead | lead.value > limit);
     relation Lead[] leadsOver <= self.leads!filter(lead | lead.value > 100);
 
