@@ -34,7 +34,7 @@ entity EntityRelated {
     relation Entity singleCompositionEntityExpressionQuery(String name) <= entityWithNameQuery(name = name);
 
 	@Query
-    field Integer singleCompositionPrimitiveExpressionQuery(Integer i) <= queryInteger(i = i);
+    field Integer primitiveQuery(Integer i) <= queryInteger(i = i);
 }
 
 query Entity entityWithNameQuery(String name) <= Entity!all()!filter(e | e.name == name)!any();

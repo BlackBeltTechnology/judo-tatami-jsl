@@ -187,7 +187,16 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
 
         assertMappedTransferObject("AutoMappedRelated");
         assertEquals(1, assertMappedTransferObject("AutoMappedRelated").getRelations().size());
-        assertEquals(1, assertMappedTransferObject("AutoMappedRelated").getAttributes().size());
+        assertEquals(2, assertMappedTransferObject("AutoMappedRelated").getAttributes().size());
+
+        TransferAttribute integerAttribute = assertMappedTransferObjectAttribute("AutoMappedRelated", "attribute");
+        assertFalse(integerAttribute.isRequired());
+        assertEquals(assertNumericType("Integer"), integerAttribute.getDataType());
+        assertEquals(assertAttribute("_EntityRelated", "attribute"), integerAttribute.getBinding());
+
+        TransferAttribute primitiveQuery = assertMappedTransferObjectAttribute("AutoMappedRelated", "primitiveQuery");
+        assertFalse(primitiveQuery.isRequired());
+        assertEquals(assertNumericType("Integer"), primitiveQuery.getDataType());
 
         TransferObjectRelation singleCompositionEntityExpressionQuery = assertMappedTransferObjectRelation("AutoMappedRelated", "singleCompositionEntityExpressionQuery");
         assertFalse(singleCompositionEntityExpressionQuery.isRequired());
