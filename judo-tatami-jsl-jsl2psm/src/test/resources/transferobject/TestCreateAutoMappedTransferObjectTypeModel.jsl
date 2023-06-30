@@ -5,6 +5,7 @@ type numeric Integer precision:3 scale:0;
 
 
 entity EntityAncestor {
+	field String name;
 	field Integer attribute = 1;
 	field EntityRelated containment;
 	field EntityRelated[] containmentCollection;
@@ -28,7 +29,17 @@ entity Entity extends EntityAncestor {
 
 entity EntityRelated {
 	field Integer attribute;
+
+	@Lazy
+    relation Entity singleCompositionEntityExpressionQuery(String name) <= entityWithNameQuery(name = name);
+
+	@Lazy
+    field Integer singleCompositionPrimitiveExpressionQuery(Integer i) <= queryInteger(i = i);
 }
+
+query Entity entityWithNameQuery(String name) <= Entity!all()!filter(e | e.name == name)!any();
+query Integer queryInteger(Integer i = 0) <= Entity!all()!filter(e | e.attribute2 > i)!size();
 
 transfer AutoMapped maps Entity as entity;
 transfer AutoMappedRelated maps EntityRelated as related;
+

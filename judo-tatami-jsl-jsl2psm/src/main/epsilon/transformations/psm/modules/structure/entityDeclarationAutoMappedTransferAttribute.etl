@@ -101,7 +101,7 @@ rule CreateDerivedTransferAttributeForAutoMappedTransferObjectType
     transform s: JSL!EntityCalculatedFieldDeclaration
     to t: JUDOPSM!TransferAttribute
     extends AbstractCreateDerivedTransferAttributeForAutoMappedTransferObjectType {
-        guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)
+        guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and not s.isQuery()
 
         t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttributeForAutoMappedTransferObjectType");
 
@@ -117,5 +117,44 @@ rule CloneDerivedTransferAttributeForAutoMappedTransferObjectType
     extends AbstractCreateDerivedTransferAttributeForAutoMappedTransferObjectType {
         t.setId("(jsl/" + s.getId() + ")/CloneDerivedTransferAttributeForAutoMappedTransferObjectType");
         log.debug("Clone TransferAttribute (Derived) for AutoMappedTransferObjectType: [" + t.name + "]");
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Entity Query (Primitive)
+////////////////////////////////////////////////////////////////////////////////////////////
+
+@abstract
+rule AbstractCreateEntityQueryTransferAttributeForAutoMappedTransferObjectType
+    transform s : JSL!EntityCalculatedFieldDeclaration
+    to t : JUDOPSM!TransferAttribute {
+        guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.isQuery()
+
+        t.name = s.name;
+        t.binding = s.equivalent("CreateDataPropertyForEntityQuery");
+        t.dataType = s.getReferenceType().getPSMEquivalent();
+}
+
+@greedy
+rule CreateEntityQueryTransferAttributeForAutoMappedTransferObjectType
+    transform s : JSL!EntityCalculatedFieldDeclaration
+    to t : JUDOPSM!TransferAttribute
+    extends AbstractCreateEntityQueryTransferAttributeForAutoMappedTransferObjectType {
+        guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.isQuery()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateEntityQueryTransferAttributeForAutoMappedTransferObjectType");
+
+        s.eContainer.equivalent("CreateAutoMappedTransferObjectType").attributes.add(t);
+        log.debug("Created TransferAttribute (Entity Query) for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@lazy
+@greedy
+rule CloneEntityQueryTransferAttributeForAutoMappedTransferObjectType
+    transform s : JSL!EntityCalculatedFieldDeclaration
+    to t : JUDOPSM!TransferAttribute
+    extends AbstractCreateEntityQueryTransferAttributeForAutoMappedTransferObjectType {
+
+        t.setId("(jsl/" + s.getId() + ")/CloneEntityQueryTransferAttributeForAutoMappedTransferObjectType");
+        log.debug("Clone TransferAttribute (Entity Query) for AutoMappedTransferObjectType: [" + t.name + "]");
 }
 
