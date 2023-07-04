@@ -89,7 +89,8 @@ rule CreateMappedTransferAttributeEntityDefault
         and s.getterExpr.features.first.member.defaultExpr.isDefined() and not JSL!TransferDefault.all().exists(d | d.member.reference == s)
       t.name = defaultDefaultNamePrefix + s.name + defaultDefaultNameMidfix + s.getterExpr.features.first.member.eContainer.name + defaultDefaultNamePostfix;
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferAttributeEntityDefault");      
-      t.binding = s.getterExpr.features.first.member.defaultExpr.equivalent("CreateDefaultValueForPrimitiveEntityMember");               
+      t.binding = s.getterExpr.features.first.member.defaultExpr.equivalent("CreateDefaultValueForPrimitiveEntityMember");
+      t.required = false;
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created TransferAttribute DefaultValue (Field) for EntityDefault: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
