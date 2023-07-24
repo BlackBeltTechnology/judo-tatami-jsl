@@ -14,6 +14,9 @@ entity EntityAncestor {
 	field Integer attributeDerived <= self.attribute;
 	relation EntityRelated containmentDerived <= self.containment;
 	relation EntityRelated[] containmentCollectionDerived <= self.containmentCollection;
+
+	relation EntityRelated association;
+	relation EntityRelated[] associationCollection;
 }
 
 
@@ -25,6 +28,9 @@ entity Entity extends EntityAncestor {
 	field Integer attributeDerived2 <= self.attribute;
 	relation EntityRelated containmentDerived2 <= self.containment;
 	relation EntityRelated[] containmentCollectionDerived2 <= self.containmentCollection;
+
+	relation EntityRelated association2;
+	relation EntityRelated[] associationCollection2;
 }
 
 entity EntityRelated {
@@ -35,6 +41,9 @@ entity EntityRelated {
 
 	@Query
     field Integer primitiveQuery(Integer i) <= queryInteger(i = i);
+
+	relation Entity twoWayAssociation opposite-add: twoWayAssociationOpposite;
+	relation Entity[] twoWayAssociationCollection opposite-add: twoWayAssociationCollectionOpposite;
 }
 
 query Entity entityWithNameQuery(String name) <= Entity!all()!filter(e | e.name == name)!any();
