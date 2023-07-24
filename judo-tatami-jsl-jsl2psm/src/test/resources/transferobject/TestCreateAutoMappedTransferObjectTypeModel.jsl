@@ -17,6 +17,7 @@ entity EntityAncestor {
 
 	relation EntityRelated association;
 	relation EntityRelated[] associationCollection;
+
 }
 
 
@@ -31,6 +32,10 @@ entity Entity extends EntityAncestor {
 
 	relation EntityRelated association2;
 	relation EntityRelated[] associationCollection2;
+
+	relation EntityRelated twoWayAssociation opposite: twoWayAssociationRelated;
+	relation EntityRelated[] twoWayAssociationCollection opposite: twoWayAssociationRelatedCollection;
+
 }
 
 entity EntityRelated {
@@ -42,8 +47,11 @@ entity EntityRelated {
 	@Query
     field Integer primitiveQuery(Integer i) <= queryInteger(i = i);
 
-	relation Entity twoWayAssociation opposite-add: twoWayAssociationOpposite;
-	relation Entity[] twoWayAssociationCollection opposite-add: twoWayAssociationCollectionOpposite;
+	relation Entity twoWayAssociationRelated opposite: twoWayAssociation;
+	relation Entity[] twoWayAssociationRelatedCollection opposite: twoWayAssociationCollection;
+
+	relation Entity twoWayAssociationInjector opposite-add: twoWayAssociationOpposite;
+	relation Entity[] twoWayAssociationCollectionInjector opposite-add: twoWayAssociationCollectionOpposite;	
 }
 
 query Entity entityWithNameQuery(String name) <= Entity!all()!filter(e | e.name == name)!any();
