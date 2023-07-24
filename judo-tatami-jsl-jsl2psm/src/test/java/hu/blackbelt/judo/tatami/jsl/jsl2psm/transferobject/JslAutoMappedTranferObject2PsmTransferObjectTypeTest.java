@@ -119,7 +119,7 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
         assertEquals(attributeDerived2Property, attributeDerived2.getBinding());
         assertEquals("self.attribute", attributeDerived2Property.getGetterExpression().getExpression());
 
-        assertEquals(14, assertMappedTransferObject("AutoMapped").getRelations().size());
+        assertEquals(16, assertMappedTransferObject("AutoMapped").getRelations().size());
 
         TransferObjectRelation containment = assertMappedTransferObjectRelation("AutoMapped", "containment");
         assertFalse(containment.isRequired());
@@ -190,7 +190,21 @@ public class JslAutoMappedTranferObject2PsmTransferObjectTypeTest extends Abstra
         assertThat(twoWayAssociationCollection.getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(twoWayAssociationCollection.getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(twoWayAssociationCollection.getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
-                
+
+        TransferObjectRelation twoWayAssociationOpposite = assertMappedTransferObjectRelation("AutoMapped", "twoWayAssociationOpposite");
+        assertFalse(twoWayAssociationOpposite.isRequired());
+        assertThat(twoWayAssociationOpposite.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "twoWayAssociationOpposite")));
+        assertThat(twoWayAssociationOpposite.getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(twoWayAssociationOpposite.getCardinality().getUpper(), IsEqual.equalTo(1));
+        assertThat(twoWayAssociationOpposite.getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
+
+        TransferObjectRelation twoWayAssociationCollectionOpposite = assertMappedTransferObjectRelation("AutoMapped", "twoWayAssociationCollectionOpposite");
+        assertFalse(twoWayAssociationCollectionOpposite.isRequired());
+        assertThat(twoWayAssociationCollectionOpposite.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "twoWayAssociationCollectionOpposite")));
+        assertThat(twoWayAssociationCollectionOpposite.getCardinality().getLower(), IsEqual.equalTo(0));
+        assertThat(twoWayAssociationCollectionOpposite.getCardinality().getUpper(), IsEqual.equalTo(-1));
+        assertThat(twoWayAssociationCollectionOpposite.getTarget(), IsEqual.equalTo(assertMappedTransferObject("AutoMappedRelated")));
+        
         TransferObjectRelation containmentDerived = assertMappedTransferObjectRelation("AutoMapped", "containmentDerived");
         assertFalse(containmentDerived.isRequired());
         assertThat(containmentDerived.getCardinality().getLower(), IsEqual.equalTo(0));

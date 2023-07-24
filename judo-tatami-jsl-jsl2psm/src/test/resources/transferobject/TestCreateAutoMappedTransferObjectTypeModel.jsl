@@ -51,7 +51,7 @@ entity EntityRelated {
 	relation Entity[] twoWayAssociationRelatedCollection opposite: twoWayAssociationCollection;
 
 	relation Entity twoWayAssociationInjector opposite-add: twoWayAssociationOpposite;
-	relation Entity[] twoWayAssociationCollectionInjector opposite-add: twoWayAssociationCollectionOpposite;	
+	relation Entity[] twoWayAssociationCollectionInjector opposite-add: twoWayAssociationCollectionOpposite[];	
 }
 
 query Entity entityWithNameQuery(String name) <= Entity!all()!filter(e | e.name == name)!any();

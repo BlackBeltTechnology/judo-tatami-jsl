@@ -130,97 +130,48 @@ rule CloneTransferObjectAssociatedRelationForAutoMappedTransferObjectType
 ///////////////////////////////////////////////////////////////////////////
 // Entity association (injected) relation
 ///////////////////////////////////////////////////////////////////////////
-/*
-rule CreateNamedOppositeAssociationEnd
-    transform s: JSL!EntityRelationOppositeInjected
-    to t: JUDOPSM!AssociationEnd
-    {
-        var relationAddedFrom = s.eContainer;
-        var entityToAdd = relationAddedFrom.getReferenceType();
 
-        t.setId("(jsl/" + s.getId() + ")/CreateNamedOppositeAssociationEnd");
-        t.name = s.name;
-        t.target = relationAddedFrom.eContainer.getPSMEquivalent();
-        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForOppositeAddedRelation", t.getId());
-
-        // Reverse cascade delete not supported yet
-        t.reverseCascadeDelete = false;
-
-        t.partner = relationAddedFrom.equivalent("CreateDeclaredAssociationEnd");
-
-        entityToAdd.getPSMEquivalent().relations.add(t);
-        log.debug("Created Association End (named opposite): " + t.name);
-    }
-
-rule CreateDeclaredAssociationEnd
-    transform s: JSL!EntityStoredRelationDeclaration
-    to t: JUDOPSM!AssociationEnd
-    {
-        guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration)
-
-        t.setId("(jsl/" + s.getId() + ")/CreateDeclaredAssociationEnd");
-        t.name = s.name;
-        t.target = s.getReferenceType().getPSMEquivalent();
-        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForRelationDeclaration", t.getId());
-
-        // Reverse cascade delete not supported yet
-        t.reverseCascadeDelete = false;
-
-        if (s.opposite?.oppositeType.isDefined()) {
-            t.partner = s.opposite.oppositeType.equivalent("CreateDeclaredAssociationEnd");
-        }
-        if (s.opposite?.name.isDefined()) {
-            t.partner = s.opposite.equivalent("CreateNamedOppositeAssociationEnd");
-        }
-
-        s.eContainer.getPSMEquivalent().relations.add(t);
-        log.debug("Created Association End: (declared)" + t.name);
-    }
-*/
-
-/*
 @abstract
 rule AbstractCreateTransferObjectAssociatedOppositeRelationForAutoMappedTransferObjectType
-    transform s: JSL!EntityStoredRelationDeclaration
+    transform s: JSL!EntityRelationOppositeInjected
     to t: JUDOPSM!TransferObjectRelation {
 
         t.name = s.name;
-        t.target = s.getReferenceType().equivalent("CreateAutoMappedTransferObjectType");
+        t.target = s.eContainer.eContainer.equivalent("CreateAutoMappedTransferObjectType");
 
-        t.embeddedCreate = not s.eContainer.isAbstract;
-        t.embeddedUpdate = not s.eContainer.isAbstract;
-        t.embeddedDelete = not s.eContainer.isAbstract;
+        t.embeddedCreate = not s.eContainer.entityReferenceType.isAbstract;
+        t.embeddedUpdate = not s.eContainer.entityReferenceType.isAbstract;
+        t.embeddedDelete = not s.eContainer.entityReferenceType.isAbstract;
 
         t.embedded = false;
-        t.binding = s.equivalent("CreateDeclaredAssociatedOppositeEnd");
+        t.binding = s.equivalent("CreateNamedOppositeAssociationEnd");
 }
 
 @greedy
 rule CreateTransferObjectAssociatedOppositeRelationForAutoMappedTransferObjectType
-    transform s: JSL!EntityStoredRelationDeclaration
+    transform s: JSL!EntityRelationOppositeInjected
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectAssociatedOppositeRelationForAutoMappedTransferObjectType {
-        guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer) and s.getReferenceType().isKindOf(JSL!EntityDeclaration)
+        guard: JSL!TransferDeclaration.all().exists(t | t.automap and t.map.entity == s.eContainer.entityReferenceType) and s.eContainer.entityReferenceType.isKindOf(JSL!EntityDeclaration)
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectAssociatedOppositeRelationForAutoMappedTransferObjectType");
-        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
+        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForOppositeAddedRelation", t.getId());
 
-        s.eContainer.equivalent("CreateAutoMappedTransferObjectType").relations.add(t);
+        s.eContainer.entityReferenceType.equivalent("CreateAutoMappedTransferObjectType").relations.add(t);
         log.debug("Created TransferObjectRelation for AutoMappedTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
 @lazy
 @greedy
 rule CloneTransferObjectAssociatedOppositeRelationForAutoMappedTransferObjectType
-    transform s: JSL!EntityStoredRelationDeclaration
+    transform s: JSL!EntityRelationOppositeInjected
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectAssociatedOppositeRelationForAutoMappedTransferObjectType {
 
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectAssociatedOppositeRelationForAutoMappedTransferObjectType");
-        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForFieldDeclaration", t.getId());
+        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForOppositeAddedRelation", t.getId());
 
         log.debug("Clone TransferObjectRelation for AutoMappedTransferObjectType: [" + t.name + "]");
 }
-*/
 
 ///////////////////////////////////////////////////////////////////////////
 // Derived relation
