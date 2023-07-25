@@ -60,10 +60,9 @@ rule CreateAutoMappedTransferObjectType
                     }
                 }
 	            // Opposite added relation
-//	            for (o in JSL!EntityRelationOppositeInjected.all().select(o | o.eContainer.getReferenceType() == entity)) {
-//	                t.relations.add(o.equivalent("CloneTransferObjectAssociatedOppositeRelationForAutoMappedTransferObjectType"));
-//	            }
-
+	            for (o in JSL!EntityRelationOppositeInjected.all().select(o | o.eContainer.getReferenceType() == entity)) {
+	                t.relations.add(o.equivalent("CloneTransferObjectAssociatedOppositeRelationForAutoMappedTransferObjectType"));
+	            }
             }
       }
 
