@@ -38,9 +38,13 @@ rule CreateAutoMappedTransferObjectType
                     } else if (im.getReferenceType().isKindOf(JSL!EntityDeclaration)) {
                         t.relations.add(im.equivalentWithPrefix("CloneTransferObjectEmbeddedRelationForAutoMappedTransferObjectType", t.getId()));
                     }
-                // Derives
+                // Relations
+                } else if (im.isKindOf(JSL!EntityStoredRelationDeclaration) and  im.getReferenceType().isKindOf(JSL!EntityDeclaration)) {
+                    t.relations.add(im.equivalentWithPrefix("CloneTransferObjectAssociatedRelationForAutoMappedTransferObjectType", t.getId()));
+
+                // Calculated
                 } else if (im.isKindOf(JSL!EntityCalculatedMemberDeclaration)) {
-                    // Primitive derived
+                    // Primitive calculated
                     if (im.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
                       if(im.isQuery()) {
                           t.attributes.add(im.equivalentWithPrefix("CloneEntityQueryTransferAttributeForAutoMappedTransferObjectType", t.getId()));
@@ -55,6 +59,11 @@ rule CreateAutoMappedTransferObjectType
                         }
                     }
                 }
+	            // Opposite added relation
+//	            for (o in JSL!EntityRelationOppositeInjected.all().select(o | o.eContainer.getReferenceType() == entity)) {
+//	                t.relations.add(o.equivalent("CloneTransferObjectAssociatedOppositeRelationForAutoMappedTransferObjectType"));
+//	            }
+
             }
       }
 
