@@ -44,7 +44,7 @@ rule CreateQueryWithoutParameterAnnotationForEntityQuery
         t.setId("(jsl/" + s.getId() + ")/CreateQueryWithoutParameterAnnotationForEntityQuery");
         t.name = "QueryWithoutParameter";
         s.equivalent("CreateDataPropertyForEntityQuery").annotations.add(t);
-        log.debug("Create ParameterObject Annotation for entity query: " + t.name);
+        log.debug("Create QueryWithoutParameter Annotation for entity query: " + t.name);
 }
 
 @greedy
