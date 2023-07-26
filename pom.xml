@@ -74,7 +74,7 @@
         <judo-dispatcher-api-version>1.0.2</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20230324_114642_660d83a9_develop</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20230718_140415_4b940629_develop</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20230726_152547_1954a4fc_bugfix_JNG_5033_NPE_in_RdbmsInstanceCollector_loop_detection</judo-runtime-core-version>
 
         <structured-map-proxy-version>2.0.0.20230330_221859_8a965acd_develop</structured-map-proxy-version>
 
