@@ -1,18 +1,6 @@
 import "../../../../operations/_importAll.eol";
 import "expressionType.etl";
 
-@greedy
-rule CreateDerivedAnnotationForDataProperty
-    transform s : JSL!EntityCalculatedFieldDeclaration
-    to t : JUDOPSM!Annotation {
-        guard: not s.isQuery() and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)
-
-        t.setId("(jsl/" + s.getId() + ")/CreateDerivedAnnotationForDataProperty");
-        t.name = "Derived";
-        s.equivalent("CreateDataProperty").annotations.add(t);
-        log.debug("Create Derived Annotation for entity derived: " + t.name);
-}
-
 rule CreateDataProperty
     transform s : JSL!EntityCalculatedFieldDeclaration
     to t : JUDOPSM!DataProperty
