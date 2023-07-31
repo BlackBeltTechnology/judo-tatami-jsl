@@ -1,6 +1,19 @@
 import "../../../../operations/_importAll.eol";
 import "../namespace/namespace.etl";
 
+
+@greedy
+rule CreateDefaultValueAnnotationForPrimitiveEntityMember
+    transform s : JSL!Expression
+    to t : JUDOPSM!Annotation {
+        guard: s.isDefaultValueForEntity() and s.eContainer.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDefaultValueAnnotationForPrimitiveEntityMember");
+        t.name = "DefaultValue";
+        s.equivalent("CreateDefaultValueForPrimitiveEntityMember").annotations.add(t);
+        log.debug("Create default value Annotation for default primitive entity member: " + t.name);
+}
+
 @abstract
 rule CreatePrimitiveTypedElement
     transform s: JSL!EntityMemberDeclaration
