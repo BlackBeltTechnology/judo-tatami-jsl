@@ -11,7 +11,7 @@ rule CreateDefaultValueAnnotationForPrimitiveEntityMember
         t.setId("(jsl/" + s.getId() + ")/CreateDefaultValueAnnotationForPrimitiveEntityMember");
         t.name = "DefaultValue";
         s.equivalent("CreateDefaultValueForPrimitiveEntityMember").annotations.add(t);
-        log.debug("Create Derived Annotation for default primitive entity member: " + t.name);
+        log.debug("Create default value Annotation for default primitive entity member: " + t.name);
 }
 
 @abstract
