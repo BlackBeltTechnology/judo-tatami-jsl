@@ -46,15 +46,11 @@ rule CreateAutoMappedTransferObjectType
                 } else if (im.isKindOf(JSL!EntityCalculatedMemberDeclaration)) {
                     // Primitive calculated
                     if (im.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
-                      if(im.isQuery()) {
-                          t.attributes.add(im.equivalentWithPrefix("CloneEntityQueryTransferAttributeForAutoMappedTransferObjectType", t.getId()));
-                        } else {
+                      if(not im.isQuery()) {
                           t.attributes.add(im.equivalentWithPrefix("CloneDerivedTransferAttributeForAutoMappedTransferObjectType", t.getId()));
                         }
                     } else if (im.getReferenceType().isKindOf(JSL!EntityDeclaration)) {
-                        if(im.isQuery()) {
-                          t.relations.add(im.equivalentWithPrefix("CloneTransferObjectQueryRelationForAutoMappedTransferObjectType", t.getId()));
-                        } else {
+                        if(not im.isQuery()) {
                           t.relations.add(im.equivalentWithPrefix("CloneTransferObjectDerivedRelationForAutoMappedTransferObjectType", t.getId()));
                         }
                     }
