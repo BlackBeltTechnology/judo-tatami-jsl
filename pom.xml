@@ -30,7 +30,7 @@
 
     <properties>
         <revision>1.1.4-SNAPSHOT</revision>
-        <maven>3.8.3</maven>
+        <maven>3.9.4</maven>
 
         <project-shortname>judo-tatami-jsl</project-shortname>
         <project-repositoryId>BlackBeltTechnology/judo-tatami-jsl</project-repositoryId>
