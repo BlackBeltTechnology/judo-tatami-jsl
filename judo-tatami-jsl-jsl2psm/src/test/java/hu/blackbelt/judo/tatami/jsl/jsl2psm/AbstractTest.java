@@ -20,7 +20,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
  * #L%
  */
 
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import org.slf4j.Logger;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.support.JslDslModelResourceSupport;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
@@ -53,6 +53,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.io.Closeable;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 abstract public class AbstractTest {
     protected static String TEST_SOURCE_MODEL_NAME = "urn:test.judo-meta-jsl";
 
-    protected Log slf4jlog;
+    protected Logger slf4jlog;
     protected JslDslModel jslModel;
 
     protected String testName;
@@ -92,7 +93,9 @@ abstract public class AbstractTest {
 
     @AfterEach
     void tearDown() throws Exception {
-        slf4jlog.close();
+        if (slf4jlog instanceof Cloneable) {
+            ((Closeable) slf4jlog).close();
+        }
 
         final String traceFileName = testName + "-jsl2psm.model";
 
@@ -139,7 +142,7 @@ abstract public class AbstractTest {
         jslModelWrapper = JslDslModelResourceSupport.jslDslModelResourceSupportBuilder().resourceSet(jslModel.getResourceSet()).build();
 
         assertTrue(jslModel.isValid());
-//        validateJsl(new Slf4jLog(log), jslModel, calculateEsmValidationScriptURI());
+//        validateJsl(log, jslModel, calculateEsmValidationScriptURI());
 
 
         // Make transformation which returns the trace with the serialized URI's
@@ -161,7 +164,7 @@ abstract public class AbstractTest {
 
     abstract protected String getTest();
 
-    abstract protected Log createLog();
+    abstract protected Logger createLog();
 
 
     public Set<EntityType> getEntityTypes() {
