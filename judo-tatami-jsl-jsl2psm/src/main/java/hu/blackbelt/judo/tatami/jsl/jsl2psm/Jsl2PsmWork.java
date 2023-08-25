@@ -20,7 +20,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
  * #L%
  */
 
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import org.slf4j.Logger;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
@@ -79,7 +79,7 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
         Jsl2PsmTransformationTrace jsl2PsmTransformationTrace = executeJsl2PsmTransformation(Jsl2Psm.Jsl2PsmParameter.jsl2PsmParameter()
                 .jslModel(jslModel.get())
                 .psmModel(psmModel)
-                .log(getTransformationContext().getByClass(Log.class).orElse(null))
+                .log(getTransformationContext().getByClass(Logger.class).orElse(null))
                 .scriptUri(transformationScriptRoot)
                 .createTrace(workParam.createTrace)
                 .parallel(workParam.parallel));
@@ -109,7 +109,7 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
                 jslDslLoadArgumentsBuilder().file(jslModelFile).name(modelName));
 
 //        if (validate) {
-//            JslEpsilonValidator.validateJsl(new Slf4jLog(log), jslModel, JslEpsilonValidator.calculateJslValidationScriptURI());
+//            JslEpsilonValidator.validateJsl(log, jslModel, JslEpsilonValidator.calculateJslValidationScriptURI());
 //        }
 
         transformationContext = new TransformationContext(modelName);
