@@ -21,7 +21,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.osgi;
  */
 
 import com.google.common.collect.Maps;
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import org.slf4j.Logger;
 import hu.blackbelt.epsilon.runtime.execution.impl.*;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -63,7 +63,7 @@ public class Jsl2PsmTransformationService {
                         .getEntry("/tatami/jsl2psm/transformations/psm/jslToPsm.etl")
                         .toURI()
                         .resolve(".");
-        try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+        try (BufferedSlf4jLogger bufferedLog = new BufferedSlf4jLogger(log)) {
             Jsl2PsmTransformationTrace transformationTrace = executeJsl2PsmTransformation(Jsl2Psm.Jsl2PsmParameter.jsl2PsmParameter()
                 .jslModel(jslModel)
                 .psmModel(psmModel)
