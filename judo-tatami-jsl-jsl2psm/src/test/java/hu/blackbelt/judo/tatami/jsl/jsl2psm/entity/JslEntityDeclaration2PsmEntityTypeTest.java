@@ -21,7 +21,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.entity;
  */
 
 import com.google.common.collect.ImmutableSet;
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import org.slf4j.Logger;
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
@@ -57,7 +57,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
     }
 
     @Override
-    protected Log createLog() {
+    protected Logger createLog() {
         return new BufferedSlf4jLogger(log);
     }
 

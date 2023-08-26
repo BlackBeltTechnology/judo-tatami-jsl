@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext.ExecutionContextBuilder;
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import org.slf4j.Logger;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
@@ -38,6 +38,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.epsilon.common.util.UriUtil;
 
+import java.io.Closeable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -66,7 +67,7 @@ public class Jsl2Psm {
         @NonNull
         PsmModel psmModel;
 
-        Log log;
+        Logger log;
 
         @Builder.Default
         java.net.URI scriptUri = Jsl2Psm.calculateJsl2PsmTransformationScriptURI();
@@ -143,7 +144,7 @@ public class Jsl2Psm {
 
     public static Jsl2PsmTransformationTrace executeJsl2PsmTransformation(Jsl2PsmParameter parameter) throws Exception {
         final AtomicBoolean loggerToBeClosed = new AtomicBoolean(false);
-        Log log = Objects.requireNonNullElseGet(parameter.log,
+        Logger log = Objects.requireNonNullElseGet(parameter.log,
                                                 () -> {
                                                     loggerToBeClosed.set(true);
                                                     return new BufferedSlf4jLogger(Jsl2Psm.log);
@@ -207,7 +208,14 @@ public class Jsl2Psm {
             executionContext.close();
         } finally {
             if (loggerToBeClosed.get()) {
-                log.close();
+                try {
+                    if (log instanceof Closeable) {
+                        ((Closeable) log).close();
+                    }
+                } catch (Exception e) {
+                    //noinspection ThrowFromFinallyBlock
+                    throw new RuntimeException(e);
+                }
             }
         }
 
