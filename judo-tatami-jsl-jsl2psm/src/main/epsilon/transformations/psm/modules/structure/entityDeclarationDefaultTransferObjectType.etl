@@ -24,7 +24,7 @@ rule CreateEntityDefaultTransferObjectType
 
             for (im in inheritedMembers) {
                 // Field attribute
-                if (im.isKindOf(JSL!EntityStoredFieldDeclaration)) {
+                if (im.isKindOf(JSL!EntityFieldDeclaration) and not im.calculated) {
                     // Primitive attributes
                     if (im.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
                         t.attributes.add(im.equivalentWithPrefix("CloneTransferAttributeForDefaultTransferObjectType", t.getId()));
@@ -36,17 +36,17 @@ rule CreateEntityDefaultTransferObjectType
                         t.relations.add(im.equivalentWithPrefix("CloneTransferObjectEmbeddedRelationForDefaultTransferObjectType", t.getId()));
                     }
                 // Relations
-                } else if (im.isKindOf(JSL!EntityStoredRelationDeclaration)) {
+                } else if (im.isKindOf(JSL!EntityRelationDeclaration) and not im.calculated) {
                     t.relations.add(im.equivalentWithPrefix("CloneTransferObjectAssociatedRelationForDefaultTransferObjectType", t.getId()));
                 // Prmitive Calculated
-                } else if (im.isKindOf(JSL!EntityCalculatedFieldDeclaration)) {
+                } else if (im.isKindOf(JSL!EntityFieldDeclaration) and im.calculated) {
                 	if (im.isQuery()) {
                         t.attributes.add(im.equivalentWithPrefix("CloneEntityQueryTransferAttributeForDefaultTransferObjectType", t.getId()));
                 	} else {
                         t.attributes.add(im.equivalentWithPrefix("CloneDerivedTransferAttributeForDefaultTransferObjectType", t.getId()));
                 	}
                 // Entity Calculated
-                } else if (im.isKindOf(JSL!EntityCalculatedRelationDeclaration)) {
+                } else if (im.isKindOf(JSL!EntityRelationDeclaration) and im.calculated) {
                 	if (im.isQuery()) {
                         t.relations.add(im.equivalentWithPrefix("CloneTransferObjectQueryRelationForDefaultTransferObjectType", t.getId()));
                 	} else {
