@@ -19,7 +19,7 @@ entity Entity {
 
 entity EntityRelated {
     field Integer attribute;
-    relation Entity entity opposite-add:entityRelatedOpposite;
+    relation Entity `entity` opposite-add:entityRelatedOpposite;
 
 }
 

@@ -1,9 +1,9 @@
 
 @greedy
 rule CreateUnmappedTransferObjectForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t : JUDOPSM!UnmappedTransferObjectType {
-        guard: s.isQuery() and s.parameters.size() > 0
+        guard: s.isQuery() and s.parameters.size() > 0 and s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectForEntityQuery");
         t.name = defaultParameterNamePrefix + s.eContainer.name + defaultParameterNameMidfix + s.name + defaultParameterNamePostfix;
@@ -13,9 +13,9 @@ rule CreateUnmappedTransferObjectForEntityQuery
 
 @greedy
 rule CreateOriginalNameAnnotationForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t : JUDOPSM!Annotation {
-        guard: s.isQuery() and s.parameters.size() > 0
+        guard: s.isQuery() and s.parameters.size() > 0 and s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateOriginalNameAnnotationForEntityQuery");
         t.name = "OriginalSource";
@@ -25,9 +25,9 @@ rule CreateOriginalNameAnnotationForEntityQuery
 
 @greedy
 rule CreateParameterObjectAnnotationForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t : JUDOPSM!Annotation {
-        guard: s.isQuery() and s.parameters.size() > 0
+        guard: s.isQuery() and s.parameters.size() > 0 and s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateParameterObjectAnnotationForEntityQuery");
         t.name = "ParameterObject";
@@ -37,9 +37,9 @@ rule CreateParameterObjectAnnotationForEntityQuery
 
 @greedy
 rule CreateQueryWithoutParameterAnnotationForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t : JUDOPSM!Annotation {
-        guard: s.isQuery() and s.parameters.size() = 0 and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)
+        guard: s.isQuery() and s.parameters.size() = 0 and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateQueryWithoutParameterAnnotationForEntityQuery");
         t.name = "QueryWithoutParameter";
@@ -49,9 +49,9 @@ rule CreateQueryWithoutParameterAnnotationForEntityQuery
 
 @greedy
 rule CreateOriginalNameAnnotationDetailForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t : JUDOPSM!AnnotationDetail {
-        guard: s.isQuery() and s.parameters.size() > 0
+        guard: s.isQuery() and s.parameters.size() > 0 and s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateOriginalNameAnnotationDetailForEntityQuery");
         t.name = "Name";
@@ -64,7 +64,7 @@ rule CreateOriginalNameAnnotationDetailForEntityQuery
 rule CreateTransferObjectForEntityQueryParameterDeclaration
     transform s : JSL!QueryParameterDeclaration
     to t: JUDOPSM!TransferAttribute {
-        guard: s.eContainer.isKindOf(JSL!EntityCalculatedMemberDeclaration)
+        guard: s.eContainer.isKindOf(JSL!EntityMemberDeclaration)
 
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForEntityQueryParameterDeclaration");
 
@@ -77,9 +77,9 @@ rule CreateTransferObjectForEntityQueryParameterDeclaration
 
 @greedy
 rule CreateDataPropertyForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t : JUDOPSM!DataProperty {
-      guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)
+      guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.calculated
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateDataPropertyForEntityQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForEntityQueryParametrizedDataType");
@@ -91,9 +91,9 @@ rule CreateDataPropertyForEntityQuery
 
 @greedy
 rule CreateNavigationPropertyForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t : JUDOPSM!NavigationProperty {
-      guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!EntityDeclaration)
+      guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.calculated
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateNavigationPropertyForEntityQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForEntityQueryParametrizedReferenceType");
@@ -107,9 +107,9 @@ rule CreateNavigationPropertyForEntityQuery
 @greedy
 @lazy
 rule CreateGetterExpressionForEntityQueryParametrizedDataType
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t: JUDOPSM!DataExpressionType {
-	    guard: s.isQuery()
+	    guard: s.isQuery() and s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForEntityQueryParametrizedDataType");
         t.expression = expressionUtils.getJqlForEntityQuery(s, entityNamePrefix, entityNamePostfix);
@@ -124,9 +124,9 @@ rule CreateGetterExpressionForEntityQueryParametrizedDataType
 @greedy
 @lazy
 rule CreateGetterExpressionForEntityQueryParametrizedReferenceType
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t: JUDOPSM!ReferenceExpressionType {
-	    guard: s.isQuery()
+	    guard: s.isQuery() and s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForEntityQueryParametrizedReferenceType");
         t.expression = expressionUtils.getJqlForEntityQuery(s, entityNamePrefix, entityNamePostfix);
