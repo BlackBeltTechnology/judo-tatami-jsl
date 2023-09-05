@@ -4,10 +4,6 @@ import "modules/structure/entityDeclarationDefaultTransferObjectType.etl";
 import "modules/structure/entityDeclarationDefaultTransferAttribute.etl";
 import "modules/structure/entityDeclarationDefaultTransferRelation.etl";
 
-import "modules/structure/entityDeclarationAutoMappedTransferObjectType.etl";
-import "modules/structure/entityDeclarationAutoMappedTransferAttribute.etl";
-import "modules/structure/entityDeclarationAutoMappedTransferRelation.etl";
-
 import "modules/structure/transferDeclarationTransferAttribute.etl";
 import "modules/structure/transferDeclarationTransferObjectType.etl";
 import "modules/structure/transferDeclarationTransferRelation.etl";
@@ -30,6 +26,9 @@ import "modules/type/type.etl";
 
 pre {
     JUDOPSM.target.resource.contents.add(defaultModelName.equivalent("CreateRootModel"));
+
+	// sets the extended modifier properties of JSL model
+	// setModifiers();
 }
 
 post {
@@ -44,6 +43,4 @@ post {
     for (c in JSL!QueryParameterDeclaration.all()) {
          var dummy = c.referenceType.getPSMEquivalent();
     }
-
-
 }
