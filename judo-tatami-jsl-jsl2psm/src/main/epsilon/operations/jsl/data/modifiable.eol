@@ -1,0 +1,134 @@
+@cached
+operation JSL!Modifiable getChoices(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "choices"));
+}
+
+@cached
+operation JSL!Modifiable getClaim(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "claim"));
+}
+
+@cached
+operation JSL!Modifiable getDetail(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "detail"));
+}
+
+@cached
+operation JSL!Modifiable getEnabled(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "enabled"));
+}
+
+@cached
+operation JSL!Modifiable getFrame(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "frame"));
+}
+
+@cached
+operation JSL!Modifiable getGuard(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "guard"));
+}
+
+@cached
+operation JSL!Modifiable getHidden(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "hidden"));
+}
+
+@cached
+operation JSL!Modifiable getHAlign(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "h-align"));
+}
+
+@cached
+operation JSL!Modifiable getIcon(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "icon"));
+}
+
+@cached
+operation JSL!Modifiable getIdentity(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "identity"));
+}
+
+@cached
+operation JSL!Modifiable getLabel(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "label"));
+}
+
+@cached
+operation JSL!Modifiable getMaxSize(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "max-size"));
+}
+
+@cached
+operation JSL!Modifiable getMaxFileSize(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "max-file-size"));
+}
+
+@cached
+operation JSL!Modifiable getMinSize(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "min-size"));
+}
+
+@cached
+operation JSL!Modifiable getMimeType(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "mime-type"));
+}
+
+@cached
+operation JSL!Modifiable getOpposite(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "opposite"));
+}
+
+@cached
+operation JSL!Modifiable getOppositeAdd(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "opposite-add"));
+}
+
+@cached
+operation JSL!Modifiable getPrecision(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "precision"));
+}
+
+@cached
+operation JSL!Modifiable getRealm(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "realm"));
+}
+
+@cached
+operation JSL!Modifiable getRegex(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "regex"));
+}
+
+@cached
+operation JSL!Modifiable getRequired(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "required"));
+}
+
+@cached
+operation JSL!Modifiable getRows(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "rows"));
+}
+
+@cached
+operation JSL!Modifiable getScale(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "scale"));
+}
+
+@cached
+operation JSL!Modifiable getStretch(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "stretch"));
+}
+
+@cached
+operation JSL!Modifiable getThrow(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "throw"));
+}
+
+@cached
+operation JSL!Modifiable getVAlign(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "v-align"));
+}
+
+@cached
+operation JSL!Modifiable getWidth(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "width"));
+}

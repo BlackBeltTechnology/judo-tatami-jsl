@@ -23,10 +23,10 @@ rule CreatePrimitiveTypedElement
     }
 
 rule CreateAttributeFromField
-    transform s: JSL!EntityStoredFieldDeclaration
+    transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!Attribute
     extends CreatePrimitiveTypedElement {
-        guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)
+        guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and not s.calculated
         t.setId("(jsl/" + s.getId() + ")/CreateAttributeFromField");
         t.dataType = s.getReferenceType().getPSMEquivalent();
         t.identifier = s.identifier;
@@ -161,11 +161,11 @@ rule CreateReadsDataPropertyForMappedTransferObjectTransferFieldDeclaration
 
 @greedy
 rule CreateDefaultDataExpressionTypeForMappedTransferObjectConstructor
-    transform s : JSL!TransferDefault
+    transform s : JSL!TransferDataAssignment
     to t: JUDOPSM!DataExpressionType {
-        guard: s.member.reference.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.member.reference.eContainer.map.isDefined()
+        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isDefined()
 
-        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultDataExpressionTypeForMappedTransferObjectConstructor");
+        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateDefaultDataExpressionTypeForMappedTransferObjectConstructor");
         t.expression = expressionUtils.getJqlForExpression(s.rightValue, entityNamePrefix, entityNamePostfix);
         s.equivalent("CreateDefaultDataPropertyForMappedTransferObjectConstructor").getterExpression = t;
 
@@ -174,28 +174,28 @@ rule CreateDefaultDataExpressionTypeForMappedTransferObjectConstructor
 
 @greedy
 rule CreateDefaultDataPropertyForMappedTransferObjectConstructor
-    transform s : JSL!TransferDefault
+    transform s : JSL!TransferDataAssignment
     to t: JUDOPSM!DataProperty {
-        guard: s.member.reference.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.member.reference.eContainer.map.isDefined()
+        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isDefined()
 
-        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultDataPropertyForMappedTransferObjectConstructor");
-        t.name = defaultDefaultNamePrefix + s.member.reference.name + defaultDefaultNameMidfix + s.member.reference.eContainer.name + defaultDefaultNamePostfix;
-        t.dataType = s.member.reference.getReferenceType().getPSMEquivalent();
+        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateDefaultDataPropertyForMappedTransferObjectConstructor");
+        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
+        t.dataType = s.leftValue.declaration.getReferenceType().getPSMEquivalent();
         t.required = false;
 
 
-        s.member.reference.eContainer.map.entity.getPSMEquivalent().dataProperties.add(t);
+        s.leftValue.declaration.eContainer.map.entity.getPSMEquivalent().dataProperties.add(t);
 
         log.debug("Created DataProperty for Transfer Object Default Value: " + s);
     }
 
 @greedy
 rule CreateDefaultDataExpressionTypeForUnmappedTransferObjectConstructor
-    transform s : JSL!TransferDefault
+    transform s : JSL!TransferDataAssignment
     to t: JUDOPSM!DataExpressionType {
-        guard: s.member.reference.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.member.reference.eContainer.map.isUndefined()
+        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isUndefined()
 
-        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultDataExpressionTypeForUnmappedTransferObjectConstructor");
+        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateDefaultDataExpressionTypeForUnmappedTransferObjectConstructor");
         t.expression = expressionUtils.getJqlForExpression(s.rightValue, entityNamePrefix, entityNamePostfix);
         s.equivalent("CreateDefaultStaticDataForUnmappedTransferObjectConstructor").getterExpression = t;
 
@@ -204,13 +204,13 @@ rule CreateDefaultDataExpressionTypeForUnmappedTransferObjectConstructor
 
 @greedy
 rule CreateDefaultStaticDataForUnmappedTransferObjectConstructor
-    transform s : JSL!TransferDefault
+    transform s : JSL!TransferDataAssignment
     to t: JUDOPSM!StaticData {
-        guard: s.member.reference.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.member.reference.eContainer.map.isUndefined()
+        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isUndefined()
 
-        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultStaticDataForUnmappedTransferObjectConstructor");
-        t.name = defaultDefaultNamePrefix + s.member.reference.name + defaultDefaultNameMidfix + s.member.reference.eContainer.name + defaultDefaultNamePostfix;
-        t.dataType = s.member.reference.getReferenceType().getPSMEquivalent();
+        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateDefaultStaticDataForUnmappedTransferObjectConstructor");
+        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
+        t.dataType = s.leftValue.declaration.getReferenceType().getPSMEquivalent();
         t.required = false;
 
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
