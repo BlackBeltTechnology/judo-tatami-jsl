@@ -26,9 +26,6 @@ import "modules/type/type.etl";
 
 pre {
     JUDOPSM.target.resource.contents.add(defaultModelName.equivalent("CreateRootModel"));
-
-	// sets the extended modifier properties of JSL model
-	// setModifiers();
 }
 
 post {
