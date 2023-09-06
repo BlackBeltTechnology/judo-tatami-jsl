@@ -20,10 +20,10 @@ rule CreateNamedOppositeAssociationEnd
     }
 
 rule CreateDeclaredAssociationEnd
-    transform s: JSL!EntityStoredRelationDeclaration
+    transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!AssociationEnd
     {
-        guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration)
+        guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateDeclaredAssociationEnd");
         t.name = s.name;

@@ -1,10 +1,10 @@
 import "../../../../operations/_importAll.eol";
 
 rule CreateContainmentFromField
-    transform s: JSL!EntityStoredFieldDeclaration
+    transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!Containment
     {
-        guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration)
+        guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateContainmentFromField");
         t.name = s.name;
@@ -76,11 +76,11 @@ rule CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclara
 //////////////////////////////////////////////////////////////////   
 @greedy
 rule CreateDefaultReferenceExpressionTypeForMappedTransferObjectConstructor
-    transform s : JSL!TransferDefault
+    transform s : JSL!TransferDataAssignment
     to t: JUDOPSM!ReferenceExpressionType {
-        guard: s.member.reference.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.member.reference.eContainer.map.isDefined()
+        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.leftValue.declaration.eContainer.map.isDefined()
 
-        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultReferenceExpressionTypeForMappedTransferObjectConstructor");
+        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateDefaultReferenceExpressionTypeForMappedTransferObjectConstructor");
         t.expression = expressionUtils.getJqlForExpression(s.rightValue, entityNamePrefix, entityNamePostfix);
         s.equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor").getterExpression = t;
 
@@ -89,26 +89,26 @@ rule CreateDefaultReferenceExpressionTypeForMappedTransferObjectConstructor
 
 @greedy
 rule CreateDefaultNavigationPropertyForMappedTransferObjectConstructor
-    transform s : JSL!TransferDefault
+    transform s : JSL!TransferDataAssignment
     to t: JUDOPSM!NavigationProperty {
-        guard: s.member.reference.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.member.reference.eContainer.map.isDefined()
+        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.leftValue.declaration.eContainer.map.isDefined()
 
-        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
-        t.name = defaultDefaultNamePrefix + s.member.reference.name + defaultDefaultNameMidfix + s.member.reference.eContainer.name + defaultDefaultNamePostfix;
-        t.target = s.member.reference.getReferenceType().getPSMEquivalent().entityType;
-  	    t.cardinality = s.member.reference.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
-        s.member.reference.eContainer.map.entity.getPSMEquivalent().navigationProperties.add(t);
+        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
+        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
+        t.target = s.leftValue.declaration.getReferenceType().getPSMEquivalent().entityType;
+  	    t.cardinality = s.leftValue.declaration.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
+        s.leftValue.declaration.eContainer.map.entity.getPSMEquivalent().navigationProperties.add(t);
 
         log.debug("Created NavigationProperty for Transfer Object Default Value: " + s);
     }
 
 @greedy
 rule CreateDefaultReferenceExpressionTypeForUnmappedTransferObjectConstructor
-    transform s : JSL!TransferDefault
+    transform s : JSL!TransferDataAssignment
     to t: JUDOPSM!ReferenceExpressionType {
-        guard: s.member.reference.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.member.reference.eContainer.map.isUndefined()
+        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.leftValue.declaration.eContainer.map.isUndefined()
         
-        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultReferenceExpressionTypeForUnmappedTransferObjectConstructor");
+        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateDefaultReferenceExpressionTypeForUnmappedTransferObjectConstructor");
         t.expression = expressionUtils.getJqlForExpression(s.rightValue, entityNamePrefix, entityNamePostfix);
         s.equivalent("CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor").getterExpression = t;
 
@@ -117,14 +117,14 @@ rule CreateDefaultReferenceExpressionTypeForUnmappedTransferObjectConstructor
 
 @greedy
 rule CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor
-    transform s : JSL!TransferDefault
+    transform s : JSL!TransferDataAssignment
     to t: JUDOPSM!StaticNavigation {
-        guard: s.member.reference.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.member.reference.eContainer.map.isUndefined()
+        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.leftValue.declaration.eContainer.map.isUndefined()
 
-        t.setId("(jsl/" + s.member.reference.getId() + ")/CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
-        t.name = defaultDefaultNamePrefix + s.member.reference.name + defaultDefaultNameMidfix + s.member.reference.eContainer.name + defaultDefaultNamePostfix;
-        t.target = s.member.reference.getReferenceType().getPSMEquivalent().entityType;
-  	    t.cardinality = s.member.reference.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
+        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
+        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
+        t.target = s.leftValue.declaration.getReferenceType().getPSMEquivalent().entityType;
+  	    t.cardinality = s.leftValue.declaration.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
         
