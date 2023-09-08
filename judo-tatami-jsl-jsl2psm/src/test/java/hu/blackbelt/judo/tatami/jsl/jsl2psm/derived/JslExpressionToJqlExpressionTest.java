@@ -153,7 +153,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
 
     private String jqlDerived(String entity, String field, String entityNamePrefix, String entityNamePostfix) {
         return JslExpressionToJqlExpression.getJqlForDerived(
-                jslModelWrapper.getStreamOfJsldslEntityCalculatedMemberDeclaration()
+                jslModelWrapper.getStreamOfJsldslEntityMemberDeclaration()
                         .filter(d -> d.getName().equals(field) &&
                                 ((EntityDeclaration) d.eContainer()).getName().equals(entity))
                         .findFirst()
@@ -163,7 +163,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
 
     private String jqlEntityQuery(String entity, String field, String entityNamePrefix, String entityNamePostfix) {
         return JslExpressionToJqlExpression.getJqlForEntityQuery(
-                jslModelWrapper.getStreamOfJsldslEntityCalculatedMemberDeclaration()
+                jslModelWrapper.getStreamOfJsldslEntityMemberDeclaration()
                         .filter(d -> d.getName().equals(field) &&
                                 ((EntityDeclaration) d.eContainer()).getName().equals(entity))
                         .findFirst()

@@ -20,7 +20,7 @@ entity Entity extends EntityAncestor {
 	field Integer attribute = 1;
 	field EntityRelated containment;
 	field EntityRelated[] containmentCollection;
-	field MyEnum enum = MyEnum#Bombastic;
+	field MyEnum `enum` = MyEnum#Bombastic;
 	
 	relation EntityRelated association;
 	relation EntityRelated[] associationCollection;
@@ -30,13 +30,13 @@ entity Entity extends EntityAncestor {
 
 entity EntityRelated {
 	field Integer attribute ;
-	relation Entity entity opposite-add:entityRelatedOpposite;
+	relation Entity `entity` opposite-add:entityRelatedOpposite;
 	relation Entity entityCollection opposite-add:entityRelatedOppositeCollection[];
 }
 
 transfer Unmapped {
 	field String transient;
-	constructor {
+	event build {
 		self.transient = "Test";
 	}
 }
@@ -45,10 +45,10 @@ transfer Mapped maps Entity as e {
     field Integer unmappedAttribute;
 	field Integer mappedAttribute <=> e.attribute;
 	field Integer mappedIdentifier <=> e.identifier;
-    field MyEnum mappedEnum <=> e.enum;
+    field MyEnum mappedEnum <=> e.`enum`;
 	field Integer mappedAttributeEntityDefault <=> e.attribute;
 	field Integer mappedIdentifierEntityDefault <=> e.identifier;
-    field MyEnum mappedEnumEntityDefault <=> e.enum;
+    field MyEnum mappedEnumEntityDefault <=> e.`enum`;
 	field Integer mappedAttributeAncestorEntityDefault <=> e.attributeAncestor;
 	field Integer mappedIdentifierAncestorEntityDefault <=> e.identifierAncestor;
     field MyEnum mappedEnumAncestorEntityDefault <=> e.enumAncestor;
@@ -62,7 +62,7 @@ transfer Mapped maps Entity as e {
     relation MappedRelated[] transientRelationCollection;
 
 	
-	constructor {
+	event build {
 		self.unmappedAttribute = 1;
 		self.mappedAttribute = 2;
 		self.mappedIdentifier = 3;

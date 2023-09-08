@@ -1,8 +1,8 @@
 
 rule CreateNavigationProperty
-    transform s : JSL!EntityCalculatedRelationDeclaration
+    transform s : JSL!EntityRelationDeclaration
     to t : JUDOPSM!NavigationProperty {
-      guard: not s.isQuery() and s.getReferenceType().isKindOf(JSL!EntityDeclaration)
+      guard: not s.isQuery() and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.calculated
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateNavigationProperty");
       t.getterExpression = s.equivalent("CreateGetterExpressionForReferenceType");
