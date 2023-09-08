@@ -36,7 +36,7 @@ entity EntityRelated {
 
 transfer Unmapped {
 	field String transient;
-	event create {
+	event build {
 		self.transient = "Test";
 	}
 }
@@ -62,7 +62,7 @@ transfer Mapped maps Entity as e {
     relation MappedRelated[] transientRelationCollection;
 
 	
-	event create {
+	event build {
 		self.unmappedAttribute = 1;
 		self.mappedAttribute = 2;
 		self.mappedIdentifier = 3;
