@@ -76,7 +76,7 @@
 
         <judo-operation-utils-version>1.1.3.20230908_041047_0752d9bc_develop</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20230913_082338_96096e3d_feature_JNG_4356_Unmapped_transfer_throws_validation_error_to_mapped_transfer_mandatory_attributes</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20230914_150032_a1e30a3b_feature_JNG_4356_Unmapped_transfer_throws_validation_error_to_mapped_transfer_mandatory_attributes</judo-runtime-core-version>
 
         <structured-map-proxy-version>2.0.0.20230826_230931_03ebb103_develop</structured-map-proxy-version>
 
