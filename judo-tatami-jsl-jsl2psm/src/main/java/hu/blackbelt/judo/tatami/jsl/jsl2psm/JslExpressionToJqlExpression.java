@@ -267,6 +267,7 @@ public class JslExpressionToJqlExpression {
         } else if (navigationBaseReference instanceof EntityMapDeclaration) {
             return "self";
         }
+
         throw new IllegalArgumentException("Unhandled parameter types: " +
                 Arrays.<Object>asList(it.getReference()).toString());
     }
