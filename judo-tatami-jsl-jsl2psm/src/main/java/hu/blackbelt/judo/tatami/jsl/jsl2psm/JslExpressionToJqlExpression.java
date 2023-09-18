@@ -65,7 +65,7 @@ public class JslExpressionToJqlExpression {
         return found;
     }
 
-    public static String getJqlForDerived(EntityCalculatedMemberDeclaration declaration, String entityNamePrefix, String entityNamePostfix) {
+    public static String getJqlForDerived(EntityMemberDeclaration declaration, String entityNamePrefix, String entityNamePostfix) {
         JslExpressionToJqlExpression transformer = new JslExpressionToJqlExpression();
 
         transformer.entityNamePrefix = entityNamePrefix;
@@ -74,7 +74,7 @@ public class JslExpressionToJqlExpression {
         return transformer.getJql(declaration.getGetterExpr());
     }
 
-    public static String getJqlForEntityQuery(EntityCalculatedMemberDeclaration declaration, String entityNamePrefix, String entityNamePostfix) {
+    public static String getJqlForEntityQuery(EntityMemberDeclaration declaration, String entityNamePrefix, String entityNamePostfix) {
         JslExpressionToJqlExpression transformer = new JslExpressionToJqlExpression();
 
         transformer.entityNamePrefix = entityNamePrefix;
@@ -267,6 +267,7 @@ public class JslExpressionToJqlExpression {
         } else if (navigationBaseReference instanceof EntityMapDeclaration) {
             return "self";
         }
+
         throw new IllegalArgumentException("Unhandled parameter types: " +
                 Arrays.<Object>asList(it.getReference()).toString());
     }
@@ -306,12 +307,10 @@ public class JslExpressionToJqlExpression {
     private String getJql(final MemberReference it) {
         NavigationTarget navigationTarget = it.getMember();
 
-        if (navigationTarget instanceof EntityStoredFieldDeclaration) {
-            return ((EntityStoredFieldDeclaration)navigationTarget).getName();
-        } else if (navigationTarget instanceof EntityStoredRelationDeclaration) {
-            return ((EntityStoredRelationDeclaration)navigationTarget).getName();
-        } else if (navigationTarget instanceof EntityCalculatedMemberDeclaration) {
-            return ((EntityCalculatedMemberDeclaration)navigationTarget).getName();
+        if (navigationTarget instanceof EntityFieldDeclaration) {
+            return ((EntityFieldDeclaration)navigationTarget).getName();
+        } else if (navigationTarget instanceof EntityRelationDeclaration) {
+            return ((EntityRelationDeclaration)navigationTarget).getName();
         } else if (navigationTarget instanceof EntityRelationOppositeInjected) {
             return ((EntityRelationOppositeInjected)navigationTarget).getName();
         }
@@ -332,8 +331,8 @@ public class JslExpressionToJqlExpression {
             passedArgs.put(queryArgument.getDeclaration().getName(), argument);
         }
 
-        if (it.getMember() instanceof EntityCalculatedMemberDeclaration) {
-           	return getJql(((EntityCalculatedMemberDeclaration)it.getMember()).getGetterExpr(), passedArgs);
+        if (it.getMember() instanceof EntityMemberDeclaration && ((EntityMemberDeclaration)it.getMember()).isCalculated()) {
+           	return getJql(((EntityMemberDeclaration)it.getMember()).getGetterExpr(), passedArgs);
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " +
                     it.toString());

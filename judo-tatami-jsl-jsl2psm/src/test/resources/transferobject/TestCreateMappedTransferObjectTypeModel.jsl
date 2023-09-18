@@ -12,14 +12,16 @@ entity Entity {
 
     identifier Integer identifier;
     field Integer attributeDerived <= self.attribute;
+    @Embedded
     relation EntityRelated containmentDerived <= self.containment;
+    @Embedded
     relation EntityRelated[] containmentCollectionDerived <= self.containmentCollection;
     
 }
 
 entity EntityRelated {
     field Integer attribute;
-    relation Entity entity opposite-add:entityRelatedOpposite;
+    relation Entity `entity` opposite-add:entityRelatedOpposite;
 
 }
 
@@ -30,8 +32,11 @@ transfer UnmappedRelated {
 transfer Mapped maps Entity as e {
     field Integer unmappedAttribute;
     
+    @Embedded
     relation UnmappedRelated unmappedContainment;
+    @Embedded
     relation required UnmappedRelated unmappedContainmentRequired;
+    @Embedded
     relation UnmappedRelated[] unmappedContainmentCollection;
 
     field Integer mappedAttribute <=> e.attribute;
@@ -43,7 +48,8 @@ transfer Mapped maps Entity as e {
 
     field Integer derivedAttribute <= e.attribute;
     relation MappedRelated derivedContainment <= e.containment;
-    relation MappedRelated[] derivedContainmentCollection <= e.containmentCollection;    
+    relation MappedRelated[] derivedContainmentCollection <= e.containmentCollection;
+    
     relation MappedRelated derivedAssociation <= e.association;
     relation MappedRelated derivedAssociationOpposite <=> e.entityRelatedOpposite;
 
