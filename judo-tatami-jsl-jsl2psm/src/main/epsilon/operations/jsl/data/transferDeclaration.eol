@@ -14,6 +14,6 @@ operation JSL!TransferDeclaration getId(): String {
 
 @cached
 operation JSL!TransferDeclaration getModelRoot(): JUDOPSM!Package {
-    return self.getPsmEquivalent().getModelRoot();
+    return self.getPSMEquivalent().eContainer().getModelRoot();
 }
 
