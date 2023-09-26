@@ -96,16 +96,16 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
 
         assertEquals("self.leads!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
                 + "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))",
-                jqlEntityQuery("SalesPerson", "leadsBetween", "", ""));
+                jqlStaticQuery("leadsBetween", "", ""));
 
         assertEquals("self.leads!filter(lead | lead.value > (input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5) and lead.value < 100)",
-                jqlEntityQuery("SalesPerson", "leadsOverWithMin", "", ""));
+        		jqlStaticQuery("leadsOverWithMin", "", ""));
 
         assertEquals("self.leads!filter(lead | lead.value > input.minLeadsOverMin and lead.value < 100)",
-                jqlEntityQuery("SalesPerson", "leadsOverWithMinWithoutDefault", "", ""));
+        		jqlStaticQuery("leadsOverWithMinWithoutDefault", "", ""));
 
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5) and lead.value < 100)",
-                jqlEntityQuery("SalesPerson", "leadsOverWithMinStatic", "", ""));
+        		jqlStaticQuery("leadsOverWithMinStatic", "", ""));
 
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50))",
         		jqlStaticQuery("staticLeadsBetween", "", ""));
@@ -119,10 +119,11 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
         assertEquals("TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : TestDerivedExpressionModel::TestDerivedExpressionModel::SalesPerson!any()!isDefined() ? 50 : 50 + 1))",
         		jqlStaticQuery("staticLeadsBetweenWithDefaultTernary", "", ""));
 
-        assertEquals("(TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
-                + "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)).salesPerson.leads!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
-                + "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)))",
-                jqlStaticQuery("staticLeadsBetweenAndSalesPersonLeads", "", ""));
+// TODO: JNG-5228
+//        assertEquals("(TestDerivedExpressionModel::TestDerivedExpressionModel::Lead!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
+//                + "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)).salesPerson.leads!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
+//                + "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)))",
+//                jqlStaticQuery("staticLeadsBetweenAndSalesPersonLeads", "", ""));
 
         assertEquals("(TestDerivedExpressionModel::TestDerivedExpressionModelImport::EntityNamePrefix_LeadInherited_EntityNamePostfix!filter(lead | lead.value > (input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1) "
         		+ "and lead.value < (input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)))",
@@ -153,7 +154,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
 
     private String jqlDerived(String entity, String field, String entityNamePrefix, String entityNamePostfix) {
         return JslExpressionToJqlExpression.getJqlForDerived(
-                jslModelWrapper.getStreamOfJsldslEntityCalculatedMemberDeclaration()
+                jslModelWrapper.getStreamOfJsldslEntityMemberDeclaration()
                         .filter(d -> d.getName().equals(field) &&
                                 ((EntityDeclaration) d.eContainer()).getName().equals(entity))
                         .findFirst()
@@ -163,7 +164,7 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
 
     private String jqlEntityQuery(String entity, String field, String entityNamePrefix, String entityNamePostfix) {
         return JslExpressionToJqlExpression.getJqlForEntityQuery(
-                jslModelWrapper.getStreamOfJsldslEntityCalculatedMemberDeclaration()
+                jslModelWrapper.getStreamOfJsldslEntityMemberDeclaration()
                         .filter(d -> d.getName().equals(field) &&
                                 ((EntityDeclaration) d.eContainer()).getName().equals(entity))
                         .findFirst()

@@ -1,6 +1,6 @@
 @cached
 operation JSL!Expression isDefaultValueForEntity(): Boolean {
-    return self.eContainer.isKindOf(JSL!EntityStoredFieldDeclaration) and self.eContainer.defaultExpr == self;
+    return self.eContainer.isKindOf(JSL!EntityFieldDeclaration) and self.eContainer.defaultExpr == self;
 }
 
 @cached
