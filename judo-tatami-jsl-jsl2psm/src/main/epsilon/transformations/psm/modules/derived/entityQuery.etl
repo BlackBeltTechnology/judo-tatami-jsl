@@ -1,45 +1,8 @@
-
-@greedy
-rule CreateUnmappedTransferObjectForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
-    to t : JUDOPSM!UnmappedTransferObjectType {
-        guard: s.isQuery() and s.parameters.size() > 0
-
-        t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectForEntityQuery");
-        t.name = defaultParameterNamePrefix + s.eContainer.name + defaultParameterNameMidfix + s.name + defaultParameterNamePostfix;
-        s.eContainer.eContainer.getModelRoot().elements.add(t);
-        log.debug("Created UnmappedTransferObjectType: " + t.name);
-}
-
-@greedy
-rule CreateOriginalNameAnnotationForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
-    to t : JUDOPSM!Annotation {
-        guard: s.isQuery() and s.parameters.size() > 0
-
-        t.setId("(jsl/" + s.getId() + ")/CreateOriginalNameAnnotationForEntityQuery");
-        t.name = "OriginalSource";
-        s.equivalent("CreateUnmappedTransferObjectForEntityQuery").annotations.add(t);
-        log.debug("Create OriginalName Annotation for entity query: " + t.name);
-}
-
-@greedy
-rule CreateParameterObjectAnnotationForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
-    to t : JUDOPSM!Annotation {
-        guard: s.isQuery() and s.parameters.size() > 0
-
-        t.setId("(jsl/" + s.getId() + ")/CreateParameterObjectAnnotationForEntityQuery");
-        t.name = "ParameterObject";
-        s.equivalent("CreateUnmappedTransferObjectForEntityQuery").annotations.add(t);
-        log.debug("Create ParameterObject Annotation for entity query: " + t.name);
-}
-
 @greedy
 rule CreateQueryWithoutParameterAnnotationForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t : JUDOPSM!Annotation {
-        guard: s.isQuery() and s.parameters.size() = 0 and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)
+        guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateQueryWithoutParameterAnnotationForEntityQuery");
         t.name = "QueryWithoutParameter";
@@ -48,38 +11,10 @@ rule CreateQueryWithoutParameterAnnotationForEntityQuery
 }
 
 @greedy
-rule CreateOriginalNameAnnotationDetailForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
-    to t : JUDOPSM!AnnotationDetail {
-        guard: s.isQuery() and s.parameters.size() > 0
-
-        t.setId("(jsl/" + s.getId() + ")/CreateOriginalNameAnnotationDetailForEntityQuery");
-        t.name = "Name";
-        t.`value` = s.eContainer.name + "::" + s.name;
-        s.equivalent("CreateOriginalNameAnnotationForEntityQuery").details.add(t);
-        log.debug("Create OriginalName Details Annotation for entity query: " + t.name);
-}
-
-
-rule CreateTransferObjectForEntityQueryParameterDeclaration
-    transform s : JSL!QueryParameterDeclaration
-    to t: JUDOPSM!TransferAttribute {
-        guard: s.eContainer.isKindOf(JSL!EntityCalculatedMemberDeclaration)
-
-        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForEntityQueryParameterDeclaration");
-
-        t.name = s.name;
-        t.dataType = s.getReferenceType().getPSMEquivalent();
-
-        s.eContainer.equivalent("CreateUnmappedTransferObjectForEntityQuery").attributes.add(t);
-        log.debug("Created Transfer Attribute for Entity Query Declaration: " + s.name);
-}
-
-@greedy
 rule CreateDataPropertyForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t : JUDOPSM!DataProperty {
-      guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)
+      guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.calculated
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateDataPropertyForEntityQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForEntityQueryParametrizedDataType");
@@ -91,9 +26,9 @@ rule CreateDataPropertyForEntityQuery
 
 @greedy
 rule CreateNavigationPropertyForEntityQuery
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t : JUDOPSM!NavigationProperty {
-      guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!EntityDeclaration)
+      guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.calculated
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateNavigationPropertyForEntityQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForEntityQueryParametrizedReferenceType");
@@ -107,16 +42,12 @@ rule CreateNavigationPropertyForEntityQuery
 @greedy
 @lazy
 rule CreateGetterExpressionForEntityQueryParametrizedDataType
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t: JUDOPSM!DataExpressionType {
-	    guard: s.isQuery()
+	    guard: s.isQuery() and s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForEntityQueryParametrizedDataType");
         t.expression = expressionUtils.getJqlForEntityQuery(s, entityNamePrefix, entityNamePostfix);
-
-        if (s.parameters.size() > 0) {
-            t.parameterType = s.equivalent("CreateUnmappedTransferObjectForEntityQuery");
-        }
 
         log.debug("Created Data Expression Type for Parametrized Data Property: " + s.name);
 }
@@ -124,16 +55,12 @@ rule CreateGetterExpressionForEntityQueryParametrizedDataType
 @greedy
 @lazy
 rule CreateGetterExpressionForEntityQueryParametrizedReferenceType
-    transform s : JSL!EntityCalculatedMemberDeclaration
+    transform s : JSL!EntityMemberDeclaration
     to t: JUDOPSM!ReferenceExpressionType {
-	    guard: s.isQuery()
+	    guard: s.isQuery() and s.calculated
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForEntityQueryParametrizedReferenceType");
         t.expression = expressionUtils.getJqlForEntityQuery(s, entityNamePrefix, entityNamePostfix);
-
-        if (s.parameters.size() > 0) {
-            t.parameterType = s.equivalent("CreateUnmappedTransferObjectForEntityQuery");
-        }
 
         log.debug("Created Reference Expression Type for Parametrized Reference Type: " + s.name);
 }
