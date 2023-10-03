@@ -22,11 +22,8 @@ transfer Unmapped {
 
 	field Integer derived <= Entity!any().attribute;
 
-	@Embedded
     relation UnmappedRelated unmappedRelated;
-	@Embedded
     relation required UnmappedRelated unmappedRelatedRequired;
-	@Embedded
     relation UnmappedRelated[] unmappedRelatedCollection;
 
     relation MappedRelated mappedDerived <= Entity!any();

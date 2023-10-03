@@ -46,7 +46,7 @@ rule CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclara
         t.setId("(jsl/" + s.getId() + ")/CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclaration");
         t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
         t.target = s.eContainer.getReferenceType().getPSMEquivalent().entityType;
-          t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
+        t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
 

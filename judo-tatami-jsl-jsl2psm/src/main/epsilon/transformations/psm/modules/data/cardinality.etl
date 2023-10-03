@@ -45,17 +45,17 @@ rule CreateCardinalityForDerivedDeclaration
       t.upper = s.isMany ? -1 : 1;
 }
 
-@lazy
-rule CreateCardinalityForEntityQueryDeclaration
-    transform s : JSL!EntityRelationDeclaration
-    to t : JUDOPSM!Cardinality {
-      guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.calculated
-
-      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForEntityQueryDeclaration");
-
-      t.lower = 0;
-      t.upper = s.isMany ? -1 : 1;
-}
+//@lazy
+//rule CreateCardinalityForEntityQueryDeclaration
+//    transform s : JSL!EntityRelationDeclaration
+//    to t : JUDOPSM!Cardinality {
+//      guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.calculated and not s.isEager()
+//
+//      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForEntityQueryDeclaration");
+//
+//      t.lower = 0;
+//      t.upper = s.isMany ? -1 : 1;
+//}
 
 @lazy
 rule CreateCardinalityForStaticQueryDeclaration
