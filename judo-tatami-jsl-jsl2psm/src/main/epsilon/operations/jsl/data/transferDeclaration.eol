@@ -1,8 +1,8 @@
 @cached
 operation JSL!TransferDeclaration getPSMEquivalent(): JUDOPSM!TransferObjectType {
-    if (self.map.isUndefined() and not self.automap) {
+    if (self.map.isUndefined()) {
         return self.equivalent("CreateUnmappedTransferObjectType");
-    } else if (self.map.isDefined() and not self.automap) {
+    } else {
         return self.equivalent("CreateMappedTransferObjectType");
     }
 }
@@ -14,6 +14,6 @@ operation JSL!TransferDeclaration getId(): String {
 
 @cached
 operation JSL!TransferDeclaration getModelRoot(): JUDOPSM!Package {
-    return self.getPsmEquivalent().getModelRoot();
+    return self.getPSMEquivalent().eContainer().getModelRoot();
 }
 

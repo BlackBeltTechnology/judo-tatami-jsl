@@ -17,3 +17,4 @@ import "transferFieldDeclaration.eol";
 import "transferRelationDeclaration.eol";
 import "expression.eol";
 import "navigation.eol";
+import "modifiable.eol";

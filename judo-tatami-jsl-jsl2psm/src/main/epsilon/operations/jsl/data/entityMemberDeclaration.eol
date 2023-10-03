@@ -1,10 +1,9 @@
-@cached
-operation JSL!EntityMemberDeclaration getReferenceType() : JSL!SingleType {
-    return jslUtils.getReferenceType(self);
-}
+//@cached
+//operation JSL!EntityMemberDeclaration isQuery() : Boolean {
+//    return jslUtils.isQuery(self);
+//}
 
 @cached
-operation JSL!EntityMemberDeclaration isQuery() : Boolean {
-    return jslUtils.isQuery(self);
+operation JSL!EntityMemberDeclaration isEager() : Boolean {
+    return jslUtils.isEager(self);
 }
-

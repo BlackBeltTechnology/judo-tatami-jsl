@@ -12,14 +12,13 @@ entity Entity {
 
     identifier Integer identifier;
     field Integer attributeDerived <= self.attribute;
-    relation EntityRelated containmentDerived <= self.containment;
-    relation EntityRelated[] containmentCollectionDerived <= self.containmentCollection;
-    
+    relation EntityRelated containmentDerived <= self.containment eager:true;
+    relation EntityRelated[] containmentCollectionDerived <= self.containmentCollection eager:true;
 }
 
 entity EntityRelated {
     field Integer attribute;
-    relation Entity entity opposite-add:entityRelatedOpposite;
+    relation Entity `entity` opposite-add:entityRelatedOpposite;
 
 }
 
@@ -43,7 +42,8 @@ transfer Mapped maps Entity as e {
 
     field Integer derivedAttribute <= e.attribute;
     relation MappedRelated derivedContainment <= e.containment;
-    relation MappedRelated[] derivedContainmentCollection <= e.containmentCollection;    
+    relation MappedRelated[] derivedContainmentCollection <= e.containmentCollection;
+    
     relation MappedRelated derivedAssociation <= e.association;
     relation MappedRelated derivedAssociationOpposite <=> e.entityRelatedOpposite;
 

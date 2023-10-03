@@ -23,10 +23,10 @@ query Lead[] staticLeadsBetweenWithDefaultExpression(Integer minLeadsBetween = 1
 query Lead[] staticLeadsOverWithMin(Integer minLeadsOverMin = 5) <= staticLeadsBetween(minLeadsBetween = minLeadsOverMin , maxLeadsBetween = 100);
 // Lead!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)
 
-query Lead[] staticLeadsBetweenAndSalesPersonLeads(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) <= (
-	Lead!all()!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)
-		.salesPerson.leadsBetween(minLeadsBetween = minLeadsBetween, maxLeadsBetween = maxLeadsBetween)
-);
+//TODO:JNG-5228
+//query Lead[] staticLeadsBetweenAndSalesPersonLeads(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) <= (
+//	Lead!all()!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)
+//		.salesPerson.leadsBetween(minLeadsBetween = minLeadsBetween, maxLeadsBetween = maxLeadsBetween));
 
 query inherited::LeadInherited[] staticInheritedLeadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) <= (
 		inherited::LeadInherited!all()!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween)
@@ -49,30 +49,28 @@ entity Lead {
     field Boolean b <= self.salesPerson!kindOf(entityType = SalesPerson);
 }
 
+query Lead[] leadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) on SalesPerson <= self.leads!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);
+// self.leads!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
+
+query Lead[] leadsOverWithMin(Integer minLeadsOverMin = 5) on SalesPerson  <= self!leadsBetween(minLeadsBetween = minLeadsOverMin , maxLeadsBetween = 100);
+// self.leads!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)
+
+query Lead[] leadsOverWithMinStatic(Integer minLeadsOverMin = 5) on SalesPerson  <= staticLeadsBetween(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100);
+// Lead!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)
+
+query Lead[] leadsOverWithMinWithoutDefault(Integer minLeadsOverMin) on SalesPerson <= self!leadsBetween(minLeadsBetween = minLeadsOverMin , maxLeadsBetween = 100);
+// self.leads!filter(lead | lead.value > input.minLeadsOverMin and lead.value < 100)
+
+query Lead[] leadsOverQuery(Integer limit = 100) on SalesPerson <= self.leads!filter(lead | lead.value > limit);
+
 entity SalesPerson {
     relation Lead lead;
     relation Lead[] leads opposite:salesPerson;
     
-    @Query
-    relation Lead[] leadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) <= self.leads!filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);
-    // self.leads!filter(lead | lead.value > input.minLeadsBetween!isDefined() ? input.minLeadsBetween : 1 and lead.value < input.maxLeadsBetween!isDefined() ? input.maxLeadsBetween : 50)
-
-    @Query
-    relation Lead[] leadsOverWithMin(Integer minLeadsOverMin = 5) <= self.leadsBetween(minLeadsBetween = minLeadsOverMin , maxLeadsBetween = 100);
-    // self.leads!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)
-
-    @Query
-    relation Lead[] leadsOverWithMinStatic(Integer minLeadsOverMin = 5) <= staticLeadsBetween(minLeadsBetween = minLeadsOverMin, maxLeadsBetween = 100);
-    // Lead!filter(lead | lead.value > input.minLeadsOverMin!isDefined() ? input.minLeadsOverMin : 5 and lead.value < 100)
-
-    @Query
-    relation Lead[] leadsOverWithMinWithoutDefault(Integer minLeadsOverMin) <= self.leadsBetween(minLeadsBetween = minLeadsOverMin , maxLeadsBetween = 100);
-    // self.leads!filter(lead | lead.value > input.minLeadsOverMin and lead.value < 100)
-
-    relation Lead[] leadsOver10 <= self.leadsOverWithMin(minLeadsOverMin = 10);
+    relation Lead[] leadsOver10 <= self!leadsOverWithMin(minLeadsOverMin = 10);
     // self.leads!filter(lead | lead.value > 10 and lead.value < 100)
 
-    relation Lead[] leadsOver20 <= self.leadsBetween(minLeadsBetween = 20);
+    relation Lead[] leadsOver20 <= self!leadsBetween(minLeadsBetween = 20);
     // self.leads!filter(lead | lead.value > 20 and lead.value < 50)
 
     relation Lead[] leadsOver10Static <= staticLeadsOverWithMin(minLeadsOverMin = 10);
@@ -84,8 +82,6 @@ entity SalesPerson {
     
     field Integer value <= self.leads!size();
     field Boolean t1 <= self.leads!size() > 1;
-    @Query
-    relation Lead[] leadsOverQuery(Integer limit = 100) <= self.leads!filter(lead | lead.value > limit);
     relation Lead[] leadsOver <= self.leads!filter(lead | lead.value > 100);
 
     relation SalesPerson selfDerived <= self;
@@ -107,7 +103,7 @@ entity SalesPerson {
     field Integer strLengthDerived2 <= self.lead.salesPerson.stringLiteral!substring(offset=1, count=1)!size();
     field Integer strLengthDerived3 <= self.leads.salesPerson!filter(d | d.lead.closed == false)!filter(d | d.lead.closed == false)!any().stringLiteral!substring(offset=1, count=1)!size();
 
-    field Integer leadsBetweenWithExpr <= self.leadsBetween(minLeadsBetween = 20 + 10, maxLeadsBetween = 50 + 60)!size();
+    field Integer leadsBetweenWithExpr <= self!leadsBetween(minLeadsBetween = 20 + 10, maxLeadsBetween = 50 + 60)!size();
 }
 
 entity Customer {
