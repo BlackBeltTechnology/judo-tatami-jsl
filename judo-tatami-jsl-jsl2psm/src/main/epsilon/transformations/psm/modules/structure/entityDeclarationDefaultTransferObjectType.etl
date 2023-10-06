@@ -24,7 +24,7 @@ rule CreateEntityDefaultTransferObjectType
 
             for (im in inheritedMembers) {
                 // Field attribute
-                if (im.isKindOf(JSL!EntityStoredFieldDeclaration)) {
+                if (im.isKindOf(JSL!EntityFieldDeclaration) and not im.calculated) {
                     // Primitive attributes
                     if (im.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
                         t.attributes.add(im.equivalentWithPrefix("CloneTransferAttributeForDefaultTransferObjectType", t.getId()));
@@ -33,25 +33,25 @@ rule CreateEntityDefaultTransferObjectType
                         }
                     // Embedded relations
                     } else if (im.getReferenceType().isKindOf(JSL!EntityDeclaration)) {
-                        t.relations.add(im.equivalentWithPrefix("CloneTransferObjectEmbeddedRelationForDefaultTransferObjectType", t.getId()));
+                        t.relations.add(im.equivalentWithPrefix("CloneTransferObjectRelationFromEntityFieldForDefaultTransferObjectType", t.getId()));
                     }
                 // Relations
-                } else if (im.isKindOf(JSL!EntityStoredRelationDeclaration)) {
-                    t.relations.add(im.equivalentWithPrefix("CloneTransferObjectAssociatedRelationForDefaultTransferObjectType", t.getId()));
+                } else if (im.isKindOf(JSL!EntityRelationDeclaration) and not im.calculated) {
+                    t.relations.add(im.equivalentWithPrefix("CloneTransferObjectRelationFromEntityRelationForDefaultTransferObjectType", t.getId()));
                 // Prmitive Calculated
-                } else if (im.isKindOf(JSL!EntityCalculatedFieldDeclaration)) {
-                	if (im.isQuery()) {
+                } else if (im.isKindOf(JSL!EntityFieldDeclaration) and im.calculated) {
+                	if (not im.isEager()) {
                         t.attributes.add(im.equivalentWithPrefix("CloneEntityQueryTransferAttributeForDefaultTransferObjectType", t.getId()));
                 	} else {
                         t.attributes.add(im.equivalentWithPrefix("CloneDerivedTransferAttributeForDefaultTransferObjectType", t.getId()));
                 	}
                 // Entity Calculated
-                } else if (im.isKindOf(JSL!EntityCalculatedRelationDeclaration)) {
-                	if (im.isQuery()) {
-                        t.relations.add(im.equivalentWithPrefix("CloneTransferObjectQueryRelationForDefaultTransferObjectType", t.getId()));
-                	} else {
+                } else if (im.isKindOf(JSL!EntityRelationDeclaration) and im.calculated) {
+//                	if (not im.isEager()) {
+//                        t.relations.add(im.equivalentWithPrefix("CloneTransferObjectQueryRelationForDefaultTransferObjectType", t.getId()));
+//                	} else {
                         t.relations.add(im.equivalentWithPrefix("CloneTransferObjectDerivedRelationForDefaultTransferObjectType", t.getId()));
-                	}
+//                	}
                 }
                 
 //                

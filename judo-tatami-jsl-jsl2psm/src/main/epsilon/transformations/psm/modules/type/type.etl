@@ -9,8 +9,8 @@ rule CreateNumericType
 
         t.setId("(jsl/" + s.getId() + ")/CreateNumericType");
         t.name = s.name;
-        t.precision = s.precision.value.intValue();
-        t.scale = s.scale.value.intValue();
+        t.precision = s.getPrecision().value.intValue();
+        t.scale = s.getScale().value.intValue();
         s.eContainer.getModelRoot().elements.add(t);
         log.debug("Created NumericType: " + t.name);
     }
@@ -93,10 +93,11 @@ rule CreateStringType
 
         t.setId("(jsl/" + s.getId() + ")/CreateStringType");
         t.name = s.name;
-        t.maxLength = s.maxSize.value.intValue();
+        
+        t.maxLength = s.getMaxSize().value.intValue();
 
-        if (s.regex.isDefined() and s.regex.regex.value.isDefined()) {
-            t.regExp = s.regex.regex.value;
+        if (s.getRegex().isDefined() and s.getRegex().regex.value.isDefined()) {
+            t.regExp = s.getRegex().regex.value;
         }
 
         s.eContainer.getModelRoot().elements.add(t);
@@ -114,14 +115,14 @@ rule CreateBinaryType
         t.name = s.name;
 
 
-        if (s.mimeTypes.isDefined()) {
-            for (mimeType in s.mimeTypes.values) {
+        if (s.getMimeType().isDefined()) {
+            for (mimeType in s.getMimeType().values) {
                 t.mimeTypes.add(mimeType.value.value);
             }
         }
 
-        if (s.maxFileSize.isDefined()) {
-            t.maxFileSize = s.maxFileSize.value().longValue();
+        if (s.getMaxFileSize().isDefined()) {
+            t.maxFileSize = s.getMaxFileSize().value().longValue();
         }
 
         s.eContainer.getModelRoot().elements.add(t);

@@ -9,7 +9,11 @@ type numeric Decimal precision:9 scale:2;
 type boolean Boolean;
 
 error ErrorWithDefaults {
-    field String withDefault = "Hello!";
+    field String withDefault;
+    
+    event initialize {
+    	self.withDefault = "Hello!";
+    }
 }
 
 entity LiteralEntity {
