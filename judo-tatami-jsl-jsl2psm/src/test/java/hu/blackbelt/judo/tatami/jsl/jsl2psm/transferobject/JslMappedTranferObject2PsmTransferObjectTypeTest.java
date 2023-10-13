@@ -129,7 +129,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         assertEquals(derivedIdentifierProperty, derivedIdentifier.getBinding());
         assertEquals("self.identifier", derivedIdentifierProperty.getGetterExpression().getExpression());
 
-        assertEquals(15, assertMappedTransferObject("Mapped").getRelations().size());
+        assertEquals(13, assertMappedTransferObject("Mapped").getRelations().size());
 
         
         TransferObjectRelation unmappedContainment = assertMappedTransferObjectRelation("Mapped", "unmappedContainment");
@@ -154,22 +154,6 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         assertThat(unmappedContainmentCollection.getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(unmappedContainmentCollection.getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(unmappedContainmentCollection.getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
-
-        
-        TransferObjectRelation mappedContainment = assertMappedTransferObjectRelation("Mapped", "mappedContainment");
-        assertFalse(mappedContainment.isRequired());
-        assertThat(mappedContainment.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containment")));
-        assertThat(mappedContainment.getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(mappedContainment.getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(mappedContainment.getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-
-
-        TransferObjectRelation mappedContainmentCollection = assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollection");
-        assertFalse(mappedContainmentCollection.isRequired());
-        assertThat(mappedContainmentCollection.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containmentCollection")));
-        assertThat(mappedContainmentCollection.getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(mappedContainmentCollection.getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(mappedContainmentCollection.getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
 
         
         TransferObjectRelation mappedAssociation = assertMappedTransferObjectRelation("Mapped", "mappedAssociation");

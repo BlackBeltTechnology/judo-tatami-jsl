@@ -3,7 +3,6 @@ model TransferObjectConstructorModel;
 type string String min-size:0 max-size:250;
 type numeric Integer precision:3 scale:0;
 
-
 enum MyEnum {
     Atomic = 0;
     Bombastic = 1;
@@ -11,72 +10,54 @@ enum MyEnum {
 }
 
 entity EntityAncestor {
-	field Integer attributeAncestor = -1;
-	identifier Integer identifierAncestor = -1;	
-	field MyEnum enumAncestor = MyEnum#Atomic;
+	field Integer attributeAncestor default:-1;
+	identifier Integer identifierAncestor default:-1;	
+	field MyEnum enumAncestor default:MyEnum#Atomic;
 }
 
 entity Entity extends EntityAncestor {
-	field Integer attribute = 1;
+	field Integer attribute default:1;
 	field EntityRelated containment;
 	field EntityRelated[] containmentCollection;
-	field MyEnum enum = MyEnum#Bombastic;
+	field MyEnum `enum` default:MyEnum#Bombastic;
 	
 	relation EntityRelated association;
 	relation EntityRelated[] associationCollection;
 
-	identifier Integer identifier = 1;	
+	identifier Integer identifier default:1;	
 }
 
 entity EntityRelated {
 	field Integer attribute ;
-	relation Entity entity opposite-add:entityRelatedOpposite;
+	relation Entity `entity` opposite-add:entityRelatedOpposite;
 	relation Entity entityCollection opposite-add:entityRelatedOppositeCollection[];
 }
 
 transfer Unmapped {
-	field String transient;
-	constructor {
-		self.transient = "Test";
-	}
+	field String transient default:"Test";
 }
 
 transfer Mapped maps Entity as e {
-    field Integer unmappedAttribute;
-	field Integer mappedAttribute <=> e.attribute;
-	field Integer mappedIdentifier <=> e.identifier;
-    field MyEnum mappedEnum <=> e.enum;
-	field Integer mappedAttributeEntityDefault <=> e.attribute;
-	field Integer mappedIdentifierEntityDefault <=> e.identifier;
-    field MyEnum mappedEnumEntityDefault <=> e.enum;
-	field Integer mappedAttributeAncestorEntityDefault <=> e.attributeAncestor;
-	field Integer mappedIdentifierAncestorEntityDefault <=> e.identifierAncestor;
-    field MyEnum mappedEnumAncestorEntityDefault <=> e.enumAncestor;
+    field Integer unmappedAttribute default:1;
+	field Integer mappedAttribute <= e.attribute input:true default:2;
+	field Integer mappedIdentifier <= e.identifier input:true default:3;
+    field MyEnum mappedEnum <= e.`enum` input:true default:MyEnum#Crazy;
+	field Integer mappedAttributeEntityDefault <= e.attribute  input:true;
+	field Integer mappedIdentifierEntityDefault <= e.identifier  input:true;
+    field MyEnum mappedEnumEntityDefault <= e.`enum` input:true;
+	field Integer mappedAttributeAncestorEntityDefault <= e.attributeAncestor input:true;
+	field Integer mappedIdentifierAncestorEntityDefault <= e.identifierAncestor input:true;
+    field MyEnum mappedEnumAncestorEntityDefault <= e.enumAncestor input:true;
 
-	relation MappedRelated mappedAssociation <=> e.association;
-	relation MappedRelated[] mappedAssociationCollection <=> e.associationCollection;
-    relation MappedRelated mappedAssociationOpposite <=> e.entityRelatedOpposite;
-    relation MappedRelated[] mappedAssociationOppositeCollection <=> e.entityRelatedOppositeCollection;
+	relation MappedRelated mappedAssociation <= e.association choices:EntityRelated!all() default:EntityRelated!any();
+	relation MappedRelated[] mappedAssociationCollection <= e.associationCollection choices:EntityRelated!all() default:EntityRelated!all();
+    relation MappedRelated mappedAssociationOpposite <= e.entityRelatedOpposite choices:EntityRelated!all() default:EntityRelated!any();
+    relation MappedRelated[] mappedAssociationOppositeCollection <= e.entityRelatedOppositeCollection choices:EntityRelated!all() default:EntityRelated!all();
 
-    relation MappedRelated transientRelation;
-    relation MappedRelated[] transientRelationCollection;
-
-	
-	constructor {
-		self.unmappedAttribute = 1;
-		self.mappedAttribute = 2;
-		self.mappedIdentifier = 3;
-		self.mappedEnum = MyEnum#Crazy;
-
-		self.mappedAssociation = EntityRelated!any();
-		self.mappedAssociationCollection = EntityRelated!all();
-		self.mappedAssociationOpposite = EntityRelated!any();
-		self.mappedAssociationOppositeCollection = EntityRelated!all();
-		self.transientRelation = EntityRelated!any();
-		self.transientRelationCollection = EntityRelated!all();
-	}
+    relation MappedRelated transientRelation default:EntityRelated!any();
+    relation MappedRelated[] transientRelationCollection default:EntityRelated!all();
 }
 
 transfer MappedRelated maps EntityRelated as e {
-	field Integer mappedAttribute <=> e.attribute;
+	field Integer mappedAttribute <= e.attribute input:true;
 }
