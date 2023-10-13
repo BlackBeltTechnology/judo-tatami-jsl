@@ -37,7 +37,7 @@ query inherited::LeadInherited[] staticInheritedLeadsBetween(Integer minLeadsBet
 
 
 entity Lead {
-    field Integer value = 100000;
+    field Integer value default:100000;
     field Boolean closed;
     relation SalesPerson salesPerson opposite:leads;
 

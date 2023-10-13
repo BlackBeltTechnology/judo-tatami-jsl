@@ -2,7 +2,7 @@
 rule CreateNavigationProperty
     transform s : JSL!EntityRelationDeclaration
     to t : JUDOPSM!NavigationProperty {
-      guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.calculated
+      guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.isCalculated()
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateNavigationProperty");
       t.getterExpression = s.equivalent("CreateGetterExpressionForReferenceType");

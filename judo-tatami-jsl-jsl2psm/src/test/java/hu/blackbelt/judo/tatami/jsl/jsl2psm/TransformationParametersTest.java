@@ -206,7 +206,7 @@ public class TransformationParametersTest extends AbstractTest {
                         "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity T {\n" +
-                        "\tfield String strField = \"hello\";" +
+                        "\tfield String strField default:\"hello\";" +
                         "}\n"
                 )
         );
@@ -230,7 +230,7 @@ public class TransformationParametersTest extends AbstractTest {
                         "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity T {\n" +
-                        "\tfield String strField = \"hello\";" +
+                        "\tfield String strField default:\"hello\";" +
                         "}\n"
                 )
         );
@@ -254,7 +254,7 @@ public class TransformationParametersTest extends AbstractTest {
                         "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity T {\n" +
-                        "\tfield String strField = \"hello\";" +
+                        "\tfield String strField default:\"hello\";" +
                         "}\n"
                 )
         );

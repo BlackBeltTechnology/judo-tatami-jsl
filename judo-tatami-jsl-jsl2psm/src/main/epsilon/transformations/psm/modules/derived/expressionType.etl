@@ -4,7 +4,7 @@ import "../../../../operations/_importAll.eol";
 rule CreateGetterExpressionForDataType
     transform s : JSL!EntityFieldDeclaration
     to t: JUDOPSM!DataExpressionType {
-    	guard: s.calculated
+    	guard: s.isCalculated()
     
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForDataType");
         t.expression = expressionUtils.getJqlForDerived(s, entityNamePrefix, entityNamePostfix);
@@ -15,7 +15,7 @@ rule CreateGetterExpressionForDataType
 rule CreateGetterExpressionForReferenceType
     transform s : JSL!EntityRelationDeclaration
     to t: JUDOPSM!ReferenceExpressionType {
-    	guard: s.calculated
+    	guard: s.isCalculated()
     
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForReferenceType");
         t.expression = expressionUtils.getJqlForDerived(s, entityNamePrefix, entityNamePostfix);

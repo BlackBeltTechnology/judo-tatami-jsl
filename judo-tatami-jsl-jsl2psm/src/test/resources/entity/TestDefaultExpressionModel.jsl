@@ -9,33 +9,29 @@ type numeric Decimal precision:9 scale:2;
 type boolean Boolean;
 
 error ErrorWithDefaults {
-    field String withDefault;
-    
-    event initialize {
-    	self.withDefault = "Hello!";
-    }
+    field String withDefault default:"Hello!";
 }
 
 entity LiteralEntity {
-    field Boolean booleanLiteral = true;
-    field Integer intLiteral = 1;
-    field Decimal decimalLiteral = 1.23;
-    field String escapedStringLiteral = "escaped\nstring";
-    field String rawStringLiteral = r"raw\nstring";
-    field Date dateLiteral = `2020-02-18`;
-    field Timestamp timestampLiteral = `2020-02-18T10:11:12Z`;
-    field Time timeLiteral = `23:59:59`;
+    field Boolean booleanLiteral default:true;
+    field Integer intLiteral default:1;
+    field Decimal decimalLiteral default:1.23;
+    field String escapedStringLiteral default:"escaped\nstring";
+    field String rawStringLiteral default:r"raw\nstring";
+    field Date dateLiteral default:`2020-02-18`;
+    field Timestamp timestampLiteral default:`2020-02-18T10:11:12Z`;
+    field Time timeLiteral default:`23:59:59`;
 }
 
 entity LiteralEntityWithIdentifiers {
-    identifier Boolean idBooleanLiteral = true;
-    identifier Integer idIntLiteral = 1;
-    identifier Decimal idDecimalLiteral = 1.23;
-    identifier String idEscapedStringLiteral = "escaped\nstring";
-    identifier String idRawStringLiteral = r"raw\nstring";
-    identifier Date idDateLiteral = `2020-02-18`;
-    identifier Timestamp idTimestampLiteral = `2020-02-18T10:11:12Z`;
-    identifier Time idTimeLiteral = `23:59:59`;
+    identifier Boolean idBooleanLiteral default:true;
+    identifier Integer idIntLiteral default:1;
+    identifier Decimal idDecimalLiteral default:1.23;
+    identifier String idEscapedStringLiteral default:"escaped\nstring";
+    identifier String idRawStringLiteral default:r"raw\nstring";
+    identifier Date idDateLiteral default:`2020-02-18`;
+    identifier Timestamp idTimestampLiteral default:`2020-02-18T10:11:12Z`;
+    identifier Time idTimeLiteral default:`23:59:59`;
 }
 
 /*

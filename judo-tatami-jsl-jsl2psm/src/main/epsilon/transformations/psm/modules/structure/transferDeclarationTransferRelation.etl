@@ -24,17 +24,17 @@ rule CreateTransientTransferObjectRelationForTransferRelationDeclaration
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationForTransferRelationDeclaration {
-        guard: not s.maps and not s.reads
+        guard: not s.maps() and not s.reads()
 
         t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferObjectRelationForTransferRelationDeclaration");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
-        var def = JSL!TransferDataAssignment.all().selectOne(d | d.leftValue.declaration == s);
-        if (def.isDefined()) {
+        // var def = JSL!TransferDataAssignment.all().selectOne(d | d.leftValue.declaration == s);
+        if (s.getDefault().isDefined()) {
            if (s.eContainer.map.isUndefined()) {
-              t.defaultValue = def.equivalent("CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
+              t.defaultValue = s.getDefault().equivalent("CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
            } else {
-              t.defaultValue = def.equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
+              t.defaultValue = s.getDefault().equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
            }
         }      
 
@@ -48,7 +48,7 @@ rule CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration
     transform s : JSL!TransferRelationDeclaration
     to t : JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationForTransferRelationDeclaration {
-      guard: s.reads
+      guard: s.reads()
 
       t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
       t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
@@ -68,16 +68,16 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration
     transform s : JSL!TransferRelationDeclaration
     to t : JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationForTransferRelationDeclaration {
-      guard: s.maps
+      guard: s.maps()
 
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
       t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
       var entityMember = s.getterExpr.features.first.member;
 
-      if (entityMember.isKindOf(JSL!EntityFieldDeclaration) and not entityMember.calculated) {
+      if (entityMember.isKindOf(JSL!EntityFieldDeclaration) and not entityMember.isCalculated()) {
           t.binding = entityMember.equivalent("CreateContainmentFromField");
-      } else if (entityMember.isKindOf(JSL!EntityRelationDeclaration) and not entityMember.calculated) {
+      } else if (entityMember.isKindOf(JSL!EntityRelationDeclaration) and not entityMember.isCalculated()) {
           t.binding = entityMember.equivalent("CreateDeclaredAssociationEnd");
       } else if (entityMember.isKindOf(JSL!EntityRelationOppositeInjected)) {
           t.binding = entityMember.equivalent("CreateNamedOppositeAssociationEnd");
@@ -86,9 +86,9 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration
       }
 
 
-      var def = JSL!TransferDataAssignment.all().selectOne(d | d.leftValue.declaration == s);
-      if (def.isDefined()) {
-        t.defaultValue = def.equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
+      // var def = JSL!TransferDataAssignment.all().selectOne(d | d.leftValue.declaration == s);
+      if (s.getDefault().isDefined()) {
+        t.defaultValue = s.getDefault().equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
       }      
 
       s.eContainer.getPSMEquivalent().relations.add(t);
@@ -101,28 +101,31 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration
 
 @greedy
 rule CreateTransferEntityDefaultValueRelationForMappedTransferObjectConstructor
-    transform s: JSL!TransferDataAssignment
+    transform s: JSL!DefaultModifier
     to t: JUDOPSM!TransferObjectRelation {
-        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.leftValue.declaration.eContainer.map.isDefined()
-        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateTransferEntityDefaultValueRelationForMappedTransferObjectConstructor");
-        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
+//        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.leftValue.declaration.eContainer.map.isDefined()
+        guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.eContainer.map.isDefined()
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferEntityDefaultValueRelationForMappedTransferObjectConstructor");
+//        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
+        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
-        t.target = s.leftValue.declaration.getReferenceType().getPSMEquivalent();        
-        t.cardinality = s.leftValue.declaration.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
+        t.target = s.eContainer.getReferenceType().getPSMEquivalent();        
+        t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
         s.eContainer.eContainer.getPSMEquivalent().relations.add(t);
 }
 
 
 @greedy
 rule CreateTransferEntityDefaultValueRelationForUnmappedTransferObjectConstructor
-    transform s: JSL!TransferDataAssignment
+    transform s: JSL!DefaultModifier
     to t: JUDOPSM!TransferObjectRelation {
-        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.leftValue.declaration.eContainer.map.isUndefined()
-        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateTransferEntityDefaultValueRelationForUnmappedTransferObjectConstructor");
-        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
+//        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.leftValue.declaration.eContainer.map.isUndefined()
+        guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.eContainer.map.isUndefined()
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferEntityDefaultValueRelationForUnmappedTransferObjectConstructor");
+        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
-        t.target = s.leftValue.declaration.getReferenceType().getPSMEquivalent();        
-        t.cardinality = s.leftValue.declaration.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
+        t.target = s.eContainer.getReferenceType().getPSMEquivalent();        
+        t.cardinality = s.eContainer.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
         s.eContainer.eContainer.getPSMEquivalent().relations.add(t);
 }
 

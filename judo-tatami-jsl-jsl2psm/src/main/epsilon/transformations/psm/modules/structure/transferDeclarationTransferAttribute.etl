@@ -20,10 +20,10 @@ rule CreateTransientTransferAttribute
     transform s : JSL!TransferFieldDeclaration
     to t : JUDOPSM!TransferAttribute
     extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
-      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and not s.maps and not s.reads
+      guard: not s.maps() and not s.reads()
       t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferAttribute");
 
-      var def = JSL!TransferDataAssignment.all().selectOne(d | d.leftValue.declaration == s);
+      var def = s.getDefault();
       if (def.isDefined()) {
          if (s.eContainer.map.isUndefined()) {
             t.defaultValue = def.equivalent("CreateDefaultStaticDataForUnmappedTransferObjectConstructor");
@@ -41,7 +41,7 @@ rule CreateDerivedTransferAttribute
     transform s : JSL!TransferFieldDeclaration
     to t : JUDOPSM!TransferAttribute
     extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
-      guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.reads
+      guard: s.reads()
       t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");
 
       if (s.eContainer.map.isDefined()) {
@@ -60,18 +60,18 @@ rule CreateMappedTransferAttribute
     transform s : JSL!TransferFieldDeclaration
     to t : JUDOPSM!TransferAttribute
     extends AbstractCreateTransferAttributeForTransferFieldDeclaration {
-      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.maps
+      guard: s.maps()
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferAttribute");
       
-      if (s.getterExpr.features.first.member.isKindOf(JSL!EntityFieldDeclaration) and not s.getterExpr.features.first.member.calculated) {
+      if (s.getterExpr.features.first.member.isKindOf(JSL!EntityFieldDeclaration) and not s.getterExpr.features.first.member.isCalculated()) {
          t.binding = s.getterExpr.features.first.member.equivalent("CreateAttributeFromField");         
       }
       
-      var def = JSL!TransferDataAssignment.all().selectOne(d | d.leftValue.declaration == s);
-      if (def.isDefined()) {
-         t.defaultValue = def.equivalent("CreateDefaultDataPropertyForMappedTransferObjectConstructor");
-      } else if (s.getterExpr.features.first.member.defaultExpr.isDefined()) {
-         t.defaultValue = s.getterExpr.features.first.member.defaultExpr.equivalent("CreateDefaultValueForPrimitiveEntityMember");
+      //var def = JSL!TransferDataAssignment.all().selectOne(d | d.leftValue.declaration == s);
+      if (s.getDefault().isDefined()) {
+         t.defaultValue = s.getDefault().equivalent("CreateDefaultDataPropertyForMappedTransferObjectConstructor");
+      } else if (s.getterExpr.features.first.member.getDefault().isDefined()) {
+         t.defaultValue = s.getterExpr.features.first.member.getDefault().equivalent("CreateDefaultValueForPrimitiveEntityMember");
       }      
       s.eContainer.getPSMEquivalent().attributes.add(t);
       log.debug("Created TransferAttribute (Field) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
@@ -84,11 +84,10 @@ rule CreateMappedTransferAttribute
 rule CreateMappedTransferAttributeEntityDefault
     transform s : JSL!TransferFieldDeclaration
     to t : JUDOPSM!TransferAttribute {
-      guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration) and s.maps
-        and s.getterExpr.features.first.member.defaultExpr.isDefined() and not JSL!TransferDataAssignment.all().exists(d | d.leftValue.declaration == s)
+      guard: s.maps() and s.getterExpr.features.first.member.getDefault().isDefined() and s.getDefault().isUndefined()
       t.name = defaultDefaultNamePrefix + s.name + defaultDefaultNameMidfix + s.getterExpr.features.first.member.eContainer.name + defaultDefaultNamePostfix;
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferAttributeEntityDefault");      
-      t.binding = s.getterExpr.features.first.member.defaultExpr.equivalent("CreateDefaultValueForPrimitiveEntityMember");
+      t.binding = s.getterExpr.features.first.member.getDefault().equivalent("CreateDefaultValueForPrimitiveEntityMember");
       t.dataType = s.referenceType.getPSMEquivalent();
       t.required = false;
       s.eContainer.getPSMEquivalent().attributes.add(t);
@@ -98,48 +97,98 @@ rule CreateMappedTransferAttributeEntityDefault
 
 @greedy
 rule CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor
-    transform s: JSL!TransferDataAssignment
+    transform s: JSL!DefaultModifier
     to t: JUDOPSM!TransferAttribute {
-        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isDefined()
-        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
+        guard: s.eContainer.isKindOf(JSL!TransferFieldDeclaration) and s.eContainer.eContainer.map.isDefined()
+        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultDataPropertyForMappedTransferObjectConstructor");	  
-        t.dataType = s.leftValue.declaration.referenceType.getPSMEquivalent();
-        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor");
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+        t.setId("(jsl/" + s.eContainer.getId() + ")/CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor");
         s.eContainer.eContainer.getPSMEquivalent().attributes.add(t);
         log.debug("Created TransferAttribute DefaultValue (Field) for MappedTransferObjectConstructor: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
+//@greedy
+//rule CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor
+//    transform s: JSL!TransferDataAssignment
+//    to t: JUDOPSM!TransferAttribute {
+//        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isDefined()
+//        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
+//        t.binding = s.equivalent("CreateDefaultDataPropertyForMappedTransferObjectConstructor");	  
+//        t.dataType = s.leftValue.declaration.referenceType.getPSMEquivalent();
+//        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor");
+//        s.eContainer.eContainer.getPSMEquivalent().attributes.add(t);
+//        log.debug("Created TransferAttribute DefaultValue (Field) for MappedTransferObjectConstructor: [" + t.name + "] into [" + t.eContainer.name + "]");
+//}
+
 @greedy
 rule CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor
-    transform s: JSL!TransferDataAssignment
+    transform s: JSL!DefaultModifier
     to t: JUDOPSM!TransferAttribute {
-        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isUndefined()
-        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
+        guard: s.eContainer.isKindOf(JSL!TransferFieldDeclaration) and s.eContainer.eContainer.map.isUndefined()
+        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultStaticDataForUnmappedTransferObjectConstructor");	  
-        t.dataType = s.leftValue.declaration.referenceType.getPSMEquivalent();
-        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor");
+        t.dataType = s.eContainer.referenceType.getPSMEquivalent();
+        t.setId("(jsl/" + s.eContainer.getId() + ")/CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor");
+        
         s.eContainer.eContainer.getPSMEquivalent().attributes.add(t);
+
         log.debug("Created TransferAttribute DefaultValue (Field) for UnmappedTransferObjectConstructor: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
+//@greedy
+//rule CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor
+//    transform s: JSL!TransferDataAssignment
+//    to t: JUDOPSM!TransferAttribute {
+//        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isUndefined()
+//        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
+//        t.binding = s.equivalent("CreateDefaultStaticDataForUnmappedTransferObjectConstructor");	  
+//        t.dataType = s.leftValue.declaration.referenceType.getPSMEquivalent();
+//        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor");
+//        s.eContainer.eContainer.getPSMEquivalent().attributes.add(t);
+//        log.debug("Created TransferAttribute DefaultValue (Field) for UnmappedTransferObjectConstructor: [" + t.name + "] into [" + t.eContainer.name + "]");
+//}
+
 rule CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor
-    transform s : JSL!TransferDataAssignment
+    transform s : JSL!DefaultModifier
     to t : JUDOPSM!Annotation {
-        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isDefined()
+        guard: s.eContainer.isKindOf(JSL!TransferFieldDeclaration) and s.eContainer.eContainer.map.isDefined()
 
         t.name = "TransferObjectAttributeWithDefaultValue";
-        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor");
+        t.setId("(jsl/" + s.eContainer.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor");
         s.equivalent("CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor").annotations.add(t);
         log.debug("Created annotation for TransferAttribute DefaultValue (Field) for MappedTransferObjectConstructor: [" + t.name + "]");
 }
 
+//rule CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor
+//    transform s : JSL!TransferDataAssignment
+//    to t : JUDOPSM!Annotation {
+//        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isDefined()
+//
+//        t.name = "TransferObjectAttributeWithDefaultValue";
+//        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor");
+//        s.equivalent("CreateTransferEntityDefaultValueAttributeForMappedTransferObjectConstructor").annotations.add(t);
+//        log.debug("Created annotation for TransferAttribute DefaultValue (Field) for MappedTransferObjectConstructor: [" + t.name + "]");
+//}
+
 rule CreateAnnotationForTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor
-    transform s : JSL!TransferDataAssignment
+    transform s : JSL!DefaultModifier
     to t : JUDOPSM!Annotation {
-        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isUndefined()
+        guard: s.eContainer.isKindOf(JSL!TransferFieldDeclaration) and s.eContainer.eContainer.map.isUndefined()
 
         t.name = "TransferObjectAttributeWithDefaultValue";
-        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor");
+        t.setId("(jsl/" + s.eContainer.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor");
         s.equivalent("CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor").annotations.add(t);
         log.debug("Created annotation for TransferAttribute DefaultValue (Field) for UnmappedTransferObjectConstructor: [" + t.name + "]");
 }
+
+//rule CreateAnnotationForTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor
+//    transform s : JSL!TransferDataAssignment
+//    to t : JUDOPSM!Annotation {
+//        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.leftValue.declaration.eContainer.map.isUndefined()
+//
+//        t.name = "TransferObjectAttributeWithDefaultValue";
+//        t.setId("(jsl/" + s.leftValue.declaration.getId() + ")/CreateAnnotationForTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor");
+//        s.equivalent("CreateTransferEntityDefaultValueAttributeForUnmappedTransferObjectConstructor").annotations.add(t);
+//        log.debug("Created annotation for TransferAttribute DefaultValue (Field) for UnmappedTransferObjectConstructor: [" + t.name + "]");
+//}

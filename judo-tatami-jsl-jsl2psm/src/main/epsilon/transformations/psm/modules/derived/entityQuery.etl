@@ -2,7 +2,7 @@
 rule CreateQueryWithoutParameterAnnotationForEntityQuery
     transform s : JSL!EntityFieldDeclaration
     to t : JUDOPSM!Annotation {
-        guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.calculated and not s.isEager()
+        guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.isCalculated() and not s.isEager()
 
         t.setId("(jsl/" + s.getId() + ")/CreateQueryWithoutParameterAnnotationForEntityQuery");
         t.name = "QueryWithoutParameter";
@@ -14,7 +14,7 @@ rule CreateQueryWithoutParameterAnnotationForEntityQuery
 rule CreateDataPropertyForEntityQuery
     transform s : JSL!EntityFieldDeclaration
     to t : JUDOPSM!DataProperty {
-      guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.calculated and not s.isEager()
+      guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.isCalculated() and not s.isEager()
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateDataPropertyForEntityQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForEntityQuery");
@@ -24,44 +24,15 @@ rule CreateDataPropertyForEntityQuery
       log.debug("Created Query Data Property: " + t.name);
 }
 
-//@greedy
-//rule CreateNavigationPropertyForEntityQuery
-//    transform s : JSL!EntityMemberDeclaration
-//    to t : JUDOPSM!NavigationProperty {
-//      guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.calculated and not s.isEager()
-//      t.name = s.name;
-//      t.setId("(jsl/" + s.getId() + ")/CreateNavigationPropertyForEntityQuery");
-//      t.getterExpression = s.equivalent("CreateGetterExpressionForEntityQueryParametrizedReferenceType");
-//      t.cardinality = s.equivalent("CreateCardinalityForEntityQueryDeclaration");
-//      t.target = s.getReferenceType().getPSMEquivalent();
-//
-//      s.eContainer.getPSMEquivalent().navigationProperties.add(t);
-//      log.debug("Created Query Navigation Property: " + t.name);
-//}
-
 @greedy
 @lazy
 rule CreateGetterExpressionForEntityQuery
     transform s : JSL!EntityFieldDeclaration
     to t: JUDOPSM!DataExpressionType {
-	    guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.calculated and not s.isEager()
+	    guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.isCalculated() and not s.isEager()
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForEntityQuery");
         t.expression = expressionUtils.getJqlForEntityQuery(s, entityNamePrefix, entityNamePostfix);
 
         log.debug("Created Data Expression Type for Parametrized Data Property: " + s.name);
 }
-
-//@greedy
-//@lazy
-//rule CreateGetterExpressionForEntityQueryParametrizedReferenceType
-//    transform s : JSL!EntityMemberDeclaration
-//    to t: JUDOPSM!ReferenceExpressionType {
-//	    guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.calculated and not s.isEager()
-//
-//        t.setId("(jsl/" + s.getId() + ")/CreateGetterExpressionForEntityQueryParametrizedReferenceType");
-//        t.expression = expressionUtils.getJqlForEntityQuery(s, entityNamePrefix, entityNamePostfix);
-//
-//        log.debug("Created Reference Expression Type for Parametrized Reference Type: " + s.name);
-//}
-//

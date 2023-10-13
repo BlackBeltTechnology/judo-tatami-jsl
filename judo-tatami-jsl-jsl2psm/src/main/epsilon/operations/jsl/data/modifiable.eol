@@ -1,4 +1,9 @@
 @cached
+operation JSL!Modifiable getDefault(): JSL!Modifier {
+	return (self.modifiers.selectOne(m|m.type == "default"));
+}
+
+@cached
 operation JSL!Modifiable getChoices(): JSL!Modifier {
 	return (self.modifiers.selectOne(m|m.type == "choices"));
 }
@@ -75,12 +80,7 @@ operation JSL!Modifiable getMimeType(): JSL!Modifier {
 
 @cached
 operation JSL!Modifiable getOpposite(): JSL!Modifier {
-	return (self.modifiers.selectOne(m|m.type == "opposite"));
-}
-
-@cached
-operation JSL!Modifiable getOppositeAdd(): JSL!Modifier {
-	return (self.modifiers.selectOne(m|m.type == "opposite-add"));
+	return (self.modifiers.selectOne(m|m.type == "opposite" or m.type == "opposite-add"));
 }
 
 @cached

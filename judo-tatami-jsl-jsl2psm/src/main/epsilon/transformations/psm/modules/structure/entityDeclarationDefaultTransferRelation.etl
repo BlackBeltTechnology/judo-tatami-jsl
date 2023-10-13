@@ -6,7 +6,7 @@
 rule AbstractCreateTransferObjectRelationFromEntityFieldForDefaultTransferObjectType
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!TransferObjectRelation {
-        guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.calculated
+        guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.isCalculated()
 
         t.name = s.name;
         t.target = s.getReferenceType().equivalent("CreateEntityDefaultTransferObjectType");
@@ -23,7 +23,7 @@ rule CreateTransferObjectRelationFromEntityFieldForDefaultTransferObjectType
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationFromEntityFieldForDefaultTransferObjectType {
-        guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.calculated
+        guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.isCalculated()
 
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEmbeddedRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForFieldDeclaration", t.getId());
@@ -37,7 +37,7 @@ rule CloneTransferObjectRelationFromEntityFieldForDefaultTransferObjectType
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationFromEntityFieldForDefaultTransferObjectType {
-		guard: not s.calculated
+		guard: not s.isCalculated()
 
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectEmbeddedRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForFieldDeclaration", t.getId());
@@ -53,7 +53,7 @@ rule CloneTransferObjectRelationFromEntityFieldForDefaultTransferObjectType
 rule AbstractCreateTransferObjectRelationFromEntityRelationForDefaultTransferObjectType
     transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!TransferObjectRelation {
-        guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.calculated
+        guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.isCalculated()
 
         t.name = s.name;
         t.target = s.getReferenceType().equivalent("CreateEntityDefaultTransferObjectType");
@@ -71,7 +71,7 @@ rule CreateTransferObjectRelationFromEntityRelationForDefaultTransferObjectType
     transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationFromEntityRelationForDefaultTransferObjectType {
-        guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.calculated
+        guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.isCalculated()
 
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForRelationDeclaration", t.getId());
@@ -86,7 +86,7 @@ rule CloneTransferObjectRelationFromEntityRelationForDefaultTransferObjectType
     transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationFromEntityRelationForDefaultTransferObjectType {
-		guard: not s.calculated
+		guard: not s.isCalculated()
 
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForRelationDeclaration", t.getId());
@@ -159,7 +159,7 @@ rule CloneTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType
 rule AbstractCreateTransferObjectDerivedRelationForDefaultTransferObjectType
     transform s : JSL!EntityRelationDeclaration
     to t : JUDOPSM!TransferObjectRelation {
-      guard: generateDefaultTransferObject and s.calculated
+      guard: generateDefaultTransferObject and s.isCalculated()
     
       t.name = s.name;
       t.target = s.getReferenceType().equivalent("CreateEntityDefaultTransferObjectType");
@@ -178,7 +178,7 @@ rule CreateTransferObjectDerivedRelationForDefaultTransferObjectType
     transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectDerivedRelationForDefaultTransferObjectType {
-        guard: generateDefaultTransferObject and s.calculated
+        guard: generateDefaultTransferObject and s.isCalculated()
     
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectDerivedRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForDerivedDeclaration", t.getId());
@@ -194,7 +194,7 @@ rule CloneTransferObjectDerivedRelationForDefaultTransferObjectType
     transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectDerivedRelationForDefaultTransferObjectType {
-		guard: s.calculated
+		guard: s.isCalculated()
 
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectDerivedRelationForDefaultTransferObjectType");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForDerivedDeclaration", t.getId());
@@ -202,56 +202,3 @@ rule CloneTransferObjectDerivedRelationForDefaultTransferObjectType
 
         log.debug("Clone TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "]");
 }
-
-///////////////////////////////////////////////////////////////////////////
-// Entity Query relation
-///////////////////////////////////////////////////////////////////////////
-
-//@abstract
-//rule AbstractCreateTransferObjectEntityQueryRelationForDefaultTransferObjectType
-//    transform s : JSL!EntityRelationDeclaration
-//    to t : JUDOPSM!TransferObjectRelation
-//    {
-//      guard: generateDefaultTransferObject and s.calculated and not s.isEager()
-//
-//      t.name = s.name;
-//      t.target = s.getReferenceType().equivalent("CreateEntityDefaultTransferObjectType");
-//
-//      t.embeddedCreate = false;
-//      t.embeddedUpdate = false;
-//      t.embeddedDelete = false;
-//
-//      t.binding = s.equivalent("CreateNavigationPropertyForEntityQuery");
-//      t.embedded = false;
-//
-//}
-
-//rule CreateTransferObjectEntityQueryRelationForDefaultTransferObjectType
-//    transform s: JSL!EntityRelationDeclaration
-//    to t: JUDOPSM!TransferObjectRelation
-//    extends AbstractCreateTransferObjectEntityQueryRelationForDefaultTransferObjectType {
-//        guard: generateDefaultTransferObject and s.isQuery() and s.calculated
-//
-//        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEntityQueryRelationForDefaultTransferObjectType");
-//        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForEntityQueryDeclaration", t.getId());
-//
-//        s.eContainer.equivalent("CreateEntityDefaultTransferObjectType").relations.add(t);
-//
-//        log.debug("Created TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "] into [" + t.eContainer.name + "]");
-//
-//}
-
-//@lazy
-//rule CloneTransferObjectQueryRelationForDefaultTransferObjectType
-//    transform s: JSL!EntityRelationDeclaration
-//    to t: JUDOPSM!TransferObjectRelation
-//    extends AbstractCreateTransferObjectEntityQueryRelationForDefaultTransferObjectType {
-//		guard: generateDefaultTransferObject and s.calculated and not s.isEager()
-//
-//        t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectQueryRelationForDefaultTransferObjectType");
-//        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForEntityQueryDeclaration", t.getId());
-//
-//
-//        log.debug("Clone TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "]");
-//}
-

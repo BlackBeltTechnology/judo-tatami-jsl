@@ -345,7 +345,7 @@ public class JslExpressionToJqlExpression {
         HashMap<String, String> passedArgs = new HashMap<String, String>();
         passedArgs.put("self", self);
 
-        if (it.getMember() instanceof EntityMemberDeclaration && ((EntityMemberDeclaration)it.getMember()).isCalculated()) {
+        if (it.getMember() instanceof EntityMemberDeclaration && modelExtension.isCalculated((EntityMemberDeclaration)it.getMember())) {
            	return getJql(((EntityMemberDeclaration)it.getMember()).getGetterExpr(), passedArgs);
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " +

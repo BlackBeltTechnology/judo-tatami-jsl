@@ -5,7 +5,7 @@ rule CreateDataProperty
     transform s : JSL!EntityFieldDeclaration
     to t : JUDOPSM!DataProperty
     {
-      guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.calculated and s.isEager()
+      guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and s.isCalculated() and s.isEager()
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateDataProperty");
       t.getterExpression = s.equivalent("CreateGetterExpressionForDataType");
