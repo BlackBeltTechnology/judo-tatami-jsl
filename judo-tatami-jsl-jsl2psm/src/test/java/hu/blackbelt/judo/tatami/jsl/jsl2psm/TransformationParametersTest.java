@@ -278,7 +278,8 @@ public class TransformationParametersTest extends AbstractTest {
                         "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity E {\n" +
-                        "    field String strField;\n" +
+                        "    field String strField2;\n" +
+                        "    field String strField <= self.strField2;\n" +
                         "}\n" +
                         "transfer T maps E as e {\n" +
                         "    field String strField <= e.strField;\n" +
@@ -304,7 +305,8 @@ public class TransformationParametersTest extends AbstractTest {
                         "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity E {\n" +
-                        "    field String strField;\n" +
+                        "    field String strField2;\n" +
+                        "    field String strField <= self.strField2;\n" +
                         "}\n" +
                         "transfer T maps E as e {\n" +
                         "    field String strField <= e.strField;\n" +
@@ -329,7 +331,8 @@ public class TransformationParametersTest extends AbstractTest {
                         "type string String min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity E {\n" +
-                        "    field String strField;\n" +
+                        "    field String strField2;\n" +
+                        "    field String strField <= self.strField2;\n" +
                         "}\n" +
                         "transfer T maps E as e {\n" +
                         "    field String strField <= e.strField;\n" +
