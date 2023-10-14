@@ -10,7 +10,7 @@ entity Entity {
     field EntityRelated[] containmentCollection;
     relation EntityRelated association;
 
-    identifier Integer identifier;
+    identifier Integer id;
     field Integer attributeDerived <= self.attribute;
     relation EntityRelated containmentDerived <= self.containment eager:true;
     relation EntityRelated[] containmentCollectionDerived <= self.containmentCollection eager:true;
@@ -53,8 +53,8 @@ transfer Mapped maps Entity as e {
     relation MappedRelated mappedContainmentDerived <= e.containmentDerived;
     relation MappedRelated[] mappedContainmentCollectionDerived <= e.containmentCollectionDerived;
 
-    field Integer mappedIdentifier <= e.identifier input:true;
-    field Integer derivedIdentifier <= e.identifier;
+    field Integer mappedIdentifier <= e.id input:true;
+    field Integer derivedIdentifier <= e.id;
 
 }
 

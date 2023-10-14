@@ -116,13 +116,13 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         TransferAttribute mappedIdentifier = assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier");
         assertFalse(mappedIdentifier.isRequired());
         assertEquals(assertNumericType("Integer"), mappedIdentifier.getDataType());
-        assertEquals(assertAttribute("_Entity", "identifier"), mappedIdentifier.getBinding());
+        assertEquals(assertAttribute("_Entity", "id"), mappedIdentifier.getBinding());
 
         
         TransferAttribute derivedIdentifier = assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier");
         assertFalse(derivedIdentifier.isRequired());
         assertEquals(assertNumericType("Integer"), derivedIdentifier.getDataType());
-        assertEquals(assertAttribute("_Entity", "identifier"), derivedIdentifier.getBinding());
+        assertEquals(assertAttribute("_Entity", "id"), derivedIdentifier.getBinding());
 
         assertEquals(13, assertMappedTransferObject("Mapped").getRelations().size());
 

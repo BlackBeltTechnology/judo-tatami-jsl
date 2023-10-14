@@ -24,7 +24,7 @@ entity Entity extends EntityAncestor {
 	relation EntityRelated association;
 	relation EntityRelated[] associationCollection;
 
-	identifier Integer identifier default:1;	
+	identifier Integer id default:1;	
 }
 
 entity EntityRelated {
@@ -40,10 +40,10 @@ transfer Unmapped {
 transfer Mapped maps Entity as e {
     field Integer unmappedAttribute default:1;
 	field Integer mappedAttribute <= e.attribute input:true default:2;
-	field Integer mappedIdentifier <= e.identifier input:true default:3;
+	field Integer mappedIdentifier <= e.id input:true default:3;
     field MyEnum mappedEnum <= e.`enum` input:true default:MyEnum#Crazy;
 	field Integer mappedAttributeEntityDefault <= e.attribute  input:true;
-	field Integer mappedIdentifierEntityDefault <= e.identifier  input:true;
+	field Integer mappedIdentifierEntityDefault <= e.id  input:true;
     field MyEnum mappedEnumEntityDefault <= e.`enum` input:true;
 	field Integer mappedAttributeAncestorEntityDefault <= e.attributeAncestor input:true;
 	field Integer mappedIdentifierAncestorEntityDefault <= e.identifierAncestor input:true;

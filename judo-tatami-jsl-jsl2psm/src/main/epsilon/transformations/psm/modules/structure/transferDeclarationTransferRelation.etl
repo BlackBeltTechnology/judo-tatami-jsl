@@ -103,10 +103,9 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration
 rule CreateTransferEntityDefaultValueRelationForMappedTransferObjectConstructor
     transform s: JSL!DefaultModifier
     to t: JUDOPSM!TransferObjectRelation {
-//        guard: s.leftValue.declaration.getReferenceType().isKindOf(JSL!TransferDeclaration) and s.leftValue.declaration.eContainer.map.isDefined()
         guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.eContainer.map.isDefined()
+
         t.setId("(jsl/" + s.getId() + ")/CreateTransferEntityDefaultValueRelationForMappedTransferObjectConstructor");
-//        t.name = defaultDefaultNamePrefix + s.leftValue.declaration.name + defaultDefaultNameMidfix + s.leftValue.declaration.eContainer.name + defaultDefaultNamePostfix;
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
         t.target = s.eContainer.getReferenceType().getPSMEquivalent();        
