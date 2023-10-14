@@ -20,10 +20,10 @@ rule CreateNamedOppositeAssociationEnd
     }
 
 rule CreateDeclaredAssociationEnd
-    transform s: JSL!EntityStoredRelationDeclaration
+    transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!AssociationEnd
     {
-        guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration)
+        guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.isCalculated()
 
         t.setId("(jsl/" + s.getId() + ")/CreateDeclaredAssociationEnd");
         t.name = s.name;
@@ -33,12 +33,16 @@ rule CreateDeclaredAssociationEnd
         // Reverse cascade delete not supported yet
         t.reverseCascadeDelete = false;
 
-        if (s.opposite?.oppositeType.isDefined()) {
-            t.partner = s.opposite.oppositeType.equivalent("CreateDeclaredAssociationEnd");
-        }
-        if (s.opposite?.name.isDefined()) {
-            t.partner = s.opposite.equivalent("CreateNamedOppositeAssociationEnd");
-        }
+        var opposite = s.getOpposite();
+        
+        if (opposite.isDefined()) {
+	        if (opposite.oppositeType.isDefined()) {
+	            t.partner = opposite.oppositeType.equivalent("CreateDeclaredAssociationEnd");
+	        }
+	        if (opposite.name.isDefined()) {
+	            t.partner = opposite.equivalent("CreateNamedOppositeAssociationEnd");
+	        }
+	    }
 
         s.eContainer.getPSMEquivalent().relations.add(t);
         log.debug("Created Association End: (declared)" + t.name);

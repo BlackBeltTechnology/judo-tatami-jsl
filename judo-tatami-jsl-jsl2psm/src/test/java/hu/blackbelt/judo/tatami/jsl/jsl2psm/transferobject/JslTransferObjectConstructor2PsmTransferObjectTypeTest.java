@@ -129,7 +129,7 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         TransferAttribute mappedIdentifier = assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier");
         assertFalse(mappedIdentifier.isRequired());
         assertEquals(assertNumericType("Integer"), mappedIdentifier.getDataType());
-        assertEquals(assertAttribute("_Entity", "identifier"), mappedIdentifier.getBinding());
+        assertEquals(assertAttribute("_Entity", "id"), mappedIdentifier.getBinding());
         DataProperty mappedIdentifierDefault = assertDataProperty("_Entity", "_mappedIdentifier_Default_Mapped");
         assertEquals("3", mappedIdentifierDefault.getGetterExpression().getExpression());
         assertEquals(mappedIdentifierDefault, mappedIdentifier.getDefaultValue());
@@ -163,8 +163,8 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         TransferAttribute mappedIdentifierEntityDefault = assertMappedTransferObjectAttribute("Mapped", "mappedIdentifierEntityDefault");
         assertFalse(mappedIdentifierEntityDefault.isRequired());
         assertEquals(assertNumericType("Integer"), mappedIdentifierEntityDefault.getDataType());
-        assertEquals(assertAttribute("_Entity", "identifier"), mappedIdentifierEntityDefault.getBinding());
-        DataProperty mappedIdentifierEntityDefaultDefault = assertDataProperty("_Entity", "_identifier_Default_Entity");
+        assertEquals(assertAttribute("_Entity", "id"), mappedIdentifierEntityDefault.getBinding());
+        DataProperty mappedIdentifierEntityDefaultDefault = assertDataProperty("_Entity", "_id_Default_Entity");
         assertEquals("1", mappedIdentifierEntityDefaultDefault.getGetterExpression().getExpression());
         assertEquals(mappedIdentifierEntityDefaultDefault, mappedIdentifierEntityDefault.getDefaultValue());
         TransferAttribute mappedIdentifierEntityDefaultAttribute = assertMappedTransferObjectAttribute("Mapped", "_mappedIdentifierEntityDefault_Default_Entity");

@@ -23,10 +23,11 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import hu.blackbelt.judo.meta.jsl.jsldsl.Argument;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
-import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionArgument;
-import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionOrQueryCall;
+import hu.blackbelt.judo.meta.jsl.jsldsl.FunctionParameterDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaCall;
 import hu.blackbelt.judo.meta.jsl.jsldsl.LambdaDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Navigation;
@@ -219,13 +220,13 @@ public class Jsl2JqlFunction {
      * Keys are function names. Each "function" can have multiple possible parameter lists.
      */
 
-    public static String getFunctionAsJql(FunctionCall it, Function<Expression, String> expressionExtractor, String functionName) {
+    public static String getFunctionAsJql(FunctionOrQueryCall it, Function<Expression, String> expressionExtractor, String functionName) {
 //                System.out.println(getStack(it));
 //                System.out.println(TypeInfo.getFunctionCallReferences());
         FunctionDeclaration functionDeclaration = (FunctionDeclaration)it.getDeclaration();
 
         if (literalFunctionParameters.containsKey(functionName)) {
-            List<String> givenParameterNames = it.getArguments().stream().map(p -> p.getDeclaration().getName()).collect(Collectors.toList());
+            List<String> givenParameterNames = it.getArguments().stream().map(p -> ((FunctionParameterDeclaration)p.getDeclaration()).getName()).collect(Collectors.toList());
             List<Collection<ParameterValue>> alignedParameterLists =
                     literalFunctionParameters.get(functionName).stream()
                             .filter(parameterValues -> parameterValues.stream().map(ParameterValue::getName).collect(Collectors.toList()).containsAll(givenParameterNames))
@@ -234,7 +235,7 @@ public class Jsl2JqlFunction {
                 throw new IllegalStateException(String.format("Cannot determine which definition of function '%s' to use with [%s] given parameters",
                         functionDeclaration.getName(), String.join(", ", givenParameterNames)));
             } else if (alignedParameterLists.size() == 1) {
-                Map<String, FunctionArgument> givenParameters = it.getArguments().stream().collect(Collectors.toMap(p -> p.getDeclaration().getName(), p -> p));
+                Map<String, Argument> givenParameters = it.getArguments().stream().collect(Collectors.toMap(p -> ((FunctionParameterDeclaration)p.getDeclaration()).getName(), p -> p));
                 Collection<ParameterValue> definedParameters = alignedParameterLists.get(0);
                 List<String> jqlParameters = new ArrayList<>();
                 for (ParameterValue definedParameter : definedParameters) {
@@ -249,22 +250,22 @@ public class Jsl2JqlFunction {
                         jqlParameters.add(expressionExtractor.apply(givenParameters.get(definedParameter.getName()).getExpression()));
                     }
                 }
-                return getEffectiveFunctionName(it.getDeclaration()) + "(" + String.join(", ", jqlParameters) + ")";
+                return getEffectiveFunctionName((FunctionDeclaration)it.getDeclaration()) + "(" + String.join(", ", jqlParameters) + ")";
             }
         }
 
-        return getEffectiveFunctionName(it.getDeclaration()) + "()";
+        return getEffectiveFunctionName((FunctionDeclaration)it.getDeclaration()) + "()";
     }
 
-    public static String getTimestampPlusFunctionAsJql(FunctionCall it, Function<Expression, String> expressionExtractor, String functionName) {
+    public static String getTimestampPlusFunctionAsJql(FunctionOrQueryCall it, Function<Expression, String> expressionExtractor, String functionName) {
         Collection<Collection<ParameterValue>> timestampPlusParameterLists = literalFunctionParameters.get(functionName);
         if (timestampPlusParameterLists.size() != 1) {
             throw new IllegalStateException("Unsupported number of timestamp plus definitions: " + timestampPlusParameterLists.size());
         }
         Set<String> definedParameters = timestampPlusParameterLists.stream().findFirst().orElseThrow().stream().map(ParameterValue::getName).collect(Collectors.toSet());
         List<String> jqlFunctionCall = new ArrayList<>();
-        for (FunctionArgument argument : it.getArguments()) {
-            String argumentName = argument.getDeclaration().getName();
+        for (Argument argument : it.getArguments()) {
+            String argumentName = ((FunctionParameterDeclaration)argument.getDeclaration()).getName();
             if (!definedParameters.contains(argumentName)){
                 throw new IllegalArgumentException("Invalid parameter name: " + argumentName);
             }
