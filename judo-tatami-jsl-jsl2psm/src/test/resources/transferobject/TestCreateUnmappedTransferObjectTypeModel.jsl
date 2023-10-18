@@ -20,11 +20,11 @@ transfer Unmapped {
 	field String transient;
 	field required String `required`;
 
-	field Integer derived <= Entity!any().attribute;
+	field Integer derived <= Entity.any().attribute;
 
     relation UnmappedRelated unmappedRelated;
     relation required UnmappedRelated unmappedRelatedRequired;
     relation UnmappedRelated[] unmappedRelatedCollection;
 
-    relation MappedRelated mappedDerived <= Entity!any();
+    relation MappedRelated mappedDerived <= Entity.any();
 }

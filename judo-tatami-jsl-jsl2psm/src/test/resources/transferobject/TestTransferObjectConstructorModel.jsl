@@ -49,13 +49,13 @@ transfer Mapped maps Entity as e {
 	field Integer mappedIdentifierAncestorEntityDefault <= e.identifierAncestor input:true;
     field MyEnum mappedEnumAncestorEntityDefault <= e.enumAncestor input:true;
 
-	relation MappedRelated mappedAssociation <= e.association choices:EntityRelated!all() default:EntityRelated!any();
-	relation MappedRelated[] mappedAssociationCollection <= e.associationCollection choices:EntityRelated!all() default:EntityRelated!all();
-    relation MappedRelated mappedAssociationOpposite <= e.entityRelatedOpposite choices:EntityRelated!all() default:EntityRelated!any();
-    relation MappedRelated[] mappedAssociationOppositeCollection <= e.entityRelatedOppositeCollection choices:EntityRelated!all() default:EntityRelated!all();
+	relation MappedRelated mappedAssociation <= e.association choices:EntityRelated.all() default:EntityRelated.any();
+	relation MappedRelated[] mappedAssociationCollection <= e.associationCollection choices:EntityRelated.all() default:EntityRelated.all();
+    relation MappedRelated mappedAssociationOpposite <= e.entityRelatedOpposite choices:EntityRelated.all() default:EntityRelated.any();
+    relation MappedRelated[] mappedAssociationOppositeCollection <= e.entityRelatedOppositeCollection choices:EntityRelated.all() default:EntityRelated.all();
 
-    relation MappedRelated transientRelation default:EntityRelated!any();
-    relation MappedRelated[] transientRelationCollection default:EntityRelated!all();
+    relation MappedRelated transientRelation default:EntityRelated.any();
+    relation MappedRelated[] transientRelationCollection default:EntityRelated.all();
 }
 
 transfer MappedRelated maps EntityRelated as e {

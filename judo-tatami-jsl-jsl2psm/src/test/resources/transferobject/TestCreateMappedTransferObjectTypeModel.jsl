@@ -35,19 +35,19 @@ transfer Mapped maps Entity as e {
 
     field Integer mappedAttribute <= e.attribute input:true;
 
-    relation MappedRelated mappedAssociation <= e.association choices:EntityRelated!all();
-    relation MappedRelated mappedAssociationOpposite <= e.entityRelatedOpposite choices:EntityRelated!all();
+    relation MappedRelated mappedAssociation <= e.association choices:EntityRelated.all();
+    relation MappedRelated mappedAssociationOpposite <= e.entityRelatedOpposite choices:EntityRelated.all();
 
     field Integer derivedAttribute <= e.attribute;
     relation MappedRelated derivedContainment <= e.containment;
     relation MappedRelated[] derivedContainmentCollection <= e.containmentCollection;
     
     relation MappedRelated derivedAssociation <= e.association;
-    relation MappedRelated derivedAssociationOpposite <= e.entityRelatedOpposite choices:EntityRelated!all();
+    relation MappedRelated derivedAssociationOpposite <= e.entityRelatedOpposite choices:EntityRelated.all();
 
-    field Integer derivedAttributeStatic <= Entity!any().attribute;    
-    relation MappedRelated derivedContainmentStatic <= EntityRelated!any();
-    relation MappedRelated[] derivedContainmentCollectionStatic <= EntityRelated!all();
+    field Integer derivedAttributeStatic <= Entity.any().attribute;    
+    relation MappedRelated derivedContainmentStatic <= EntityRelated.any();
+    relation MappedRelated[] derivedContainmentCollectionStatic <= EntityRelated.all();
 
     field Integer mappedAttributeDerived <= e.attributeDerived;
     relation MappedRelated mappedContainmentDerived <= e.containmentDerived;
