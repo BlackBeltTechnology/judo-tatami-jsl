@@ -75,7 +75,7 @@
         <judo-operation-utils-version>1.1.3.20230923_041451_b72d0225_develop</judo-operation-utils-version>
 
 
-        <judo-runtime-core-version>1.0.6.20231010_041622_4ea1f290_develop</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20231018_225832_e7a4b040_develop</judo-runtime-core-version>
 
         <structured-map-proxy-version>2.0.0.20230826_230931_03ebb103_develop</structured-map-proxy-version>
 
