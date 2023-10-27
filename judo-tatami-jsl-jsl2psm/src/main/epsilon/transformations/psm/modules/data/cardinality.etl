@@ -1,7 +1,9 @@
 @lazy
 rule CreateCardinalityForRelationDeclaration
-    transform s: JSL!EntityStoredRelationDeclaration
+    transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!Cardinality {
+      guard: not s.isCalculated()
+      
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForRelationDeclaration");
 
       t.lower = s.isRequired and not s.isMany ? 1 : 0;
@@ -10,8 +12,10 @@ rule CreateCardinalityForRelationDeclaration
 
 @lazy
 rule CreateCardinalityForFieldDeclaration
-    transform s: JSL!EntityStoredFieldDeclaration
+    transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!Cardinality {
+      guard: not s.isCalculated()
+    
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForFieldDeclaration");
 
       t.lower = s.isRequired and not s.isMany ? 1 : 0;
@@ -31,23 +35,11 @@ rule CreateCardinalityForOppositeAddedRelation
 
 @lazy
 rule CreateCardinalityForDerivedDeclaration
-    transform s : JSL!EntityCalculatedRelationDeclaration
+    transform s : JSL!EntityRelationDeclaration
     to t : JUDOPSM!Cardinality {
-      guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration)
+      guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.isCalculated()
 
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForDerivedDeclaration");
-
-      t.lower = 0;
-      t.upper = s.isMany ? -1 : 1;
-}
-
-@lazy
-rule CreateCardinalityForEntityQueryDeclaration
-    transform s : JSL!EntityCalculatedRelationDeclaration
-    to t : JUDOPSM!Cardinality {
-      guard: s.isQuery() and s.getReferenceType().isKindOf(JSL!EntityDeclaration)
-
-      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForEntityQueryDeclaration");
 
       t.lower = 0;
       t.upper = s.isMany ? -1 : 1;
