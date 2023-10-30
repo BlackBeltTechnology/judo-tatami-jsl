@@ -71,7 +71,7 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
         testName = "TestEntityDerivedWithParametersTest";
 
         jslModel = JslParser.getModelFromFiles(
-                "TestDerivesWithParameters",
+                "TestDerivedWithParameters",
                 List.of(new File("src/test/resources/derived/TestDerivedWithParametersModel.jsl"))
         );
 
