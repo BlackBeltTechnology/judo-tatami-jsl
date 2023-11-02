@@ -79,7 +79,7 @@
 
         <structured-map-proxy-version>2.0.0.20231102_080826_6bfc351b_feature_JNG_4220_support_add_and_remove_for_collections</structured-map-proxy-version>
 
-        <judo-tatami-base-version>v1.1.6.20231102_090034_7faf482a_feature_JNG_4220_support_add_and_remove_for_collections</judo-tatami-base-version>
+        <judo-tatami-base-version>1.1.6.20231102_090034_7faf482a_feature_JNG_4220_support_add_and_remove_for_collections</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20230914_115356_5eff08c1_develop</judo-tatami-core-version>
 
         <!-- Code Quality-->
