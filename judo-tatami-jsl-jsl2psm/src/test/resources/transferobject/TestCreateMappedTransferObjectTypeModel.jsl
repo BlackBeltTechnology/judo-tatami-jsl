@@ -10,16 +10,15 @@ entity Entity {
     field EntityRelated[] containmentCollection;
     relation EntityRelated association;
 
-    identifier Integer identifier;
+    identifier Integer id;
     field Integer attributeDerived <= self.attribute;
-    relation EntityRelated containmentDerived <= self.containment;
-    relation EntityRelated[] containmentCollectionDerived <= self.containmentCollection;
-    
+    relation EntityRelated containmentDerived <= self.containment eager:true;
+    relation EntityRelated[] containmentCollectionDerived <= self.containmentCollection eager:true;
 }
 
 entity EntityRelated {
     field Integer attribute;
-    relation Entity entity opposite-add:entityRelatedOpposite;
+    relation Entity `entity` opposite-add:entityRelatedOpposite;
 
 }
 
@@ -34,32 +33,31 @@ transfer Mapped maps Entity as e {
     relation required UnmappedRelated unmappedContainmentRequired;
     relation UnmappedRelated[] unmappedContainmentCollection;
 
-    field Integer mappedAttribute <=> e.attribute;
-    relation MappedRelated mappedContainment <=> e.containment;
-    relation MappedRelated[] mappedContainmentCollection <=> e.containmentCollection;
+    field Integer mappedAttribute <= e.attribute input:true;
 
-    relation MappedRelated mappedAssociation <=> e.association;
-    relation MappedRelated mappedAssociationOpposite <=> e.entityRelatedOpposite;
+    relation MappedRelated mappedAssociation <= e.association choices:EntityRelated.all();
+    relation MappedRelated mappedAssociationOpposite <= e.entityRelatedOpposite choices:EntityRelated.all();
 
     field Integer derivedAttribute <= e.attribute;
     relation MappedRelated derivedContainment <= e.containment;
-    relation MappedRelated[] derivedContainmentCollection <= e.containmentCollection;    
+    relation MappedRelated[] derivedContainmentCollection <= e.containmentCollection;
+    
     relation MappedRelated derivedAssociation <= e.association;
-    relation MappedRelated derivedAssociationOpposite <=> e.entityRelatedOpposite;
+    relation MappedRelated derivedAssociationOpposite <= e.entityRelatedOpposite choices:EntityRelated.all();
 
-    field Integer derivedAttributeStatic <= Entity!any().attribute;    
-    relation MappedRelated derivedContainmentStatic <= EntityRelated!any();
-    relation MappedRelated[] derivedContainmentCollectionStatic <= EntityRelated!all();
+    field Integer derivedAttributeStatic <= Entity.any().attribute;    
+    relation MappedRelated derivedContainmentStatic <= EntityRelated.any();
+    relation MappedRelated[] derivedContainmentCollectionStatic <= EntityRelated.all();
 
     field Integer mappedAttributeDerived <= e.attributeDerived;
     relation MappedRelated mappedContainmentDerived <= e.containmentDerived;
     relation MappedRelated[] mappedContainmentCollectionDerived <= e.containmentCollectionDerived;
 
-    field Integer mappedIdentifier <=> e.identifier;
-    field Integer derivedIdentifier <= e.identifier;
+    field Integer mappedIdentifier <= e.id input:true;
+    field Integer derivedIdentifier <= e.id;
 
 }
 
 transfer MappedRelated maps EntityRelated as e {
-    field Integer mappedAttribute <=> e.attribute;
+    field Integer mappedAttribute <= e.attribute input:true;
 }

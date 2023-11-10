@@ -4,10 +4,6 @@ import "modules/structure/entityDeclarationDefaultTransferObjectType.etl";
 import "modules/structure/entityDeclarationDefaultTransferAttribute.etl";
 import "modules/structure/entityDeclarationDefaultTransferRelation.etl";
 
-import "modules/structure/entityDeclarationAutoMappedTransferObjectType.etl";
-import "modules/structure/entityDeclarationAutoMappedTransferAttribute.etl";
-import "modules/structure/entityDeclarationAutoMappedTransferRelation.etl";
-
 import "modules/structure/transferDeclarationTransferAttribute.etl";
 import "modules/structure/transferDeclarationTransferObjectType.etl";
 import "modules/structure/transferDeclarationTransferRelation.etl";
@@ -44,6 +40,4 @@ post {
     for (c in JSL!QueryParameterDeclaration.all()) {
          var dummy = c.referenceType.getPSMEquivalent();
     }
-
-
 }

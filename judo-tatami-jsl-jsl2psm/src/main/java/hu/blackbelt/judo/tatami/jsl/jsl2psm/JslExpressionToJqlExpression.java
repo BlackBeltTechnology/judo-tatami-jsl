@@ -65,7 +65,7 @@ public class JslExpressionToJqlExpression {
         return found;
     }
 
-    public static String getJqlForDerived(EntityCalculatedMemberDeclaration declaration, String entityNamePrefix, String entityNamePostfix) {
+    public static String getJqlForDerived(EntityMemberDeclaration declaration, String entityNamePrefix, String entityNamePostfix) {
         JslExpressionToJqlExpression transformer = new JslExpressionToJqlExpression();
 
         transformer.entityNamePrefix = entityNamePrefix;
@@ -74,23 +74,13 @@ public class JslExpressionToJqlExpression {
         return transformer.getJql(declaration.getGetterExpr());
     }
 
-    public static String getJqlForEntityQuery(EntityCalculatedMemberDeclaration declaration, String entityNamePrefix, String entityNamePostfix) {
+    public static String getJqlForEntityQuery(EntityMemberDeclaration declaration, String entityNamePrefix, String entityNamePostfix) {
         JslExpressionToJqlExpression transformer = new JslExpressionToJqlExpression();
 
         transformer.entityNamePrefix = entityNamePrefix;
         transformer.entityNamePostfix = entityNamePostfix;
 
         HashMap<String, String> passedArgs = new HashMap<String, String>();
-
-        for (QueryParameterDeclaration queryParameter : declaration.getParameters()) {
-            String value = "input." + queryParameter.getName();
-
-            if (queryParameter.getDefault() != null) {
-                value = String.format("(%s!isDefined() ? %s : %s)", value, value, transformer.getJql(queryParameter.getDefault()));
-            }
-
-            passedArgs.put(queryParameter.getName(), value);
-        }
 
         return transformer.getJql(declaration.getGetterExpr(), passedArgs);
     }
@@ -201,20 +191,39 @@ public class JslExpressionToJqlExpression {
                 return getJql(it, featurePos + 1, base + "." + getJql((MemberReference)feature), args);
             }
 
-            if (feature instanceof FunctionCall) {
-                FunctionCall functionCall = (FunctionCall)feature;
+            if (feature instanceof FunctionOrQueryCall) {
+            	FunctionOrQueryCall functionOrQueryCall = (FunctionOrQueryCall)feature;
 
-                if (functionCall.getDeclaration().getName().equals("orElse")) {
-                    String elseExpression = getJql(functionCall.getArguments().get(0).getExpression(), args);
+            	if (functionOrQueryCall.getDeclaration() instanceof FunctionDeclaration) {
+            		FunctionDeclaration functionDeclaration = (FunctionDeclaration)functionOrQueryCall.getDeclaration();
+            		
+	                if (functionDeclaration.getName().equals("orElse")) {
+	                    String elseExpression = getJql(functionOrQueryCall.getArguments().get(0).getExpression(), args);
+	
+	                    if (!(functionOrQueryCall.getArguments().get(0).getExpression() instanceof Navigation)) {
+	                        elseExpression = "(" + elseExpression + ")";
+	                    }
+	
+	                    return String.format("(%s!isDefined() ? %s : %s)", base, getJql(it, featurePos + 1, base, args), getJql(it, featurePos + 1, elseExpression, args));
+	                } else {
+	                    return getJql(it, featurePos + 1, base + getJql(functionOrQueryCall, args), args);
+	                }
+            	}
 
-                    if (!(functionCall.getArguments().get(0).getExpression() instanceof Navigation)) {
-                        elseExpression = "(" + elseExpression + ")";
+            	if (functionOrQueryCall.getDeclaration() instanceof QueryDeclaration) {
+                    HashMap<String, String> passedArgs = new HashMap<String, String>();
+                    passedArgs.put("self", base);
+
+                    for (Argument queryArgument : functionOrQueryCall.getArguments()) {
+                        String argument = getJql(queryArgument.getExpression(), args);
+                        if (!(queryArgument.getExpression() instanceof Navigation)) {
+                            argument = "(" + argument + ")";
+                        }
+                        passedArgs.put(((QueryParameterDeclaration)queryArgument.getDeclaration()).getName(), argument);
                     }
 
-                    return String.format("(%s!isDefined() ? %s : %s)", base, getJql(it, featurePos + 1, base, args), getJql(it, featurePos + 1, elseExpression, args));
-                } else {
-                    return getJql(it, featurePos + 1, base + getJql(functionCall, args), args);
-                }
+                    return getJql(it, featurePos + 1, getJql(((QueryDeclaration)functionOrQueryCall.getDeclaration()).getGetterExpr(), passedArgs), args);
+            	}
             }
 
             if (feature instanceof LambdaCall) {
@@ -240,8 +249,8 @@ public class JslExpressionToJqlExpression {
             return getJql( (Parentheses) it, args);
         } else if (it instanceof NavigationBaseDeclarationReference) {
             return getJql( (NavigationBaseDeclarationReference) it, args);
-        } else if (it instanceof QueryCall) {
-            return getJql( (QueryCall) it, args);
+        } else if (it instanceof FunctionOrQueryCall) {
+            return getJql( (FunctionOrQueryCall) it, args);
         } else if (it instanceof Literal) {
             return getJql( (Literal) it);
         }
@@ -267,6 +276,7 @@ public class JslExpressionToJqlExpression {
         } else if (navigationBaseReference instanceof EntityMapDeclaration) {
             return "self";
         }
+
         throw new IllegalArgumentException("Unhandled parameter types: " +
                 Arrays.<Object>asList(it.getReference()).toString());
     }
@@ -289,29 +299,40 @@ public class JslExpressionToJqlExpression {
         return "(" + getJql(it.getExpression(), args) + ")";
     }
 
-    private String getJql(final QueryCall it, Map<String, String> args) {
+    private String getJql(final FunctionOrQueryCall it, Map<String, String> args) {
         HashMap<String, String> passedArgs = new HashMap<String, String>();
 
-        for (QueryArgument queryArgument : it.getArguments()) {
-            String argument = getJql(queryArgument.getExpression(), args);
-            if (!(queryArgument.getExpression() instanceof Navigation)) {
-                argument = "(" + argument + ")";
-            }
-            passedArgs.put(queryArgument.getDeclaration().getName(), argument);
+        if (it.getDeclaration() instanceof FunctionDeclaration) {
+	        FunctionDeclaration functionDeclaration = (FunctionDeclaration)it.getDeclaration();
+	        String functionName = functionDeclaration.getName();
+
+	        if ("all".equals(functionName)) {
+	            return "";
+	        } else if ("plus".equals(functionName)) {
+	            return "!" + Jsl2JqlFunction.getTimestampPlusFunctionAsJql(it, f -> getJql(f, args), functionName);
+	        } else {
+	            return "!" + Jsl2JqlFunction.getFunctionAsJql(it, f -> getJql(f, args), functionName);
+	        }
         }
 
-        return getJql(it.getDeclaration().getGetterExpr(), passedArgs);
+        for (Argument argument : it.getArguments()) {
+            String argumentJql = getJql(argument.getExpression(), args);
+            if (!(argument.getExpression() instanceof Navigation)) {
+                argumentJql = "(" + argument + ")";
+            }
+            passedArgs.put(((QueryParameterDeclaration)argument.getDeclaration()).getName(), argumentJql);
+        }
+
+        return getJql(((QueryDeclaration)it.getDeclaration()).getGetterExpr(), passedArgs);
     }
 
     private String getJql(final MemberReference it) {
         NavigationTarget navigationTarget = it.getMember();
 
-        if (navigationTarget instanceof EntityStoredFieldDeclaration) {
-            return ((EntityStoredFieldDeclaration)navigationTarget).getName();
-        } else if (navigationTarget instanceof EntityStoredRelationDeclaration) {
-            return ((EntityStoredRelationDeclaration)navigationTarget).getName();
-        } else if (navigationTarget instanceof EntityCalculatedMemberDeclaration) {
-            return ((EntityCalculatedMemberDeclaration)navigationTarget).getName();
+        if (navigationTarget instanceof EntityFieldDeclaration) {
+            return ((EntityFieldDeclaration)navigationTarget).getName();
+        } else if (navigationTarget instanceof EntityRelationDeclaration) {
+            return ((EntityRelationDeclaration)navigationTarget).getName();
         } else if (navigationTarget instanceof EntityRelationOppositeInjected) {
             return ((EntityRelationOppositeInjected)navigationTarget).getName();
         }
@@ -324,34 +345,12 @@ public class JslExpressionToJqlExpression {
         HashMap<String, String> passedArgs = new HashMap<String, String>();
         passedArgs.put("self", self);
 
-        for (QueryArgument queryArgument : it.getArguments()) {
-            String argument = getJql(queryArgument.getExpression(), args);
-            if (!(queryArgument.getExpression() instanceof Navigation)) {
-                argument = "(" + argument + ")";
-            }
-            passedArgs.put(queryArgument.getDeclaration().getName(), argument);
-        }
-
-        if (it.getMember() instanceof EntityCalculatedMemberDeclaration) {
-           	return getJql(((EntityCalculatedMemberDeclaration)it.getMember()).getGetterExpr(), passedArgs);
+        if (it.getMember() instanceof EntityMemberDeclaration && modelExtension.isCalculated((EntityMemberDeclaration)it.getMember())) {
+           	return getJql(((EntityMemberDeclaration)it.getMember()).getGetterExpr(), passedArgs);
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " +
                     it.toString());
 
-        }
-    }
-
-
-    private String getJql(final FunctionCall it, Map<String, String> args) {
-        FunctionDeclaration functionDeclaration = (FunctionDeclaration)it.getDeclaration();
-        String functionName = functionDeclaration.getName();
-
-        if ("all".equals(functionName)) {
-            return "";
-        } else if ("plus".equals(functionName)) {
-            return "!" + Jsl2JqlFunction.getTimestampPlusFunctionAsJql(it, f -> getJql(f, args), functionName);
-        } else {
-            return "!" + Jsl2JqlFunction.getFunctionAsJql(it, f -> getJql(f, args), functionName);
         }
     }
 
