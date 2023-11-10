@@ -4,7 +4,7 @@ operation JSL!DataTypeDeclaration getId(): String {
 }
 
 @cached
-operation JSL!ModifierMaxFileSize value() : Integer {
+operation JSL!MaxFileSizeModifier value() : Integer {
     switch (self.measure) {
         case "kB": return self.numeric * 1000;
         case "MB": return self.numeric * 1000 * 1000;

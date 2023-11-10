@@ -3,3 +3,17 @@ operation JSL!TransferFieldDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
 
+@cached
+operation JSL!TransferFieldDeclaration isCalculated(): Boolean {
+    return jslUtils.isCalculated(self);
+}
+
+@cached
+operation JSL!TransferFieldDeclaration maps(): Boolean {
+    return jslUtils.isMaps(self);
+}
+
+@cached
+operation JSL!TransferFieldDeclaration reads(): Boolean {
+    return jslUtils.isReads(self);
+}
