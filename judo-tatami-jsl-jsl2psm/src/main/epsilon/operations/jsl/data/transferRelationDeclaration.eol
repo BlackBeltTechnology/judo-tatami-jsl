@@ -1,10 +1,14 @@
 @cached
-operation JSL!TransferRelationDeclaration getReferenceType() : JSL!TransferDeclaration {
-    return jslUtils.getReferenceType(self);
-}
-
-@cached
 operation JSL!TransferRelationDeclaration isAggregation() : Boolean {
     return jslUtils.isAggregation(self);
 }
 
+@cached
+operation JSL!TransferRelationDeclaration maps(): Boolean {
+    return jslUtils.isMaps(self);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration reads(): Boolean {
+    return jslUtils.isReads(self);
+}

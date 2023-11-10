@@ -8,10 +8,15 @@ error MyError {
     field String msg;
 }
 
-error OtherError extends MyError {
+error OtherError {
+    field Integer code;
+    field String msg;
 	field String other;
 }
 
-error YetAnotherError extends OtherError {
+error YetAnotherError {
+    field Integer code;
+    field String msg;
+	field String other;
 	field String someField;
 }
