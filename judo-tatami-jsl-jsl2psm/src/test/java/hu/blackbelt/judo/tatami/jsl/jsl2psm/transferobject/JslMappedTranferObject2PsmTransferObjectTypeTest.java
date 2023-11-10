@@ -98,9 +98,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         TransferAttribute derivedAttribute = assertMappedTransferObjectAttribute("Mapped", "derivedAttribute");
         assertFalse(derivedAttribute.isRequired());
         assertEquals(assertNumericType("Integer"), derivedAttribute.getDataType());
-        DataProperty derivedAttributeProperty = assertDataProperty("_Entity", "_derivedAttribute_Reads_Mapped");
-        assertEquals(derivedAttributeProperty, derivedAttribute.getBinding());
-        assertEquals("self.attribute", derivedAttributeProperty.getGetterExpression().getExpression());
+        assertEquals(assertAttribute("_Entity", "attribute"), derivedAttribute.getBinding());
 
         TransferAttribute derivedAttributeStatic = assertMappedTransferObjectAttribute("Mapped", "derivedAttributeStatic");
         assertFalse(derivedAttributeStatic.isRequired());
@@ -118,18 +116,15 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         TransferAttribute mappedIdentifier = assertMappedTransferObjectAttribute("Mapped", "mappedIdentifier");
         assertFalse(mappedIdentifier.isRequired());
         assertEquals(assertNumericType("Integer"), mappedIdentifier.getDataType());
-        assertEquals(assertAttribute("_Entity", "identifier"), mappedIdentifier.getBinding());
+        assertEquals(assertAttribute("_Entity", "id"), mappedIdentifier.getBinding());
 
         
         TransferAttribute derivedIdentifier = assertMappedTransferObjectAttribute("Mapped", "derivedIdentifier");
         assertFalse(derivedIdentifier.isRequired());
         assertEquals(assertNumericType("Integer"), derivedIdentifier.getDataType());
-        assertEquals(assertDataProperty("_Entity", "_derivedIdentifier_Reads_Mapped"), derivedIdentifier.getBinding());
-        DataProperty derivedIdentifierProperty = assertDataProperty("_Entity", "_derivedIdentifier_Reads_Mapped");
-        assertEquals(derivedIdentifierProperty, derivedIdentifier.getBinding());
-        assertEquals("self.identifier", derivedIdentifierProperty.getGetterExpression().getExpression());
+        assertEquals(assertAttribute("_Entity", "id"), derivedIdentifier.getBinding());
 
-        assertEquals(15, assertMappedTransferObject("Mapped").getRelations().size());
+        assertEquals(13, assertMappedTransferObject("Mapped").getRelations().size());
 
         
         TransferObjectRelation unmappedContainment = assertMappedTransferObjectRelation("Mapped", "unmappedContainment");
@@ -156,22 +151,6 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
         assertThat(unmappedContainmentCollection.getTarget(), IsEqual.equalTo(assertUnmappedTransferObject("UnmappedRelated")));
 
         
-        TransferObjectRelation mappedContainment = assertMappedTransferObjectRelation("Mapped", "mappedContainment");
-        assertFalse(mappedContainment.isRequired());
-        assertThat(mappedContainment.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containment")));
-        assertThat(mappedContainment.getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(mappedContainment.getCardinality().getUpper(), IsEqual.equalTo(1));
-        assertThat(mappedContainment.getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-
-
-        TransferObjectRelation mappedContainmentCollection = assertMappedTransferObjectRelation("Mapped", "mappedContainmentCollection");
-        assertFalse(mappedContainmentCollection.isRequired());
-        assertThat(mappedContainmentCollection.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containmentCollection")));
-        assertThat(mappedContainmentCollection.getCardinality().getLower(), IsEqual.equalTo(0));
-        assertThat(mappedContainmentCollection.getCardinality().getUpper(), IsEqual.equalTo(-1));
-        assertThat(mappedContainmentCollection.getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-
-        
         TransferObjectRelation mappedAssociation = assertMappedTransferObjectRelation("Mapped", "mappedAssociation");
         assertFalse(mappedAssociation.isRequired());
         assertThat(mappedAssociation.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "association")));
@@ -188,30 +167,24 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
 
         TransferObjectRelation derivedContainment = assertMappedTransferObjectRelation("Mapped", "derivedContainment");
         assertFalse(derivedContainment.isRequired());
+        assertThat(derivedContainment.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containment")));
         assertThat(derivedContainment.getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(derivedContainment.getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(derivedContainment.getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-        NavigationProperty derivedContainmentProperty = assertNavigationProperty("_Entity", "_derivedContainment_Reads_Mapped");
-        assertEquals(derivedContainmentProperty, derivedContainment.getBinding());
-        assertEquals("self.containment", derivedContainmentProperty.getGetterExpression().getExpression());
         
         TransferObjectRelation derivedContainmentCollection = assertMappedTransferObjectRelation("Mapped", "derivedContainmentCollection");
         assertFalse(derivedContainmentCollection.isRequired());
+        assertThat(derivedContainmentCollection.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "containmentCollection")));
         assertThat(derivedContainmentCollection.getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(derivedContainmentCollection.getCardinality().getUpper(), IsEqual.equalTo(-1));
         assertThat(derivedContainmentCollection.getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-        NavigationProperty derivedContainmentCollectionProperty = assertNavigationProperty("_Entity", "_derivedContainmentCollection_Reads_Mapped");
-        assertEquals(derivedContainmentCollectionProperty, derivedContainmentCollection.getBinding());
-        assertEquals("self.containmentCollection", derivedContainmentCollectionProperty.getGetterExpression().getExpression());
 
         TransferObjectRelation derivedAssociation = assertMappedTransferObjectRelation("Mapped", "derivedAssociation");
         assertFalse(derivedAssociation.isRequired());
+        assertThat(derivedAssociation.getBinding(), IsEqual.equalTo(assertRelation("_Entity", "association")));
         assertThat(derivedAssociation.getCardinality().getLower(), IsEqual.equalTo(0));
         assertThat(derivedAssociation.getCardinality().getUpper(), IsEqual.equalTo(1));
         assertThat(derivedAssociation.getTarget(), IsEqual.equalTo(assertMappedTransferObject("MappedRelated")));
-        NavigationProperty derivedAssociationProperty = assertNavigationProperty("_Entity", "_derivedAssociation_Reads_Mapped");
-        assertEquals(derivedAssociationProperty, derivedAssociation.getBinding());
-        assertEquals("self.association", derivedAssociationProperty.getGetterExpression().getExpression());
 
         TransferObjectRelation derivedContainmentStatic = assertMappedTransferObjectRelation("Mapped", "derivedContainmentStatic");
         assertFalse(derivedContainmentStatic.isRequired());
