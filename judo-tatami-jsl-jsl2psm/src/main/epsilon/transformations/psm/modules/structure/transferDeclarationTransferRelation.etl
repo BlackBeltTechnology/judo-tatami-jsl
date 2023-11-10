@@ -29,7 +29,6 @@ rule CreateTransientTransferObjectRelationForTransferRelationDeclaration
         t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferObjectRelationForTransferRelationDeclaration");
         t.cardinality = s.equivalentWithPrefix("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
-        // var def = JSL!TransferDataAssignment.all().selectOne(d | d.leftValue.declaration == s);
         if (s.getDefault().isDefined()) {
            if (s.eContainer.map.isUndefined()) {
               t.defaultValue = s.getDefault().equivalent("CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
@@ -85,8 +84,6 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration
           throw "Invalid member type - " + s.eContainer.name + "." + e.name + " " + entityMember;
       }
 
-
-      // var def = JSL!TransferDataAssignment.all().selectOne(d | d.leftValue.declaration == s);
       if (s.getDefault().isDefined()) {
         t.defaultValue = s.getDefault().equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
       }      
