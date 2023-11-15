@@ -23,7 +23,7 @@ entity abstract Person {
 	field Name birthName;
 	field Address residentAddress;
 	field Address[] postalAddresses;
-	relation Address mainPostalAddress <= self.postalAddresses!any();
+	relation Address mainPostalAddress <= self.postalAddresses.any();
 }
 
 entity SalesPerson extends Person, PersonWithAge {
