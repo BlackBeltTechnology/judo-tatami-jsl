@@ -70,15 +70,13 @@
         <judo-meta-expression-version>1.0.5.20231107_042129_0d5eab73_develop</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.2.20231107_041254_36f06e98_develop</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.4.20231116_201621_0bd3620b_develop</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.4.20231118_040553_6de82ae8_develop</judo-sdk-common-version>
+        <judo-sdk-common-version>1.0.4.20231121_210934_66054098_feature_JNG_4227_support_string_substitution</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.3.20230826_230134_1ce94d88_develop</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20231117_040612_4e414fae_develop</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20231118_040927_cdc96767_develop</judo-runtime-core-version>
-
-        <structured-map-proxy-version>2.0.0.20231117_084804_89a4d94f_develop</structured-map-proxy-version>
-
-        <judo-tatami-base-version>1.1.6.20231118_040641_806ed375_develop</judo-tatami-base-version>
+        <judo-runtime-core-version>1.0.6.20231121_222058_b7857626_feature_JNG_4227_support_string_substitution</judo-runtime-core-version>
+        <structured-map-proxy-version>2.0.0.20231117_104110_76d8eebd_feature_JNG_4227_support_string_substitution</structured-map-proxy-version>
+        <judo-tatami-base-version>1.1.6.20231121_221446_7f6eef95_feature_JNG_4227_support_string_substitution</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20231107_041032_332be90a_develop</judo-tatami-core-version>
 
         <!-- Code Quality-->
