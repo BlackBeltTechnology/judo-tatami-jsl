@@ -1,0 +1,4 @@
+@cached
+operation JSL!QueryParameterDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
