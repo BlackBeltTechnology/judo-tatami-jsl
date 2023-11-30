@@ -1,4 +1,4 @@
 import "id.eol";
-import "equivalentWithPrefix.eol";
+import "equivalentDiscriminated.eol";
 
 import "jsl/_importAll.eol";
