@@ -8,7 +8,7 @@ rule CreateNamedOppositeAssociationEnd
         t.setId("(jsl/" + s.getId() + ")/CreateNamedOppositeAssociationEnd");
         t.name = s.name;
         t.target = relationAddedFrom.eContainer.getPSMEquivalent();
-        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForOppositeAddedRelation", t.getId());
+        t.cardinality = s.equivalentDiscriminated("CreateCardinalityForOppositeAddedRelation", t.getId());
 
         // Reverse cascade delete not supported yet
         t.reverseCascadeDelete = false;
@@ -28,7 +28,7 @@ rule CreateDeclaredAssociationEnd
         t.setId("(jsl/" + s.getId() + ")/CreateDeclaredAssociationEnd");
         t.name = s.name;
         t.target = s.getReferenceType().getPSMEquivalent();
-        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForRelationDeclaration", t.getId());
+        t.cardinality = s.equivalentDiscriminated("CreateCardinalityForRelationDeclaration", t.getId());
 
         // Reverse cascade delete not supported yet
         t.reverseCascadeDelete = false;

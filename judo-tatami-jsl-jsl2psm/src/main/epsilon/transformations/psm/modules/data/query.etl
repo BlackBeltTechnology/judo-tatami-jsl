@@ -58,7 +58,7 @@ rule CreateTransferObjectEntityQueryRelationForStaticQuery
         guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.entity != null
 
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectEntityQueryRelationForStaticQuery");
-        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForStaticQueryDeclaration", t.getId());
+        t.cardinality = s.equivalentDiscriminated("CreateCardinalityForStaticQueryDeclaration", t.getId());
 
         s.entity.equivalent("CreateEntityDefaultTransferObjectType").relations.add(t);
 
@@ -74,7 +74,7 @@ rule CloneTransferObjectQueryRelationForStaticQuery
 		guard: s.getReferenceType().isKindOf(JSL!EntityDeclaration) and s.entity != null
 
         t.setId("(jsl/" + s.getId() + ")/CloneTransferObjectQueryRelationForStaticQuery");
-        t.cardinality = s.equivalentWithPrefix("CreateCardinalityForStaticQueryDeclaration", t.getId());
+        t.cardinality = s.equivalentDiscriminated("CreateCardinalityForStaticQueryDeclaration", t.getId());
 
 
         log.debug("Clone TransferObjectRelation for DefaultTransferObjectType: [" + t.name + "]");
@@ -188,7 +188,7 @@ rule CreateStaticNavigationForStaticQuery
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateStaticNavigationForStaticQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForStaticQueryParametrizedReferenceType");
-      t.cardinality = s.equivalent("CreateCardinalityForStaticQueryDeclaration");
+      t.cardinality = s.equivalentDiscriminated("CreateCardinalityForStaticQueryDeclaration", t.getId());
       t.target = s.referenceType.getPSMEquivalent();
 
       s.eContainer.getModelRoot().elements.add(t);
@@ -204,7 +204,7 @@ rule CreateNavigationPropertyForStaticQuery
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateNavigationPropertyForStaticQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForStaticQueryParametrizedReferenceType");
-      t.cardinality = s.equivalent("CreateCardinalityForStaticQueryDeclaration");
+      t.cardinality = s.equivalentDiscriminated("CreateCardinalityForStaticQueryDeclaration", t.getId());
       t.target = s.getReferenceType().getPSMEquivalent();
 
       s.entity.getPSMEquivalent().navigationProperties.add(t);

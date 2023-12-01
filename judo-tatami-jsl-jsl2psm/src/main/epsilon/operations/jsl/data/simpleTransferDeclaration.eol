@@ -1,0 +1,4 @@
+@cached
+operation JSL!SimpleTransferDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}

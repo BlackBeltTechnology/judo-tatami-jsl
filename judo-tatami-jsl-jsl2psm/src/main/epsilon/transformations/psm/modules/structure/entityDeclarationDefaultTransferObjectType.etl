@@ -27,27 +27,27 @@ rule CreateEntityDefaultTransferObjectType
                 if (im.isKindOf(JSL!EntityFieldDeclaration) and not im.isCalculated()) {
                     // Primitive attributes
                     if (im.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
-                        t.attributes.add(im.equivalentWithPrefix("CloneTransferAttributeForDefaultTransferObjectType", t.getId()));
+                        t.attributes.add(im.equivalentDiscriminated("CloneTransferAttributeForDefaultTransferObjectType", t.getId()));
                         if (im.getDefault().isDefined()) {
-                            t.attributes.add(im.getDefault().equivalentWithPrefix("CloneTransferDefaultValueAttributeForDefaultTransferObjectType", t.getId()));
+                            t.attributes.add(im.getDefault().equivalentDiscriminated("CloneTransferDefaultValueAttributeForDefaultTransferObjectType", t.getId()));
                         }
                     // Embedded relations
                     } else if (im.getReferenceType().isKindOf(JSL!EntityDeclaration)) {
-                        t.relations.add(im.equivalentWithPrefix("CloneTransferObjectRelationFromEntityFieldForDefaultTransferObjectType", t.getId()));
+                        t.relations.add(im.equivalentDiscriminated("CloneTransferObjectRelationFromEntityFieldForDefaultTransferObjectType", t.getId()));
                     }
                 // Relations
                 } else if (im.isKindOf(JSL!EntityRelationDeclaration) and not im.isCalculated()) {
-                    t.relations.add(im.equivalentWithPrefix("CloneTransferObjectRelationFromEntityRelationForDefaultTransferObjectType", t.getId()));
+                    t.relations.add(im.equivalentDiscriminated("CloneTransferObjectRelationFromEntityRelationForDefaultTransferObjectType", t.getId()));
                 // Prmitive Calculated
                 } else if (im.isKindOf(JSL!EntityFieldDeclaration) and im.isCalculated()) {
                 	if (not im.isEager()) {
-                        t.attributes.add(im.equivalentWithPrefix("CloneEntityQueryTransferAttributeForDefaultTransferObjectType", t.getId()));
+                        t.attributes.add(im.equivalentDiscriminated("CloneEntityQueryTransferAttributeForDefaultTransferObjectType", t.getId()));
                 	} else {
-                        t.attributes.add(im.equivalentWithPrefix("CloneDerivedTransferAttributeForDefaultTransferObjectType", t.getId()));
+                        t.attributes.add(im.equivalentDiscriminated("CloneDerivedTransferAttributeForDefaultTransferObjectType", t.getId()));
                 	}
                 // Entity Calculated
                 } else if (im.isKindOf(JSL!EntityRelationDeclaration) and im.isCalculated()) {
-                    t.relations.add(im.equivalentWithPrefix("CloneTransferObjectDerivedRelationForDefaultTransferObjectType", t.getId()));
+                    t.relations.add(im.equivalentDiscriminated("CloneTransferObjectDerivedRelationForDefaultTransferObjectType", t.getId()));
                 }
             }
 

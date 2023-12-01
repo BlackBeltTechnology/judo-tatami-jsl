@@ -1,0 +1,4 @@
+@cached
+operation JSL!DefaultModifier getId(): String {
+    return (self.eContainer.getId() + "/default");
+}
