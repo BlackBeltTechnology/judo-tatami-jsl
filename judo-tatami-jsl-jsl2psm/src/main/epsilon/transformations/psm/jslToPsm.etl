@@ -24,6 +24,10 @@ import "modules/derived/entityQuery.etl";
 import "modules/type/type.etl";
 
 pre {
+	//var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");	
+	var __cacheMap = new ConcurrentMap();
+	var __originalMap = new ConcurrentMap();
+
     JUDOPSM.target.resource.contents.add(defaultModelName.equivalent("CreateRootModel"));
 }
 
