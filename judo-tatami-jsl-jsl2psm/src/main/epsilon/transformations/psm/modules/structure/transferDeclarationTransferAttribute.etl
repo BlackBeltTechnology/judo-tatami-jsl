@@ -85,7 +85,7 @@ rule CreateMappedTransferAttributeEntityDefault
     transform s : JSL!TransferFieldDeclaration
     to t : JUDOPSM!TransferAttribute {
       guard: s.maps() and s.getterExpr.features.first.member.getDefault().isDefined() and s.getDefault().isUndefined()
-      t.name = defaultDefaultNamePrefix + s.getterExpr.features.first.member.name + defaultDefaultNameMidfix + s.getterExpr.features.first.member.eContainer.name + defaultDefaultNamePostfix;
+      t.name = defaultDefaultNamePrefix + s.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferAttributeEntityDefault");      
       t.binding = s.getterExpr.features.first.member.getDefault().equivalent("CreateDefaultValueForPrimitiveEntityMember");
       t.dataType = s.referenceType.getPSMEquivalent();
