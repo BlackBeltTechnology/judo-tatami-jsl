@@ -193,7 +193,6 @@ abstract public class AbstractTest {
     }
 
     public TransferAttribute assertMappedTransferObjectAttribute(String toName, String attrName) {
-        final EList<TransferAttribute> attr2 = assertMappedTransferObject(toName).getAttributes();
         final Optional<TransferAttribute> attr = assertMappedTransferObject(toName).getAttributes().stream().filter(e -> e.getName().equals(attrName)).findAny();
         assertTrue(attr.isPresent());
         return attr.get();
