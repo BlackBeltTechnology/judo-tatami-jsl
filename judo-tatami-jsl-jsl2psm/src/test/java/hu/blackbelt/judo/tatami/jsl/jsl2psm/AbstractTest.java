@@ -20,6 +20,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
  * #L%
  */
 
+import org.eclipse.emf.common.util.EList;
 import org.slf4j.Logger;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.support.JslDslModelResourceSupport;
