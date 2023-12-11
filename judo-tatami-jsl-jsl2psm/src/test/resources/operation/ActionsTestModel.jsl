@@ -1,4 +1,4 @@
-model OperationsTestModel;
+model ActionsTestModel;
 
 transfer UnmappedTransfer {
 	action void voidAction();
@@ -31,31 +31,31 @@ transfer UnmappedTransfer {
 
 transfer MappedTransfer maps Entity as e {
 
-	// action void voidAction();
+	action void voidAction();
 	action static void staticVoidAction();
 
-	// action void voidActionWithUnmappedInput(UnmappedInputParameter param);
+	action void voidActionWithUnmappedInput(UnmappedInputParameter param);
 	action static void staticVoidActionWithUnmappedInput(UnmappedInputParameter param);
 	
-	// action void voidActionWithMappedInput(MappedInputParameter param);
+	action void voidActionWithMappedInput(MappedInputParameter param);
 	action static void staticVoidActionWithMappedInput(MappedInputParameter param);
 
-	// action UnmappedOutputParameter unmappedOutputAction();
+	action UnmappedOutputParameter unmappedOutputAction();
 	action static UnmappedOutputParameter staticUnmappedOutputAction();
 
-	// action  MappedOutputParameter mappedOutputAction();
+	action  MappedOutputParameter mappedOutputAction();
 	action static MappedOutputParameter staticMappedOutputAction();
 
-	// action UnmappedOutputParameter unmappedOutputActionWithUnmappedInput(UnmappedInputParameter param);
+	action UnmappedOutputParameter unmappedOutputActionWithUnmappedInput(UnmappedInputParameter param);
 	action static UnmappedOutputParameter staticUnmappedOutputActionWithUnmappedInput(UnmappedInputParameter param);
 
-	// action MappedOutputParameter mappedOutputActionWithUnmappedInput(UnmappedInputParameter param);
+	action MappedOutputParameter mappedOutputActionWithUnmappedInput(UnmappedInputParameter param);
 	action static MappedOutputParameter staticMappedOutputActionWithUnmappedInput(UnmappedInputParameter param);
 
-	// action UnmappedOutputParameter unmappedOutputActionWithMappedInput(MappedInputParameter param);
+	action UnmappedOutputParameter unmappedOutputActionWithMappedInput(MappedInputParameter param);
 	action static UnmappedOutputParameter staticUnmappedOutputActionWithMappedInput(MappedInputParameter param);
 
-	// action MappedOutputParameter mappedOutputActionWithMappedInput(MappedInputParameter param);
+	action MappedOutputParameter mappedOutputActionWithMappedInput(MappedInputParameter param);
 	action static MappedOutputParameter staticMappedOutputActionWithMappedInput(MappedInputParameter param);
 
 }

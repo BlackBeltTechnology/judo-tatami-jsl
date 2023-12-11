@@ -42,7 +42,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-public class JslOperation2PsmOperationTest extends AbstractTest {
+public class JslAction2PsmOperationTest extends AbstractTest {
     private static final String TARGET_TEST_CLASSES = "target/test-classes/operation";
 
     @Override
@@ -68,11 +68,11 @@ public class JslOperation2PsmOperationTest extends AbstractTest {
     }
 
     @Test
-    void testOperations() throws Exception {
+    void testActions() throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
-                "OperationsTestModel",
-                List.of(new File("src/test/resources/operation/OperationsTestModel.jsl"))
+                "ActionsTestModel",
+                List.of(new File("src/test/resources/operation/ActionsTestModel.jsl"))
         );
 
         transform();
@@ -100,23 +100,23 @@ public class JslOperation2PsmOperationTest extends AbstractTest {
         assertOperation("UnmappedTransfer", "staticMappedOutputActionWithMappedInput", false, true, true, true, true);
 
         
-        // assertOperation("UnmappedTransfer", "voidAction", true, false, false, false, false);
+        assertOperation("MappedTransfer", "voidAction", true, false, false, false, false);
         assertOperation("MappedTransfer", "staticVoidAction", false, false, false, false, false);
-        // assertOperation("UnmappedTransfer", "voidActionWithUnmappedInput", true, true, false, false, false);
+        assertOperation("MappedTransfer", "voidActionWithUnmappedInput", true, true, false, false, false);
         assertOperation("MappedTransfer", "staticVoidActionWithUnmappedInput", false, true, false, false, false);
-        // assertOperation("UnmappedTransfer", "voidActionWithMappedInput", true, true, true, false, false);
+        assertOperation("MappedTransfer", "voidActionWithMappedInput", true, true, true, false, false);
         assertOperation("MappedTransfer", "staticVoidActionWithMappedInput", false, true, true, false, false);
-        // assertOperation("UnmappedTransfer", "unmappedOutputAction", true, false, false, true, false);
+        assertOperation("MappedTransfer", "unmappedOutputAction", true, false, false, true, false);
         assertOperation("MappedTransfer", "staticUnmappedOutputAction", false, false, false, true, false);
-        // assertOperation("UnmappedTransfer", "mappedOutputAction", true, false, false, true, true);
+        assertOperation("MappedTransfer", "mappedOutputAction", true, false, false, true, true);
         assertOperation("MappedTransfer", "staticMappedOutputAction", false, false, false, true, true);
-        // assertOperation("UnmappedTransfer", "unmappedOutputActionWithUnmappedInput", true, true, false, true, false);
+        assertOperation("MappedTransfer", "unmappedOutputActionWithUnmappedInput", true, true, false, true, false);
         assertOperation("MappedTransfer", "staticUnmappedOutputActionWithUnmappedInput", false, true, false, true, false);
-        // assertOperation("UnmappedTransfer", "mappedOutputActionWithUnmappedInput", true, true, false, true, true);
+        assertOperation("MappedTransfer", "mappedOutputActionWithUnmappedInput", true, true, false, true, true);
         assertOperation("MappedTransfer", "staticMappedOutputActionWithUnmappedInput", false, true, false, true, true);
-        // assertOperation("UnmappedTransfer", "unmappedOutputActionWithMappedInput", true, true, true, true, false);
+        assertOperation("MappedTransfer", "unmappedOutputActionWithMappedInput", true, true, true, true, false);
         assertOperation("MappedTransfer", "staticUnmappedOutputActionWithMappedInput", false, true, true, true, false);
-        // assertOperation("UnmappedTransfer", "mappedOutputActionWithMappedInput", true, true, true, true, true);
+        assertOperation("MappedTransfer", "mappedOutputActionWithMappedInput", true, true, true, true, true);
         assertOperation("MappedTransfer", "staticMappedOutputActionWithMappedInput", false, true, true, true, true);
     }
     
