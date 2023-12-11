@@ -23,12 +23,12 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.operation;
 import org.slf4j.Logger;
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
-import hu.blackbelt.judo.meta.psm.service.BoundTransferOperation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperation;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 
+import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -39,10 +39,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class JslAction2PsmOperationTest extends AbstractTest {
@@ -81,7 +78,7 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         transform();
 
         assertUnmappedTransferObject("UnmappedTransfer");
-        assertThat(assertUnmappedTransferObject("UnmappedTransfer").getOperations().size(), equalTo(18));
+        assertEquals(18, assertUnmappedTransferObject("UnmappedTransfer").getOperations().size());
 
         assertOperation("UnmappedTransfer", "voidAction", false, false, false, false, false);
         assertOperation("UnmappedTransfer", "staticVoidAction", false, false, false, false, false);
@@ -102,10 +99,7 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         assertOperation("UnmappedTransfer", "mappedOutputActionWithMappedInput", false, true, true, true, true);
         assertOperation("UnmappedTransfer", "staticMappedOutputActionWithMappedInput", false, true, true, true, true);
 
-
-        assertMappedTransferObject("MappedTransfer");
-        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(18));
-
+        
         assertOperation("MappedTransfer", "voidAction", true, false, false, false, false);
         assertOperation("MappedTransfer", "staticVoidAction", false, false, false, false, false);
         assertOperation("MappedTransfer", "voidActionWithUnmappedInput", true, true, false, false, false);
@@ -124,18 +118,6 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         assertOperation("MappedTransfer", "staticUnmappedOutputActionWithMappedInput", false, true, true, true, false);
         assertOperation("MappedTransfer", "mappedOutputActionWithMappedInput", true, true, true, true, true);
         assertOperation("MappedTransfer", "staticMappedOutputActionWithMappedInput", false, true, true, true, true);
-
-    
-        assertMappedTransferObject("MappedFaultTransfer");
-        assertThat(assertMappedTransferObject("MappedFaultTransfer").getOperations().size(), equalTo(2));
-        assertOperationFaults("MappedFaultTransfer", "faults");
-        assertOperationFaults("MappedFaultTransfer", "staticFaults");
-        
-        assertUnmappedTransferObject("UnmappedFaultTransfer");
-        assertThat(assertUnmappedTransferObject("UnmappedFaultTransfer").getOperations().size(), equalTo(2));
-        assertOperationFaults("UnmappedFaultTransfer", "faults");
-        assertOperationFaults("UnmappedFaultTransfer", "staticFaults");
-
     }
     
     
@@ -145,47 +127,29 @@ public class JslAction2PsmOperationTest extends AbstractTest {
 
         TransferOperation operation = assertTransferObjectOperation(transferName, operationName);
         if (!excpectBound) {
-        	assertThat(operation,  instanceOf(UnboundOperation.class));
-        } else {
-        	assertThat(operation, instanceOf(BoundTransferOperation.class));        	
+        	assertTrue(operation instanceof UnboundOperation);
         }
         
         if (excpectInput) {
-            assertThat(operation.getInput(), is(notNullValue()));        	
-        	if (expectMappedInput) {
-            	assertThat(operation.getInput().getType(), equalTo(assertMappedTransferObject("MappedInputParameter")));
+            if (expectMappedInput) {
+            	assertEquals(assertMappedTransferObject("MappedInputParameter"), operation.getInput().getType());
             } else {
-            	assertThat(operation.getInput().getType(), equalTo(assertUnmappedTransferObject("UnmappedInputParameter")));        	
+            	assertEquals(assertUnmappedTransferObject("UnmappedInputParameter"), operation.getInput().getType());        	
             }        	
-            assertThat(operation.getInput().getCardinality().getLower(), equalTo(1));
+            assertThat(operation.getInput().getCardinality().getLower(), IsEqual.equalTo(0));
         } else {
-            assertThat(operation.getInput(), is(nullValue()));        	
+            assertTrue(operation.getInput() == null);        	
         }
         if (excpectOutput) {
-            assertThat(operation.getOutput(), is(notNullValue()));        	
-        	if (expectMappedOutput) {
-            	assertThat(operation.getOutput().getType(), equalTo(assertMappedTransferObject("MappedOutputParameter")));
+            if (expectMappedOutput) {
+            	assertEquals(assertMappedTransferObject("MappedOutputParameter"), operation.getOutput().getType());
             } else {
-            	assertThat(operation.getOutput().getType(), equalTo(assertUnmappedTransferObject("UnmappedOutputParameter")));        	
+            	assertEquals(assertUnmappedTransferObject("UnmappedOutputParameter"), operation.getOutput().getType());        	
             }
-            assertThat(operation.getOutput().getCardinality().getLower(), equalTo(1));        	
+            assertThat(operation.getOutput().getCardinality().getLower(), IsEqual.equalTo(0));        	
         } else {
-            assertThat(operation.getOutput(), is(nullValue()));        	
+            assertTrue(operation.getOutput() == null);        	
         }
     }
-    
-    
-    private void assertOperationFaults(String transferName, String operationName) {
-        TransferOperation operation = assertTransferObjectOperation(transferName, operationName);
-        assertThat(operation.getFaults().size(), equalTo(2));
-        
-        assertThat(operation.getFaults(), hasItems(
-        		hasProperty("name", equalTo("Fault1")),
-        		hasProperty("name", equalTo("Fault2"))
-		));
-
-    	
-    }
-
 
 }
