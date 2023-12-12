@@ -11,6 +11,9 @@ rule AbstractTransferUnboundActionDeclaration
       t.deleteOnResult = s.isDeleteAllowed();      
       t.implementation = s.equivalent("CreateEmptyOperationBody");
 
+      for (error in s.errors) {
+      	t.faults.add(error.equivalentDiscriminated("CreateFaultParameter", s.getId()));
+      }      
 }
 
 @abstract
@@ -22,6 +25,12 @@ rule AbstractTransferBoundActionDeclaration
 
       t.updateOnResult = s.isUpdateAllowed();
       t.deleteOnResult = s.isDeleteAllowed();      
+
+
+      for (error in s.errors) {
+      	t.faults.add(error.equivalentDiscriminated("CreateFaultParameter", s.getId() + "/Transfer"));
+      }      
+
 }
 
 
@@ -66,8 +75,22 @@ rule CreateEmptyOperationBody
       t.body = "// (jsl/" + s.getId() + ")/CreateEmptyOperationBody";
       t.stateful = true;
       t.customImplementation = true;
+      log.debug("Created CreateEmptyOperationBody: " + s.name);
 }
 
+
+@greedy
+rule CreateFaultParameter
+    transform s: JSL!ErrorDeclaration
+    to t: JUDOPSM!Parameter {
+      t.setId("(jsl/" + s.getId() + ")/CreateFaultParameter");
+
+      t.name = s.name;
+      t.type = s.equivalent("CreateUnmappedTransferObjectType");
+      t.cardinality = s.equivalent("CreateCardinalityForFaultParameter");
+      
+      log.debug("Created CreateFaultParameter: " + t.name);
+}
 
 //////////////////////////////////////////////////
 // Unmapped transfer object type operation
@@ -167,6 +190,10 @@ rule CreateBoundOperationForEntityType
       // TODO: Better name
       t.name = "_" + s.name + "_for_" + s.eContainer.name;
       
+      for (error in s.errors) {
+      	t.faults.add(error.equivalentDiscriminated("CreateFaultParameter", s.getId() + "/Entity"));
+      }      
+      
       s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
 
       log.debug("Created CreateBoundOperationForEntity: " + t.name);      
@@ -244,5 +271,4 @@ rule CreateBoundOperationForMappedTransferObjectTypeOutputParameter
       s.equivalent("CreateBoundOperationForMappedTransferObjectType").output = t;
       log.debug("Created CreateBoundOperationForMappedTransferObjectTypeOutputParameter: " + t.name);
 }
-
 
