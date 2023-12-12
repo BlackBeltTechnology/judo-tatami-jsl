@@ -57,7 +57,16 @@ transfer MappedTransfer maps Entity as e {
 
 	action MappedOutputParameter mappedOutputActionWithMappedInput(MappedInputParameter param);
 	action static MappedOutputParameter staticMappedOutputActionWithMappedInput(MappedInputParameter param);
+}
 
+transfer MappedFaultTransfer maps Entity as e {
+	action void faults() throws Fault1, Fault2;
+	action static void staticFaults() throws Fault1, Fault2;
+}
+
+transfer UnmappedFaultTransfer {
+	action void faults() throws Fault1, Fault2;
+	action static void staticFaults() throws Fault1, Fault2;
 }
 
 entity Entity {	
@@ -81,4 +90,11 @@ transfer MappedOutputParameter maps OutputParameterEntity as o {
 }
 
 transfer MappedInputParameter maps InputParameterEntity as i {	
+}
+
+
+error Fault1 {
+}
+
+error Fault2 {
 }
