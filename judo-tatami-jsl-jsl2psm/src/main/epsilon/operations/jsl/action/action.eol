@@ -1,0 +1,24 @@
+@cached
+operation JSL!TransferActionDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+
+@cached
+operation JSL!TransferActionDeclaration isUpdateAllowed() : Boolean {
+    if (self.output.isDefined()){
+        // TODO: Calculate
+        // return self.`return`.isUpdateAllowed();
+    }
+    return false;
+}
+
+@cached
+operation JSL!TransferActionDeclaration isDeleteAllowed() : Boolean {
+    if (self.output.isDefined()){
+        // TODO: Calculate
+        // return self.`return`.isDeleteAllowed();
+        return false;
+    }
+    return false;
+}
