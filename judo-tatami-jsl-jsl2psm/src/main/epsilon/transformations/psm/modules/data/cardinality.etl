@@ -113,3 +113,14 @@ rule CreateCardinalityForTransferActionDeclarationEntityOutput
       t.upper = 1;
 }
 
+@lazy
+@greedy
+rule CreateCardinalityForFaultParameter
+    transform s : JSL!ErrorDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForFaultParameter");
+
+      t.lower = 1;
+      t.upper = 1;
+}
+
