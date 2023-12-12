@@ -157,7 +157,7 @@ public class JslAction2PsmOperationTest extends AbstractTest {
             } else {
             	assertThat(operation.getInput().getType(), equalTo(assertUnmappedTransferObject("UnmappedInputParameter")));        	
             }        	
-            assertThat(operation.getInput().getCardinality().getLower(), equalTo(0));
+            assertThat(operation.getInput().getCardinality().getLower(), equalTo(1));
         } else {
             assertThat(operation.getInput(), is(nullValue()));        	
         }
@@ -168,7 +168,7 @@ public class JslAction2PsmOperationTest extends AbstractTest {
             } else {
             	assertThat(operation.getOutput().getType(), equalTo(assertUnmappedTransferObject("UnmappedOutputParameter")));        	
             }
-            assertThat(operation.getOutput().getCardinality().getLower(), equalTo(0));        	
+            assertThat(operation.getOutput().getCardinality().getLower(), equalTo(1));        	
         } else {
             assertThat(operation.getOutput(), is(nullValue()));        	
         }

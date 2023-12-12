@@ -76,7 +76,7 @@ rule CreateCardinalityForTransferActionDeclarationInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferActionDeclarationInput");
 
-      t.lower = 0; //s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; //s.isRequired and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 
@@ -87,7 +87,7 @@ rule CreateCardinalityForTransferActionDeclarationOutput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferActionDeclarationOutput");
 
-      t.lower = 0; // s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; // s.isRequired and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 
@@ -98,7 +98,7 @@ rule CreateCardinalityForTransferActionDeclarationEntityInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferActionDeclarationEntityInput");
 
-      t.lower = 0; //s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; //s.isRequired and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 
@@ -109,7 +109,7 @@ rule CreateCardinalityForTransferActionDeclarationEntityOutput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferActionDeclarationEntityOutput");
 
-      t.lower = 0; // s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; // s.isRequired and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 
