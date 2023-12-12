@@ -80,6 +80,7 @@ rule CreateEmptyOperationBody
 
 
 @greedy
+@lazy
 rule CreateFaultParameter
     transform s: JSL!ErrorDeclaration
     to t: JUDOPSM!Parameter {
