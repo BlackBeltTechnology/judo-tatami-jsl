@@ -123,7 +123,8 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         assertOperationFaults("MappedFaultTransfer", "staticFaults");
         
         assertUnmappedTransferObject("UnmappedFaultTransfer");
-        assertThat(assertUnmappedTransferObject("UnmappedFaultTransfer").getOperations().size(), equalTo(1));
+        assertThat(assertUnmappedTransferObject("UnmappedFaultTransfer").getOperations().size(), equalTo(2));
+        assertOperationFaults("UnmappedFaultTransfer", "faults");
         assertOperationFaults("UnmappedFaultTransfer", "staticFaults");
 
     }
