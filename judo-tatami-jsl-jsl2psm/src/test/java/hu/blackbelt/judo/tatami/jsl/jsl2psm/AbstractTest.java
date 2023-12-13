@@ -35,6 +35,8 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectType;
+import hu.blackbelt.judo.meta.psm.service.TransferOperation;
 import hu.blackbelt.judo.meta.psm.service.UnmappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport;
 import hu.blackbelt.judo.meta.psm.type.BinaryType;
@@ -52,6 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 
 import java.io.Closeable;
 import java.io.File;
@@ -86,9 +89,11 @@ abstract public class AbstractTest {
     protected JslDslModelResourceSupport jslModelWrapper;
 
     @BeforeEach
-    void setUp() {
+    void setUp(TestInfo testInfo) {
         // Default logger
-        slf4jlog = createLog();
+        testName = testInfo.getTestClass().get().getSimpleName() + "." + testInfo.getTestMethod().get().getName();
+
+    	slf4jlog = createLog();
     }
 
     @AfterEach
@@ -96,7 +101,6 @@ abstract public class AbstractTest {
         if (slf4jlog instanceof Cloneable) {
             ((Closeable) slf4jlog).close();
         }
-
         final String traceFileName = testName + "-jsl2psm.model";
 
         // Saving trace map
@@ -171,12 +175,24 @@ abstract public class AbstractTest {
         return psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
     }
 
+
+    public Set<TransferObjectType> getTransferObjectTypes() {
+        return psmModelWrapper.getStreamOfPsmServiceTransferObjectType().collect(Collectors.toSet());
+    }
+
+
     public Set<MappedTransferObjectType> getMappedTransferObjectTypes() {
         return psmModelWrapper.getStreamOfPsmServiceMappedTransferObjectType().collect(Collectors.toSet());
     }
 
     public Set<UnmappedTransferObjectType> getUnmappedTransferObjectTypes() {
         return psmModelWrapper.getStreamOfPsmServiceUnmappedTransferObjectType().collect(Collectors.toSet());
+    }
+
+    public TransferObjectType assertTransferObject(String name) {
+        final Optional<TransferObjectType> to = getTransferObjectTypes().stream().filter(e -> e.getName().equals(name)).findAny();
+        assertTrue(to.isPresent());
+        return to.get();
     }
 
     public MappedTransferObjectType assertMappedTransferObject(String name) {
@@ -343,5 +359,13 @@ abstract public class AbstractTest {
         assertTrue(m.isPresent());
         return m.get();
     }
+
+
+    public TransferOperation assertTransferObjectOperation(String toName, String operationName) {
+        final Optional<TransferOperation> attr = assertTransferObject(toName).getOperations().stream().filter(e -> e.getName().equals(operationName)).findAny();
+        assertTrue(attr.isPresent());
+        return attr.get();
+    }
+
 
 }

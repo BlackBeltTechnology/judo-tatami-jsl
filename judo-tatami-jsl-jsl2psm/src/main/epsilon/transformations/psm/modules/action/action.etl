@@ -1,0 +1,277 @@
+import "../../../../operations/_importAll.eol";
+
+
+@abstract
+rule AbstractTransferUnboundActionDeclaration
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!UnboundOperation {
+
+      t.name = s.name;
+      t.updateOnResult = s.isUpdateAllowed();
+      t.deleteOnResult = s.isDeleteAllowed();      
+      t.implementation = s.equivalent("CreateEmptyOperationBody");
+
+      for (error in s.errors) {
+      	t.faults.add(error.equivalentDiscriminated("CreateFaultParameter", s.getId()));
+      }      
+}
+
+@abstract
+rule AbstractTransferBoundActionDeclaration
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!BoundTransferOperation {
+
+      t.name = s.name;
+
+      t.updateOnResult = s.isUpdateAllowed();
+      t.deleteOnResult = s.isDeleteAllowed();      
+
+
+      for (error in s.errors) {
+      	t.faults.add(error.equivalentDiscriminated("CreateFaultParameter", s.getId() + "/Transfer"));
+      }      
+
+}
+
+
+@abstract
+rule AbstractTransferActionDeclarationReturnParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter {
+
+      t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationOutput");
+      t.name = "return";
+	  t.type = s.`return`.getPSMEquivalent();
+}
+
+@abstract
+rule AbstractTransferActionDeclarationInputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter {
+
+      t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationInput");
+      t.name = s.paramaterName;
+
+	  t.type = s.parameterType.getPSMEquivalent();
+      
+
+	  /*
+      if (s.eContainer.input == s) {
+          s.eContainer.getPSMEquivalent().input = t;
+          s.eContainer.getPSMTransferOperationEquivalent().inputRange = s.equivalent("CreateRangeTransferObjectRelationForInputParameter");
+      } else if (s.eContainer.output == s) {
+          s.eContainer.getPSMEquivalent().output = t;
+      } else if (s.eContainer.faults.contains(s)) {
+          s.eContainer.getPSMEquivalent().faults.add(t);
+      } */
+}
+
+@greedy
+rule CreateEmptyOperationBody
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!OperationBody {
+      t.setId("(jsl/" + s.getId() + ")/CreateEmptyOperationBody");
+
+      t.body = "// (jsl/" + s.getId() + ")/CreateEmptyOperationBody";
+      t.stateful = true;
+      t.customImplementation = true;
+      log.debug("Created CreateEmptyOperationBody: " + s.name);
+}
+
+
+@greedy
+@lazy
+rule CreateFaultParameter
+    transform s: JSL!ErrorDeclaration
+    to t: JUDOPSM!Parameter {
+      t.setId("(jsl/" + s.getId() + ")/CreateFaultParameter");
+
+      t.name = s.name;
+      t.type = s.equivalent("CreateUnmappedTransferObjectType");
+      t.cardinality = s.equivalent("CreateCardinalityForFaultParameter");
+      
+      log.debug("Created CreateFaultParameter: " + t.name);
+}
+
+//////////////////////////////////////////////////
+// Unmapped transfer object type operation
+//////////////////////////////////////////////////
+@greedy
+rule CreateUnboundOperationForUnmappedTransferObjectType
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!UnboundOperation 
+    extends AbstractTransferUnboundActionDeclaration {
+      guard: s.eContainer.map.isUndefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnboundOperationForUnmappedTransferObjectType");
+      s.eContainer.equivalent("CreateUnmappedTransferObjectType").operations.add(t);
+      log.debug("Created CreateUnboundOperationForUnmappedTransferObjectType: " + t.name);
+}
+
+@greedy
+rule CreateUnboundOperationForUnmappedTransferObjectTypeInputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter
+    extends AbstractTransferActionDeclarationInputParameter {
+      guard: s.eContainer.map.isUndefined() and s.parameterType.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnboundOperationForUnmappedTransferObjectTypeInputParameter");
+      s.equivalent("CreateUnboundOperationForUnmappedTransferObjectType").input = t;
+      log.debug("Created CreateUnboundOperationForUnmappedTransferObjectTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateUnboundOperationForUnmappedTransferObjectTypeOutputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter
+    extends AbstractTransferActionDeclarationReturnParameter {
+
+      guard: s.eContainer.map.isUndefined() and s.`return`.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnboundOperationForUnmappedTransferObjectTypeOutputParameter");
+      s.equivalent("CreateUnboundOperationForUnmappedTransferObjectType").output = t;
+      log.debug("Created CreateUnboundOperationForUnmappedTransferObjectTypeOutputParameter: " + t.name);
+}
+
+//////////////////////////////////////////////////
+// Mapped transfer object type Unbound Operations
+//////////////////////////////////////////////////
+@greedy
+rule CreateUnboundOperationForMappedTransferObjectType
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!UnboundOperation
+    extends AbstractTransferUnboundActionDeclaration {
+    
+      guard: s.eContainer.map.isDefined() and s.static
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnboundOperationForMappedTransferObjectType");
+      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      log.debug("Created CreateUnboundOperationForMappedTransferObjectType: " + t.name);
+}
+
+@greedy
+rule CreateUnboundOperationForMappedTransferObjectTypeInputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter
+    extends AbstractTransferActionDeclarationInputParameter {
+      guard: s.eContainer.map.isDefined() and s.parameterType.isDefined() and s.static
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnboundOperationForMappedTransferObjectTypeInputParameter");
+      s.equivalent("CreateUnboundOperationForMappedTransferObjectType").input = t;
+      log.debug("Created CreateUnboundOperationForMappedTransferObjectTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateUnboundOperationForMappedTransferObjectTypeOutputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter
+    extends AbstractTransferActionDeclarationReturnParameter {
+
+      guard: s.eContainer.map.isDefined() and s.`return`.isDefined() and s.static
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnboundOperationForMappedTransferObjectTypeOutputParameter");
+      s.equivalent("CreateUnboundOperationForMappedTransferObjectType").output = t;
+      log.debug("Created CreateUnboundOperationForMappedTransferObjectTypeOutputParameter: " + t.name);
+}
+
+//////////////////////////////////////////////////
+// Mapped transfer object type Bound Operations
+//////////////////////////////////////////////////
+@greedy
+rule CreateBoundOperationForEntityType
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!BoundOperation {
+      guard: s.eContainer.map.isDefined() and not s.static
+
+      t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForEntity");
+
+      t.`abstract` = false;
+      t.implementation = s.equivalent("CreateEmptyOperationBody");
+      t.instanceRepresentation = s.eContainer.getPSMEquivalent();
+      // TODO: Better name
+      t.name = "_" + s.name + "_for_" + s.eContainer.name;
+      
+      for (error in s.errors) {
+      	t.faults.add(error.equivalentDiscriminated("CreateFaultParameter", s.getId() + "/Entity"));
+      }      
+      
+      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+
+      log.debug("Created CreateBoundOperationForEntity: " + t.name);      
+}
+
+@greedy
+rule CreateBoundOperationForEntityTypeInputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter
+    extends AbstractTransferActionDeclarationInputParameter {
+      guard: s.eContainer.map.isDefined() and s.parameterType.isDefined() and not s.static
+
+      t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForEntityTypeInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationEntityInput");
+      t.name = s.paramaterName;
+
+	  t.type = s.parameterType.getPSMEquivalent();
+
+      s.equivalent("CreateBoundOperationForEntityType").input = t;
+      log.debug("Created CreateBoundOperationForEntityTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateBoundOperationForEntityTypeOutputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter
+    extends AbstractTransferActionDeclarationReturnParameter {
+
+      guard: s.eContainer.map.isDefined() and s.`return`.isDefined() and not s.static
+
+      t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForEntityTypeOutputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationEntityOutput");
+      t.name = "return";
+	  t.type = s.`return`.getPSMEquivalent();
+      s.equivalent("CreateBoundOperationForEntityType").output = t;
+      log.debug("Created CreateBoundOperationForEntityTypeOutputParameter: " + t.name);
+}
+
+@greedy
+rule CreateBoundOperationForMappedTransferObjectType
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!BoundTransferOperation
+    extends AbstractTransferBoundActionDeclaration {
+
+      guard: s.eContainer.map.isDefined() and not s.static
+
+      t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForMappedTransferObjectType");
+      t.binding = s.equivalent("CreateBoundOperationForEntityType");
+      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      log.debug("Created CreateBoundOperationForMappedTransferObjectType: " + t.name);
+}
+
+
+@greedy
+rule CreateBoundOperationForMappedTransferObjectTypeInputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter
+    extends AbstractTransferActionDeclarationInputParameter {
+      guard: s.eContainer.map.isDefined() and s.parameterType.isDefined() and not s.static
+
+      t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForMappedTransferObjectTypeInputParameter");
+      s.equivalent("CreateBoundOperationForMappedTransferObjectType").input = t;
+      log.debug("Created CreateBoundOperationForMappedTransferObjectTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateBoundOperationForMappedTransferObjectTypeOutputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter
+    extends AbstractTransferActionDeclarationReturnParameter {
+
+      guard: s.eContainer.map.isDefined() and s.`return`.isDefined() and not s.static
+
+      t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForMappedTransferObjectTypeOutputParameter");
+      s.equivalent("CreateBoundOperationForMappedTransferObjectType").output = t;
+      log.debug("Created CreateBoundOperationForMappedTransferObjectTypeOutputParameter: " + t.name);
+}
+
+
+

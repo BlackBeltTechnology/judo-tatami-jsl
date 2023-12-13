@@ -36,3 +36,4 @@ entity CustomerGrandChild extends CustomerChild {
 
 entity LeadGrandChild extends LeadChild {
 }
+
