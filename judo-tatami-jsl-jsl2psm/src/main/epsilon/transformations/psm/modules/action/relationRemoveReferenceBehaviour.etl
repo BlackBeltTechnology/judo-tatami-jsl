@@ -1,0 +1,52 @@
+/*
+@greedy
+rule CreateAddReferenceOperationForRelationFeature
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!BoundOperation {
+        guard: esmUtils.isAddReferenceSupported(s)
+
+        t.setId("(esm/" + s.getId() + ")/AddReferenceOperationForRelationFeature");
+
+        t.name = "_addReference" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
+        t.instanceRepresentation = s.eContainer.getPSMTransferObjectTypeEquivalent();
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.setId("(esm/" + s.getId() + ")/AddReferenceOperationForRelationFeature/Input");
+        t.input.name = "input";
+        t.input.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.setId("(esm/" + s.getId() + ")/AddReferenceOperationForRelationFeature/Input/Cardinality");
+        t.input.cardinality.lower = 1;
+        t.input.cardinality.upper = s.upper;
+
+        s.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
+}
+
+@greedy
+rule CreateAddReferenceTransferOperationForRelationFeature
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!BoundTransferOperation {
+        guard: esmUtils.isAddReferenceSupported(s)
+
+        t.setId("(esm/" + s.getId() + ")/AddReferenceTransferOperationForRelationFeature");
+
+        t.name = "_addReference" + s.name.firstToUpperCase();
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.setId("(esm/" + s.getId() + ")/AddReferenceTransferOperationForRelationFeature/Behaviour");
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#ADD_REFERENCE;
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.setId("(esm/" + s.getId() + ")/AddReferenceTransferOperationForRelationFeature/Input");
+        t.input.name = "input";
+        t.input.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.setId("(esm/" + s.getId() + ")/AddReferenceTransferOperationForRelationFeature/Input/Cardinality");
+        t.input.cardinality.lower = 1;
+        t.input.cardinality.upper = s.upper;
+
+        t.binding = s.equivalent("CreateAddReferenceOperationForRelationFeature");
+
+        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
+*/

@@ -16,3 +16,8 @@ operation JSL!MaxFileSizeModifier value() : Integer {
     }
     return self.numeric;
 }
+
+
+operation JSL!DataTypeDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}

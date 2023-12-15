@@ -29,3 +29,10 @@ operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
         return self.equivalent("CreateEnumerationType");
     }
 }
+
+
+
+@cached
+operation JSL!PrimitiveDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "#" + self.name;
+}
