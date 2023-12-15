@@ -1,0 +1,34 @@
+/*
+@greedy
+rule CreateUnsetReferenceOperationForRelationFeature
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!BoundOperation {
+        guard: esmUtils.isUnsetReferenceSupported(s)
+
+        t.setId("(esm/" + s.getId() + ")/UnsetReferenceOperationForRelationFeature");
+
+        t.name = "_unsetReference" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
+        t.instanceRepresentation = s.eContainer.getPSMTransferObjectTypeEquivalent();
+
+        s.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
+}
+
+@greedy
+rule CreateUnsetReferenceTransferOperationForRelationFeature
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!BoundTransferOperation {
+        guard: esmUtils.isUnsetReferenceSupported(s)
+
+        t.setId("(esm/" + s.getId() + ")/UnsetReferenceTransferOperationForRelationFeature");
+
+        t.name = "_unsetReference" + s.name.firstToUpperCase();
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.setId("(esm/" + s.getId() + ")/UnsetReferenceTransferOperationForRelationFeature/Behaviour");
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#UNSET_REFERENCE;
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
+
+        t.binding = s.equivalent("CreateUnsetReferenceOperationForRelationFeature");
+
+        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
+*/

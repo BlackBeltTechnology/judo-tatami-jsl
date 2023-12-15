@@ -17,3 +17,18 @@ operation JSL!TransferFieldDeclaration maps(): Boolean {
 operation JSL!TransferFieldDeclaration reads(): Boolean {
     return jslUtils.isReads(self);
 }
+
+@cached
+operation JSL!TransferFieldDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "#" + self.name;
+}
+
+
+//@cached 
+//operation JSL!TransferFieldDeclaration getPSMDefaultValue() : JUDOPSM!TransferAttribute {
+//     if (self.eContainer.map.isUndefined()) {
+//        return self.equivalent("CreateDefaultStaticDataForUnmappedTransferObjectConstructor");
+//     } else {
+//        return self.equivalent("CreateDefaultDataPropertyForMappedTransferObjectConstructor");
+//     }
+//}

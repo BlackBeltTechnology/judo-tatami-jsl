@@ -57,6 +57,7 @@ transfer MappedTransfer maps Entity as e {
 
 	action MappedOutputParameter mappedOutputActionWithMappedInput(MappedInputParameter param);
 	action static MappedOutputParameter staticMappedOutputActionWithMappedInput(MappedInputParameter param);
+
 }
 
 transfer MappedFaultTransfer maps Entity as e {

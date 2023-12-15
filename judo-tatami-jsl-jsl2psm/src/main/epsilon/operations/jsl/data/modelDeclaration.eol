@@ -13,3 +13,8 @@ operation JSL!ModelDeclaration getModelRoot(): JUDOPSM!Package {
 operation JSL!ModelDeclaration getId(): String {
     return defaultModelName.equivalent("CreateRootModel").name + "/" + self.name.replaceAll("::", "/");
 }
+
+@cached
+operation JSL!ModelDeclaration getFqName(): String {
+    return self.name;
+}
