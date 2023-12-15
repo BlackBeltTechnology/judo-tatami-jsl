@@ -46,7 +46,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 
 @Slf4j
-public class JslAction2PsmCrudBehaviourTest extends AbstractTest {
+public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
     private static final String TARGET_TEST_CLASSES = "target/test-classes/operation";
 
     @Override
@@ -72,7 +72,7 @@ public class JslAction2PsmCrudBehaviourTest extends AbstractTest {
     }
 
     @Test
-    void testActions() throws Exception {
+    void testBehaviours() throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
                 "CrudBehaviourTestModel",
