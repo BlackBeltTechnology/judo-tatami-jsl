@@ -1,0 +1,26 @@
+model CrudBehaviourTestModel;
+
+transfer MappedTransfer maps Entity as e {
+	event instead delete deleteInstance;
+	event instead update updateInstance;
+	event instead create createInstance;	
+	
+	relation CreateTransfer[] createEntities <= e.createEntities 
+			create:true 
+			update:true 
+			delete:true;
+}
+
+entity Entity {	
+	relation CreateEntity[] createEntities;
+}
+
+
+
+transfer CreateTransfer maps CreateEntity as e {
+	event instead create createInstance;	
+}
+
+entity CreateEntity {
+}
+

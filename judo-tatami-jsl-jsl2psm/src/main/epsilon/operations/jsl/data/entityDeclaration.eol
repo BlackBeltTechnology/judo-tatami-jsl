@@ -30,3 +30,8 @@ operation JSL!EntityDeclaration getInheritedMembers(): Sequence<EntityMemberDecl
 
     return members;
 }
+
+@cached
+operation JSL!EntityDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}
