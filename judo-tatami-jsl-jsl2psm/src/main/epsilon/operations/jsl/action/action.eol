@@ -6,8 +6,8 @@ operation JSL!TransferActionDeclaration getId(): String {
 
 @cached
 operation JSL!TransferActionDeclaration isUpdateAllowed() : Boolean {
-    if (self.output.isDefined()){
-        // TODO: Calculate
+    if (self.output.isDefined()){    	
+        // TODO: JNG-5333 Calculate
         // return self.`return`.isUpdateAllowed();
     }
     return false;
@@ -16,7 +16,7 @@ operation JSL!TransferActionDeclaration isUpdateAllowed() : Boolean {
 @cached
 operation JSL!TransferActionDeclaration isDeleteAllowed() : Boolean {
     if (self.output.isDefined()){
-        // TODO: Calculate
+        // TODO: JNG-5333 Calculate
         // return self.`return`.isDeleteAllowed();
         return false;
     }
