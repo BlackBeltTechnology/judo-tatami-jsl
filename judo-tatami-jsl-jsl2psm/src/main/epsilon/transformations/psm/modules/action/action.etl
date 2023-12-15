@@ -55,7 +55,7 @@ rule AbstractTransferActionDeclarationInputParameter
 	  t.type = s.parameterType.getPSMEquivalent();
 	  
 	  if (s.parameterType.map.isDefined()) {
-	      // TODO: Input range
+	      // TODO: JNG-5327 Input range
 	      // s.eContainer.getPSMTransferOperationEquivalent().inputRange = s.equivalent("CreateRangeTransferObjectRelationForInputParameter");
 	  }
 }
@@ -278,7 +278,7 @@ rule CreateCardinalityForTransferActionDeclarationInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferActionDeclarationInput");
 
-      t.lower = 1; //s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; // TODO: JNG-5323
       t.upper = 1;
 }
 
@@ -289,7 +289,7 @@ rule CreateCardinalityForTransferActionDeclarationOutput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferActionDeclarationOutput");
 
-      t.lower = 1; // s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; // TODO: JNG-5323
       t.upper = 1;
 }
 
@@ -300,7 +300,7 @@ rule CreateCardinalityForTransferActionDeclarationEntityInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferActionDeclarationEntityInput");
 
-      t.lower = 1; //s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; // TODO: JNG-5323
       t.upper = 1;
 }
 
@@ -311,7 +311,7 @@ rule CreateCardinalityForTransferActionDeclarationEntityOutput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferActionDeclarationEntityOutput");
 
-      t.lower = 1; // s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1;
       t.upper = 1;
 }
 
