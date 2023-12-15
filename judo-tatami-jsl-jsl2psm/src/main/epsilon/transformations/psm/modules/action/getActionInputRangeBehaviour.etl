@@ -1,0 +1,77 @@
+/*
+@greedy
+rule CreateRangeTransferObjectRelationForInputParameter
+    transform s : ESM!Parameter
+    to t : JUDOPSM!TransferObjectRelation {
+        guard: s.eContainer.isKindOf(ESM!Operation) and s.eContainer.eContainer.isKindOf(ESM!TransferObjectType) and esmUtils.isGetRangeSupported(s)
+
+        t.setId("(esm/" + s.getId() + ")/RangeTransferObjectRelationForInput");
+
+        t.name = s.getPSMRangeEquivalent().name;
+        t.cardinality = new JUDOPSM!Cardinality;
+        t.cardinality.setId("(esm/" + s.getId() + ")/RangeTransferObjectRelationForInput/Cardinality");
+        t.cardinality.lower = 0;
+        t.cardinality.upper = -1;
+        t.target = s.target.getPSMTransferObjectTypeEquivalent();
+        t.binding = s.getPSMRangeEquivalent();
+        t.range = s.getPSMRangeEquivalent();
+
+        s.eContainer.eContainer.getPSMTransferObjectTypeEquivalent().relations.add(t);
+}
+
+operation ESM!Parameter getPSMRangeEquivalent(): JUDOPSM!ReferenceAccessor {
+      if (self.eContainer().eContainer().isMapped()) {
+          return self.equivalent("CreateNavigationPropertyForInputParameterRange");
+      } else {
+          return self.equivalent("CreateStaticNavigationForInputParameterRange");
+      }
+}
+
+
+@lazy
+@greedy
+rule CreateNavigationPropertyForInputParameterRange
+    transform s : ESM!Parameter
+    to t : JUDOPSM!NavigationProperty
+    extends CreateNamedElement {
+        guard: esmUtils.isGetRangeSupported(s) and s.eContainer.eContainer.isMapped()
+
+        t.setId("(esm/" + s.getId() + ")/NavigationPropertyForInputParameterRange");
+
+        t.target = s.target.mapping.target.getPSMEquivalent();
+        t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
+        t.name = "_" + s.eContainer.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer.eContainer).replace("::","_");
+
+        if (s.rangeType == ESM!RangeType#ANY) {
+            t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterAnyRange");
+        } else {
+            t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterDerivedRange");
+        }
+
+        s.eContainer.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
+}
+
+@lazy
+@greedy
+rule CreateStaticNavigationForInputParameterRange
+    transform s: ESM!Parameter
+    to t : JUDOPSM!StaticNavigation
+    extends CreateNamedElement {
+      guard: esmUtils.isGetRangeSupported(s) and not s.eContainer.eContainer.isMapped()
+
+      t.setId("(esm/" + s.getId() + ")/StaticNavigationForInputParameterRange");
+
+      var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+      ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);
+      t.name = "_" + s.eContainer.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer.eContainer).replace("::","_");
+      t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
+
+      if (s.rangeType == ESM!RangeType#ANY) {
+          t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterAnyRange");
+      } else {
+          t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterDerivedRange");
+      }
+      t.target = s.target.mapping.target.getPSMEquivalent();
+      log.debug("Created StaticNavigation for input parameter of static operation: " + t.name);
+}
+*/

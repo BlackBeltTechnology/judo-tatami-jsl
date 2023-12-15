@@ -17,3 +17,90 @@ operation JSL!TransferDeclaration getModelRoot(): JUDOPSM!Package {
     return self.getPSMEquivalent().eContainer().getModelRoot();
 }
 
+
+@cached
+operation JSL!TransferDeclaration isDeleteSupported(): Boolean {
+	if (self.map.isDefined()) {
+		return self.members.select(m | m.isKindOf(JSL!TransferDeleteDeclaration)).exists(m | m?.kind  == "delete" and m?.instead ?: false);
+	}
+	return false;
+}
+
+@cached
+operation JSL!TransferDeclaration isCreateSupported(): Boolean {
+	if (self.map.isDefined()) {
+		return self.members.select(m | m.isKindOf(JSL!TransferCreateDeclaration)).exists(m | m?.kind  == "create" and m?.instead ?: false);
+	}
+	return false;
+}
+
+@cached
+operation JSL!TransferDeclaration isUpdateSupported(): Boolean {
+	if (self.map.isDefined()) {
+		return self.members.select(m | m.isKindOf(JSL!TransferUpdateDeclaration)).exists(m | m?.kind  == "update" and m?.instead ?: false);
+	}
+	return false;
+}
+
+@cached
+operation JSL!TransferDeclaration isDefinedAsInputParameter(): Boolean {
+	return JSL!TransferActionDeclaration.all().collect(a | a.getParameterType()).contains(self);
+}
+
+@cached
+operation JSL!TransferDeclaration isGetTemplateSupported(): Boolean {
+	if (self.isCreateSupported()) {
+		return true;
+	}
+	if (self.map.isUndefined()) {
+		return self.isDefinedAsInputParameter();	
+	}
+	return false;
+}
+
+
+@cached
+operation JSL!TransferDeclaration getDeleteEventInsteadOf(): JSL!TransferDeleteDeclaration {
+	return self.members.select(m | m.isKindOf(JSL!TransferDeleteDeclaration)).selectOne(m | m?.kind  == "delete" and m?.instead ?: false);
+}
+
+@cached
+operation JSL!TransferDeclaration getDeleteEventBefore(): JSL!TransferDeleteDeclaration {
+	return self.members.select(m | m.isKindOf(JSL!TransferDeleteDeclaration)).selectOne(m | m?.kind  == "delete" and m?.before ?: false);
+}
+
+@cached
+operation JSL!TransferDeclaration getDeleteEventAfter(): JSL!TransferDeleteDeclaration {
+	return self.members.select(m | m.isKindOf(JSL!TransferDeleteDeclaration)).selectOne(m | m?.kind  == "delete" and m?.after ?: false);
+}
+
+
+@cached
+operation JSL!TransferDeclaration getUpdateEventInsteadOf(): JSL!TransferUpdateDeclaration {
+	return self.members.select(m | m.isKindOf(JSL!TransferUpdateDeclaration)).selectOne(m | m?.kind  == "update" and m?.instead ?: false);
+}
+
+@cached
+operation JSL!TransferDeclaration getUpdateEventBefore(): JSL!TransferUpdateDeclaration {
+	return self.members.select(m | m.isKindOf(JSL!TransferUpdateDeclaration)).selectOne(m | m?.kind  == "update" and m?.before ?: false);
+}
+
+@cached
+operation JSL!TransferDeclaration getUpdateEventAfter(): JSL!TransferUpdateDeclaration {
+	return self.members.select(m | m.isKindOf(JSL!TransferUpdateDeclaration)).selectOne(m | m?.kind  == "update" and m?.after ?: false);
+}
+
+@cached
+operation JSL!TransferDeclaration getCreateEventInsteadOf(): JSL!TransferCreateDeclaration {
+	return self.members.select(m | m.isKindOf(JSL!TransferCreateDeclaration)).selectOne(m | m?.kind  == "create" and m?.instead ?: false);
+}
+
+@cached
+operation JSL!TransferDeclaration getCreateEventBefore(): JSL!TransferCreateDeclaration {
+	return self.members.select(m | m.isKindOf(JSL!TransferCreateDeclaration)).selectOne(m | m?.kind  == "create" and m?.before ?: false);
+}
+
+@cached
+operation JSL!TransferDeclaration getCreateEventAfter(): JSL!TransferCreateDeclaration {
+	return self.members.select(m | m.isKindOf(JSL!TransferCreateDeclaration)).selectOne(m | m?.kind  == "create" and m?.after ?: false);
+}
