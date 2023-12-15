@@ -2,3 +2,8 @@
 operation JSL!QueryDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
+
+@cached
+operation JSL!QueryDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}

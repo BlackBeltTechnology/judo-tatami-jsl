@@ -24,6 +24,24 @@ import "modules/action/action.etl";
 
 import "modules/type/type.etl";
 
+import "modules/action/actorBehaviour.etl";
+import "modules/action/deleteBehaviour.etl";
+import "modules/action/getActionInputRangeBehaviour.etl";
+import "modules/action/getTemplateBehaviour.etl";
+import "modules/action/getUploadTokenBehaviour.etl";
+import "modules/action/relationAddReferenceBehaviour.etl";
+import "modules/action/relationCreateBehaviour.etl";
+import "modules/action/relationGetRangeReferenceBehaviour.etl";
+import "modules/action/relationListBehaviour.etl";
+import "modules/action/relationRefreshBehaviour.etl";
+import "modules/action/relationRemoveReferenceBehaviour.etl";
+import "modules/action/relationSetReferenceBehaviour.etl";
+import "modules/action/relationUnsetReferenceBehaviour.etl";
+import "modules/action/relationValidateCreateBehaviour.etl";
+import "modules/action/updateBehaviour.etl";
+import "modules/action/validateUpdateBehaviour.etl";
+
+
 pre {
 	//var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");	
 	var __cacheMap = new ConcurrentMap();

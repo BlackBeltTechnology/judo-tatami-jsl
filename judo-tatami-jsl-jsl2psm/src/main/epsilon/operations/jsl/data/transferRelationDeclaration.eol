@@ -17,3 +17,26 @@ operation JSL!TransferRelationDeclaration maps(): Boolean {
 operation JSL!TransferRelationDeclaration reads(): Boolean {
     return jslUtils.isReads(self);
 }
+
+
+@cached
+operation JSL!TransferRelationDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "#" + self.name;
+}
+
+
+
+@cached
+operation JSL!TransferRelationDeclaration isCreateAllowed() : Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!CreateModifier) and m.value.isTrue);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isUpdateAllowed() : Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and m.value.isTrue);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isDeleteAllowed() : Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!DeleteModifier) and m.value.isTrue);
+}

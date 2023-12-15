@@ -25,6 +25,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.service.BoundTransferOperation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperation;
+import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
@@ -115,6 +116,14 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         assertOperation("MappedTransfer", "staticUnmappedOutputActionWithMappedInput", false, true, true, true, false);
         assertOperation("MappedTransfer", "mappedOutputActionWithMappedInput", true, true, true, true, true);
         assertOperation("MappedTransfer", "staticMappedOutputActionWithMappedInput", false, true, true, true, true);
+
+
+    	assertThat(assertUnmappedTransferObject("UnmappedInputParameter").getOperations().size(),  equalTo(1));
+    	assertThat(assertTransferObjectOperation("UnmappedInputParameter", "default"),  instanceOf(UnboundOperation.class));
+    	assertThat(assertTransferObjectOperation("UnmappedInputParameter", "default").getBehaviour().getBehaviourType(),  
+    			equalTo(TransferOperationBehaviourType.GET_TEMPLATE));
+
+    	assertThat(assertMappedTransferObject("MappedInputParameter").getOperations().size(),  equalTo(0));
 
     
         assertMappedTransferObject("MappedFaultTransfer");
