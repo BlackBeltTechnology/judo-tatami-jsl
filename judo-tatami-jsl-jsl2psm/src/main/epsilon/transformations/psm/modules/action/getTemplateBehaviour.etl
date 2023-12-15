@@ -60,31 +60,3 @@ rule CreateCardinalityForGetTemplateTransferTypeOutput
       t.upper = 1;
 }
 
-/*
-@greedy
-rule CreateGetTemplateTransferOperation
-    transform s : ESM!TransferObjectType
-    to t : JUDOPSM!UnboundOperation {
-        guard: esmUtils.isGetTemplateSupported(s)
-
-        t.setId("(esm/" + s.getId() + ")/GetTemplateTransferOperation");
-
-        t.name = "_getTemplate" + s.name.firstToUpperCase();
-        t.immutable = true;
-        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
-        t.behaviour.setId("(esm/" + s.getId() + ")/GetTemplateTransferOperation/Behaviour");
-        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE;
-        t.behaviour.owner = s.getPSMTransferObjectTypeEquivalent();
-
-        t.output = new JUDOPSM!Parameter;
-        t.output.setId("(esm/" + s.getId() + ")/GetTemplateTransferOperation/Output");
-        t.output.name = "output";
-        t.output.type = s.getPSMOptionalEquivalent();
-        t.output.cardinality = new JUDOPSM!Cardinality;
-        t.output.cardinality.setId("(esm/" + s.getId() + ")/GetTemplateTransferOperation/Output/Cardinality");
-        t.output.cardinality.lower = 0;
-        t.output.cardinality.upper = 1;
-
-        s.getPSMTransferObjectTypeEquivalent().operations.add(t);
-}
-*/
