@@ -36,8 +36,8 @@ operation JSL!TransferFieldDeclaration getFqName(): String {
 
 @cached
 operation JSL!TransferFieldDeclaration isGetUploadTokenSupported(): Boolean {
-	
-	if (self.referenceType.`primitive` != "binary") {
+
+	if (self.referenceType.primitive.isUndefined() or self.referenceType.primitive <> "binary") {
 		return false;
 	}
 
