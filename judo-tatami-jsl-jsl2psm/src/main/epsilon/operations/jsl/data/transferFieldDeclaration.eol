@@ -32,3 +32,36 @@ operation JSL!TransferFieldDeclaration getFqName(): String {
 //        return self.equivalent("CreateDefaultDataPropertyForMappedTransferObjectConstructor");
 //     }
 //}
+
+
+@cached
+operation JSL!TransferFieldDeclaration isGetUploadTokenSupported(): Boolean {
+	
+	if (self.referenceType.`primitive` != "binary") {
+		return false;
+	}
+
+	if (self.eContainer.isCreateSupported()) {
+		return true;
+	}
+	if (self.eContainer.map.isUndefined()) {
+		return self.eContainer.isDefinedAsInputParameter();	
+	}
+	return false;
+}
+
+
+@cached 
+operation JSL!TransferFieldDeclaration getPSMEquivalent() : JUDOPSM!TransferAttribute {
+	if (not self.maps() and not self.reads()) {
+		return self.equivalent("CreateTransientTransferAttribute");
+	}
+	if (self.reads()) {
+		return self.equivalent("CreateDerivedTransferAttribute");
+	}
+	if (self.maps()) {
+		return self.equivalent("CreateMappedTransferAttribute");
+	}
+	throw "Could not determinate attribute type: " + s.fqName();
+}
+
