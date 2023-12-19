@@ -1,5 +1,7 @@
 model CrudBehaviourTestModel;
 
+type binary Binary max-file-size: 1MB  mime-type: ["image/*"];
+
 transfer MappedTransfer maps Entity as e {
 	event instead delete deleteInstance;
 	event instead update updateInstance;
@@ -9,10 +11,13 @@ transfer MappedTransfer maps Entity as e {
 			create:true 
 			update:true 
 			delete:true;
+			
+	field Binary binary <= e.binary;
 }
 
 entity Entity {	
 	relation CreateEntity[] createEntities;
+	field Binary binary;
 }
 
 

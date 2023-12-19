@@ -82,20 +82,25 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
         transform();
 
         assertMappedTransferObject("MappedTransfer");
-        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(4));
+        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(5));
 
         assertCrudOperation("MappedTransfer", "deleteInstance",
-        		TransferOperationBehaviourType.DELETE_INSTANCE, true, null, null);
+        		TransferOperationBehaviourType.DELETE_INSTANCE, true, null, false, null, false);
         assertCrudOperation("MappedTransfer", "updateInstance",
-        		TransferOperationBehaviourType.UPDATE_INSTANCE, true, "MappedTransfer","MappedTransfer");
+        		TransferOperationBehaviourType.UPDATE_INSTANCE, true, "MappedTransfer", true, "MappedTransfer", true);
         assertCrudOperation("MappedTransfer", "createInstanceForRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
-        		TransferOperationBehaviourType.CREATE_INSTANCE, true, "CreateTransfer", "CreateTransfer");    
+        		TransferOperationBehaviourType.CREATE_INSTANCE, true, "CreateTransfer", true, "CreateTransfer", true);    
         assertCrudOperation("MappedTransfer", "default", 
-        		TransferOperationBehaviourType.GET_TEMPLATE, false, null, "MappedTransfer");
-    }
+        		TransferOperationBehaviourType.GET_TEMPLATE, false, null, false, "MappedTransfer", true);
+  
+        assertCrudOperation("MappedTransfer", "getUploadTokenForBinary", 
+        		TransferOperationBehaviourType.GET_UPLOAD_TOKEN, false, null, false, "UploadToken", false);
+  }
     
     
-    private void assertCrudOperation(String transferName, String operationName, TransferOperationBehaviourType behaviour, boolean isBound, String inputType, String outputType) {
+    private void assertCrudOperation(String transferName, String operationName, TransferOperationBehaviourType behaviour, boolean isBound, 
+    		String inputType, boolean isMappedInputType, 
+    		String outputType, boolean isMappedOutputType) {
 
         TransferOperation operation = assertTransferObjectOperation(transferName, operationName);
         if (isBound) {
@@ -106,16 +111,25 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
     	assertThat(operation.getBehaviour().getBehaviourType(), equalTo(behaviour));
         
         if (inputType != null) {
-            assertThat(operation.getInput(), is(notNullValue()));        	
-        	assertThat(operation.getInput().getType(), equalTo(assertMappedTransferObject(inputType)));
+            assertThat(operation.getInput(), is(notNullValue()));
+            if (isMappedInputType) {
+            	assertThat(operation.getInput().getType(), equalTo(assertMappedTransferObject(inputType)));            	
+            } else {            	
+            	assertThat(operation.getInput().getType(), equalTo(assertUnmappedTransferObject(inputType)));            	
+            }
             // assertThat(operation.getInput().getCardinality().getLower(), equalTo(1));
         } else {
             assertThat(operation.getInput(), is(nullValue()));        	
         }
         if (outputType != null) {
             assertThat(operation.getOutput(), is(notNullValue()));        	
-        	assertThat(operation.getOutput().getType(), equalTo(assertMappedTransferObject(outputType)));
-            // assertThat(operation.getOutput().getCardinality().getLower(), equalTo(1));        	
+            if (isMappedOutputType) {
+            	assertThat(operation.getOutput().getType(), equalTo(assertMappedTransferObject(outputType)));            	
+            } else {
+            	assertThat(operation.getOutput().getType(), equalTo(assertUnmappedTransferObject(outputType)));            	
+            }
+
+        	// assertThat(operation.getOutput().getCardinality().getLower(), equalTo(1));        	
         } else {
             assertThat(operation.getOutput(), is(nullValue()));        	
         }

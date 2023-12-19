@@ -122,7 +122,7 @@ rule CreateBinaryType
         }
 
         if (s.getMaxFileSize().isDefined()) {
-            t.maxFileSize = s.getMaxFileSize().value().longValue();
+            t.maxFileSize = jslUtils.getMaxFileSizeValue(s.getMaxFileSize()).longValue();
         }
 
         s.eContainer.getModelRoot().elements.add(t);
