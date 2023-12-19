@@ -17,3 +17,51 @@ operation JSL!TransferFieldDeclaration maps(): Boolean {
 operation JSL!TransferFieldDeclaration reads(): Boolean {
     return jslUtils.isReads(self);
 }
+
+@cached
+operation JSL!TransferFieldDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "#" + self.name;
+}
+
+
+//@cached 
+//operation JSL!TransferFieldDeclaration getPSMDefaultValue() : JUDOPSM!TransferAttribute {
+//     if (self.eContainer.map.isUndefined()) {
+//        return self.equivalent("CreateDefaultStaticDataForUnmappedTransferObjectConstructor");
+//     } else {
+//        return self.equivalent("CreateDefaultDataPropertyForMappedTransferObjectConstructor");
+//     }
+//}
+
+
+@cached
+operation JSL!TransferFieldDeclaration isGetUploadTokenSupported(): Boolean {
+
+	if (self.referenceType.primitive.isUndefined() or self.referenceType.primitive <> "binary") {
+		return false;
+	}
+
+	if (self.eContainer.isCreateSupported()) {
+		return true;
+	}
+	if (self.eContainer.map.isUndefined()) {
+		return self.eContainer.isDefinedAsInputParameter();	
+	}
+	return false;
+}
+
+
+@cached 
+operation JSL!TransferFieldDeclaration getPSMEquivalent() : JUDOPSM!TransferAttribute {
+	if (not self.maps() and not self.reads()) {
+		return self.equivalent("CreateTransientTransferAttribute");
+	}
+	if (self.reads()) {
+		return self.equivalent("CreateDerivedTransferAttribute");
+	}
+	if (self.maps()) {
+		return self.equivalent("CreateMappedTransferAttribute");
+	}
+	throw "Could not determinate attribute type: " + s.fqName();
+}
+

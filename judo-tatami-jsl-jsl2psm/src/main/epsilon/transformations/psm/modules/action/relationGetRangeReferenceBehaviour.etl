@@ -1,0 +1,73 @@
+/*
+@greedy
+rule CreateGetRangeReferenceTransferOperationForRelationFeature
+    transform s : ESM!RelationFeature
+    to t : JUDOPSM!UnboundOperation {
+        guard: esmUtils.isGetRangeSupported(s)
+
+        t.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForRelationFeature");
+
+        t.name = "_getRangeReference" + s.name.firstToUpperCase();
+        t.immutable = true;
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForRelationFeature/Behaviour");
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE;
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForRelationFeature/Input");
+        t.input.name = "input";
+        t.input.type = s.equivalent("CreateGetRangeInputType");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForRelationFeature/Input/Cardinality");
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForRelationFeature/Output");
+        t.output.name = "output";
+        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForRelationFeature/Output/Cardinality");
+        t.output.cardinality.lower = 0;
+        t.output.cardinality.upper = -1;
+
+        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
+
+@greedy
+rule CreateGetRangeReferenceTransferOperationForInputParameter
+    transform s : ESM!Parameter
+    to t : JUDOPSM!UnboundOperation {
+        guard: esmUtils.isGetRangeSupported(s)
+
+        t.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter");
+
+        t.name = "_getRangeReference" + s.eContainer.name.firstToUpperCase();
+        t.immutable = true;
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Behaviour");
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE;
+        t.behaviour.owner = s.eContainer.getPSMTransferOperationEquivalent();
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Input");
+        t.input.name = "input";
+        t.input.type = s.equivalent("CreateGetRangeInputTypeForInputParameter");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Input/Cardinality");
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Output");
+        t.output.name = "output";
+        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Output/Cardinality");
+        t.output.cardinality.lower = 0;
+        t.output.cardinality.upper = -1;
+
+        s.eContainer.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
+*/

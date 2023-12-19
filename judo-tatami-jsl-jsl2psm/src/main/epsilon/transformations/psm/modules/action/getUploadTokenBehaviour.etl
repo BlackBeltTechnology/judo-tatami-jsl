@@ -1,0 +1,90 @@
+@lazy
+rule CreateUploadTokenStringType
+    transform s: String
+    to t : JUDOPSM!StringType {
+      t.setId("(esm/" + s.replaceAll("::", "_") + ")/CreateUploadTokenStringType");
+
+      t.name = "UploadTokenStringType";
+      t.maxLength = 4096;
+
+      s.getUniqueModelName().equivalent("CreateModelPackages").elements.add(t);
+      log.debug("UploadTokenStringType type created: " + t.name);
+}
+
+@lazy
+rule CreateUploadTokenType
+    transform s: String
+    to t: JUDOPSM!UnmappedTransferObjectType {
+      t.setId("(esm/" + s.replaceAll("::", "_") + ")/CreateUploadTokenType");
+      t.name = "UploadToken";
+      s.getUniqueModelName().equivalent("CreateModelPackages").elements.add(t);
+      t.attributes.add(s.equivalent("CreateUploadTokenTypeTokenAttribute"));
+      log.debug("CreateUploadTokenType type created: " + t.name);
+}
+    
+@lazy
+rule CreateUploadTokenTypeTokenAttribute
+    transform s: String
+    to t: JUDOPSM!TransferAttribute {
+      t.setId("(esm/" + s.replaceAll("::", "_") + ")/CreateUploadTokenTypeTokenAttribute");
+      t.name = "token";
+      t.required = true;
+      t.dataType = s.equivalent("CreateUploadTokenStringType");
+
+      log.debug("Create CreateUploadTokenTypeTokenAttribute: " + t.name);
+}
+
+@greedy
+rule CreateGetUploadTokenBehaviour
+    transform s: JSL!TransferFieldDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+      guard: s.isGetUploadTokenSupported()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateGetUploadTokenOperation");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_UPLOAD_TOKEN;
+      t.owner = s.getPSMEquivalent();
+      log.debug("Created CreateGetUploadTokenBehaviour: " + s.name);
+}
+
+@greedy
+rule CreateGetUploadTokenOperation
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!UnboundOperation {
+      guard: s.isGetUploadTokenSupported()
+      
+      t.setId("(jsl/" + s.getId() + ")/CreateGetUploadTokenOperation");
+      t.name = "getUploadTokenFor" + s.name.firstToUpperCase();
+      t.behaviour = s.equivalent("CreateGetUploadTokenBehaviour");
+      t.output = s.equivalent("CreateGetUploadTokenOuptutParameter");
+
+      s.eContainer.getPSMEquivalent().operations.add(t);
+      log.debug("Created CreateGetUploadTokenOperation: " + s.name);
+}
+
+@greedy
+rule CreateGetUploadTokenOuptutParameter
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!Parameter {
+      guard: s.isGetUploadTokenSupported()
+      
+      t.setId("(jsl/" + s.getId() + ")/CreateGetUploadTokenOuptutParameter");
+
+      t.name = "output";
+      t.type = "extensions".equivalent("CreateUploadTokenType");
+	  t.cardinality = s.equivalent("CreateGetUploadTokenOuputParameterCardinality");
+      log.debug("Created CreateGetUploadTokenOuptutParameter: " + s.name);
+}
+
+
+@greedy
+rule CreateGetUploadTokenOuputParameterCardinality
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!Cardinality {
+      guard: s.isGetUploadTokenSupported()
+      
+      t.setId("(jsl/" + s.getId() + ")/CreateGetUploadTokenOuputParameterCardinality");
+      t.lower = 1;
+      t.upper = 1;
+ 
+      log.debug("Created CreateGetUploadTokenOuputParameterCardinality: " + s.name);
+}
