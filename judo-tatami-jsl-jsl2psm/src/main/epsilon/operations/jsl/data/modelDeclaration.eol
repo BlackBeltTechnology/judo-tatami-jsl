@@ -18,3 +18,13 @@ operation JSL!ModelDeclaration getId(): String {
 operation JSL!ModelDeclaration getFqName(): String {
     return self.name;
 }
+
+
+@cached
+operation String getUniqueModelName() : String {
+	if (not JSL!ModelDeclaration.all.exists(s | s == self)) {
+		return self;
+	} else {
+		return "_" + self;
+	}
+}
