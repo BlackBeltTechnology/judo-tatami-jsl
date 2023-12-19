@@ -82,7 +82,7 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
         transform();
 
         assertMappedTransferObject("MappedTransfer");
-        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(6));
+        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(7));
 
         assertCrudOperation("MappedTransfer", "deleteInstance",
         		TransferOperationBehaviourType.DELETE_INSTANCE, true, null, false, null, false);
@@ -93,6 +93,9 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
 
         assertCrudOperation("MappedTransfer", "createInstanceForRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
         		TransferOperationBehaviourType.CREATE_INSTANCE, true, "CreateTransfer", true, "CreateTransfer", true);    
+        assertCrudOperation("MappedTransfer", "validateCreateInstanceForRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
+        		TransferOperationBehaviourType.VALIDATE_CREATE, true, "CreateTransfer", true, "CreateTransfer", true);    
+
         assertCrudOperation("MappedTransfer", "default", 
         		TransferOperationBehaviourType.GET_TEMPLATE, false, null, false, "MappedTransfer", true);
   
