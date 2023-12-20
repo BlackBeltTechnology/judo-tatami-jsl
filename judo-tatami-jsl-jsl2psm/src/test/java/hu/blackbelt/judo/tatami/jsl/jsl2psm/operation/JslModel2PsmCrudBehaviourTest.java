@@ -82,7 +82,7 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
         transform();
 
         assertMappedTransferObject("MappedTransfer");
-        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(7));
+        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(11));
 
         assertCrudOperation("MappedTransfer", "deleteInstance",
         		TransferOperationBehaviourType.DELETE_INSTANCE, true, null, false, null, false);
@@ -101,7 +101,21 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
   
         assertCrudOperation("MappedTransfer", "getUploadTokenForBinary", 
         		TransferOperationBehaviourType.GET_UPLOAD_TOKEN, false, null, false, "UploadToken", false);
-  }
+
+        assertCrudOperation("MappedTransfer", "addReferencesToRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
+        		TransferOperationBehaviourType.ADD_REFERENCE, true, "CreateTransfer", true, null, false);    
+
+        assertCrudOperation("MappedTransfer", "setReferencesOfRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
+        		TransferOperationBehaviourType.SET_REFERENCE, true, "CreateTransfer", true, null, false);    
+
+        assertCrudOperation("MappedTransfer", "removeReferencesFromRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
+        		TransferOperationBehaviourType.REMOVE_REFERENCE, true, "CreateTransfer", true, null, false);    
+
+        assertCrudOperation("MappedTransfer", "unsetReferencesOfRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
+        		TransferOperationBehaviourType.UNSET_REFERENCE, true, "CreateTransfer", true, null, false);    
+
+
+    }
     
     
     private void assertCrudOperation(String transferName, String operationName, TransferOperationBehaviourType behaviour, boolean isBound, 
