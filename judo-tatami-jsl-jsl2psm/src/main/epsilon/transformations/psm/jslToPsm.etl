@@ -33,7 +33,7 @@ import "modules/action/relationAddReferenceBehaviour.etl";
 import "modules/action/relationCreateBehaviour.etl";
 import "modules/action/relationGetRangeReferenceBehaviour.etl";
 import "modules/action/relationListBehaviour.etl";
-import "modules/action/relationRefreshBehaviour.etl";
+import "modules/action/refreshBehaviour.etl";
 import "modules/action/relationRemoveReferenceBehaviour.etl";
 import "modules/action/relationSetReferenceBehaviour.etl";
 import "modules/action/relationUnsetReferenceBehaviour.etl";
