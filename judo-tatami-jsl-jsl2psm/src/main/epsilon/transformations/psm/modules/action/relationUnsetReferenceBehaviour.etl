@@ -1,34 +1,100 @@
-/*
+import "../../../../operations/_importAll.eol";
+
+
 @greedy
-rule CreateUnsetReferenceOperationForRelationFeature
-    transform s : ESM!RelationFeature
-    to t : JUDOPSM!BoundOperation {
-        guard: esmUtils.isUnsetReferenceSupported(s)
+rule CreateUnsetReferenceOperationForEntityType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!BoundOperation {
+      guard: s.isUnsetReferenceAllowed()
 
-        t.setId("(esm/" + s.getId() + ")/UnsetReferenceOperationForRelationFeature");
-
-        t.name = "_unsetReference" + s.name.firstToUpperCase() + "For" + esmUtils.getNamespaceElementFQName(s.eContainer).replace("::", "_").firstToUpperCase();
-        t.instanceRepresentation = s.eContainer.getPSMTransferObjectTypeEquivalent();
-
-        s.eContainer.mapping.target.equivalent("CreateEntityType").operations.add(t);
+      t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForEntityType");
+      t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      t.name = "unsetReferencesOfRelation" + s.getFqName().fqNameToCamelCase();
+      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      log.debug("Created CreateUnsetReferenceOperationForEntityType: " + t.name);
 }
 
 @greedy
-rule CreateUnsetReferenceTransferOperationForRelationFeature
-    transform s : ESM!RelationFeature
-    to t : JUDOPSM!BoundTransferOperation {
-        guard: esmUtils.isUnsetReferenceSupported(s)
+rule CreateUnsetReferenceBehaviourForTransferType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+      guard: s.isUnsetReferenceAllowed()
 
-        t.setId("(esm/" + s.getId() + ")/UnsetReferenceTransferOperationForRelationFeature");
-
-        t.name = "_unsetReference" + s.name.firstToUpperCase();
-        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
-        t.behaviour.setId("(esm/" + s.getId() + ")/UnsetReferenceTransferOperationForRelationFeature/Behaviour");
-        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#UNSET_REFERENCE;
-        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
-
-        t.binding = s.equivalent("CreateUnsetReferenceOperationForRelationFeature");
-
-        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+      t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceBehaviourForTransferType");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#UNSET_REFERENCE;
+      if (s.reads()) {
+      	t.owner = s.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
+      } else if (s.maps()) {
+      	t.owner = s.equivalent("CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
+      }      
+      log.debug("Created CreateUnsetReferenceBehaviourForTransferType: " + s.name);
 }
-*/
+
+@greedy
+rule CreateUnsetReferenceOperationForTransferType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!BoundTransferOperation {
+      guard: s.isUnsetReferenceAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForTransferType");
+      t.name = "unsetReferencesOfRelation" +  s.getFqName().fqNameToCamelCase();
+      t.binding = s.equivalent("CreateUnsetReferenceOperationForEntityType");
+      t.behaviour = s.equivalent("CreateUnsetReferenceBehaviourForTransferType");
+
+      t.updateOnResult = s.referenceType.isUpdateSupported();
+      t.deleteOnResult = s.referenceType.isDeleteSupported();
+      
+      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      log.debug("Created CreateUnsetReferenceOperationForTransferType: " + t.name);      
+}
+
+
+@greedy
+rule CreateUnsetReferenceOperationForTransferTypeInputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: s.isUnsetReferenceAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForTransferTypeInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForUnsetReferenceTransferTypeInput");
+      t.name = "input";
+	  t.type = s.referenceType.getPSMEquivalent();
+      s.equivalent("CreateUnsetReferenceOperationForTransferType").input = t;
+      log.debug("Created CreateUnsetReferenceOperationForTransferTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateUnsetReferenceOperationForEntityTypeInputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: s.isUnsetReferenceAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForEntityTypeInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForUnsetReferenceEntityTypeInput");
+      t.name = "input";
+	  t.type = s.referenceType.getPSMEquivalent();
+      s.equivalent("CreateUnsetReferenceOperationForEntityType").input = t;
+      log.debug("Created CreateUnsetReferenceOperationForEntityTypeInputParameter: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForUnsetReferenceTransferTypeInput
+    transform s : JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForUnsetReferenceTransferTypeInput");
+
+      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = s.isMany ? -1 : 1;      
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForUnsetReferenceEntityTypeInput
+    transform s : JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForUnsetReferenceEntityTypeInput");
+      
+      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = s.isMany ? -1 : 1;      
+}

@@ -58,6 +58,10 @@ operation JSL!TransferDeclaration isGetTemplateSupported(): Boolean {
 	return false;
 }
 
+@cached
+operation JSL!TransferDeclaration isRefreshSupported(): Boolean {
+    return self.map.isDefined();    
+}
 
 @cached
 operation JSL!TransferDeclaration getDeleteEventInsteadOf(): JSL!TransferDeleteDeclaration {
