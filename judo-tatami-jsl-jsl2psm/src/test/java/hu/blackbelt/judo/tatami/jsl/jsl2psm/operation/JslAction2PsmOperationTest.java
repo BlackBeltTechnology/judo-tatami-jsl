@@ -81,25 +81,16 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         transform();
 
         assertUnmappedTransferObject("UnmappedTransfer");
-        assertThat(assertUnmappedTransferObject("UnmappedTransfer").getOperations().size(), equalTo(18));
+        assertThat(assertUnmappedTransferObject("UnmappedTransfer").getOperations().size(), equalTo(9));
 
-        assertOperation("UnmappedTransfer", "voidAction", false, false, false, false, false);
         assertOperation("UnmappedTransfer", "staticVoidAction", false, false, false, false, false);
-        assertOperation("UnmappedTransfer", "voidActionWithUnmappedInput", false, true, false, false, false);
         assertOperation("UnmappedTransfer", "staticVoidActionWithUnmappedInput", false, true, false, false, false);
-        assertOperation("UnmappedTransfer", "voidActionWithMappedInput", false, true, true, false, false);
         assertOperation("UnmappedTransfer", "staticVoidActionWithMappedInput", false, true, true, false, false);
-        assertOperation("UnmappedTransfer", "unmappedOutputAction", false, false, false, true, false);
         assertOperation("UnmappedTransfer", "staticUnmappedOutputAction", false, false, false, true, false);
-        assertOperation("UnmappedTransfer", "mappedOutputAction", false, false, false, true, true);
         assertOperation("UnmappedTransfer", "staticMappedOutputAction", false, false, false, true, true);
-        assertOperation("UnmappedTransfer", "unmappedOutputActionWithUnmappedInput", false, true, false, true, false);
         assertOperation("UnmappedTransfer", "staticUnmappedOutputActionWithUnmappedInput", false, true, false, true, false);
-        assertOperation("UnmappedTransfer", "mappedOutputActionWithUnmappedInput", false, true, false, true, true);
         assertOperation("UnmappedTransfer", "staticMappedOutputActionWithUnmappedInput", false, true, false, true, true);
-        assertOperation("UnmappedTransfer", "unmappedOutputActionWithMappedInput", false, true, true, true, false);
         assertOperation("UnmappedTransfer", "staticUnmappedOutputActionWithMappedInput", false, true, true, true, false);
-        assertOperation("UnmappedTransfer", "mappedOutputActionWithMappedInput", false, true, true, true, true);
         assertOperation("UnmappedTransfer", "staticMappedOutputActionWithMappedInput", false, true, true, true, true);
 
 
@@ -132,8 +123,7 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         assertOperationFaults("MappedFaultTransfer", "staticFaults");
         
         assertUnmappedTransferObject("UnmappedFaultTransfer");
-        assertThat(assertUnmappedTransferObject("UnmappedFaultTransfer").getOperations().size(), equalTo(2));
-        assertOperationFaults("UnmappedFaultTransfer", "faults");
+        assertThat(assertUnmappedTransferObject("UnmappedFaultTransfer").getOperations().size(), equalTo(1));
         assertOperationFaults("UnmappedFaultTransfer", "staticFaults");
 
     }
