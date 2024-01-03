@@ -6,7 +6,7 @@ import "../../../../operations/_importAll.eol";
 rule CreateGetTemplateBehaviourForTransferType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!TransferOperationBehaviour {
-      guard: s.isGetTemplateSupported()
+      guard: generateBehaviours and s.isGetTemplateSupported()
 
       t.setId("(jsl/" + s.getId() + ")/CreateGetTemplateBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE;
@@ -18,7 +18,7 @@ rule CreateGetTemplateBehaviourForTransferType
 rule CreateGetTemplateOperationForTransferType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!UnboundOperation {
-      guard: s.isGetTemplateSupported()
+      guard: generateBehaviours and s.isGetTemplateSupported()
 
       t.setId("(jsl/" + s.getId() + ")/CreateGetTemplateOperationForTransferType");
       if (not s.members.exists(m | m.name == "default")) {
@@ -38,7 +38,7 @@ rule CreateGetTemplateOperationForTransferType
 rule CreateGetTemplateOperationForTransferTypeOutputParameter
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!Parameter {
-      guard: s.isGetTemplateSupported()
+      guard: generateBehaviours and s.isGetTemplateSupported()
 
       t.setId("(jsl/" + s.getId() + ")/CreateGetTemplateOperationForTransferTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForGetTemplateTransferTypeOutput");

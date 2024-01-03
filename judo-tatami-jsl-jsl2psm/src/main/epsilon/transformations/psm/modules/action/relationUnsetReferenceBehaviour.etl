@@ -5,7 +5,7 @@ import "../../../../operations/_importAll.eol";
 rule CreateUnsetReferenceOperationForEntityType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!BoundOperation {
-      guard: s.isUnsetReferenceAllowed()
+      guard: generateBehaviours and s.isUnsetReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForEntityType");
       t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
@@ -18,7 +18,7 @@ rule CreateUnsetReferenceOperationForEntityType
 rule CreateUnsetReferenceBehaviourForTransferType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!TransferOperationBehaviour {
-      guard: s.isUnsetReferenceAllowed()
+      guard: generateBehaviours and s.isUnsetReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#UNSET_REFERENCE;
@@ -34,7 +34,7 @@ rule CreateUnsetReferenceBehaviourForTransferType
 rule CreateUnsetReferenceOperationForTransferType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!BoundTransferOperation {
-      guard: s.isUnsetReferenceAllowed()
+      guard: generateBehaviours and s.isUnsetReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForTransferType");
       t.name = "unsetReferencesOfRelation" +  s.getFqName().fqNameToCamelCase();
@@ -53,7 +53,7 @@ rule CreateUnsetReferenceOperationForTransferType
 rule CreateUnsetReferenceOperationForTransferTypeInputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-      guard: s.isUnsetReferenceAllowed()
+      guard: generateBehaviours and s.isUnsetReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForTransferTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForUnsetReferenceTransferTypeInput");
@@ -67,7 +67,7 @@ rule CreateUnsetReferenceOperationForTransferTypeInputParameter
 rule CreateUnsetReferenceOperationForEntityTypeInputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-      guard: s.isUnsetReferenceAllowed()
+      guard: generateBehaviours and s.isUnsetReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForUnsetReferenceEntityTypeInput");

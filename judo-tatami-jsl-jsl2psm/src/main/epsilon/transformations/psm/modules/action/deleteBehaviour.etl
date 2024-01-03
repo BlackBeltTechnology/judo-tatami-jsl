@@ -5,7 +5,7 @@ import "../../../../operations/_importAll.eol";
 rule CreateDeleteOperationForEntityType
     transform s: JSL!TransferDeleteDeclaration
     to t: JUDOPSM!BoundOperation {
-      guard: s.instead ?: false
+      guard: generateBehaviours and s.instead ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateDeleteOperationForEntityType");
       t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
@@ -18,7 +18,7 @@ rule CreateDeleteOperationForEntityType
 rule CreateDeleteBehaviourForTransferType
     transform s: JSL!TransferDeleteDeclaration
     to t: JUDOPSM!TransferOperationBehaviour {
-      guard: s.instead ?: false
+      guard: generateBehaviours and s.instead ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateDeleteBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#DELETE_INSTANCE;
@@ -30,7 +30,7 @@ rule CreateDeleteBehaviourForTransferType
 rule CreateDeleteOperationForTransferType
     transform s: JSL!TransferDeleteDeclaration
     to t: JUDOPSM!BoundTransferOperation {
-      guard: s.instead ?: false
+      guard: generateBehaviours and s.instead ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateDeleteOperationForTransferType");
       t.name = s.name;

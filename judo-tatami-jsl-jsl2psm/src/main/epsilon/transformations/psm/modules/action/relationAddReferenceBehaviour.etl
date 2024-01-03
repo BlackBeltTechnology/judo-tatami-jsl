@@ -5,7 +5,7 @@ import "../../../../operations/_importAll.eol";
 rule CreateAddReferenceOperationForEntityType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!BoundOperation {
-      guard: s.isAddReferenceAllowed()
+      guard: generateBehaviours and s.isAddReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceOperationForEntityType");
       t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
@@ -18,7 +18,7 @@ rule CreateAddReferenceOperationForEntityType
 rule CreateAddReferenceBehaviourForTransferType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!TransferOperationBehaviour {
-      guard: s.isAddReferenceAllowed()
+      guard: generateBehaviours and s.isAddReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#ADD_REFERENCE;
@@ -34,7 +34,7 @@ rule CreateAddReferenceBehaviourForTransferType
 rule CreateAddReferenceOperationForTransferType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!BoundTransferOperation {
-      guard: s.isAddReferenceAllowed()
+      guard: generateBehaviours and s.isAddReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceOperationForTransferType");
       t.name = "addReferencesToRelation" +  s.getFqName().fqNameToCamelCase();
@@ -53,7 +53,7 @@ rule CreateAddReferenceOperationForTransferType
 rule CreateAddReferenceOperationForTransferTypeInputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-      guard: s.isAddReferenceAllowed()
+      guard: generateBehaviours and s.isAddReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceOperationForTransferTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForAddReferenceTransferTypeInput");
@@ -67,7 +67,7 @@ rule CreateAddReferenceOperationForTransferTypeInputParameter
 rule CreateAddReferenceOperationForEntityTypeInputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-      guard: s.isAddReferenceAllowed()
+      guard: generateBehaviours and s.isAddReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForAddReferenceEntityTypeInput");

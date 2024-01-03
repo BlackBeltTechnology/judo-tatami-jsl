@@ -77,7 +77,7 @@ public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractT
                         "}\n" +
                         "entity Test {\n" +
                         "  relation Lead[] leads;\n" +
-                        "  field Integer value <= self.leads.size();\n" +
+                        "  field Integer value <= self.leads.size() input:false;\n" +
                         "}\n" +
                         "entity TestExtended extends Test {\n" +
                         "}\n"

@@ -36,6 +36,9 @@ operation JSL!TransferFieldDeclaration getFqName(): String {
 
 @cached
 operation JSL!TransferFieldDeclaration isGetUploadTokenSupported(): Boolean {
+	if (self.reads() and not self.maps()) {
+		return false;
+	}
 
 	if (self.referenceType.primitive.isUndefined() or self.referenceType.primitive <> "binary") {
 		return false;
@@ -63,5 +66,35 @@ operation JSL!TransferFieldDeclaration getPSMEquivalent() : JUDOPSM!TransferAttr
 		return self.equivalent("CreateMappedTransferAttribute");
 	}
 	throw "Could not determinate attribute type: " + s.fqName();
+}
+
+@cached 
+operation JSL!TransferFieldDeclaration isSortable() : Boolean {
+	if (self.referenceType.`primitive`.isUndefined()) {
+		return false;
+	}
+    return (self.maps() or self.reads()) and (
+               self.referenceType.`primitive` == "string" or
+               self.referenceType.`primitive` == "numeric"  or
+               self.referenceType.`primitive` == "date" or
+               self.referenceType.`primitive` == "timestamp" or
+               self.referenceType.`primitive` == "time" or
+               self.referenceType.`primitive` == "boolean"
+           );
+}
+
+@cached 
+operation JSL!TransferFieldDeclaration isFilterable() : Boolean {
+	if (self.referenceType.`primitive`.isUndefined()) {
+		return false;
+	}
+    return (self.maps() or self.reads()) and (
+               self.referenceType.`primitive` == "string" or
+               self.referenceType.`primitive` == "numeric"  or
+               self.referenceType.`primitive` == "date" or
+               self.referenceType.`primitive` == "timestamp" or
+               self.referenceType.`primitive` == "time" or
+               self.referenceType.`primitive` == "boolean"
+           );
 }
 

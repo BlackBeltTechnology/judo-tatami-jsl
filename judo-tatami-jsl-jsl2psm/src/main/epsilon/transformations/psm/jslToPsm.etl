@@ -41,6 +41,7 @@ import "modules/action/relationValidateCreateBehaviour.etl";
 import "modules/action/updateBehaviour.etl";
 import "modules/action/validateUpdateBehaviour.etl";
 
+import "modules/structure/transferDeclarationQueryCustomizer.etl";
 
 pre {
 	//var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");	
@@ -62,4 +63,15 @@ post {
     for (c in JSL!QueryParameterDeclaration.all()) {
          var dummy = c.referenceType.getPSMEquivalent();
     }
+
+    var enumsWithoutOrdinal = JUDOPSM!EnumerationMember.all.select(m | m.ordinal == -1).collect(m | m.eContainer).flatten().asSet();
+    for (e in enumsWithoutOrdinal) {
+        log.debug("Set/overwrite ordinals of enumeration: " + e.name);
+        var index = 0;
+        for (m in e.members) {
+            m.ordinal = index;
+            index = index + 1;
+        }
+    }
+
 }
