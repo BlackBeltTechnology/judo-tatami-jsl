@@ -108,3 +108,8 @@ operation JSL!TransferDeclaration getCreateEventBefore(): JSL!TransferCreateDecl
 operation JSL!TransferDeclaration getCreateEventAfter(): JSL!TransferCreateDeclaration {
 	return self.members.select(m | m.isKindOf(JSL!TransferCreateDeclaration)).selectOne(m | m?.kind  == "create" and m?.after ?: false);
 }
+
+@cached
+operation JSL!TransferDeclaration hasSortableField(): Boolean {
+    return self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration)).exists(a | a.isSortable());
+}

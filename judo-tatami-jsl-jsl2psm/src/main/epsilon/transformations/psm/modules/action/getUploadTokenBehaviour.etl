@@ -5,7 +5,7 @@ rule CreateUploadTokenStringType
       t.setId("(esm/" + s.replaceAll("::", "_") + ")/CreateUploadTokenStringType");
 
       t.name = "UploadTokenStringType";
-      t.maxLength = 4096;
+      t.maxLength = 2048;
 
       s.getUniqueModelName().equivalent("CreateModelPackages").elements.add(t);
       log.debug("UploadTokenStringType type created: " + t.name);
@@ -38,7 +38,7 @@ rule CreateUploadTokenTypeTokenAttribute
 rule CreateGetUploadTokenBehaviour
     transform s: JSL!TransferFieldDeclaration
     to t: JUDOPSM!TransferOperationBehaviour {
-      guard: s.isGetUploadTokenSupported()
+      guard: generateBehaviours and s.isGetUploadTokenSupported()
 
       t.setId("(jsl/" + s.getId() + ")/CreateGetUploadTokenOperation");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_UPLOAD_TOKEN;
@@ -50,7 +50,7 @@ rule CreateGetUploadTokenBehaviour
 rule CreateGetUploadTokenOperation
     transform s : JSL!TransferFieldDeclaration
     to t : JUDOPSM!UnboundOperation {
-      guard: s.isGetUploadTokenSupported()
+      guard: generateBehaviours and s.isGetUploadTokenSupported()
       
       t.setId("(jsl/" + s.getId() + ")/CreateGetUploadTokenOperation");
       t.name = "getUploadTokenFor" + s.name.firstToUpperCase();
@@ -65,7 +65,7 @@ rule CreateGetUploadTokenOperation
 rule CreateGetUploadTokenOuptutParameter
     transform s : JSL!TransferFieldDeclaration
     to t : JUDOPSM!Parameter {
-      guard: s.isGetUploadTokenSupported()
+      guard: generateBehaviours and s.isGetUploadTokenSupported()
       
       t.setId("(jsl/" + s.getId() + ")/CreateGetUploadTokenOuptutParameter");
 
@@ -80,7 +80,7 @@ rule CreateGetUploadTokenOuptutParameter
 rule CreateGetUploadTokenOuputParameterCardinality
     transform s : JSL!TransferFieldDeclaration
     to t : JUDOPSM!Cardinality {
-      guard: s.isGetUploadTokenSupported()
+      guard: generateBehaviours and s.isGetUploadTokenSupported()
       
       t.setId("(jsl/" + s.getId() + ")/CreateGetUploadTokenOuputParameterCardinality");
       t.lower = 1;
