@@ -5,7 +5,7 @@ import "../../../../operations/_importAll.eol";
 rule CreateRemoveReferenceOperationForEntityType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!BoundOperation {
-      guard: s.isRemoveReferenceAllowed()
+      guard: generateBehaviours and s.isRemoveReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRemoveReferenceOperationForEntityType");
       t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
@@ -18,7 +18,7 @@ rule CreateRemoveReferenceOperationForEntityType
 rule CreateRemoveReferenceBehaviourForTransferType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!TransferOperationBehaviour {
-      guard: s.isRemoveReferenceAllowed()
+      guard: generateBehaviours and s.isRemoveReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRemoveReferenceBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#REMOVE_REFERENCE;
@@ -34,7 +34,7 @@ rule CreateRemoveReferenceBehaviourForTransferType
 rule CreateRemoveReferenceOperationForTransferType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!BoundTransferOperation {
-      guard: s.isRemoveReferenceAllowed()
+      guard: generateBehaviours and s.isRemoveReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRemoveReferenceOperationForTransferType");
       t.name = "removeReferencesFromRelation" +  s.getFqName().fqNameToCamelCase();
@@ -53,7 +53,7 @@ rule CreateRemoveReferenceOperationForTransferType
 rule CreateRemoveReferenceOperationForTransferTypeInputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-      guard: s.isRemoveReferenceAllowed()
+      guard: generateBehaviours and s.isRemoveReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRemoveReferenceOperationForTransferTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRemoveReferenceTransferTypeInput");
@@ -67,7 +67,7 @@ rule CreateRemoveReferenceOperationForTransferTypeInputParameter
 rule CreateRemoveReferenceOperationForEntityTypeInputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-      guard: s.isRemoveReferenceAllowed()
+      guard: generateBehaviours and s.isRemoveReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRemoveReferenceOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRemoveReferenceEntityTypeInput");

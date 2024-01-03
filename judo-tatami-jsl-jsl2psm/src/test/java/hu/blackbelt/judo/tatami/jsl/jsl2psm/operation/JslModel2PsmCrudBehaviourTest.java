@@ -50,6 +50,11 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
     private static final String TARGET_TEST_CLASSES = "target/test-classes/operation";
 
     @Override
+	public boolean generateBehaviours() {
+    	return true;
+    }
+
+    @Override
     protected String getTargetTestClasses() {
         return TARGET_TEST_CLASSES;
     }
