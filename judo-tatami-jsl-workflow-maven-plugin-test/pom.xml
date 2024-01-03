@@ -103,7 +103,7 @@
 
         <dependency>
             <groupId>hu.blackbelt.judo.runtime</groupId>
-            <artifactId>judo-runtime-core-bootstrap-hsqldb</artifactId> <!-- Using HSQL for the sake of the demo -->
+            <artifactId>judo-runtime-core-guice-hsqldb</artifactId> <!-- Using HSQL for the sake of the demo -->
             <version>${judo-runtime-core-version}</version>
             <scope>test</scope>
         </dependency>
