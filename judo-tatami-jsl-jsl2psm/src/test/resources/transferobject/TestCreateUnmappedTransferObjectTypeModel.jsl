@@ -9,7 +9,7 @@ entity Entity {
 }
 
 transfer MappedRelated maps Entity as e {
-	field Integer attributeMapped <= e.attribute input:true;
+	field Integer attributeMapped <= e.attribute update:auto;
 }
 
 transfer UnmappedRelated {
