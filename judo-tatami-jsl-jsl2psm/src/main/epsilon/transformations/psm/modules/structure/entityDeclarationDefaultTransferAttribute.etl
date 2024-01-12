@@ -11,7 +11,7 @@ rule AbstractCreateTransferAttributeForDefaultTransferObjectType
     to t: JUDOPSM!TransferAttribute {
         guard: generateDefaultTransferObject and s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and not s.isCalculated()
         
-        t.required = s.isRequired;
+        t.required = s.isRequired();
         t.name = s.name;
         t.binding = s.equivalent("CreateAttributeFromField");
         t.dataType = s.getReferenceType().getPSMEquivalent();

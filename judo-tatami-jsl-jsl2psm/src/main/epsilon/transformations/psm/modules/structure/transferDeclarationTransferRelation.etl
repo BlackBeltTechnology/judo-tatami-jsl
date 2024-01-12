@@ -81,7 +81,7 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration
       } else if (entityMember.isKindOf(JSL!EntityRelationOppositeInjected)) {
           t.binding = entityMember.equivalent("CreateNamedOppositeAssociationEnd");
       } else {
-          throw "Invalid member type - " + s.eContainer.name + "." + e.name + " " + entityMember;
+          throw "Invalid member type - " + s.eContainer.name + "." + s.name + " " + entityMember;
       }
 
       if (s.getDefault().isDefined()) {

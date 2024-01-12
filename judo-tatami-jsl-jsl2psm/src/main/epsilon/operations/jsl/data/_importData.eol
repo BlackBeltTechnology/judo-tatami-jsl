@@ -12,6 +12,7 @@ import "queryDeclaration.eol";
 import "queryParameterDeclaration.eol";
 import "modelDeclaration.eol";
 import "transferDeclaration.eol";
+import "transferActionDeclaration.eol";
 import "transferFieldDeclaration.eol";
 import "transferRelationDeclaration.eol";
 import "expression.eol";

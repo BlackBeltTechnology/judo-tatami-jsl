@@ -142,7 +142,7 @@ rule CreateUnboundOperationForMappedTransferObjectType
     to t: JUDOPSM!UnboundOperation
     extends AbstractTransferUnboundActionDeclaration {
     
-      guard: s.eContainer.map.isDefined() and s.static
+      guard: s.eContainer.map.isDefined() and s.isStatic()
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnboundOperationForMappedTransferObjectType");
       s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
@@ -154,7 +154,7 @@ rule CreateUnboundOperationForMappedTransferObjectTypeInputParameter
     transform s: JSL!TransferActionDeclaration
     to t: JUDOPSM!Parameter
     extends AbstractTransferActionDeclarationInputParameter {
-      guard: s.eContainer.map.isDefined() and s.parameterType.isDefined() and s.static
+      guard: s.eContainer.map.isDefined() and s.parameterType.isDefined() and s.isStatic()
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnboundOperationForMappedTransferObjectTypeInputParameter");
       s.equivalent("CreateUnboundOperationForMappedTransferObjectType").input = t;
@@ -167,7 +167,7 @@ rule CreateUnboundOperationForMappedTransferObjectTypeOutputParameter
     to t: JUDOPSM!Parameter
     extends AbstractTransferActionDeclarationReturnParameter {
 
-      guard: s.eContainer.map.isDefined() and s.`return`.isDefined() and s.static
+      guard: s.eContainer.map.isDefined() and s.`return`.isDefined() and s.isStatic()
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnboundOperationForMappedTransferObjectTypeOutputParameter");
       s.equivalent("CreateUnboundOperationForMappedTransferObjectType").output = t;
@@ -181,7 +181,7 @@ rule CreateUnboundOperationForMappedTransferObjectTypeOutputParameter
 rule CreateBoundOperationForEntityType
     transform s: JSL!TransferActionDeclaration
     to t: JUDOPSM!BoundOperation {
-      guard: s.eContainer.map.isDefined() and not s.static
+      guard: s.eContainer.map.isDefined() and not s.isStatic()
 
       t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForEntity");
 
@@ -205,7 +205,7 @@ rule CreateBoundOperationForEntityTypeInputParameter
     transform s: JSL!TransferActionDeclaration
     to t: JUDOPSM!Parameter
     extends AbstractTransferActionDeclarationInputParameter {
-      guard: s.eContainer.map.isDefined() and s.parameterType.isDefined() and not s.static
+      guard: s.eContainer.map.isDefined() and s.parameterType.isDefined() and not s.isStatic()
 
       t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationEntityInput");
@@ -223,7 +223,7 @@ rule CreateBoundOperationForEntityTypeOutputParameter
     to t: JUDOPSM!Parameter
     extends AbstractTransferActionDeclarationReturnParameter {
 
-      guard: s.eContainer.map.isDefined() and s.`return`.isDefined() and not s.static
+      guard: s.eContainer.map.isDefined() and s.`return`.isDefined() and not s.isStatic()
 
       t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForEntityTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationEntityOutput");
@@ -239,7 +239,7 @@ rule CreateBoundOperationForMappedTransferObjectType
     to t: JUDOPSM!BoundTransferOperation
     extends AbstractTransferBoundActionDeclaration {
 
-      guard: s.eContainer.map.isDefined() and not s.static
+      guard: s.eContainer.map.isDefined() and not s.isStatic()
 
       t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForMappedTransferObjectType");
       t.binding = s.equivalent("CreateBoundOperationForEntityType");
@@ -253,7 +253,7 @@ rule CreateBoundOperationForMappedTransferObjectTypeInputParameter
     transform s: JSL!TransferActionDeclaration
     to t: JUDOPSM!Parameter
     extends AbstractTransferActionDeclarationInputParameter {
-      guard: s.eContainer.map.isDefined() and s.parameterType.isDefined() and not s.static
+      guard: s.eContainer.map.isDefined() and s.parameterType.isDefined() and not s.isStatic()
 
       t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForMappedTransferObjectTypeInputParameter");
       s.equivalent("CreateBoundOperationForMappedTransferObjectType").input = t;
@@ -266,7 +266,7 @@ rule CreateBoundOperationForMappedTransferObjectTypeOutputParameter
     to t: JUDOPSM!Parameter
     extends AbstractTransferActionDeclarationReturnParameter {
 
-      guard: s.eContainer.map.isDefined() and s.`return`.isDefined() and not s.static
+      guard: s.eContainer.map.isDefined() and s.`return`.isDefined() and not s.isStatic()
 
       t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForMappedTransferObjectTypeOutputParameter");
       s.equivalent("CreateBoundOperationForMappedTransferObjectType").output = t;

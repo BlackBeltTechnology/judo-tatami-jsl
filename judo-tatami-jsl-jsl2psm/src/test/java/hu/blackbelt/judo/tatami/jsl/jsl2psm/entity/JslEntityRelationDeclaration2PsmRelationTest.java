@@ -83,7 +83,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
                         "}\n" +
                         "\n" +
                         "entity Lead {\n" +
-                        "\tfield required Customer customer;\n" +
+                        "\tfield Customer customer required;\n" +
                         "}\n" +
                         "\n" +
                         "entity Customer {\n" +
@@ -138,7 +138,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
                         "\tfield Customer represents;\n" +
                         "}\n" +
                         "entity Lead {\n" +
-                        "\tfield required Customer customer;\n" +
+                        "\tfield Customer customer required;\n" +
                         "}\n" +
                         "\n" +
                         "entity SuperSalesPerson extends SalesPerson {\n" +

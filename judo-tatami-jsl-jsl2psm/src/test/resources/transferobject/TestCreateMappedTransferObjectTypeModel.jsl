@@ -30,7 +30,7 @@ transfer Mapped maps Entity as e {
     field Integer unmappedAttribute;
     
     relation UnmappedRelated unmappedContainment;
-    relation required UnmappedRelated unmappedContainmentRequired;
+    relation UnmappedRelated unmappedContainmentRequired required;
     relation UnmappedRelated[] unmappedContainmentCollection;
 
     field Integer mappedAttribute <= e.attribute update:auto;

@@ -6,7 +6,7 @@ rule CreateCardinalityForRelationDeclaration
       
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForRelationDeclaration");
 
-      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = s.isMany ? -1 : 1;
 }
 
@@ -18,7 +18,7 @@ rule CreateCardinalityForFieldDeclaration
     
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForFieldDeclaration");
 
-      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = s.isMany ? -1 : 1;
 }
 
@@ -64,7 +64,7 @@ rule CreateCardinalityForTransferRelationDeclaration
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferRelationDeclaration");
 
-      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = s.isMany ? -1 : 1;
 }
 

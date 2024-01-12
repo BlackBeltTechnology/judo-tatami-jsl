@@ -9,6 +9,11 @@ operation JSL!TransferRelationDeclaration isAggregation() : Boolean {
 }
 
 @cached
+operation JSL!TransferRelationDeclaration isRequired() : Boolean {
+    return jslUtils.isRequired(self);
+}
+
+@cached
 operation JSL!TransferRelationDeclaration maps(): Boolean {
     return jslUtils.isMaps(self);
 }

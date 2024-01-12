@@ -10,7 +10,7 @@ rule AbstractCreateTransferAttributeForTransferFieldDeclaration
     transform s: JSL!TransferFieldDeclaration
     to t: JUDOPSM!TransferAttribute {
         guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
-        t.required = s.isRequired;
+        t.required = s.isRequired();
         t.name = s.name;
         t.dataType = s.referenceType.getPSMEquivalent();
 }
