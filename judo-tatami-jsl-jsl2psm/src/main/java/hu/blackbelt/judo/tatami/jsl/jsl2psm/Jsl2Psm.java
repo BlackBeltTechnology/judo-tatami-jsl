@@ -134,6 +134,11 @@ public class Jsl2Psm {
         @NonNull
         String defaultReadsNameMidfix = "_Reads_";
 
+        
+        @Builder.Default
+        @NonNull
+        Boolean generateBehaviours = false;
+
     }
 
 
@@ -187,6 +192,7 @@ public class Jsl2Psm {
                             .put("defaultReadsNamePrefix", parameter.defaultReadsNamePrefix)
                             .put("defaultReadsNamePostfix", parameter.defaultReadsNamePostfix)
                             .put("defaultReadsNameMidfix", parameter.defaultReadsNameMidfix)
+                            .put("generateBehaviours", parameter.generateBehaviours)
                             .put("defaultModelName", parameter.jslModel.getName())
                             .put("expressionUtils", new JslExpressionToJqlExpression())
                             .put("ecoreUtil", new EcoreUtil())

@@ -7,3 +7,8 @@ operation JSL!EntityMemberDeclaration isEager() : Boolean {
 operation JSL!EntityMemberDeclaration isCalculated(): Boolean {
     return jslUtils.isCalculated(self);
 }
+
+@cached
+operation JSL!EntityMemberDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "#" + self.name;
+}
