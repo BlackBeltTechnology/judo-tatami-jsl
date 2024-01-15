@@ -16,16 +16,16 @@ transfer MappedTransfer maps Entity as e {
 	
 	relation CreateTransfer[] createEntities <= e.createEntities 
 			create:true 
-			update:true 
-			delete:true;
+			update:false 
+			delete:false;
 			
-	field Binary binaryDerived <= e.binary input: false;
-	field String stringDerived <= e.string input: false;
-	field Boolean booleanDerived <= e.boolean input: false;
-	field Date dateDerived <= e.date input: false;
-	field Numeric numericDerived <= e.numeric input: false;
-	field Time timeDerived <= e.time input: false;
-	field Timestamp timestampDerived <= e.timestamp input: false;	
+	field Binary binaryDerived <= e.binary;
+	field String stringDerived <= e.string;
+	field Boolean booleanDerived <= e.boolean;
+	field Date dateDerived <= e.date;
+	field Numeric numericDerived <= e.numeric;
+	field Time timeDerived <= e.time;
+	field Timestamp timestampDerived <= e.timestamp;	
 
 	field Binary binaryTransient;
 	field String stringTransient;
@@ -35,13 +35,13 @@ transfer MappedTransfer maps Entity as e {
 	field Time timeTransient;
 	field Timestamp timestampTransient;	
 
-	field Binary binaryMapped <= e.binary input: true;
-	field String stringMapped <= e.string input: true;
-	field Boolean booleanMapped <= e.boolean input: true;
-	field Date dateMapped <= e.date input: true;
-	field Numeric numericMapped <= e.numeric input: true;
-	field Time timeMapped <= e.time input: true;
-	field Timestamp timestampMapped <= e.timestamp input: true;	
+	field Binary binaryMapped <= e.binary update: auto;
+	field String stringMapped <= e.string update: auto;
+	field Boolean booleanMapped <= e.boolean update: auto;
+	field Date dateMapped <= e.date update: auto;
+	field Numeric numericMapped <= e.numeric update: auto;
+	field Time timeMapped <= e.time update: auto;
+	field Timestamp timestampMapped <= e.timestamp update: auto;	
 
 }
 
