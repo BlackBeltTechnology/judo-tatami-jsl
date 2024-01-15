@@ -424,7 +424,7 @@ public class JslExpressionToJqlExpression {
 
     private String getJql(final BooleanLiteral it) {
         return it != null
-                ? Boolean.toString(it.isIsTrue())
+                ? Boolean.toString(it.isTrue())
                 : null;
     }
 

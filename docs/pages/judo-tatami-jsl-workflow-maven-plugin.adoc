@@ -432,12 +432,12 @@ entity Customer {
 
         <dependency>
             <groupId>hu.blackbelt.judo.runtime</groupId>
-            <artifactId>judo-runtime-core-bootstrap-hsqldb</artifactId>
+            <artifactId>judo-runtime-core-guice-hsqldb</artifactId>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.runtime</groupId>
-            <artifactId>judo-runtime-core-bootstrap-postgresql</artifactId>
+            <artifactId>judo-runtime-core-guice-postgresql</artifactId>
         </dependency>
 
         <dependency>
@@ -500,9 +500,9 @@ package hu.blackbelt.judo.test.salesmodel;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import hu.blackbelt.judo.runtime.core.bootstrap.JudoDefaultModule;
-import hu.blackbelt.judo.runtime.core.bootstrap.JudoModelHolder;
-import hu.blackbelt.judo.runtime.core.bootstrap.dao.rdbms.hsqldb.JudoHsqldbModules;
+import hu.blackbelt.judo.runtime.core.guice.JudoDefaultModule;
+import hu.blackbelt.judo.runtime.core.guice.JudoModelHolder;
+import hu.blackbelt.judo.runtime.core.guice.dao.rdbms.hsqldb.JudoHsqldbModules;
 import hu.blackbelt.judo.runtime.core.dao.rdbms.hsqldb.HsqldbDialect;
 import hu.blackbelt.judo.test.salesmodel.daoprovider.salesmodel.SalesModelDaoModules;
 import hu.blackbelt.judo.test.salesmodel.sdk.salesmodel.salesmodel.Person;
