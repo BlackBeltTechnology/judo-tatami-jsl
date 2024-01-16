@@ -10,11 +10,15 @@ rule AbstractCreateTransferObjectRelationForTransferRelationDeclaration
         t.name = s.name;
         t.target = s.getReferenceType().getPSMEquivalent();
 
-        // TODO:
-        // t.embeddedCreate = not s.eContainer.isAbstract;
-        // t.embeddedUpdate = not s.eContainer.isAbstract;
-        // t.embeddedDelete = not s.eContainer.isAbstract;
-
+        if (s.isCreateAllowed()) {
+            t.embeddedCreate = true;
+        }
+        if (s.isUpdateAllowed()) {
+            t.embeddedUpdate = true;
+        }
+        if (s.isDeleteAllowed()) {
+            t.embeddedDelete = true;
+        }
         t.embedded = s.isAggregation();
 }
 

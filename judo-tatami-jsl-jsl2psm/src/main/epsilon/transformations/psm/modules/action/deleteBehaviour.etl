@@ -1,0 +1,42 @@
+import "../../../../operations/_importAll.eol";
+
+
+@greedy
+rule CreateDeleteOperationForEntityType
+    transform s: JSL!TransferDeleteDeclaration
+    to t: JUDOPSM!BoundOperation {
+      guard: generateBehaviours and s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateDeleteOperationForEntityType");
+      t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      t.name = s.name + s.eContainer.getFqName().fqNameToCamelCase();
+      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      log.debug("Created CreateDeleteOperationForEntityType: " + t.name);
+}
+
+@greedy
+rule CreateDeleteBehaviourForTransferType
+    transform s: JSL!TransferDeleteDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+      guard: generateBehaviours and s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateDeleteBehaviourForTransferType");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#DELETE_INSTANCE;
+      t.owner = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      log.debug("Created CreateDeleteBehaviourForTransferType: " + s.name);
+}
+
+@greedy
+rule CreateDeleteOperationForTransferType
+    transform s: JSL!TransferDeleteDeclaration
+    to t: JUDOPSM!BoundTransferOperation {
+      guard: generateBehaviours and s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateDeleteOperationForTransferType");
+      t.name = s.name;
+      t.binding = s.equivalent("CreateDeleteOperationForEntityType");
+      t.behaviour = s.equivalent("CreateDeleteBehaviourForTransferType");
+      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      log.debug("Created CreateDeleteOperationForTransferType: " + t.name);      
+}
+
