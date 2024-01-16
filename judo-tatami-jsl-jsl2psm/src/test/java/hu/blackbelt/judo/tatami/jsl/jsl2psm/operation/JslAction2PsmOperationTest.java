@@ -101,7 +101,7 @@ public class JslAction2PsmOperationTest extends AbstractTest {
 
 
         assertMappedTransferObject("MappedTransfer");
-        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(18));
+        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(19));
 
         assertOperation("MappedTransfer", "voidAction", true, false, false, false, false);
         assertOperation("MappedTransfer", "staticVoidAction", false, false, false, false, false);
@@ -128,13 +128,17 @@ public class JslAction2PsmOperationTest extends AbstractTest {
     	assertThat(assertTransferObjectOperation("UnmappedInputParameter", "default").getBehaviour().getBehaviourType(),  
     			equalTo(TransferOperationBehaviourType.GET_TEMPLATE));
 
-    	assertThat(assertMappedTransferObject("MappedInputParameter").getOperations().size(),  equalTo(0));
+    	assertThat(assertMappedTransferObject("MappedInputParameter").getOperations().size(),  equalTo(1));
+    	assertThat(assertTransferObjectOperation("MappedInputParameter", "refreshInstance").getBehaviour().getBehaviourType(),  
+    			equalTo(TransferOperationBehaviourType.REFRESH));
 
     
         assertMappedTransferObject("MappedFaultTransfer");
-        assertThat(assertMappedTransferObject("MappedFaultTransfer").getOperations().size(), equalTo(2));
+        assertThat(assertMappedTransferObject("MappedFaultTransfer").getOperations().size(), equalTo(3));
         assertOperationFaults("MappedFaultTransfer", "faults");
         assertOperationFaults("MappedFaultTransfer", "staticFaults");
+    	assertThat(assertTransferObjectOperation("MappedFaultTransfer", "refreshInstance").getBehaviour().getBehaviourType(),  
+    			equalTo(TransferOperationBehaviourType.REFRESH));
         
         assertUnmappedTransferObject("UnmappedFaultTransfer");
         assertThat(assertUnmappedTransferObject("UnmappedFaultTransfer").getOperations().size(), equalTo(1));
