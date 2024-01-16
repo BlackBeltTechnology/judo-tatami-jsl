@@ -57,7 +57,6 @@ entity Entity {
 }
 
 
-
 transfer CreateTransfer maps CreateEntity as e {
 	event instead create createInstance;		
 }
