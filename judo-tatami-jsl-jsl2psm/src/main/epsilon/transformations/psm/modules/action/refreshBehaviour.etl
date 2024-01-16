@@ -1,15 +1,14 @@
 import "../../../../operations/_importAll.eol";
 
-/*
 @greedy
 rule CreateRefreshOperationForEntityType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!BoundOperation {
-      guard: s.isRefreshSupported()
+      guard: generateBehaviours and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForEntityType");
       t.instanceRepresentation = s.equivalent("CreateMappedTransferObjectType");
-      t.name = s.name + s.getFqName().fqNameToCamelCase();
+      t.name = "Refresh" + s.getFqName().fqNameToCamelCase();
       s.map.entity.getPSMEquivalent().operations.add(t);
       log.debug("Created CreateRefreshOperationForEntityType: " + t.name);
 }
@@ -18,10 +17,10 @@ rule CreateRefreshOperationForEntityType
 rule CreateRefreshBehaviourForTransferType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!TransferOperationBehaviour {
-      guard: s.isRefreshSupported()
+      guard: generateBehaviours and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshBehaviourForTransferType");
-      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#REFRESH_INSTANCE;
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#REFRESH;
       t.owner = s.equivalent("CreateMappedTransferObjectType");
       log.debug("Created CreateRefreshBehaviourForTransferType: " + s.name);
 }
@@ -30,10 +29,10 @@ rule CreateRefreshBehaviourForTransferType
 rule CreateRefreshOperationForTransferType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!BoundTransferOperation {
-      guard: s.isRefreshSupported()
+      guard: generateBehaviours and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForTransferType");
-      t.name = s.name;
+      t.name = "refreshInstance";
       t.binding = s.equivalent("CreateRefreshOperationForEntityType");
       t.behaviour = s.equivalent("CreateRefreshBehaviourForTransferType");
       s.equivalent("CreateMappedTransferObjectType").operations.add(t);
@@ -45,12 +44,12 @@ rule CreateRefreshOperationForTransferType
 rule CreateRefreshOperationForTransferTypeInputParameter
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!Parameter {
-      guard: s.isRefreshSupported()
+      guard: generateBehaviours and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForTransferTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRefreshTransferTypeInput");
       t.name = "input";
-	  t.type = s.getPSMEquivalent();
+	  t.type = s.equivalent("CreateQueryCustomizerType");
       s.equivalent("CreateRefreshOperationForTransferType").input = t;
       log.debug("Created CreateRefreshOperationForTransferTypeInputParameter: " + t.name);
 }
@@ -59,7 +58,7 @@ rule CreateRefreshOperationForTransferTypeInputParameter
 rule CreateRefreshOperationForTransferTypeOutputParameter
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!Parameter {
-      guard: s.isRefreshSupported()
+      guard: generateBehaviours and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForTransferTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRefreshTransferTypeOutput");
@@ -73,12 +72,12 @@ rule CreateRefreshOperationForTransferTypeOutputParameter
 rule CreateRefreshOperationForEntityTypeInputParameter
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!Parameter {
-      guard: s.isRefreshSupported()
+      guard: generateBehaviours and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRefreshEntityTypeInput");
       t.name = "input";
-	  t.type = s.getPSMEquivalent();
+	  t.type = s.equivalent("CreateQueryCustomizerType");
       s.equivalent("CreateRefreshOperationForEntityType").input = t;
       log.debug("Created CreateRefreshOperationForEntityTypeInputParameter: " + t.name);
 }
@@ -87,7 +86,7 @@ rule CreateRefreshOperationForEntityTypeInputParameter
 rule CreateRefreshOperationForEntityTypeOutputParameter
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!Parameter {
-      guard: s.isRefreshSupported()
+      guard: generateBehaviours and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForEntityTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRefreshEntityTypeOutput");
@@ -101,7 +100,7 @@ rule CreateRefreshOperationForEntityTypeOutputParameter
 @lazy
 @greedy
 rule CreateCardinalityForRefreshTransferTypeInput
-    transform s : JSL!TransferDeclaration
+    transform s: JSL!TransferDeclaration
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForRefreshTransferTypeInput");
 
@@ -112,7 +111,7 @@ rule CreateCardinalityForRefreshTransferTypeInput
 @lazy
 @greedy
 rule CreateCardinalityForRefreshTransferTypeOutput
-    transform s : JSL!TransferDeclaration
+    transform s: JSL!TransferDeclaration
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForRefreshTransferTypeOutput");
 
@@ -123,7 +122,7 @@ rule CreateCardinalityForRefreshTransferTypeOutput
 @lazy
 @greedy
 rule CreateCardinalityForRefreshEntityTypeInput
-    transform s : JSL!TransferDeclaration
+    transform s: JSL!TransferDeclaration
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForRefreshEntityTypeInput");
 
@@ -134,7 +133,7 @@ rule CreateCardinalityForRefreshEntityTypeInput
 @lazy
 @greedy
 rule CreateCardinalityForRefreshEntityTypeOutput
-    transform s : JSL!TransferDeclaration
+    transform s: JSL!TransferDeclaration
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForRefreshEntityTypeOutput");
 
@@ -142,75 +141,3 @@ rule CreateCardinalityForRefreshEntityTypeOutput
       t.upper = 1;
 }
 
-*/
-
-/*
-@greedy
-rule CreateRefreshOperationForTransferObjectType
-    transform s : ESM!TransferObjectType
-    to t : JUDOPSM!BoundOperation {
-        guard: esmUtils.isRefreshSupported(s)
-
-        t.setId("(esm/" + s.getId() + ")/RefreshOperationForTransferObjectType");
-
-        t.name = "_refreshInstance" + "For" + esmUtils.getNamespaceElementFQName(s).replace("::", "_").firstToUpperCase();
-        t.instanceRepresentation = s.getPSMTransferObjectTypeEquivalent();
-
-        t.input = new JUDOPSM!Parameter;
-        t.input.setId("(esm/" + s.getId() + ")/RefreshOperationForTransferObjectType/Input");
-        t.input.name = "input";
-        t.input.type = s.equivalent("CreateQueryCustomizerType");
-        t.input.cardinality = new JUDOPSM!Cardinality;
-        t.input.cardinality.setId("(esm/" + s.getId() + ")/RefreshOperationForTransferObjectType/Input/Cardinality");
-        t.input.cardinality.lower = 0;
-        t.input.cardinality.upper = 1;
-
-        t.output = new JUDOPSM!Parameter;
-        t.output.setId("(esm/" + s.getId() + ")/RefreshOperationForTransferObjectType/Output");
-        t.output.name = "output";
-        t.output.type = s.getPSMTransferObjectTypeEquivalent();
-        t.output.cardinality = new JUDOPSM!Cardinality;
-        t.output.cardinality.setId("(esm/" + s.getId() + ")/RefreshOperationForTransferObjectType/Output/Cardinality");
-        t.output.cardinality.lower = 1;
-        t.output.cardinality.upper = 1;
-
-        s.mapping.target.equivalent("CreateEntityType").operations.add(t);
-}
-
-@greedy
-rule CreateRefreshTransferOperationForTransferObjectType
-    transform s : ESM!TransferObjectType
-    to t : JUDOPSM!BoundTransferOperation {
-        guard: esmUtils.isRefreshSupported(s)
-
-        t.setId("(esm/" + s.getId() + ")/RefreshTransferOperationForTransferObjectType");
-
-        t.name = "_refreshInstance" + esmUtils.getNamespaceElementFQName(s).replace("::", "_").firstToUpperCase();
-        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
-        t.behaviour.setId("(esm/" + s.getId() + ")/RefreshTransferOperationForTransferObjectType/Behaviour");
-        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#REFRESH;
-        t.behaviour.owner = s.getPSMTransferObjectTypeEquivalent();
-
-        t.input = new JUDOPSM!Parameter;
-        t.input.setId("(esm/" + s.getId() + ")/RefreshTransferOperationForTransferObjectType/Input");
-        t.input.name = "input";
-        t.input.type = s.equivalent("CreateQueryCustomizerType");
-        t.input.cardinality = new JUDOPSM!Cardinality;
-        t.input.cardinality.setId("(esm/" + s.getId() + ")/RefreshTransferOperationForTransferObjectType/Input/Cardinality");
-        t.input.cardinality.lower = 0;
-        t.input.cardinality.upper = 1;
-
-        t.output = new JUDOPSM!Parameter;
-        t.output.setId("(esm/" + s.getId() + ")/RefreshTransferOperationForTransferObjectType/Output");
-        t.output.name = "output";
-        t.output.type = s.getPSMTransferObjectTypeEquivalent();
-        t.output.cardinality = new JUDOPSM!Cardinality;
-        t.output.cardinality.setId("(esm/" + s.getId() + ")/RefreshTransferOperationForTransferObjectType/Output/Cardinality");
-        t.output.cardinality.lower = 1;
-        t.output.cardinality.upper = 1;
-
-        t.binding = s.equivalent("CreateRefreshOperationForTransferObjectType");
-
-        s.getPSMTransferObjectTypeEquivalent().operations.add(t);
-}
-*/
