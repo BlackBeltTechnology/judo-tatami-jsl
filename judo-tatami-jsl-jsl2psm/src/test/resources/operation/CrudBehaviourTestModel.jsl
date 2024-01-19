@@ -15,9 +15,10 @@ transfer MappedTransfer maps Entity as e {
 	event instead create createInstance;	
 	
 	relation CreateTransfer[] createEntities <= e.createEntities 
-			create:true 
-			update:false 
-			delete:false;
+			create: true 
+			update: false 
+			delete: false 
+			choices: CreateEntity.all();
 			
 	field Binary binaryDerived <= e.binary;
 	field String stringDerived <= e.string;

@@ -42,6 +42,11 @@ operation JSL!TransferRelationDeclaration isDeleteAllowed() : Boolean {
 }
 
 @cached
+operation JSL!TransferRelationDeclaration isChoiceDefined() : Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!TransferChoiceModifier));
+}
+
+@cached
 operation JSL!TransferRelationDeclaration isAddReferenceAllowed() : Boolean {
     var lower = self.isRequired and not self.isMany ? 1 : 0;
     var upper = self.isMany ? -1 : 1;
@@ -66,3 +71,22 @@ operation JSL!TransferRelationDeclaration isSetReferenceAllowed() : Boolean {
 operation JSL!TransferRelationDeclaration isUnsetReferenceAllowed() : Boolean {
 	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired;
 }
+
+@cached
+operation JSL!TransferRelationDeclaration isGetRangeSupported() : Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!TransferChoiceModifier));	
+}
+
+@cached
+operation JSL!TransferRelationDeclaration getPSMRangeEquivalent(): JUDOPSM!ReferenceAccessor {
+	  var choice = self.modifiers.selectOne(m | m.isTypeOf(JSL!TransferChoiceModifier));
+
+      if (choice.isDefined() and self.eContainer.map.isDefined()) {
+          return choice.equivalent("CreateRelationRangeNavigationPropertyForMappedTransferObjectRelation");
+      } else if (choice.isDefined()) {
+          return choice.equivalent("CreateRelationRangStaticNavigationForUnmappedTransferObjectRelation");
+      } else {
+      	throw "No choice defined";
+      }
+}
+
