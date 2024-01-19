@@ -1,0 +1,289 @@
+
+/*
+@lazy
+@greedy
+rule CreateNavigationPropertyForInputParameterRange
+    transform s : JSL!TransferActionDeclaration
+    to t : JUDOPSM!NavigationProperty {
+
+        t.setId("(esm/" + s.getId() + ")/NavigationPropertyForInputParameterRange");
+
+        t.target = s.target.mapping.target.getPSMEquivalent();
+        t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
+        t.name = "_" + s.eContainer.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer.eContainer).replace("::","_");
+
+        if (s.rangeType == ESM!RangeType#ANY) {
+            t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterAnyRange");
+        } else {
+            t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterDerivedRange");
+        }
+
+        s.eContainer.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
+}
+
+@lazy
+@greedy
+rule CreateStaticNavigationForInputParameterRange
+    transform s: JSL!TransferActionDeclaration
+    to t : JUDOPSM!StaticNavigation {
+
+      t.setId("(esm/" + s.getId() + ")/StaticNavigationForInputParameterRange");
+
+      var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+      ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);
+      t.name = "_" + s.eContainer.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer.eContainer).replace("::","_");
+      t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
+
+      if (s.rangeType == ESM!RangeType#ANY) {
+          t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterAnyRange");
+      } else {
+          t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterDerivedRange");
+      }
+      t.target = s.target.mapping.target.getPSMEquivalent();
+      log.debug("Created StaticNavigation for input parameter of static operation: " + t.name);
+}
+*/
+/*
+@greedy
+rule CreateUpdateOperationForEntityType
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!BoundOperation {
+      guard: s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUpdateOperationForEntityType");
+      t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      t.name = s.name + s.eContainer.getFqName().fqNameToCamelCase();
+      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      log.debug("Created CreateUpdateOperationForEntityType: " + t.name);
+}
+
+@greedy
+rule CreateUpdateBehaviourForTransferType
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+      guard: s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUpdateBehaviourForTransferType");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#UPDATE_INSTANCE;
+      t.owner = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      log.debug("Created CreateUpdateBehaviourForTransferType: " + s.name);
+}
+
+@greedy
+rule CreateUpdateOperationForTransferType
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!BoundTransferOperation {
+      guard: s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUpdateOperationForTransferType");
+      t.name = s.name;
+      t.binding = s.equivalent("CreateUpdateOperationForEntityType");
+      t.behaviour = s.equivalent("CreateUpdateBehaviourForTransferType");
+      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      log.debug("Created CreateUpdateOperationForTransferType: " + t.name);      
+}
+
+
+@greedy
+rule CreateUpdateOperationForTransferTypeInputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUpdateOperationForTransferTypeInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForUpdateTransferTypeInput");
+      t.name = "input";
+	  t.type = s.eContainer.getPSMEquivalent();
+      s.equivalent("CreateUpdateOperationForTransferType").input = t;
+      log.debug("Created CreateUpdateOperationForTransferTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateUpdateOperationForTransferTypeOutputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUpdateOperationForTransferTypeOutputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForUpdateTransferTypeOutput");
+      t.name = "return";
+	  t.type = s.eContainer.getPSMEquivalent();
+      s.equivalent("CreateUpdateOperationForTransferType").output = t;
+      log.debug("Created CreateUpdateOperationForTransferTypeOutputParameter: " + t.name);
+}
+
+@greedy
+rule CreateUpdateOperationForEntityTypeInputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUpdateOperationForEntityTypeInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForUpdateEntityTypeInput");
+      t.name = "input";
+	  t.type = s.eContainer.getPSMEquivalent();
+      s.equivalent("CreateUpdateOperationForEntityType").input = t;
+      log.debug("Created CreateUpdateOperationForEntityTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateUpdateOperationForEntityTypeOutputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUpdateOperationForEntityTypeOutputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForUpdateEntityTypeOutput");
+      t.name = "return";
+	  t.type = s.eContainer.getPSMEquivalent();
+      s.equivalent("CreateUpdateOperationForEntityType").output = t;
+      log.debug("Created CreateUpdateOperationForEntityTypeOutputParameter: " + t.name);
+}
+
+
+@lazy
+@greedy
+rule CreateCardinalityForUpdateTransferTypeInput
+    transform s : JSL!TransferActionDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForUpdateTransferTypeInput");
+
+      t.lower = 1;
+      t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForUpdateTransferTypeOutput
+    transform s : JSL!TransferActionDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForUpdateTransferTypeOutput");
+
+      t.lower = 1;
+      t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForUpdateEntityTypeInput
+    transform s : JSL!TransferActionDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForUpdateEntityTypeInput");
+
+      t.lower = 1;
+      t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForUpdateEntityTypeOutput
+    transform s : JSL!TransferUpdateDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForUpdateEntityTypeOutput");
+
+      t.lower = 1;
+      t.upper = 1;
+}
+
+*/
+
+
+
+/*
+@greedy
+rule CreateRangeTransferObjectRelationForInputParameter
+    transform s : ESM!Parameter
+    to t : JUDOPSM!TransferObjectRelation {
+        guard: s.eContainer.isKindOf(ESM!Operation) and s.eContainer.eContainer.isKindOf(ESM!TransferObjectType) and esmUtils.isGetRangeSupported(s)
+
+        t.setId("(esm/" + s.getId() + ")/RangeTransferObjectRelationForInput");
+
+        t.name = s.getPSMRangeEquivalent().name;
+        t.cardinality = new JUDOPSM!Cardinality;
+        t.cardinality.setId("(esm/" + s.getId() + ")/RangeTransferObjectRelationForInput/Cardinality");
+        t.cardinality.lower = 0;
+        t.cardinality.upper = -1;
+        t.target = s.target.getPSMTransferObjectTypeEquivalent();
+        t.binding = s.getPSMRangeEquivalent();
+        t.range = s.getPSMRangeEquivalent();
+
+        s.eContainer.eContainer.getPSMTransferObjectTypeEquivalent().relations.add(t);
+}
+
+operation ESM!Parameter getPSMRangeEquivalent(): JUDOPSM!ReferenceAccessor {
+      if (self.eContainer().eContainer().isMapped()) {
+          return self.equivalent("CreateNavigationPropertyForInputParameterRange");
+      } else {
+          return self.equivalent("CreateStaticNavigationForInputParameterRange");
+      }
+}
+
+
+@lazy
+@greedy
+rule CreateNavigationPropertyForInputParameterRange
+    transform s : ESM!Parameter
+    to t : JUDOPSM!NavigationProperty
+    extends CreateNamedElement {
+        guard: esmUtils.isGetRangeSupported(s) and s.eContainer.eContainer.isMapped()
+
+        t.setId("(esm/" + s.getId() + ")/NavigationPropertyForInputParameterRange");
+
+        t.target = s.target.mapping.target.getPSMEquivalent();
+        t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
+        t.name = "_" + s.eContainer.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer.eContainer).replace("::","_");
+
+        if (s.rangeType == ESM!RangeType#ANY) {
+            t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterAnyRange");
+        } else {
+            t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterDerivedRange");
+        }
+
+        s.eContainer.eContainer.mapping.target.getPSMEquivalent().navigationProperties.add(t);
+}
+
+@lazy
+@greedy
+rule CreateStaticNavigationForInputParameterRange
+    transform s: ESM!Parameter
+    to t : JUDOPSM!StaticNavigation
+    extends CreateNamedElement {
+      guard: esmUtils.isGetRangeSupported(s) and not s.eContainer.eContainer.isMapped()
+
+      t.setId("(esm/" + s.getId() + ")/StaticNavigationForInputParameterRange");
+
+      var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+      ecoreUtil.getRootContainer(s).equivalent("CreateGeneratedNavigationRootPackage").elements.add(t);
+      t.name = "_" + s.eContainer.name + "_range_" + esmUtils.getNamespaceElementFQName(s.eContainer.eContainer).replace("::","_");
+      t.cardinality = s.equivalent("CreateCardinalityForTransferObjectRelationRange");
+
+      if (s.rangeType == ESM!RangeType#ANY) {
+          t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterAnyRange");
+      } else {
+          t.getterExpression = s.equivalent("CreateGetterExpressionForInputParameterDerivedRange");
+      }
+      t.target = s.target.mapping.target.getPSMEquivalent();
+      log.debug("Created StaticNavigation for input parameter of static operation: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateGetterExpressionForInputParameterDerivedRange
+    transform s : ESM!Parameter
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.setId("(esm/" + s.getId() + ")/GetterExpressionForInputParameterDerivedRange");
+        t.expression = s.rangeExpression;
+        log.debug("Created Reference Expression Type for Input Parameter Range: " + s.name);
+}
+
+@lazy
+@greedy
+rule CreateGetterExpressionForInputParameterAnyRange
+    transform s : ESM!Parameter
+    to t : JUDOPSM!ReferenceExpressionType {
+        t.setId("(esm/" + s.getId() + ")/GetterExpressionForInputParameterAnyRange");
+        t.expression = esmUtils.getNamespaceElementFQName(s.target.mapping.target);
+        log.debug("Created Reference Expression Type for Input Parameter Range: " + s.name);
+}
+
+*/

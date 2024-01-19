@@ -25,6 +25,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.service.BoundTransferOperation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperation;
+import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,11 @@ import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 @Slf4j
 public class JslAction2PsmOperationTest extends AbstractTest {
     private static final String TARGET_TEST_CLASSES = "target/test-classes/operation";
+
+    @Override
+	public boolean generateBehaviours() {
+    	return true;
+    }
 
     @Override
     protected String getTargetTestClasses() {
@@ -95,7 +101,7 @@ public class JslAction2PsmOperationTest extends AbstractTest {
 
 
         assertMappedTransferObject("MappedTransfer");
-        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(18));
+        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(19));
 
         assertOperation("MappedTransfer", "voidAction", true, false, false, false, false);
         assertOperation("MappedTransfer", "staticVoidAction", false, false, false, false, false);
@@ -116,11 +122,23 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         assertOperation("MappedTransfer", "mappedOutputActionWithMappedInput", true, true, true, true, true);
         assertOperation("MappedTransfer", "staticMappedOutputActionWithMappedInput", false, true, true, true, true);
 
+
+    	assertThat(assertUnmappedTransferObject("UnmappedInputParameter").getOperations().size(),  equalTo(1));
+    	assertThat(assertTransferObjectOperation("UnmappedInputParameter", "default"),  instanceOf(UnboundOperation.class));
+    	assertThat(assertTransferObjectOperation("UnmappedInputParameter", "default").getBehaviour().getBehaviourType(),  
+    			equalTo(TransferOperationBehaviourType.GET_TEMPLATE));
+
+    	assertThat(assertMappedTransferObject("MappedInputParameter").getOperations().size(),  equalTo(1));
+    	assertThat(assertTransferObjectOperation("MappedInputParameter", "refreshInstance").getBehaviour().getBehaviourType(),  
+    			equalTo(TransferOperationBehaviourType.REFRESH));
+
     
         assertMappedTransferObject("MappedFaultTransfer");
-        assertThat(assertMappedTransferObject("MappedFaultTransfer").getOperations().size(), equalTo(2));
+        assertThat(assertMappedTransferObject("MappedFaultTransfer").getOperations().size(), equalTo(3));
         assertOperationFaults("MappedFaultTransfer", "faults");
         assertOperationFaults("MappedFaultTransfer", "staticFaults");
+    	assertThat(assertTransferObjectOperation("MappedFaultTransfer", "refreshInstance").getBehaviour().getBehaviourType(),  
+    			equalTo(TransferOperationBehaviourType.REFRESH));
         
         assertUnmappedTransferObject("UnmappedFaultTransfer");
         assertThat(assertUnmappedTransferObject("UnmappedFaultTransfer").getOperations().size(), equalTo(1));

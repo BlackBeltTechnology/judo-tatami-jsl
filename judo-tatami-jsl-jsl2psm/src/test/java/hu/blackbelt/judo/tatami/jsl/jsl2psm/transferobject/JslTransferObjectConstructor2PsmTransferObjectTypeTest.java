@@ -211,7 +211,7 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
         assertEquals(mappedIdentifierAncestorEntityDefaultAttribute.getBinding(), mappedIdentifierAncestorEntityDefaultDefault);
 
         
-        assertEquals(12, assertMappedTransferObject("Mapped").getRelations().size());
+        assertEquals(16, assertMappedTransferObject("Mapped").getRelations().size());
 
         TransferObjectRelation mappedAssociation = assertMappedTransferObjectRelation("Mapped", "mappedAssociation");
         assertFalse(mappedAssociation.isRequired());
