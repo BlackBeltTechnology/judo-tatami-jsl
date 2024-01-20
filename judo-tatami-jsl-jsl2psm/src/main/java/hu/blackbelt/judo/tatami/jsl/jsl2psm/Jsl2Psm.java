@@ -146,6 +146,17 @@ public class Jsl2Psm {
         @NonNull
         String defaultRelationRangeNameMidfix = "_RelationRange_";
 
+        @Builder.Default
+        @NonNull
+        String defaultActionInputParameterRangeNamePrefix = "_";
+
+        @Builder.Default
+        @NonNull
+        String defaultActionInputParameterRangeNamePostfix = "";
+
+        @Builder.Default
+        @NonNull
+        String defaultActionInputParameterRangeNameMidfix = "_ActionInputParameterRange_";
         
         @Builder.Default
         @NonNull
@@ -207,6 +218,9 @@ public class Jsl2Psm {
                             .put("defaultRelationRangeNamePrefix", parameter.defaultRelationRangeNamePrefix)
                             .put("defaultRelationRangeNamePostfix", parameter.defaultRelationRangeNamePostfix)
                             .put("defaultRelationRangeNameMidfix", parameter.defaultRelationRangeNameMidfix)
+                            .put("defaultActionInputParameterRangeNamePrefix", parameter.defaultActionInputParameterRangeNamePrefix)
+                            .put("defaultActionInputParameterRangeNamePostfix", parameter.defaultActionInputParameterRangeNamePostfix)
+                            .put("defaultActionInputParameterRangeNameMidfix", parameter.defaultActionInputParameterRangeNameMidfix)                            
                             .put("generateBehaviours", parameter.generateBehaviours)
                             .put("defaultModelName", parameter.jslModel.getName())
                             .put("expressionUtils", new JslExpressionToJqlExpression())

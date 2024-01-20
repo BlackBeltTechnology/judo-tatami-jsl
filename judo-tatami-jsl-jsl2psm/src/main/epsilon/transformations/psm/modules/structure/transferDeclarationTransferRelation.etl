@@ -201,7 +201,7 @@ rule CreateRelationRangeTransferObjectRelation
     to t : JUDOPSM!TransferObjectRelation {
         guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.isGetRangeSupported()
 
-        t.setId("(esm/" + s.getId() + ")/RangeTransferObjectRelation");
+        t.setId("(esm/" + s.getId() + ")/CreateRelationRangeTransferObjectRelation");
 
         t.name = s.eContainer.getPSMRangeEquivalent().name;
         t.cardinality = s.eContainer.equivalent("CreateCardinalityForGetRelationRangeTransferObjectRelation");
