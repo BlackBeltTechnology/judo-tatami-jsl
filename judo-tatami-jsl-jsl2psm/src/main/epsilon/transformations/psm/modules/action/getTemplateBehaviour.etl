@@ -21,10 +21,10 @@ rule CreateGetTemplateOperationForTransferType
       guard: generateBehaviours and s.isGetTemplateSupported()
 
       t.setId("(jsl/" + s.getId() + ")/CreateGetTemplateOperationForTransferType");
-      if (not s.members.exists(m | m.name == "default")) {
-	      t.name = "default";
-      } else {
-      	  t.name = "_default";
+      
+      t.name = "default";
+      if (s.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
       }
       
       t.immutable = true;

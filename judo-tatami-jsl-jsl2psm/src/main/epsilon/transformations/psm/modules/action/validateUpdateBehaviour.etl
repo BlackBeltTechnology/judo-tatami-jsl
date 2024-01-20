@@ -35,6 +35,9 @@ rule CreateValidateUpdateOperationForTransferType
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForTransferType");
       t.name = "validate" + s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
       t.binding = s.equivalent("CreateValidateUpdateOperationForEntityType");
       t.behaviour = s.equivalent("CreateValidateUpdateBehaviourForTransferType");
       s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);

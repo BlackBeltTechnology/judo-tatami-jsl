@@ -29,6 +29,8 @@ import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviour;
 import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -87,82 +89,218 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
         transform();
 
         assertMappedTransferObject("MappedTransfer");
-        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(15));
+        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(19));
 
-        assertCrudOperation("MappedTransfer", "deleteInstance",
-        		TransferOperationBehaviourType.DELETE_INSTANCE, true, null, false, null, false);
-        assertCrudOperation("MappedTransfer", "updateInstance",
-        		TransferOperationBehaviourType.UPDATE_INSTANCE, true, "MappedTransfer", true, "MappedTransfer", true);
-        assertCrudOperation("MappedTransfer", "validateUpdateInstance",
-        		TransferOperationBehaviourType.VALIDATE_UPDATE, true, "MappedTransfer", true, "MappedTransfer", true);
-
-        assertCrudOperation("MappedTransfer", "createInstanceForRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
-        		TransferOperationBehaviourType.CREATE_INSTANCE, true, "CreateTransfer", true, "CreateTransfer", true);    
-        assertCrudOperation("MappedTransfer", "validateCreateInstanceForRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
-        		TransferOperationBehaviourType.VALIDATE_CREATE, true, "CreateTransfer", true, "CreateTransfer", true);    
-
-        assertCrudOperation("MappedTransfer", "default", 
-        		TransferOperationBehaviourType.GET_TEMPLATE, false, null, false, "MappedTransfer", true);
-  
-        assertCrudOperation("MappedTransfer", "getUploadTokenForBinaryMapped", 
-        		TransferOperationBehaviourType.GET_UPLOAD_TOKEN, false, null, false, "UploadToken", false);
-
-        assertCrudOperation("MappedTransfer", "getUploadTokenForBinaryTransient", 
-        		TransferOperationBehaviourType.GET_UPLOAD_TOKEN, false, null, false, "UploadToken", false);
-
-        assertCrudOperation("MappedTransfer", "addReferencesToRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
-        		TransferOperationBehaviourType.ADD_REFERENCE, true, "CreateTransfer", true, null, false);    
-
-        assertCrudOperation("MappedTransfer", "setReferencesOfRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
-        		TransferOperationBehaviourType.SET_REFERENCE, true, "CreateTransfer", true, null, false);    
-
-        assertCrudOperation("MappedTransfer", "removeReferencesFromRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
-        		TransferOperationBehaviourType.REMOVE_REFERENCE, true, "CreateTransfer", true, null, false);    
-
-        assertCrudOperation("MappedTransfer", "unsetReferencesOfRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
-        		TransferOperationBehaviourType.UNSET_REFERENCE, true, "CreateTransfer", true, null, false);    
-
-        assertCrudOperation("MappedTransfer", "refreshInstance",
-        		TransferOperationBehaviourType.REFRESH, true, "_MappedTransferQueryCustomizer", false, "MappedTransfer", true);
-
-        assertCrudOperation("MappedTransfer", "listRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
-        		TransferOperationBehaviourType.LIST, true, "_CreateTransferQueryCustomizer", false, "CreateTransfer", true);    
-
-        assertCrudOperation("MappedTransfer", "getRangeForRelationCrudBehaviourTestModelMappedTransferCreateEntities", 
-        		TransferOperationBehaviourType.GET_RANGE, true, "_CreateTransferQueryCustomizer", false, "CreateTransfer", true);    
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("deleteInstance")
+        		.behaviour(TransferOperationBehaviourType.DELETE_INSTANCE)
+        		.isBound(true));
         
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("updateInstance")
+        		.behaviour(TransferOperationBehaviourType.UPDATE_INSTANCE)
+        		.isBound(true)
+        		.inputType("MappedTransfer")
+        		.isMappedInputType(true)
+        		.outputType("MappedTransfer")
+        		.isMappedOutputType(true));
+        
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("validateUpdateInstance")
+        		.behaviour(TransferOperationBehaviourType.VALIDATE_UPDATE)
+        		.isBound(true)
+        		.inputType("MappedTransfer")
+        		.isMappedInputType(true)
+        		.outputType("MappedTransfer")
+        		.isMappedOutputType(true));
+        
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("createInstanceOfCreateEntities")
+        		.behaviour(TransferOperationBehaviourType.CREATE_INSTANCE)
+        		.isBound(true)
+        		.inputType("CreateTransfer")
+        		.isMappedInputType(true)
+        		.outputType("CreateTransfer")
+        		.isMappedOutputType(true));  
+        
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("validateCreateInstanceOfCreateEntities")
+        		.behaviour(TransferOperationBehaviourType.VALIDATE_CREATE)
+        		.isBound(true)
+        		.inputType("CreateTransfer")
+        		.isMappedInputType(true)
+        		.outputType("CreateTransfer")
+        		.isMappedOutputType(true));   
+        
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("default")
+        		.behaviour(TransferOperationBehaviourType.GET_TEMPLATE)
+        		.isBound(false)
+        		.outputType("MappedTransfer")
+        		.isMappedOutputType(true));
+  
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("getUploadTokenForBinaryMapped")
+        		.behaviour(TransferOperationBehaviourType.GET_UPLOAD_TOKEN)
+        		.isBound(false)
+        		.outputType("UploadToken")
+        		.isMappedOutputType(false));
+
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("getUploadTokenForBinaryTransient")
+        		.behaviour(TransferOperationBehaviourType.GET_UPLOAD_TOKEN)
+        		.isBound(false)
+        		.outputType("UploadToken")
+        		.isMappedOutputType(false));
+
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("addReferencesToCreateEntities")
+        		.behaviour(TransferOperationBehaviourType.ADD_REFERENCE)
+        		.isBound(true)
+        		.inputType("CreateTransfer")
+        		.isMappedInputType(true));    
+
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("setReferencesOfCreateEntities")
+        		.behaviour(TransferOperationBehaviourType.SET_REFERENCE)
+        		.isBound(true)
+        		.inputType("CreateTransfer")
+        		.isMappedInputType(true));    
+
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("removeReferencesFromCreateEntities")
+        		.behaviour(TransferOperationBehaviourType.REMOVE_REFERENCE)
+        		.isBound(true)
+        		.inputType("CreateTransfer")
+        		.isMappedInputType(true));    
+
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("unsetReferencesOfCreateEntities")
+        		.behaviour(TransferOperationBehaviourType.UNSET_REFERENCE)
+        		.isBound(true)
+        		.inputType("CreateTransfer")
+        		.isMappedInputType(true));    
+
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("refreshInstance")
+        		.behaviour(TransferOperationBehaviourType.REFRESH)
+        		.isBound(true)
+        		.inputType("_MappedTransferQueryCustomizer")
+        		.isMappedInputType(false)
+        		.outputType("MappedTransfer")
+        		.isMappedOutputType(true));
+
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("listOfCreateEntities")
+        		.behaviour(TransferOperationBehaviourType.LIST)
+        		.isBound(true)
+        		.inputType("_CreateTransferQueryCustomizer")
+        		.isMappedInputType(false)
+        		.outputType("CreateTransfer")
+        		.isMappedOutputType(true));    
+
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("getRangeForCreateEntities")
+        		.behaviour(TransferOperationBehaviourType.GET_RANGE)
+        		.isBound(true)
+        		.inputType("_CreateTransferQueryCustomizer")
+        		.isMappedInputType(false)
+        		.outputType("CreateTransfer")
+        		.isMappedOutputType(true));    
+        
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("getRangeForMappedChoice")
+        		.behaviour(TransferOperationBehaviourType.GET_RANGE)
+        		.isBound(true)
+        		.inputType("_MappedTransferQueryCustomizer")
+        		.isMappedInputType(false)
+        		.outputType("MappedTransfer")
+        		.isMappedOutputType(true));    
+
+        assertCrudOperation(params()
+        		.transferName("MappedTransfer")
+        		.operationName("getRangeForMappedChoiceStatic")
+        		.behaviour(TransferOperationBehaviourType.GET_RANGE)
+        		.isBound(true)
+        		.inputType("_MappedTransferQueryCustomizer")
+        		.isMappedInputType(false)
+        		.outputType("MappedTransfer")
+        		.isMappedOutputType(true));    
+
+        assertCrudOperation(params()
+        		.transferName("UnmappedTransfer")
+        		.operationName("getRangeForUnmappedChoiceStatic")
+        		.behaviour(TransferOperationBehaviourType.GET_RANGE)
+        		.isBound(false)
+        		.inputType("_MappedTransferQueryCustomizer")
+        		.isMappedInputType(false)
+        		.outputType("MappedTransfer")
+        		.isMappedOutputType(true));    
+
     }
     
     
-    private void assertCrudOperation(String transferName, String operationName, TransferOperationBehaviourType behaviour, boolean isBound, 
-    		String inputType, boolean isMappedInputType, 
-    		String outputType, boolean isMappedOutputType) {
+    @Builder
+    @Getter
+    private static class AssertCrudOperationParameters {
 
-        TransferOperation operation = assertTransferObjectOperation(transferName, operationName);
-        if (isBound) {
+    	String transferName;
+    	String operationName;
+    	TransferOperationBehaviourType behaviour;
+    	boolean isBound;
+		String inputType;
+		boolean isMappedInputType;
+		String outputType;
+		boolean isMappedOutputType;
+    }
+    
+    private static AssertCrudOperationParameters.AssertCrudOperationParametersBuilder params() {
+    	return AssertCrudOperationParameters.builder();
+    }
+    
+    private void assertCrudOperation(AssertCrudOperationParameters.AssertCrudOperationParametersBuilder p) {
+
+        TransferOperation operation = assertTransferObjectOperation(p.transferName, p.operationName);
+        if (p.isBound) {
         	assertThat(operation, instanceOf(BoundTransferOperation.class));        	
         } else {
         	assertThat(operation, instanceOf(UnboundOperation.class));        	        	
         }
-    	assertThat(operation.getBehaviour().getBehaviourType(), equalTo(behaviour));
+    	assertThat(operation.getBehaviour().getBehaviourType(), equalTo(p.behaviour));
         
-        if (inputType != null) {
+        if (p.inputType != null) {
             assertThat(operation.getInput(), is(notNullValue()));
-            if (isMappedInputType) {
-            	assertThat(operation.getInput().getType(), equalTo(assertMappedTransferObject(inputType)));            	
+            if (p.isMappedInputType) {
+            	assertThat(operation.getInput().getType(), equalTo(assertMappedTransferObject(p.inputType)));            	
             } else {            	
-            	assertThat(operation.getInput().getType(), equalTo(assertUnmappedTransferObject(inputType)));            	
+            	assertThat(operation.getInput().getType(), equalTo(assertUnmappedTransferObject(p.inputType)));            	
             }
             // assertThat(operation.getInput().getCardinality().getLower(), equalTo(1));
         } else {
             assertThat(operation.getInput(), is(nullValue()));        	
         }
-        if (outputType != null) {
+        if (p.outputType != null) {
             assertThat(operation.getOutput(), is(notNullValue()));        	
-            if (isMappedOutputType) {
-            	assertThat(operation.getOutput().getType(), equalTo(assertMappedTransferObject(outputType)));            	
+            if (p.isMappedOutputType) {
+            	assertThat(operation.getOutput().getType(), equalTo(assertMappedTransferObject(p.outputType)));            	
             } else {
-            	assertThat(operation.getOutput().getType(), equalTo(assertUnmappedTransferObject(outputType)));            	
+            	assertThat(operation.getOutput().getType(), equalTo(assertUnmappedTransferObject(p.outputType)));            	
             }
 
         	// assertThat(operation.getOutput().getCardinality().getLower(), equalTo(1));        	

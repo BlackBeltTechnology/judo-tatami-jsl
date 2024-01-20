@@ -37,7 +37,11 @@ rule CreateUnsetReferenceOperationForTransferType
       guard: generateBehaviours and s.isUnsetReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForTransferType");
-      t.name = "unsetReferencesOfRelation" +  s.getFqName().fqNameToCamelCase();
+      t.name = "unsetReferencesOf" + s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+      
       t.binding = s.equivalent("CreateUnsetReferenceOperationForEntityType");
       t.behaviour = s.equivalent("CreateUnsetReferenceBehaviourForTransferType");
 

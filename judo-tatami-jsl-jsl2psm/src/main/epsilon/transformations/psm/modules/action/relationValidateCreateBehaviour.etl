@@ -37,7 +37,11 @@ rule CreateValidateCreateOperationForTransferType
       guard: generateBehaviours and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateCreateOperationForTransferType");
-      t.name = "validate" + s.referenceType.getCreateEventInsteadOf().name.firstToUpperCase() + "ForRelation" +  s.getFqName().fqNameToCamelCase();
+      t.name = "validate" + s.referenceType.getCreateEventInsteadOf().name.firstToUpperCase() + "Of" + s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+
       t.binding = s.equivalent("CreateValidateCreateOperationForEntityType");
       t.behaviour = s.equivalent("CreateValidateCreateBehaviourForTransferType");
 

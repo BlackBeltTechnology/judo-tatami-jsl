@@ -37,7 +37,11 @@ rule CreateGetRangeRelationOperationForTransferType
         guard: generateBehaviours and s.isGetRangeSupported()
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForTransferType");
-        t.name = "getRangeForRelation" +  s.getFqName().fqNameToCamelCase();
+        t.name = "getRangeFor" + s.name.firstToUpperCase();
+        if (s.eContainer.members.exists(m | m.name == t.name)) {
+	       t.name = "_" + t.name;
+        }
+
         t.binding = s.equivalent("CreateGetRangeRelationOperationForEntityType");
         t.behaviour = s.equivalent("CreateGetRangeRelationBehaviourForTransferType");
 

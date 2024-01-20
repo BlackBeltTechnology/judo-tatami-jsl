@@ -37,7 +37,11 @@ rule CreateListOperationForTransferType
       guard: generateBehaviours and (s.maps() or s.reads())
 
       t.setId("(jsl/" + s.getId() + ")/CreateListOperationForTransferType");
-      t.name = "listRelation" +  s.getFqName().fqNameToCamelCase();
+      t.name = "listOf" +  s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+
       t.binding = s.equivalent("CreateListOperationForEntityType");
       t.behaviour = s.equivalent("CreateListBehaviourForTransferType");
 
