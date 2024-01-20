@@ -15,6 +15,10 @@ transfer Mapped maps Entity as e {
 
     relation MappedRelated mappedTransientRelationWithDefinedChoices choices: EntityRelated.all();
     relation MappedRelated[] mappedTransientRelationCollectionWithDefinedChoices choices: EntityRelated.all();
+
+	action void mappedActionChoicesStatic(MappedRelated input choices: EntityRelated.all());
+	action void mappedActionChoicesSelf(MappedRelated input choices: e.associationCollection);
+
 }
 
 transfer MappedRelated maps EntityRelated as e {
@@ -24,4 +28,6 @@ transfer MappedRelated maps EntityRelated as e {
 transfer Unmapped {
     relation MappedRelated unmappedTransientRelationWithDefinedChoices choices: EntityRelated.all();
     relation MappedRelated[] unmappedTransientRelationCollectionWithDefinedChoices choices: EntityRelated.all();
+
+	action static void unmappedActionChoicesStatic(MappedRelated input choices: EntityRelated.all());
 }
