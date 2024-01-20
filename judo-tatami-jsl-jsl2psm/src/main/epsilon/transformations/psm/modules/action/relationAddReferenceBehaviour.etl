@@ -37,7 +37,11 @@ rule CreateAddReferenceOperationForTransferType
       guard: generateBehaviours and s.isAddReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceOperationForTransferType");
-      t.name = "addReferencesToRelation" +  s.getFqName().fqNameToCamelCase();
+      t.name = "addReferencesTo" +  s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+      
       t.binding = s.equivalent("CreateAddReferenceOperationForEntityType");
       t.behaviour = s.equivalent("CreateAddReferenceBehaviourForTransferType");
 
