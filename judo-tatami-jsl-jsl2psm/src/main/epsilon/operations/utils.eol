@@ -1,0 +1,3 @@
+operation String fqNameToCamelCase() : String {
+	return self.split("(::)|(#)").collect(s | s.firstToUpperCase()).concat();
+}

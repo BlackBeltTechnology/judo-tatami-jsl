@@ -1,0 +1,67 @@
+model CrudBehaviourTestModel;
+
+type binary Binary max-file-size: 1MB  mime-type: ["image/*"];
+type boolean Boolean;
+type date Date;
+type numeric Numeric scale: 0 precision: 9;
+type string String min-size: 0 max-size: 255;
+type time Time;
+type timestamp Timestamp;
+
+
+transfer MappedTransfer maps Entity as e {
+	event instead delete deleteInstance;
+	event instead update updateInstance;
+	event instead create createInstance;	
+	
+	relation CreateTransfer[] createEntities <= e.createEntities 
+			create: true 
+			update: false 
+			delete: false 
+			choices: CreateEntity.all();
+			
+	field Binary binaryDerived <= e.binary;
+	field String stringDerived <= e.string;
+	field Boolean booleanDerived <= e.boolean;
+	field Date dateDerived <= e.date;
+	field Numeric numericDerived <= e.numeric;
+	field Time timeDerived <= e.time;
+	field Timestamp timestampDerived <= e.timestamp;	
+
+	field Binary binaryTransient;
+	field String stringTransient;
+	field Boolean booleanTransient;
+	field Date dateTransient;
+	field Numeric numericTransient;
+	field Time timeTransient;
+	field Timestamp timestampTransient;	
+
+	field Binary binaryMapped <= e.binary update: auto;
+	field String stringMapped <= e.string update: auto;
+	field Boolean booleanMapped <= e.boolean update: auto;
+	field Date dateMapped <= e.date update: auto;
+	field Numeric numericMapped <= e.numeric update: auto;
+	field Time timeMapped <= e.time update: auto;
+	field Timestamp timestampMapped <= e.timestamp update: auto;	
+
+}
+
+entity Entity {	
+	relation CreateEntity[] createEntities;
+	field Binary binary;
+	field String string;
+	field Boolean boolean;
+	field Date date;
+	field Numeric numeric;
+	field Time time;
+	field Timestamp timestamp;	
+}
+
+
+transfer CreateTransfer maps CreateEntity as e {
+	event instead create createInstance;		
+}
+
+entity CreateEntity {
+}
+
