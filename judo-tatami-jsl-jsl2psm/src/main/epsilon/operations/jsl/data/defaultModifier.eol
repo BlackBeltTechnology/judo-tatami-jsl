@@ -2,3 +2,8 @@
 operation JSL!DefaultModifier getId(): String {
     return (self.eContainer.getId() + "/default");
 }
+
+@cached
+operation JSL!DefaultModifier getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}

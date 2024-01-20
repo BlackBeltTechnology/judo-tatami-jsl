@@ -2,3 +2,9 @@
 operation JSL!ErrorDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
+
+
+@cached
+operation JSL!ErrorDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}

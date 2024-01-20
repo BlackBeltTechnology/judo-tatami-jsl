@@ -1,0 +1,62 @@
+
+import "../../../../operations/_importAll.eol";
+
+
+@greedy
+rule CreateGetTemplateBehaviourForTransferType
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+      guard: generateBehaviours and s.isGetTemplateSupported()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateGetTemplateBehaviourForTransferType");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE;
+      t.owner = s.getPSMEquivalent();
+      log.debug("Created CreateGetTemplateBehaviourForTransferType: " + s.name);
+}
+
+@greedy
+rule CreateGetTemplateOperationForTransferType
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!UnboundOperation {
+      guard: generateBehaviours and s.isGetTemplateSupported()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateGetTemplateOperationForTransferType");
+      
+      t.name = "default";
+      if (s.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+      
+      t.immutable = true;
+      t.behaviour = s.equivalent("CreateGetTemplateBehaviourForTransferType");
+      s.getPSMEquivalent().operations.add(t);
+      log.debug("Created CreateGetTemplateOperationForTransferType: " + t.name);      
+}
+
+
+@greedy
+rule CreateGetTemplateOperationForTransferTypeOutputParameter
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and s.isGetTemplateSupported()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateGetTemplateOperationForTransferTypeOutputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForGetTemplateTransferTypeOutput");
+      t.name = "return";
+	  t.type = s.getPSMEquivalent();
+      s.equivalent("CreateGetTemplateOperationForTransferType").output = t;
+      log.debug("Created CreateGetTemplateOperationForTransferTypeOutputParameter: " + t.name);
+}
+
+
+@lazy
+@greedy
+rule CreateCardinalityForGetTemplateTransferTypeOutput
+    transform s: JSL!TransferDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetTemplateTransferTypeOutput");
+
+      t.lower = 0;
+      t.upper = 1;
+}
+

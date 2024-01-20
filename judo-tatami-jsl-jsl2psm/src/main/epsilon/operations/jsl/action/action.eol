@@ -6,8 +6,8 @@ operation JSL!TransferActionDeclaration getId(): String {
 
 @cached
 operation JSL!TransferActionDeclaration isUpdateAllowed() : Boolean {
-    if (self.output.isDefined()){
-        // TODO: Calculate
+    if (self.output.isDefined()){    	
+        // TODO: JNG-5333 Calculate
         // return self.`return`.isUpdateAllowed();
     }
     return false;
@@ -16,9 +16,53 @@ operation JSL!TransferActionDeclaration isUpdateAllowed() : Boolean {
 @cached
 operation JSL!TransferActionDeclaration isDeleteAllowed() : Boolean {
     if (self.output.isDefined()){
-        // TODO: Calculate
+        // TODO: JNG-5333 Calculate
         // return self.`return`.isDeleteAllowed();
         return false;
     }
     return false;
+}
+
+@cached
+operation JSL!TransferActionDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "#" + self.name;
+}
+
+@cached
+operation JSL!TransferActionDeclaration getPSMRangeEquivalent(): JUDOPSM!ReferenceAccessor {
+	  var choice = self.modifiers.selectOne(m | m.isTypeOf(JSL!TransferChoiceModifier));
+
+      if (choice.isDefined() and self.eContainer.map.isDefined()) {
+          return choice.equivalent("CreateActionInputParameterRangeNavigationPropertyForMappedTransferActionDeclaration");
+      } else if (choice.isDefined()) {
+          return choice.equivalent("CreateActionInputParameterRangeStaticNavigationForUnmappedTransferActionDeclaration");
+      } else {
+      	throw "No choice defined";
+      }
+}
+
+
+@cached
+operation JSL!TransferActionDeclaration getPSMOperationEquivalent(): JUDOPSM!OperationDeclaration {
+
+	  if (self.eContainer.map.isUndefined()) {
+	  	return self.equivalent("CreateUnboundOperationForUnmappedTransferObjectType");	  
+	  } else if (self.eContainer.map.isDefined() and self.static) {
+  	  	return self.equivalent("CreateUnboundOperationForMappedTransferObjectType");	  	  
+	  } else if (self.eContainer.map.isDefined() and not self.static) {
+  	  	return self.equivalent("CreateBoundOperationForMappedTransferObjectType");	  	  
+	  } else {
+		throw "No choice defined";
+	  }  
+}
+
+@cached
+operation JSL!TransferActionDeclaration getPSMBehaviourOperationEquivalent(): JUDOPSM!OperationDeclaration {
+
+	if (self.eContainer.map.isDefined()) {
+		return self.equivalent("CreateGetRangeActionInputOperationForMappedTransferType");
+	} else {
+		return self.equivalent("CreateGetRangeActionInputOperationForUnmappedTransferType");
+	}
+
 }
