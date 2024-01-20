@@ -87,7 +87,7 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         transform();
 
         assertUnmappedTransferObject("UnmappedTransfer");
-        assertThat(assertUnmappedTransferObject("UnmappedTransfer").getOperations().size(), equalTo(9));
+        assertThat(assertUnmappedTransferObject("UnmappedTransfer").getOperations().size(), equalTo(12));
 
         assertOperation("UnmappedTransfer", "staticVoidAction", false, false, false, false, false);
         assertOperation("UnmappedTransfer", "staticVoidActionWithUnmappedInput", false, true, false, false, false);
@@ -101,7 +101,7 @@ public class JslAction2PsmOperationTest extends AbstractTest {
 
 
         assertMappedTransferObject("MappedTransfer");
-        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(19));
+        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(25));
 
         assertOperation("MappedTransfer", "voidAction", true, false, false, false, false);
         assertOperation("MappedTransfer", "staticVoidAction", false, false, false, false, false);

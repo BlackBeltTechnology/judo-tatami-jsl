@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TransferRelationDeclaration;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
+import hu.blackbelt.judo.meta.psm.data.BoundOperation;
 import hu.blackbelt.judo.meta.psm.derived.DataProperty;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
 import hu.blackbelt.judo.meta.psm.derived.StaticData;
@@ -85,7 +86,7 @@ public class JslTransferObjectChoices2PsmTransferObjectTypeTest extends Abstract
         transform();
         
         assertUnmappedTransferObject("Unmapped");
-        assertEquals(4, assertUnmappedTransferObject("Unmapped").getRelations().size());
+        assertEquals(5, assertUnmappedTransferObject("Unmapped").getRelations().size());
 
         TransferObjectRelation unmappedTransientRelationWithDefinedChoices = assertUnmappedTransferObjectRelation("Unmapped", "unmappedTransientRelationWithDefinedChoices");      
         TransferObjectRelation unmappedTransientRelationWithDefinedChoicesRange = assertUnmappedTransferObjectRelation("Unmapped", "_unmappedTransientRelationWithDefinedChoices_RelationRange_Unmapped");        
@@ -100,6 +101,13 @@ public class JslTransferObjectChoices2PsmTransferObjectTypeTest extends Abstract
         assertEquals("TransferObjectChoicesModel::TransferObjectChoicesModel::_EntityRelated", unmappedTransientRelationWithDefinedChoicesStaticNavigation.getGetterExpression().getExpression());
         assertEquals(unmappedTransientRelationCollectionWithDefinedChoicesStaticNavigation, unmappedTransientRelationCollectionWithDefinedChoices.getRange());
         assertEquals(unmappedTransientRelationCollectionWithDefinedChoicesStaticNavigation, unmappedTransientRelationCollectionWithDefinedChoicesRange.getBinding());
+        
+        TransferOperation unmappedActionChoicesStatic = assertTransferObjectOperation("Unmapped", "unmappedActionChoicesStatic");      
+        TransferObjectRelation uunmappedActionChoicesStaticRange = assertUnmappedTransferObjectRelation("Unmapped", "_unmappedActionChoicesStatic_ActionInputParameterRange_Unmapped");        
+        StaticNavigation unmappedActionChoicesStaticStaticNavigation = assertStaticNavigation("_unmappedActionChoicesStatic_ActionInputParameterRange_Unmapped");
+        assertEquals("TransferObjectChoicesModel::TransferObjectChoicesModel::_EntityRelated", unmappedTransientRelationWithDefinedChoicesStaticNavigation.getGetterExpression().getExpression());
+        assertEquals(uunmappedActionChoicesStaticRange, unmappedActionChoicesStatic.getInputRange());
+        assertEquals(unmappedActionChoicesStaticStaticNavigation, uunmappedActionChoicesStaticRange.getBinding());
         
         TransferObjectRelation mappedTransientRelationWithDefinedChoices = assertMappedTransferObjectRelation("Mapped", "mappedTransientRelationWithDefinedChoices");      
         TransferObjectRelation mappedTransientRelationWithDefinedChoicesRange = assertMappedTransferObjectRelation("Mapped", "_mappedTransientRelationWithDefinedChoices_RelationRange_Mapped");        
@@ -128,6 +136,20 @@ public class JslTransferObjectChoices2PsmTransferObjectTypeTest extends Abstract
         assertEquals("TransferObjectChoicesModel::TransferObjectChoicesModel::_EntityRelated", mappedAssociationCollectionWithDefinedChoicesNavigationProperty.getGetterExpression().getExpression());
         assertEquals(mappedAssociationCollectionWithDefinedChoicesNavigationProperty, mappedAssociationCollectionWithDefinedChoices.getRange());
         assertEquals(mappedAssociationCollectionWithDefinedChoicesNavigationProperty, mappedAssociationCollectionWithDefinedChoicesRange.getBinding());
+        
+        TransferOperation mappedActionChoicesStatic = assertTransferObjectOperation("Mapped", "mappedActionChoicesStatic");
+        TransferObjectRelation mappedActionChoicesStaticRange = assertMappedTransferObjectRelation("Mapped", "_mappedActionChoicesStatic_ActionInputParameterRange_Mapped");        
+        NavigationProperty mappedActionChoicesStaticNavigationProperty = assertNavigationProperty("_Entity", "_mappedActionChoicesStatic_ActionInputParameterRange_Mapped");
+        assertEquals("TransferObjectChoicesModel::TransferObjectChoicesModel::_EntityRelated", mappedActionChoicesStaticNavigationProperty.getGetterExpression().getExpression());
+        assertEquals(mappedActionChoicesStaticRange, mappedActionChoicesStatic.getInputRange());
+        assertEquals(mappedActionChoicesStaticNavigationProperty, mappedActionChoicesStaticRange.getBinding());
+
+        TransferOperation mappedActionChoicesSelf = assertTransferObjectOperation("Mapped", "mappedActionChoicesSelf");
+        TransferObjectRelation mappedActionChoicesSelfRange = assertMappedTransferObjectRelation("Mapped", "_mappedActionChoicesSelf_ActionInputParameterRange_Mapped");        
+        NavigationProperty mappedActionChoicesSelfNavigationProperty = assertNavigationProperty("_Entity", "_mappedActionChoicesSelf_ActionInputParameterRange_Mapped");
+        assertEquals("self.associationCollection", mappedActionChoicesSelfNavigationProperty.getGetterExpression().getExpression());
+        assertEquals(mappedActionChoicesSelfRange, mappedActionChoicesSelf.getInputRange());
+        assertEquals(mappedActionChoicesSelfNavigationProperty, mappedActionChoicesSelfRange.getBinding());
 
     }
     
