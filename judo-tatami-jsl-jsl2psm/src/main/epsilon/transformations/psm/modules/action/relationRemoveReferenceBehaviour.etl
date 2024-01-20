@@ -37,7 +37,10 @@ rule CreateRemoveReferenceOperationForTransferType
       guard: generateBehaviours and s.isRemoveReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRemoveReferenceOperationForTransferType");
-      t.name = "removeReferencesFromRelation" +  s.getFqName().fqNameToCamelCase();
+      t.name = "removeReferencesFrom" + s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
       t.binding = s.equivalent("CreateRemoveReferenceOperationForEntityType");
       t.behaviour = s.equivalent("CreateRemoveReferenceBehaviourForTransferType");
 

@@ -44,6 +44,9 @@ transfer MappedTransfer maps Entity as e {
 	field Time timeMapped <= e.time update: auto;
 	field Timestamp timestampMapped <= e.timestamp update: auto;	
 
+	action void mappedChoice(MappedTransfer input choices: Entity.all());
+	action static void mappedChoiceStatic(MappedTransfer input choices: Entity.all());
+
 }
 
 entity Entity {	
@@ -63,5 +66,10 @@ transfer CreateTransfer maps CreateEntity as e {
 }
 
 entity CreateEntity {
+}
+
+
+transfer UnmappedTransfer {
+	action static void unmappedChoiceStatic(MappedTransfer input choices: Entity.all());
 }
 

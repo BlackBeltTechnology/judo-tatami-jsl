@@ -33,6 +33,10 @@ rule CreateRefreshOperationForTransferType
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForTransferType");
       t.name = "refreshInstance";
+      if (s.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+      
       t.binding = s.equivalent("CreateRefreshOperationForEntityType");
       t.behaviour = s.equivalent("CreateRefreshBehaviourForTransferType");
       s.equivalent("CreateMappedTransferObjectType").operations.add(t);

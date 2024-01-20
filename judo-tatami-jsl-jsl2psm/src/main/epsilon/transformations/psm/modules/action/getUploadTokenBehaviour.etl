@@ -54,6 +54,10 @@ rule CreateGetUploadTokenOperation
       
       t.setId("(jsl/" + s.getId() + ")/CreateGetUploadTokenOperation");
       t.name = "getUploadTokenFor" + s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+
       t.behaviour = s.equivalent("CreateGetUploadTokenBehaviour");
       t.output = s.equivalent("CreateGetUploadTokenOuptutParameter");
 
