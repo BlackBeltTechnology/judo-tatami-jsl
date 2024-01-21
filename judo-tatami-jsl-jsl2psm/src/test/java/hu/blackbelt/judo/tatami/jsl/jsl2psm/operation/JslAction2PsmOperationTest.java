@@ -236,7 +236,8 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         		.excpectInput(false)
         		.expectMappedInput(false)
         		.excpectOutput(true)
-        		.expectMappedOutput(false));
+        		.expectMappedOutput(false)
+        		);
         
         assertOperation(param()
         		.transferName("MappedTransfer")
@@ -254,7 +255,9 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         		.excpectInput(false)
         		.expectMappedInput(false)
         		.excpectOutput(true)
-        		.expectMappedOutput(true));
+        		.expectMappedOutput(true)
+        		.deleteOnResult(true)
+        		.updateOnResult(true));
         
         assertOperation(param()
         		.transferName("MappedTransfer")
@@ -290,8 +293,10 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         		.excpectInput(true)
         		.expectMappedInput(false)
         		.excpectOutput(true)
-        		.expectMappedOutput(true));
-        
+        		.expectMappedOutput(true)
+        		.deleteOnResult(true)
+        		.updateOnResult(true));
+
         assertOperation(param()
         		.transferName("MappedTransfer")
         		.operationName("staticMappedOutputActionWithUnmappedInput")
@@ -326,7 +331,10 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         		.excpectInput(true)
         		.expectMappedInput(true)
         		.excpectOutput(true)
-        		.expectMappedOutput(true));
+        		.expectMappedOutput(true)
+        		.deleteOnResult(true)
+        		.updateOnResult(true));
+
         
         assertOperation(param()
         		.transferName("MappedTransfer")
@@ -359,6 +367,10 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         assertThat(assertUnmappedTransferObject("UnmappedFaultTransfer").getOperations().size(), equalTo(1));
         assertOperationFaults("UnmappedFaultTransfer", "staticFaults");
 
+        
+    	assertThat(assertTransferObjectOperation("UnmappedInputParameter", "default").getBehaviour().getBehaviourType(),  
+    			equalTo(TransferOperationBehaviourType.GET_TEMPLATE));
+
     }
     
     @Builder
@@ -370,6 +382,8 @@ public class JslAction2PsmOperationTest extends AbstractTest {
 		boolean expectMappedInput; 
 		boolean excpectOutput;
 		boolean expectMappedOutput;
+		boolean deleteOnResult;
+		boolean updateOnResult;
     }
     
     private AssertOperationParameters.AssertOperationParametersBuilder param() {
@@ -403,7 +417,10 @@ public class JslAction2PsmOperationTest extends AbstractTest {
             } else {
             	assertThat(operation.getOutput().getType(), equalTo(assertUnmappedTransferObject("UnmappedOutputParameter")));        	
             }
-            assertThat(operation.getOutput().getCardinality().getLower(), equalTo(1));        	
+            assertThat(operation.getOutput().getCardinality().getLower(), equalTo(1)); 
+            
+            assertThat(operation.isDeleteOnResult(), equalTo(p.deleteOnResult));
+            assertThat(operation.isUpdateOnResult(), equalTo(p.updateOnResult));
         } else {
             assertThat(operation.getOutput(), is(nullValue()));        	
         }
