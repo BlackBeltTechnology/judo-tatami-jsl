@@ -1,0 +1,188 @@
+import "../../../../operations/_importAll.eol";
+
+
+@greedy
+rule CreateGetRangeRelationOperationForEntityType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!BoundOperation {
+        guard: generateBehaviours and s.isGetRangeSupported()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForEntityType");
+        t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
+        t.name = "getRangeForRelation" + s.getFqName().fqNameToCamelCase();
+        s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+        log.debug("Created CreateGetRangeRelationOperationForEntityType: " + t.name);
+}
+
+@greedy
+rule CreateGetRangeRelationBehaviourForTransferType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+        guard: generateBehaviours and s.isGetRangeSupported()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationBehaviourForTransferType");
+        t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE;
+        if (s.reads()) {
+            t.owner = s.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
+        } else if (s.maps()) {
+            t.owner = s.equivalent("CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
+        }
+        log.debug("Created CreateGetRangeRelationBehaviourForTransferType: " + s.name);
+}
+
+@greedy
+rule CreateGetRangeRelationOperationForTransferType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!BoundTransferOperation {
+        guard: generateBehaviours and s.isGetRangeSupported()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForTransferType");
+        t.name = "getRangeFor" + s.name.firstToUpperCase();
+        if (s.eContainer.members.exists(m | m.name == t.name)) {
+	       t.name = "_" + t.name;
+        }
+
+        t.binding = s.equivalent("CreateGetRangeRelationOperationForEntityType");
+        t.behaviour = s.equivalent("CreateGetRangeRelationBehaviourForTransferType");
+
+        t.updateOnResult = s.referenceType.isUpdateSupported();
+        t.deleteOnResult = s.referenceType.isDeleteSupported();
+
+        s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+        log.debug("Created CreateGetRangeRelationOperationForTransferType: " + t.name);
+}
+
+
+@greedy
+rule CreateGetRangeRelationOperationForTransferTypeInputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+        guard: generateBehaviours and s.isGetRangeSupported()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForTransferTypeInputParameter");
+        t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationTransferTypeInput");
+        t.name = "input";
+        t.type = s.referenceType.equivalent("CreateQueryCustomizerType");
+        s.equivalent("CreateGetRangeRelationOperationForTransferType").input = t;
+        log.debug("Created CreateGetRangeRelationOperationForTransferTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateGetRangeRelationOperationForTransferTypeOutputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+        guard: generateBehaviours and s.isGetRangeSupported()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForTransferTypeOutputParameter");
+        t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationTransferTypeOutput");
+        t.name = "return";
+        t.type = s.referenceType.getPSMEquivalent();
+        s.equivalent("CreateGetRangeRelationOperationForTransferType").output = t;
+        log.debug("Created CreateGetRangeRelationOperationForTransferTypeOutputParameter: " + t.name);
+}
+
+@greedy
+rule CreateGetRangeRelationOperationForEntityTypeInputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+        guard: generateBehaviours and s.isGetRangeSupported()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForEntityTypeInputParameter");
+        t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationEntityTypeInput");
+        t.name = "input";
+        t.type = s.referenceType.equivalent("CreateQueryCustomizerType");
+        s.equivalent("CreateGetRangeRelationOperationForEntityType").input = t;
+        log.debug("Created CreateGetRangeRelationOperationForEntityTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateGetRangeRelationOperationForEntityTypeOutputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+        guard: generateBehaviours and s.isGetRangeSupported()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForEntityTypeOutputParameter");
+        t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationEntityTypeOutput");
+        t.name = "return";
+        t.type = s.referenceType.getPSMEquivalent();
+        s.equivalent("CreateGetRangeRelationOperationForEntityType").output = t;
+        log.debug("Created CreateGetRangeRelationOperationForEntityTypeOutputParameter: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeRelationTransferTypeInput
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationTransferTypeInput");
+        t.lower = 0;
+        t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeRelationTransferTypeOutput
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationTransferTypeOutput");
+        t.lower = 0;
+        t.upper = -1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeRelationEntityTypeInput
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationEntityTypeInput");
+        t.lower = 0;
+        t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeRelationEntityTypeOutput
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationEntityTypeOutput");
+        t.lower = 0;
+        t.upper = -1;
+}
+
+/*
+@greedy
+rule CreateGetRangeReferenceTransferOperationForInputParameter
+    transform s : ESM!Parameter
+    to t : JUDOPSM!UnboundOperation {
+        guard: esmUtils.isGetRangeSupported(s)
+
+        t.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter");
+
+        t.name = "_getRangeReference" + s.name.firstToUpperCase();
+        t.immutable = true;
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Behaviour");
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE;
+        t.behaviour.owner = s.getPSMTransferOperationEquivalent();
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Input");
+        t.input.name = "input";
+        t.input.type = s.equivalent("CreateGetRangeInputTypeForInputParameter");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Input/Cardinality");
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Output");
+        t.output.name = "output";
+        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Output/Cardinality");
+        t.output.cardinality.lower = 0;
+        t.output.cardinality.upper = -1;
+
+        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
+}
+*/

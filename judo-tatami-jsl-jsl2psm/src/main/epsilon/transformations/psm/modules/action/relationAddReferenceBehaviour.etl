@@ -1,0 +1,106 @@
+import "../../../../operations/_importAll.eol";
+
+
+@greedy
+rule CreateAddReferenceOperationForEntityType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!BoundOperation {
+      guard: generateBehaviours and s.isAddReferenceAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceOperationForEntityType");
+      t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      t.name = "addReferencesToRelation" + s.getFqName().fqNameToCamelCase();
+      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      log.debug("Created CreateAddReferenceOperationForEntityType: " + t.name);
+}
+
+@greedy
+rule CreateAddReferenceBehaviourForTransferType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+      guard: generateBehaviours and s.isAddReferenceAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceBehaviourForTransferType");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#ADD_REFERENCE;
+      if (s.reads()) {
+      	t.owner = s.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
+      } else if (s.maps()) {
+      	t.owner = s.equivalent("CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
+      }      
+      log.debug("Created CreateAddReferenceBehaviourForTransferType: " + s.name);
+}
+
+@greedy
+rule CreateAddReferenceOperationForTransferType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!BoundTransferOperation {
+      guard: generateBehaviours and s.isAddReferenceAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceOperationForTransferType");
+      t.name = "addReferencesTo" +  s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+      
+      t.binding = s.equivalent("CreateAddReferenceOperationForEntityType");
+      t.behaviour = s.equivalent("CreateAddReferenceBehaviourForTransferType");
+
+      t.updateOnResult = s.referenceType.isUpdateSupported();
+      t.deleteOnResult = s.referenceType.isDeleteSupported();
+      
+      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      log.debug("Created CreateAddReferenceOperationForTransferType: " + t.name);      
+}
+
+
+@greedy
+rule CreateAddReferenceOperationForTransferTypeInputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and s.isAddReferenceAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceOperationForTransferTypeInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForAddReferenceTransferTypeInput");
+      t.name = "input";
+	  t.type = s.referenceType.getPSMEquivalent();
+      s.equivalent("CreateAddReferenceOperationForTransferType").input = t;
+      log.debug("Created CreateAddReferenceOperationForTransferTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateAddReferenceOperationForEntityTypeInputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and s.isAddReferenceAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceOperationForEntityTypeInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForAddReferenceEntityTypeInput");
+      t.name = "input";
+	  t.type = s.referenceType.getPSMEquivalent();
+      s.equivalent("CreateAddReferenceOperationForEntityType").input = t;
+      log.debug("Created CreateAddReferenceOperationForEntityTypeInputParameter: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForAddReferenceTransferTypeInput
+    transform s : JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForAddReferenceTransferTypeInput");
+
+      t.lower = 1;
+      t.upper = s.isMany ? -1 : 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForAddReferenceEntityTypeInput
+    transform s : JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForAddReferenceEntityTypeInput");
+
+      t.lower = 1;
+      t.upper = s.isMany ? -1 : 1;
+
+}
+

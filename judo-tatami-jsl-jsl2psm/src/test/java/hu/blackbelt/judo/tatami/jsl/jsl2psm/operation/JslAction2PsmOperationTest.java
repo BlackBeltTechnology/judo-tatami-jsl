@@ -25,8 +25,10 @@ import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.service.BoundTransferOperation;
 import hu.blackbelt.judo.meta.psm.service.TransferOperation;
+import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
 import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -47,6 +49,11 @@ import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 @Slf4j
 public class JslAction2PsmOperationTest extends AbstractTest {
     private static final String TARGET_TEST_CLASSES = "target/test-classes/operation";
+
+    @Override
+	public boolean generateBehaviours() {
+    	return true;
+    }
 
     @Override
     protected String getTargetTestClasses() {
@@ -81,68 +88,320 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         transform();
 
         assertUnmappedTransferObject("UnmappedTransfer");
-        assertThat(assertUnmappedTransferObject("UnmappedTransfer").getOperations().size(), equalTo(9));
+        assertThat(assertUnmappedTransferObject("UnmappedTransfer").getOperations().size(), equalTo(12));
 
-        assertOperation("UnmappedTransfer", "staticVoidAction", false, false, false, false, false);
-        assertOperation("UnmappedTransfer", "staticVoidActionWithUnmappedInput", false, true, false, false, false);
-        assertOperation("UnmappedTransfer", "staticVoidActionWithMappedInput", false, true, true, false, false);
-        assertOperation("UnmappedTransfer", "staticUnmappedOutputAction", false, false, false, true, false);
-        assertOperation("UnmappedTransfer", "staticMappedOutputAction", false, false, false, true, true);
-        assertOperation("UnmappedTransfer", "staticUnmappedOutputActionWithUnmappedInput", false, true, false, true, false);
-        assertOperation("UnmappedTransfer", "staticMappedOutputActionWithUnmappedInput", false, true, false, true, true);
-        assertOperation("UnmappedTransfer", "staticUnmappedOutputActionWithMappedInput", false, true, true, true, false);
-        assertOperation("UnmappedTransfer", "staticMappedOutputActionWithMappedInput", false, true, true, true, true);
+        assertOperation(param()
+        		.transferName("UnmappedTransfer")
+        		.operationName("staticVoidAction")
+        		.excpectBound(false)
+        		.excpectInput(false)
+        		.expectMappedInput(false)
+        		.excpectOutput(false)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("UnmappedTransfer")
+        		.operationName("staticVoidActionWithUnmappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(false)
+        		.excpectOutput(false)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("UnmappedTransfer")
+        		.operationName("staticVoidActionWithMappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(true)
+        		.excpectOutput(false)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("UnmappedTransfer")
+        		.operationName("staticUnmappedOutputAction")
+        		.excpectBound(false)
+        		.excpectInput(false)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("UnmappedTransfer")
+        		.operationName("staticMappedOutputAction")
+        		.excpectBound(false)
+        		.excpectInput(false)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(true));
+        
+        assertOperation(param()
+        		.transferName("UnmappedTransfer")
+        		.operationName("staticUnmappedOutputActionWithUnmappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("UnmappedTransfer")
+        		.operationName("staticMappedOutputActionWithUnmappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(true));
+        
+        assertOperation(param()
+        		.transferName("UnmappedTransfer")
+        		.operationName("staticUnmappedOutputActionWithMappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(true)
+        		.excpectOutput(true)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("UnmappedTransfer")
+        		.operationName("staticMappedOutputActionWithMappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(true)
+        		.excpectOutput(true)
+        		.expectMappedOutput(true));
 
 
         assertMappedTransferObject("MappedTransfer");
-        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(18));
+        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(25));
 
-        assertOperation("MappedTransfer", "voidAction", true, false, false, false, false);
-        assertOperation("MappedTransfer", "staticVoidAction", false, false, false, false, false);
-        assertOperation("MappedTransfer", "voidActionWithUnmappedInput", true, true, false, false, false);
-        assertOperation("MappedTransfer", "staticVoidActionWithUnmappedInput", false, true, false, false, false);
-        assertOperation("MappedTransfer", "voidActionWithMappedInput", true, true, true, false, false);
-        assertOperation("MappedTransfer", "staticVoidActionWithMappedInput", false, true, true, false, false);
-        assertOperation("MappedTransfer", "unmappedOutputAction", true, false, false, true, false);
-        assertOperation("MappedTransfer", "staticUnmappedOutputAction", false, false, false, true, false);
-        assertOperation("MappedTransfer", "mappedOutputAction", true, false, false, true, true);
-        assertOperation("MappedTransfer", "staticMappedOutputAction", false, false, false, true, true);
-        assertOperation("MappedTransfer", "unmappedOutputActionWithUnmappedInput", true, true, false, true, false);
-        assertOperation("MappedTransfer", "staticUnmappedOutputActionWithUnmappedInput", false, true, false, true, false);
-        assertOperation("MappedTransfer", "mappedOutputActionWithUnmappedInput", true, true, false, true, true);
-        assertOperation("MappedTransfer", "staticMappedOutputActionWithUnmappedInput", false, true, false, true, true);
-        assertOperation("MappedTransfer", "unmappedOutputActionWithMappedInput", true, true, true, true, false);
-        assertOperation("MappedTransfer", "staticUnmappedOutputActionWithMappedInput", false, true, true, true, false);
-        assertOperation("MappedTransfer", "mappedOutputActionWithMappedInput", true, true, true, true, true);
-        assertOperation("MappedTransfer", "staticMappedOutputActionWithMappedInput", false, true, true, true, true);
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("voidAction")
+        		.excpectBound(true)
+        		.excpectInput(false)
+        		.expectMappedInput(false)
+        		.excpectOutput(false)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("staticVoidAction")
+        		.excpectBound(false)
+        		.excpectInput(false)
+        		.expectMappedInput(false)
+        		.excpectOutput(false)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("voidActionWithUnmappedInput")
+        		.excpectBound(true)
+        		.excpectInput(true)
+        		.expectMappedInput(false)
+        		.excpectOutput(false)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("staticVoidActionWithUnmappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(false)
+        		.excpectOutput(false)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("voidActionWithMappedInput")
+        		.excpectBound(true)
+        		.excpectInput(true)
+        		.expectMappedInput(true)
+        		.excpectOutput(false)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("staticVoidActionWithMappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(true)
+        		.excpectOutput(false)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("unmappedOutputAction")
+        		.excpectBound(true)
+        		.excpectInput(false)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(false)
+        		);
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("staticUnmappedOutputAction")
+        		.excpectBound(false)
+        		.excpectInput(false)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("mappedOutputAction")
+        		.excpectBound(true)
+        		.excpectInput(false)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(true)
+        		.deleteOnResult(true)
+        		.updateOnResult(true));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("staticMappedOutputAction")
+        		.excpectBound(false)
+        		.excpectInput(false)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(true));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("unmappedOutputActionWithUnmappedInput")
+        		.excpectBound(true)
+        		.excpectInput(true)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("staticUnmappedOutputActionWithUnmappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("mappedOutputActionWithUnmappedInput")
+        		.excpectBound(true)
+        		.excpectInput(true)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(true)
+        		.deleteOnResult(true)
+        		.updateOnResult(true));
+
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("staticMappedOutputActionWithUnmappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(false)
+        		.excpectOutput(true)
+        		.expectMappedOutput(true));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("unmappedOutputActionWithMappedInput")
+        		.excpectBound(true)
+        		.excpectInput(true)
+        		.expectMappedInput(true)
+        		.excpectOutput(true)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("staticUnmappedOutputActionWithMappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(true)
+        		.excpectOutput(true)
+        		.expectMappedOutput(false));
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("mappedOutputActionWithMappedInput")
+        		.excpectBound(true)
+        		.excpectInput(true)
+        		.expectMappedInput(true)
+        		.excpectOutput(true)
+        		.expectMappedOutput(true)
+        		.deleteOnResult(true)
+        		.updateOnResult(true));
+
+        
+        assertOperation(param()
+        		.transferName("MappedTransfer")
+        		.operationName("staticMappedOutputActionWithMappedInput")
+        		.excpectBound(false)
+        		.excpectInput(true)
+        		.expectMappedInput(true)
+        		.excpectOutput(true)
+        		.expectMappedOutput(true));
+
+
+    	assertThat(assertUnmappedTransferObject("UnmappedInputParameter").getOperations().size(),  equalTo(1));
+    	assertThat(assertTransferObjectOperation("UnmappedInputParameter", "default"),  instanceOf(UnboundOperation.class));
+    	assertThat(assertTransferObjectOperation("UnmappedInputParameter", "default").getBehaviour().getBehaviourType(),  
+    			equalTo(TransferOperationBehaviourType.GET_TEMPLATE));
+
+    	assertThat(assertMappedTransferObject("MappedInputParameter").getOperations().size(),  equalTo(1));
+    	assertThat(assertTransferObjectOperation("MappedInputParameter", "refreshInstance").getBehaviour().getBehaviourType(),  
+    			equalTo(TransferOperationBehaviourType.REFRESH));
 
     
         assertMappedTransferObject("MappedFaultTransfer");
-        assertThat(assertMappedTransferObject("MappedFaultTransfer").getOperations().size(), equalTo(2));
+        assertThat(assertMappedTransferObject("MappedFaultTransfer").getOperations().size(), equalTo(3));
         assertOperationFaults("MappedFaultTransfer", "faults");
         assertOperationFaults("MappedFaultTransfer", "staticFaults");
+    	assertThat(assertTransferObjectOperation("MappedFaultTransfer", "refreshInstance").getBehaviour().getBehaviourType(),  
+    			equalTo(TransferOperationBehaviourType.REFRESH));
         
         assertUnmappedTransferObject("UnmappedFaultTransfer");
         assertThat(assertUnmappedTransferObject("UnmappedFaultTransfer").getOperations().size(), equalTo(1));
         assertOperationFaults("UnmappedFaultTransfer", "staticFaults");
 
+        
+    	assertThat(assertTransferObjectOperation("UnmappedInputParameter", "default").getBehaviour().getBehaviourType(),  
+    			equalTo(TransferOperationBehaviourType.GET_TEMPLATE));
+
     }
     
+    @Builder
+    private static class AssertOperationParameters {
+    	String transferName;
+    	String operationName; 
+    	boolean excpectBound; 
+		boolean excpectInput; 
+		boolean expectMappedInput; 
+		boolean excpectOutput;
+		boolean expectMappedOutput;
+		boolean deleteOnResult;
+		boolean updateOnResult;
+    }
     
-    private void assertOperation(String transferName, String operationName, boolean excpectBound, 
-    		boolean excpectInput, boolean expectMappedInput, 
-    		boolean excpectOutput, boolean expectMappedOutput) {
+    private AssertOperationParameters.AssertOperationParametersBuilder param() {
+    	return AssertOperationParameters.builder();
+    }
+    
+    private void assertOperation(AssertOperationParameters.AssertOperationParametersBuilder p) {
 
-        TransferOperation operation = assertTransferObjectOperation(transferName, operationName);
-        if (!excpectBound) {
+        TransferOperation operation = assertTransferObjectOperation(p.transferName, p.operationName);
+        if (!p.excpectBound) {
         	assertThat(operation,  instanceOf(UnboundOperation.class));
         } else {
         	assertThat(operation, instanceOf(BoundTransferOperation.class));        	
         }
         
-        if (excpectInput) {
+        if (p.excpectInput) {
             assertThat(operation.getInput(), is(notNullValue()));        	
-        	if (expectMappedInput) {
+        	if (p.expectMappedInput) {
             	assertThat(operation.getInput().getType(), equalTo(assertMappedTransferObject("MappedInputParameter")));
             } else {
             	assertThat(operation.getInput().getType(), equalTo(assertUnmappedTransferObject("UnmappedInputParameter")));        	
@@ -151,14 +410,17 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         } else {
             assertThat(operation.getInput(), is(nullValue()));        	
         }
-        if (excpectOutput) {
+        if (p.excpectOutput) {
             assertThat(operation.getOutput(), is(notNullValue()));        	
-        	if (expectMappedOutput) {
+        	if (p.expectMappedOutput) {
             	assertThat(operation.getOutput().getType(), equalTo(assertMappedTransferObject("MappedOutputParameter")));
             } else {
             	assertThat(operation.getOutput().getType(), equalTo(assertUnmappedTransferObject("UnmappedOutputParameter")));        	
             }
-            assertThat(operation.getOutput().getCardinality().getLower(), equalTo(1));        	
+            assertThat(operation.getOutput().getCardinality().getLower(), equalTo(1)); 
+            
+            assertThat(operation.isDeleteOnResult(), equalTo(p.deleteOnResult));
+            assertThat(operation.isUpdateOnResult(), equalTo(p.updateOnResult));
         } else {
             assertThat(operation.getOutput(), is(nullValue()));        	
         }

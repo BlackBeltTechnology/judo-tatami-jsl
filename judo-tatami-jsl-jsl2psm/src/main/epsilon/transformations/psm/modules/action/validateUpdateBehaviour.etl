@@ -1,0 +1,147 @@
+
+import "../../../../operations/_importAll.eol";
+
+
+@greedy
+rule CreateValidateUpdateOperationForEntityType
+    transform s: JSL!TransferUpdateDeclaration
+    to t: JUDOPSM!BoundOperation {
+      guard: generateBehaviours and s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForEntityType");
+      t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      t.name = "validate" + s.name.firstToUpperCase() + s.eContainer.getFqName().fqNameToCamelCase();
+      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      log.debug("Created CreateValidateUpdateOperationForEntityType: " + t.name);
+}
+
+@greedy
+rule CreateValidateUpdateBehaviourForTransferType
+    transform s: JSL!TransferUpdateDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+      guard: generateBehaviours and s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateBehaviourForTransferType");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#VALIDATE_UPDATE;
+      t.owner = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      log.debug("Created CreateValidateUpdateBehaviourForTransferType: " + s.name);
+}
+
+@greedy
+rule CreateValidateUpdateOperationForTransferType
+    transform s: JSL!TransferUpdateDeclaration
+    to t: JUDOPSM!BoundTransferOperation {
+      guard: generateBehaviours and s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForTransferType");
+      t.name = "validate" + s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+      t.binding = s.equivalent("CreateValidateUpdateOperationForEntityType");
+      t.behaviour = s.equivalent("CreateValidateUpdateBehaviourForTransferType");
+      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      log.debug("Created CreateValidateUpdateOperationForTransferType: " + t.name);      
+}
+
+
+@greedy
+rule CreateValidateUpdateOperationForTransferTypeInputParameter
+    transform s: JSL!TransferUpdateDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForTransferTypeInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForValidateUpdateTransferTypeInput");
+      t.name = "input";
+	  t.type = s.eContainer.getPSMEquivalent();
+      s.equivalent("CreateValidateUpdateOperationForTransferType").input = t;
+      log.debug("Created CreateValidateUpdateOperationForTransferTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateValidateUpdateOperationForTransferTypeOutputParameter
+    transform s: JSL!TransferUpdateDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForTransferTypeOutputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForValidateUpdateTransferTypeOutput");
+      t.name = "return";
+	  t.type = s.eContainer.getPSMEquivalent();
+      s.equivalent("CreateValidateUpdateOperationForTransferType").output = t;
+      log.debug("Created CreateValidateUpdateOperationForTransferTypeOutputParameter: " + t.name);
+}
+
+@greedy
+rule CreateValidateUpdateOperationForEntityTypeInputParameter
+    transform s: JSL!TransferUpdateDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForEntityTypeInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForValidateUpdateEntityTypeInput");
+      t.name = "input";
+	  t.type = s.eContainer.getPSMEquivalent();
+      s.equivalent("CreateValidateUpdateOperationForEntityType").input = t;
+      log.debug("Created CreateValidateUpdateOperationForEntityTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateValidateUpdateOperationForEntityTypeOutputParameter
+    transform s: JSL!TransferUpdateDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and s.instead ?: false
+
+      t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForEntityTypeOutputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForValidateUpdateEntityTypeOutput");
+      t.name = "return";
+	  t.type = s.eContainer.getPSMEquivalent();
+      s.equivalent("CreateValidateUpdateOperationForEntityType").output = t;
+      log.debug("Created CreateValidateUpdateOperationForEntityTypeOutputParameter: " + t.name);
+}
+
+
+@lazy
+@greedy
+rule CreateCardinalityForValidateUpdateTransferTypeInput
+    transform s : JSL!TransferUpdateDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateUpdateTransferTypeInput");
+
+      t.lower = 1;
+      t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForValidateUpdateTransferTypeOutput
+    transform s : JSL!TransferUpdateDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateUpdateTransferTypeOutput");
+
+      t.lower = 1;
+      t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForValidateUpdateEntityTypeInput
+    transform s : JSL!TransferUpdateDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateUpdateEntityTypeInput");
+
+      t.lower = 1;
+      t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForValidateUpdateEntityTypeOutput
+    transform s : JSL!TransferUpdateDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateUpdateEntityTypeOutput");
+
+      t.lower = 1;
+      t.upper = 1;
+}

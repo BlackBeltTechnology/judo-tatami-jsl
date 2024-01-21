@@ -1,0 +1,68 @@
+/*
+@greedy
+rule CreateGetMetadataOperationForActorType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!UnboundOperation {
+        t.setId("(esm/" + s.getId() + ")/GetMetadataOperationForActorType");
+
+        t.name = "_metadata";
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.setId("(esm/" + s.getId() + ")/GetMetadataOperationForActorType/Behaviour");
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_METADATA;
+        t.behaviour.owner = s.getPSMEquivalent();
+
+        s.getPSMEquivalent().operations.add(t);
+}
+
+@greedy
+rule CreateGetMetadataOperationOutputParameterForActorType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!Parameter {
+        t.setId("(esm/" + s.getId() + ")/GetMetadataOperationOutputParameterForActorType");
+
+        t.name = "output";
+        t.type = s.equivalent("CreateMetadataType");
+        t.cardinality = new JUDOPSM!Cardinality;
+        t.cardinality.setId("(esm/" + s.getId() + ")/GetMetadataOperationOutputParameterForActorType/Cardinality");
+        t.cardinality.lower = 0;
+        t.cardinality.upper = 1;
+
+        s.equivalent("CreateGetMetadataOperationForActorType").output = t;
+}
+
+
+@greedy
+rule CreateGetPrincipalOperationForActorType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!UnboundOperation {
+        guard: s.principal.isDefined()
+
+        t.setId("(esm/" + s.getId() + ")/GetPrincipalOperationForActorType");
+
+        t.name = "_principal";
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.setId("(esm/" + s.getId() + ")/GetPrincipalOperationForActorType/Behaviour");
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL;
+        t.behaviour.owner = s.getPSMEquivalent();
+
+        s.getPSMEquivalent().operations.add(t);
+}
+
+@greedy
+rule CreateGetPrincipalOperationOutputParameterForActorType
+    transform s : ESM!ActorType
+    to t : JUDOPSM!Parameter {
+        guard: s.principal.isDefined()
+
+        t.setId("(esm/" + s.getId() + ")/GetPrincipalOperationOutputParameterForActorType");
+
+        t.name = "output";
+        t.type = s.principal.getPSMTransferObjectTypeEquivalent();
+        t.cardinality = new JUDOPSM!Cardinality;
+        t.cardinality.setId("(esm/" + s.getId() + ")/GetPrincipalOperationOutputParameterForActorType/Cardinality");
+        t.cardinality.lower = 0;
+        t.cardinality.upper = 1;
+
+        s.equivalent("CreateGetPrincipalOperationForActorType").output = t;
+}
+*/
