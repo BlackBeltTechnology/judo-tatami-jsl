@@ -6,19 +6,16 @@ operation JSL!TransferActionDeclaration getId(): String {
 
 @cached
 operation JSL!TransferActionDeclaration isUpdateAllowed() : Boolean {
-    if (self.output.isDefined()){    	
-        // TODO: JNG-5333 Calculate
-        // return self.`return`.isUpdateAllowed();
+    if (self.`return`.isDefined()){
+        return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and m.`true`);
     }
     return false;
 }
 
 @cached
 operation JSL!TransferActionDeclaration isDeleteAllowed() : Boolean {
-    if (self.output.isDefined()){
-        // TODO: JNG-5333 Calculate
-        // return self.`return`.isDeleteAllowed();
-        return false;
+    if (self.`return`.isDefined()){
+        return self.modifiers.exists (m | m.isTypeOf(JSL!DeleteModifier) and m.`true`);
     }
     return false;
 }

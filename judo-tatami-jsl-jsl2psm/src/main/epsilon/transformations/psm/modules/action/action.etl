@@ -238,10 +238,6 @@ rule CreateBoundOperationForMappedTransferObjectType
       t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForMappedTransferObjectType");
       t.binding = s.equivalent("CreateBoundOperationForEntityType");
       
-      // TODO: JNG-5333 Modifiers for action's return
-      // t.updateOnResult = s.isUpdateAllowed();
-      // t.deleteOnResult = s.isDeleteAllowed();
-      
       s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
       log.debug("Created CreateBoundOperationForMappedTransferObjectType: " + t.name);
 }
