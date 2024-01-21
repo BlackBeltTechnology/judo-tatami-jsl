@@ -275,7 +275,7 @@ rule CreateCardinalityForTransferActionDeclarationInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferActionDeclarationInput");
 
-      t.lower = 1; // TODO: JNG-5323
+      t.lower = 1;
       t.upper = 1;
 }
 
@@ -286,7 +286,7 @@ rule CreateCardinalityForTransferActionDeclarationOutput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferActionDeclarationOutput");
 
-      t.lower = 1; // TODO: JNG-5323
+      t.lower = 1;
       t.upper = 1;
 }
 
@@ -297,7 +297,7 @@ rule CreateCardinalityForTransferActionDeclarationEntityInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForTransferActionDeclarationEntityInput");
 
-      t.lower = 1; // TODO: JNG-5323
+      t.lower = 1;
       t.upper = 1;
 }
 
