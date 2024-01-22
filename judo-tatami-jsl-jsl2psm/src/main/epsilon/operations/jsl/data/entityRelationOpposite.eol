@@ -2,3 +2,8 @@
 operation JSL!EntityRelationOppositeInjected getId(): String {
     return (self.eContainer.getId() + "/opposite-add/" + self.name);
 }
+
+@cached
+operation JSL!EntityRelationOppositeInjected getFqName(): String {
+    return self.eContainer.getFqName() + "#" + self.name;
+}
