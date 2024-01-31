@@ -73,3 +73,20 @@ transfer UnmappedTransfer {
 	action static void unmappedChoiceStatic(MappedTransfer input choices: Entity.all());
 }
 
+entity User {
+    identifier String email;
+}
+
+transfer UserTransfer maps User as u {
+    field String email <= u.email update: true;
+}
+
+/*
+actor Actor(User user)
+    realm: "COMPANY"
+    claim: "email"
+    identity: UserTransfer::email
+{	
+    access UserTransfer[] manager <= User.all();	
+};
+*/
