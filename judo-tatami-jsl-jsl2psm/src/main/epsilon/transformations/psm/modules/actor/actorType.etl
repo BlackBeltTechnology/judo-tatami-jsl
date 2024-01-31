@@ -1,0 +1,40 @@
+/*
+//////////////////////////////////////////////////
+// Unmapped actor object type
+//////////////////////////////////////////////////
+@greedy
+rule CreateUnmappedActorTransferObjectType
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!UnmappedTransferObjectType {
+      guard: s.map.isUndefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateUnmappedActorTransferObjectType");
+
+      t.name = s.name;
+
+      s.eContainer.getModelRoot().elements.add(t);
+
+      log.debug("Created UnmappedTransferObjectType: " + t.name);
+}
+
+
+//////////////////////////////////////////////////
+// Mapped actor object type
+//////////////////////////////////////////////////
+@greedy
+rule CreateMappedActorTransferObjectType
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!MappedTransferObjectType {
+      guard: s.map.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateMappedActorTransferObjectType");
+
+      t.entityType = s.map.entity.getPSMEquivalent();
+
+      t.name = s.name;
+
+      s.eContainer.getModelRoot().elements.add(t);
+
+      log.debug("Created MappedTransferObjectType: " + t.name);
+}
+*/

@@ -134,6 +134,34 @@ public class Jsl2Psm {
         @NonNull
         String defaultReadsNameMidfix = "_Reads_";
 
+        @Builder.Default
+        @NonNull
+        String defaultRelationRangeNamePrefix = "_";
+
+        @Builder.Default
+        @NonNull
+        String defaultRelationRangeNamePostfix = "";
+
+        @Builder.Default
+        @NonNull
+        String defaultRelationRangeNameMidfix = "_RelationRange_";
+
+        @Builder.Default
+        @NonNull
+        String defaultActionInputParameterRangeNamePrefix = "_";
+
+        @Builder.Default
+        @NonNull
+        String defaultActionInputParameterRangeNamePostfix = "";
+
+        @Builder.Default
+        @NonNull
+        String defaultActionInputParameterRangeNameMidfix = "_ActionInputParameterRange_";
+        
+        @Builder.Default
+        @NonNull
+        Boolean generateBehaviours = false;
+
     }
 
 
@@ -187,6 +215,13 @@ public class Jsl2Psm {
                             .put("defaultReadsNamePrefix", parameter.defaultReadsNamePrefix)
                             .put("defaultReadsNamePostfix", parameter.defaultReadsNamePostfix)
                             .put("defaultReadsNameMidfix", parameter.defaultReadsNameMidfix)
+                            .put("defaultRelationRangeNamePrefix", parameter.defaultRelationRangeNamePrefix)
+                            .put("defaultRelationRangeNamePostfix", parameter.defaultRelationRangeNamePostfix)
+                            .put("defaultRelationRangeNameMidfix", parameter.defaultRelationRangeNameMidfix)
+                            .put("defaultActionInputParameterRangeNamePrefix", parameter.defaultActionInputParameterRangeNamePrefix)
+                            .put("defaultActionInputParameterRangeNamePostfix", parameter.defaultActionInputParameterRangeNamePostfix)
+                            .put("defaultActionInputParameterRangeNameMidfix", parameter.defaultActionInputParameterRangeNameMidfix)                            
+                            .put("generateBehaviours", parameter.generateBehaviours)
                             .put("defaultModelName", parameter.jslModel.getName())
                             .put("expressionUtils", new JslExpressionToJqlExpression())
                             .put("ecoreUtil", new EcoreUtil())
