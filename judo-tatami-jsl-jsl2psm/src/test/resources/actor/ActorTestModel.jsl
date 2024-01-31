@@ -1,0 +1,26 @@
+model ActorTestModel;
+
+type binary Binary max-file-size: 1MB  mime-type: ["image/*"];
+type boolean Boolean;
+type date Date;
+type numeric Numeric scale: 0 precision: 9;
+type string String min-size: 0 max-size: 255;
+type time Time;
+type timestamp Timestamp;
+
+
+entity User {
+    identifier String email;
+}
+
+transfer UserTransfer maps User as u {
+    field String email <= u.email update: true;
+}
+
+actor Actor maps User as u
+    realm: "COMPANY"
+    claim: "email"
+    identity: UserTransfer::email
+{	
+    access UserTransfer[] manager <= User.all();	
+};
