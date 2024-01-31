@@ -1,0 +1,193 @@
+import "../../../../operations/_importAll.eol";
+
+
+@greedy
+rule CreateListOperationForEntityType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!BoundOperation {
+      guard: generateBehaviours and (s.maps() or s.reads())
+
+      t.setId("(jsl/" + s.getId() + ")/CreateListOperationForEntityType");
+      t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      t.name = "listRelation" + s.getFqName().fqNameToCamelCase();
+      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      log.debug("Created CreateListOperationForEntityType: " + t.name);
+}
+
+@greedy
+rule CreateListBehaviourForTransferType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+      guard: generateBehaviours and (s.maps() or s.reads())
+
+      t.setId("(jsl/" + s.getId() + ")/CreateListBehaviourForTransferType");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#LIST;
+      t.owner = s.getMappedTransferRelationEquivalent();
+      log.debug("Created CreateListBehaviourForTransferType: " + s.name);
+}
+
+@greedy
+rule CreateListOperationForTransferType
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!BoundTransferOperation {
+      guard: generateBehaviours and (s.maps() or s.reads())
+
+      t.setId("(jsl/" + s.getId() + ")/CreateListOperationForTransferType");
+      t.name = "listOf" +  s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+
+      t.binding = s.equivalent("CreateListOperationForEntityType");
+      t.behaviour = s.equivalent("CreateListBehaviourForTransferType");
+
+      t.updateOnResult = s.referenceType.isUpdateSupported();
+      t.deleteOnResult = s.referenceType.isDeleteSupported();
+      
+      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      log.debug("Created CreateListOperationForTransferType: " + t.name);      
+}
+
+
+@greedy
+rule CreateListOperationForTransferTypeInputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and (s.maps() or s.reads())
+
+      t.setId("(jsl/" + s.getId() + ")/CreateListOperationForTransferTypeInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForListTransferTypeInput");
+      t.name = "input";
+	  t.type = s.referenceType.equivalent("CreateQueryCustomizerType");
+      s.equivalent("CreateListOperationForTransferType").input = t;
+      log.debug("Created CreateListOperationForTransferTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateListOperationForTransferTypeOutputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and (s.maps() or s.reads())
+
+      t.setId("(jsl/" + s.getId() + ")/CreateListOperationForTransferTypeOutputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForListTransferTypeOutput");
+      t.name = "return";
+	  t.type = s.referenceType.getPSMEquivalent();
+      s.equivalent("CreateListOperationForTransferType").output = t;
+      log.debug("Created CreateListOperationForTransferTypeOutputParameter: " + t.name);
+}
+
+@greedy
+rule CreateListOperationForEntityTypeInputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and (s.maps() or s.reads())
+
+      t.setId("(jsl/" + s.getId() + ")/CreateListOperationForEntityTypeInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForListEntityTypeInput");
+      t.name = "input";
+	  t.type = s.referenceType.equivalent("CreateQueryCustomizerType");
+      s.equivalent("CreateListOperationForEntityType").input = t;
+      log.debug("Created CreateListOperationForEntityTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateListOperationForEntityTypeOutputParameter
+    transform s: JSL!TransferRelationDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and (s.maps() or s.reads())
+
+      t.setId("(jsl/" + s.getId() + ")/CreateListOperationForEntityTypeOutputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForListEntityTypeOutput");
+      t.name = "return";
+	  t.type = s.referenceType.getPSMEquivalent();
+      s.equivalent("CreateListOperationForEntityType").output = t;
+      log.debug("Created CreateListOperationForEntityTypeOutputParameter: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForListTransferTypeInput
+    transform s : JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForListTransferTypeInput");
+
+      t.lower = 0; //s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForListTransferTypeOutput
+    transform s : JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForListTransferTypeOutput");
+
+
+      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = s.isMany ? -1 : 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForListEntityTypeInput
+    transform s : JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForListEntityTypeInput");
+
+      t.lower = 0; //s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForListEntityTypeOutput
+    transform s : JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForListEntityTypeOutput");
+
+      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = s.isMany ? -1 : 1;
+}
+
+
+/*
+@greedy
+rule CreateListUnboundOperation
+    transform s : ESM!Access
+    to t : JUDOPSM!UnboundOperation {
+        guard: esmUtils.isListSupported(s)
+
+        t.setId("(esm/" + s.getId() + ")/ListUnboundOperation");
+
+        t.name = "_list" + s.name.firstToUpperCase();
+        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
+        t.behaviour.setId("(esm/" + s.getId() + ")/ListUnboundOperation/Behaviour");
+        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#LIST;
+
+        t.behaviour.owner = s.getPSMTransferObjectRelationEquivalent();
+        t.updateOnResult = t.behaviour.owner.embeddedUpdate;
+        t.deleteOnResult = t.behaviour.owner.embeddedDelete;
+
+        t.input = new JUDOPSM!Parameter;
+        t.input.setId("(esm/" + s.getId() + ")/ListUnboundOperation/Input");
+        t.input.name = "input";
+        t.input.type = s.target.equivalent("CreateQueryCustomizerType");
+        t.input.cardinality = new JUDOPSM!Cardinality;
+        t.input.cardinality.setId("(esm/" + s.getId() + ")/ListUnboundOperation/Input/Cardinality");
+        t.input.cardinality.lower = 0;
+        t.input.cardinality.upper = 1;
+
+        t.output = new JUDOPSM!Parameter;
+        t.output.setId("(esm/" + s.getId() + ")/ListUnboundOperation/Output");
+        t.output.name = "output";
+        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
+        t.output.cardinality = new JUDOPSM!Cardinality;
+        t.output.cardinality.setId("(esm/" + s.getId() + ")/ListUnboundOperation/Output/Cardinality");
+        t.output.cardinality.lower = s.lower;
+        t.output.cardinality.upper = s.upper;
+
+        s.eContainer.getPSMEquivalent().operations.add(t);
+}
+*/
+
