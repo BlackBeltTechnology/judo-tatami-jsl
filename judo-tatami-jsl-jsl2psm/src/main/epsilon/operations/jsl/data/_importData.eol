@@ -24,3 +24,5 @@ import "simpleTransferDeclaration.eol";
 import "transferCreateDeclaration.eol";
 import "transferUpdateDeclaration.eol";
 import "transferDeleteDeclaration.eol";
+import "actorDeclaration.eol";
+import "actorAccessDeclaration.eol";

@@ -22,11 +22,7 @@ rule CreateGetRangeRelationBehaviourForTransferType
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationBehaviourForTransferType");
         t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE;
-        if (s.reads()) {
-            t.owner = s.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
-        } else if (s.maps()) {
-            t.owner = s.equivalent("CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
-        }
+        t.owner = s.getMappedTransferRelationEquivalent();
         log.debug("Created CreateGetRangeRelationBehaviourForTransferType: " + s.name);
 }
 

@@ -22,11 +22,7 @@ rule CreateRemoveReferenceBehaviourForTransferType
 
       t.setId("(jsl/" + s.getId() + ")/CreateRemoveReferenceBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#REMOVE_REFERENCE;
-      if (s.reads()) {
-      	t.owner = s.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
-      } else if (s.maps()) {
-      	t.owner = s.equivalent("CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
-      }      
+      t.owner = s.getMappedTransferRelationEquivalent();
       log.debug("Created CreateRemoveReferenceBehaviourForTransferType: " + s.name);
 }
 
