@@ -1,4 +1,5 @@
 @lazy
+@greedy
 rule CreateCardinalityForRelationDeclaration
     transform s: JSL!EntityRelationDeclaration
     to t: JUDOPSM!Cardinality {
@@ -11,6 +12,7 @@ rule CreateCardinalityForRelationDeclaration
 }
 
 @lazy
+@greedy
 rule CreateCardinalityForFieldDeclaration
     transform s: JSL!EntityFieldDeclaration
     to t: JUDOPSM!Cardinality {
@@ -24,6 +26,7 @@ rule CreateCardinalityForFieldDeclaration
 
 
 @lazy
+@greedy
 rule CreateCardinalityForOppositeAddedRelation
     transform s: JSL!EntityRelationOppositeInjected
     to t: JUDOPSM!Cardinality {
@@ -34,6 +37,7 @@ rule CreateCardinalityForOppositeAddedRelation
 }
 
 @lazy
+@greedy
 rule CreateCardinalityForDerivedDeclaration
     transform s : JSL!EntityRelationDeclaration
     to t : JUDOPSM!Cardinality {
@@ -46,6 +50,7 @@ rule CreateCardinalityForDerivedDeclaration
 }
 
 @lazy
+@greedy
 rule CreateCardinalityForStaticQueryDeclaration
     transform s : JSL!QueryDeclaration
     to t : JUDOPSM!Cardinality {
@@ -59,6 +64,7 @@ rule CreateCardinalityForStaticQueryDeclaration
 
 
 @lazy
+@greedy
 rule CreateCardinalityForTransferRelationDeclaration
     transform s : JSL!TransferRelationDeclaration
     to t : JUDOPSM!Cardinality {

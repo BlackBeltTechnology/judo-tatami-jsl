@@ -22,11 +22,7 @@ rule CreateCreateBehaviourForTransferType
 
       t.setId("(jsl/" + s.getId() + ")/CreateCreateBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#CREATE_INSTANCE;
-      if (s.reads()) {
-      	t.owner = s.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
-      } else if (s.maps()) {
-      	t.owner = s.equivalent("CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
-      }      
+      t.owner = s.getMappedTransferRelationEquivalent();
       log.debug("Created CreateCreateBehaviourForTransferType: " + s.name);
 }
 

@@ -1,0 +1,21 @@
+@cached
+operation JSL!ActorDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!ActorDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}
+
+/*
+
+@cached
+operation JSL!ActorDeclaration getPSMEquivalent(): JUDOPSM!TransferObjectType {
+    if (self.map.isUndefined()) {
+        return self.equivalent("CreateUnmappedActorTransferObjectType");
+    } else {
+        return self.equivalent("CreateMappedActorTransferObjectType");
+    }
+}
+*/

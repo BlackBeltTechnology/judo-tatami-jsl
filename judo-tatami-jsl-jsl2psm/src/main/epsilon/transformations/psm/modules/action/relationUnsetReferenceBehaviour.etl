@@ -22,11 +22,7 @@ rule CreateUnsetReferenceBehaviourForTransferType
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#UNSET_REFERENCE;
-      if (s.reads()) {
-      	t.owner = s.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
-      } else if (s.maps()) {
-      	t.owner = s.equivalent("CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
-      }      
+      t.owner = s.getMappedTransferRelationEquivalent();
       log.debug("Created CreateUnsetReferenceBehaviourForTransferType: " + s.name);
 }
 

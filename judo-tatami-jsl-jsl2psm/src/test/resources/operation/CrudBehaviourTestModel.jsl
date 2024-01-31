@@ -81,12 +81,10 @@ transfer UserTransfer maps User as u {
     field String email <= u.email update: true;
 }
 
-/*
-actor Actor(User user)
+actor Actor maps User as u
     realm: "COMPANY"
     claim: "email"
     identity: UserTransfer::email
 {	
     access UserTransfer[] manager <= User.all();	
 };
-*/

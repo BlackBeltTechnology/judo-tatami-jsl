@@ -22,11 +22,7 @@ rule CreateAddReferenceBehaviourForTransferType
 
       t.setId("(jsl/" + s.getId() + ")/CreateAddReferenceBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#ADD_REFERENCE;
-      if (s.reads()) {
-      	t.owner = s.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
-      } else if (s.maps()) {
-      	t.owner = s.equivalent("CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
-      }      
+      t.owner = s.getMappedTransferRelationEquivalent();
       log.debug("Created CreateAddReferenceBehaviourForTransferType: " + s.name);
 }
 
