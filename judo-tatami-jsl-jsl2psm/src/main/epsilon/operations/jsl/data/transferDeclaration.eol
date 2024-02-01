@@ -113,3 +113,8 @@ operation JSL!TransferDeclaration getCreateEventAfter(): JSL!TransferCreateDecla
 operation JSL!TransferDeclaration hasSortableField(): Boolean {
     return self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration)).exists(a | a.isSortable());
 }
+
+@cached
+operation JSL!TransferDeclaration isActorRelated(): Boolean {
+    return self.isKindOf(JSL!ActorDeclaration);
+}

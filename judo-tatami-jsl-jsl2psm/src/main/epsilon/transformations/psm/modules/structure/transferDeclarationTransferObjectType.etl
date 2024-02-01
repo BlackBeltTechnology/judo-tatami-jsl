@@ -8,7 +8,7 @@ import "../../../../operations/_importAll.eol";
 rule CreateUnmappedTransferObjectType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!UnmappedTransferObjectType {
-      guard: s.map.isUndefined()
+      guard: s.map.isUndefined() and not s.isActorRelated()
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnmappedTransferObjectType");
 
@@ -27,7 +27,7 @@ rule CreateUnmappedTransferObjectType
 rule CreateMappedTransferObjectType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!MappedTransferObjectType {
-      guard: s.map.isDefined()
+      guard: s.map.isDefined() and not s.isActorRelated()
 
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferObjectType");
 

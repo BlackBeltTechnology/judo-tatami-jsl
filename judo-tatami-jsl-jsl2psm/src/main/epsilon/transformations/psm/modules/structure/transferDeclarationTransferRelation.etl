@@ -32,7 +32,7 @@ rule CreateTransientTransferObjectRelationForTransferRelationDeclaration
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationForTransferRelationDeclaration {
-        guard: not s.maps() and not s.reads()
+        guard: not s.maps() and not s.reads() and not s.isActorRelated()
 
         t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferObjectRelationForTransferRelationDeclaration");
         t.cardinality = s.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
@@ -55,7 +55,7 @@ rule CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration
     transform s : JSL!TransferRelationDeclaration
     to t : JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationForTransferRelationDeclaration {
-      guard: s.reads()
+      guard: s.reads() and not s.isActorRelated()
 
       t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
       t.cardinality = s.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
@@ -75,7 +75,7 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration
     transform s : JSL!TransferRelationDeclaration
     to t : JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationForTransferRelationDeclaration {
-      guard: s.maps()
+      guard: s.maps() and not s.isActorRelated()
 
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
       t.cardinality = s.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());

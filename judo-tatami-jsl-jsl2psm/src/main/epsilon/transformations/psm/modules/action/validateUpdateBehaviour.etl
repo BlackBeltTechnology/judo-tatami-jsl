@@ -9,7 +9,7 @@ rule CreateValidateUpdateOperationForEntityType
       guard: generateBehaviours and s.instead ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForEntityType");
-      t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      t.instanceRepresentation = s.eContainer.getPSMEquivalent();
       t.name = "validate" + s.name.firstToUpperCase() + s.eContainer.getFqName().fqNameToCamelCase();
       s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
       log.debug("Created CreateValidateUpdateOperationForEntityType: " + t.name);
@@ -23,7 +23,7 @@ rule CreateValidateUpdateBehaviourForTransferType
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#VALIDATE_UPDATE;
-      t.owner = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      t.owner = s.eContainer.getPSMEquivalent();
       log.debug("Created CreateValidateUpdateBehaviourForTransferType: " + s.name);
 }
 
@@ -40,7 +40,7 @@ rule CreateValidateUpdateOperationForTransferType
       }
       t.binding = s.equivalent("CreateValidateUpdateOperationForEntityType");
       t.behaviour = s.equivalent("CreateValidateUpdateBehaviourForTransferType");
-      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      s.eContainer.getPSMEquivalent().operations.add(t);
       log.debug("Created CreateValidateUpdateOperationForTransferType: " + t.name);      
 }
 
