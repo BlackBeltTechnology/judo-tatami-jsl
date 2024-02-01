@@ -106,3 +106,9 @@ operation JSL!TransferRelationDeclaration getMappedTransferRelationEquivalent() 
   return ret;
 }
 
+
+@cached
+operation JSL!TransferRelationDeclaration isActorRelated(): Boolean {
+    return self.isKindOf(JSL!ActorAccessDeclaration);
+}
+

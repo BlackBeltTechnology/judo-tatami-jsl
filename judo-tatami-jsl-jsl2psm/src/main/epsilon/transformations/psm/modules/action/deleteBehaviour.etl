@@ -8,7 +8,7 @@ rule CreateDeleteOperationForEntityType
       guard: generateBehaviours and s.instead ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateDeleteOperationForEntityType");
-      t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      t.instanceRepresentation = s.eContainer.getPSMEquivalent();
       t.name = s.name + s.eContainer.getFqName().fqNameToCamelCase();
       s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
       log.debug("Created CreateDeleteOperationForEntityType: " + t.name);
@@ -22,7 +22,7 @@ rule CreateDeleteBehaviourForTransferType
 
       t.setId("(jsl/" + s.getId() + ")/CreateDeleteBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#DELETE_INSTANCE;
-      t.owner = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      t.owner = s.eContainer.getPSMEquivalent();
       log.debug("Created CreateDeleteBehaviourForTransferType: " + s.name);
 }
 
@@ -36,7 +36,7 @@ rule CreateDeleteOperationForTransferType
       t.name = s.name;
       t.binding = s.equivalent("CreateDeleteOperationForEntityType");
       t.behaviour = s.equivalent("CreateDeleteBehaviourForTransferType");
-      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      s.eContainer.getPSMEquivalent().operations.add(t);
       log.debug("Created CreateDeleteOperationForTransferType: " + t.name);      
 }
 

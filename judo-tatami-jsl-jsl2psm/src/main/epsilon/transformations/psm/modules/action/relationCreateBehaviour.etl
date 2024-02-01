@@ -5,10 +5,10 @@ import "../../../../operations/_importAll.eol";
 rule CreateCreateOperationForEntityType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!BoundOperation {
-      guard: generateBehaviours and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
+      guard: generateBehaviours and not s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateCreateOperationForEntityType");
-      t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
+      t.instanceRepresentation = s.eContainer.getPSMEquivalent();
       t.name = s.referenceType.getCreateEventInsteadOf().name + "ForRelation" + s.getFqName().fqNameToCamelCase();
       s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
       log.debug("Created CreateCreateOperationForEntityType: " + t.name);
@@ -18,7 +18,7 @@ rule CreateCreateOperationForEntityType
 rule CreateCreateBehaviourForTransferType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!TransferOperationBehaviour {
-      guard: generateBehaviours and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
+      guard: generateBehaviours and not s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateCreateBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#CREATE_INSTANCE;
@@ -30,7 +30,7 @@ rule CreateCreateBehaviourForTransferType
 rule CreateCreateOperationForTransferType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!BoundTransferOperation {
-      guard: generateBehaviours and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
+      guard: generateBehaviours and not s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateCreateOperationForTransferType");
       t.name = s.referenceType.getCreateEventInsteadOf().name + "Of" + s.name.firstToUpperCase();
@@ -44,7 +44,7 @@ rule CreateCreateOperationForTransferType
       t.updateOnResult = s.referenceType.isUpdateSupported();
       t.deleteOnResult = s.referenceType.isDeleteSupported();
       
-      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      s.eContainer.getPSMEquivalent().operations.add(t);
       log.debug("Created CreateCreateOperationForTransferType: " + t.name);      
 }
 
@@ -53,7 +53,7 @@ rule CreateCreateOperationForTransferType
 rule CreateCreateOperationForTransferTypeInputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
+      guard: generateBehaviours and not s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateCreateOperationForTransferTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForCreateTransferTypeInput");
@@ -67,7 +67,7 @@ rule CreateCreateOperationForTransferTypeInputParameter
 rule CreateCreateOperationForTransferTypeOutputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
+      guard: generateBehaviours and not s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateCreateOperationForTransferTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForCreateTransferTypeOutput");
@@ -81,7 +81,7 @@ rule CreateCreateOperationForTransferTypeOutputParameter
 rule CreateCreateOperationForEntityTypeInputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
+      guard: generateBehaviours and not s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateCreateOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForCreateEntityTypeInput");
@@ -95,7 +95,7 @@ rule CreateCreateOperationForEntityTypeInputParameter
 rule CreateCreateOperationForEntityTypeOutputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
+      guard: generateBehaviours and not s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateCreateOperationForEntityTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForCreateEntityTypeOutput");

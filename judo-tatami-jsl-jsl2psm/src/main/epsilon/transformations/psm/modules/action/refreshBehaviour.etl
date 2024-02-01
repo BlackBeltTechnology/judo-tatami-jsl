@@ -4,10 +4,10 @@ import "../../../../operations/_importAll.eol";
 rule CreateRefreshOperationForEntityType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!BoundOperation {
-      guard: generateBehaviours and s.map.isDefined()
+      guard: generateBehaviours and not s.isActorRelated() and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForEntityType");
-      t.instanceRepresentation = s.equivalent("CreateMappedTransferObjectType");
+      t.instanceRepresentation = s.getPSMEquivalent();
       t.name = "Refresh" + s.getFqName().fqNameToCamelCase();
       s.map.entity.getPSMEquivalent().operations.add(t);
       log.debug("Created CreateRefreshOperationForEntityType: " + t.name);
@@ -17,11 +17,11 @@ rule CreateRefreshOperationForEntityType
 rule CreateRefreshBehaviourForTransferType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!TransferOperationBehaviour {
-      guard: generateBehaviours and s.map.isDefined()
+      guard: generateBehaviours and not s.isActorRelated() and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#REFRESH;
-      t.owner = s.equivalent("CreateMappedTransferObjectType");
+      t.owner = s.getPSMEquivalent();
       log.debug("Created CreateRefreshBehaviourForTransferType: " + s.name);
 }
 
@@ -29,7 +29,7 @@ rule CreateRefreshBehaviourForTransferType
 rule CreateRefreshOperationForTransferType
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!BoundTransferOperation {
-      guard: generateBehaviours and s.map.isDefined()
+      guard: generateBehaviours and not s.isActorRelated() and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForTransferType");
       t.name = "refreshInstance";
@@ -39,7 +39,7 @@ rule CreateRefreshOperationForTransferType
       
       t.binding = s.equivalent("CreateRefreshOperationForEntityType");
       t.behaviour = s.equivalent("CreateRefreshBehaviourForTransferType");
-      s.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      s.getPSMEquivalent().operations.add(t);
       log.debug("Created CreateRefreshOperationForTransferType: " + t.name);      
 }
 
@@ -48,7 +48,7 @@ rule CreateRefreshOperationForTransferType
 rule CreateRefreshOperationForTransferTypeInputParameter
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and s.map.isDefined()
+      guard: generateBehaviours and not s.isActorRelated() and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForTransferTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRefreshTransferTypeInput");
@@ -62,7 +62,7 @@ rule CreateRefreshOperationForTransferTypeInputParameter
 rule CreateRefreshOperationForTransferTypeOutputParameter
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and s.map.isDefined()
+      guard: generateBehaviours and not s.isActorRelated() and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForTransferTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRefreshTransferTypeOutput");
@@ -76,7 +76,7 @@ rule CreateRefreshOperationForTransferTypeOutputParameter
 rule CreateRefreshOperationForEntityTypeInputParameter
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and s.map.isDefined()
+      guard: generateBehaviours and not s.isActorRelated() and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRefreshEntityTypeInput");
@@ -90,7 +90,7 @@ rule CreateRefreshOperationForEntityTypeInputParameter
 rule CreateRefreshOperationForEntityTypeOutputParameter
     transform s: JSL!TransferDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and s.map.isDefined()
+      guard: generateBehaviours and not s.isActorRelated() and s.map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRefreshOperationForEntityTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRefreshEntityTypeOutput");

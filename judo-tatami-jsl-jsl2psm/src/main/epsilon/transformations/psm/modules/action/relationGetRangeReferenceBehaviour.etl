@@ -5,10 +5,10 @@ import "../../../../operations/_importAll.eol";
 rule CreateGetRangeRelationOperationForEntityType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!BoundOperation {
-        guard: generateBehaviours and s.isGetRangeSupported()
+        guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForEntityType");
-        t.instanceRepresentation = s.eContainer.equivalent("CreateMappedTransferObjectType");
+        t.instanceRepresentation = s.eContainer.getPSMEquivalent();
         t.name = "getRangeForRelation" + s.getFqName().fqNameToCamelCase();
         s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
         log.debug("Created CreateGetRangeRelationOperationForEntityType: " + t.name);
@@ -18,7 +18,7 @@ rule CreateGetRangeRelationOperationForEntityType
 rule CreateGetRangeRelationBehaviourForTransferType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!TransferOperationBehaviour {
-        guard: generateBehaviours and s.isGetRangeSupported()
+        guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationBehaviourForTransferType");
         t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE;
@@ -30,7 +30,7 @@ rule CreateGetRangeRelationBehaviourForTransferType
 rule CreateGetRangeRelationOperationForTransferType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!BoundTransferOperation {
-        guard: generateBehaviours and s.isGetRangeSupported()
+        guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForTransferType");
         t.name = "getRangeFor" + s.name.firstToUpperCase();
@@ -44,7 +44,7 @@ rule CreateGetRangeRelationOperationForTransferType
         t.updateOnResult = s.referenceType.isUpdateSupported();
         t.deleteOnResult = s.referenceType.isDeleteSupported();
 
-        s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+        s.eContainer.getPSMEquivalent().operations.add(t);
         log.debug("Created CreateGetRangeRelationOperationForTransferType: " + t.name);
 }
 
@@ -53,7 +53,7 @@ rule CreateGetRangeRelationOperationForTransferType
 rule CreateGetRangeRelationOperationForTransferTypeInputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-        guard: generateBehaviours and s.isGetRangeSupported()
+        guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForTransferTypeInputParameter");
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationTransferTypeInput");
@@ -67,7 +67,7 @@ rule CreateGetRangeRelationOperationForTransferTypeInputParameter
 rule CreateGetRangeRelationOperationForTransferTypeOutputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-        guard: generateBehaviours and s.isGetRangeSupported()
+        guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForTransferTypeOutputParameter");
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationTransferTypeOutput");
@@ -81,7 +81,7 @@ rule CreateGetRangeRelationOperationForTransferTypeOutputParameter
 rule CreateGetRangeRelationOperationForEntityTypeInputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-        guard: generateBehaviours and s.isGetRangeSupported()
+        guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForEntityTypeInputParameter");
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationEntityTypeInput");
@@ -95,7 +95,7 @@ rule CreateGetRangeRelationOperationForEntityTypeInputParameter
 rule CreateGetRangeRelationOperationForEntityTypeOutputParameter
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!Parameter {
-        guard: generateBehaviours and s.isGetRangeSupported()
+        guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForEntityTypeOutputParameter");
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationEntityTypeOutput");
@@ -145,40 +145,3 @@ rule CreateCardinalityForGetRangeRelationEntityTypeOutput
         t.upper = -1;
 }
 
-/*
-@greedy
-rule CreateGetRangeReferenceTransferOperationForInputParameter
-    transform s : ESM!Parameter
-    to t : JUDOPSM!UnboundOperation {
-        guard: esmUtils.isGetRangeSupported(s)
-
-        t.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter");
-
-        t.name = "_getRangeReference" + s.name.firstToUpperCase();
-        t.immutable = true;
-        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
-        t.behaviour.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Behaviour");
-        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE;
-        t.behaviour.owner = s.getPSMTransferOperationEquivalent();
-
-        t.input = new JUDOPSM!Parameter;
-        t.input.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Input");
-        t.input.name = "input";
-        t.input.type = s.equivalent("CreateGetRangeInputTypeForInputParameter");
-        t.input.cardinality = new JUDOPSM!Cardinality;
-        t.input.cardinality.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Input/Cardinality");
-        t.input.cardinality.lower = 0;
-        t.input.cardinality.upper = 1;
-
-        t.output = new JUDOPSM!Parameter;
-        t.output.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Output");
-        t.output.name = "output";
-        t.output.type = s.target.getPSMTransferObjectTypeEquivalent();
-        t.output.cardinality = new JUDOPSM!Cardinality;
-        t.output.cardinality.setId("(esm/" + s.getId() + ")/GetRangeReferenceTransferOperationForInputParameter/Output/Cardinality");
-        t.output.cardinality.lower = 0;
-        t.output.cardinality.upper = -1;
-
-        s.eContainer.getPSMTransferObjectTypeEquivalent().operations.add(t);
-}
-*/

@@ -141,7 +141,7 @@ rule CreateUnboundOperationForMappedTransferObjectType
       guard: s.eContainer.map.isDefined() and s.static
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnboundOperationForMappedTransferObjectType");
-      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      s.eContainer.getPSMEquivalent().operations.add(t);
       log.debug("Created CreateUnboundOperationForMappedTransferObjectType: " + t.name);
 }
 
@@ -238,7 +238,7 @@ rule CreateBoundOperationForMappedTransferObjectType
       t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForMappedTransferObjectType");
       t.binding = s.equivalent("CreateBoundOperationForEntityType");
       
-      s.eContainer.equivalent("CreateMappedTransferObjectType").operations.add(t);
+      s.eContainer.getPSMEquivalent().operations.add(t);
       log.debug("Created CreateBoundOperationForMappedTransferObjectType: " + t.name);
 }
 
