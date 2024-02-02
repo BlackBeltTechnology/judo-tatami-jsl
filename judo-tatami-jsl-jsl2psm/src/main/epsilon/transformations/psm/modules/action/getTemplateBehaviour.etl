@@ -10,7 +10,7 @@ rule CreateGetTemplateBehaviourForTransferType
 
       t.setId("(jsl/" + s.getId() + ")/CreateGetTemplateBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_TEMPLATE;
-      t.owner = s.getPSMEquivalent();
+      t.owner = s.getTransferDeclarationEquivalent();
       log.debug("Created CreateGetTemplateBehaviourForTransferType: " + s.name);
 }
 
@@ -29,7 +29,7 @@ rule CreateGetTemplateOperationForTransferType
       
       t.immutable = true;
       t.behaviour = s.equivalent("CreateGetTemplateBehaviourForTransferType");
-      s.getPSMEquivalent().operations.add(t);
+      s.getTransferDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateGetTemplateOperationForTransferType: " + t.name);      
 }
 
@@ -43,7 +43,7 @@ rule CreateGetTemplateOperationForTransferTypeOutputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateGetTemplateOperationForTransferTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForGetTemplateTransferTypeOutput");
       t.name = "return";
-	  t.type = s.getPSMEquivalent();
+	  t.type = s.getTransferDeclarationEquivalent();
       s.equivalent("CreateGetTemplateOperationForTransferType").output = t;
       log.debug("Created CreateGetTemplateOperationForTransferTypeOutputParameter: " + t.name);
 }

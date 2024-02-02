@@ -8,9 +8,9 @@ rule CreateGetRangeRelationOperationForEntityType
         guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
 
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForEntityType");
-        t.instanceRepresentation = s.eContainer.getPSMEquivalent();
+        t.instanceRepresentation = s.eContainer.getTransferDeclarationEquivalent();
         t.name = "getRangeForRelation" + s.getFqName().fqNameToCamelCase();
-        s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+        s.eContainer.map.entity.getEntityDeclarationEquivalent().operations.add(t);
         log.debug("Created CreateGetRangeRelationOperationForEntityType: " + t.name);
 }
 
@@ -44,7 +44,7 @@ rule CreateGetRangeRelationOperationForTransferType
         t.updateOnResult = s.referenceType.isUpdateSupported();
         t.deleteOnResult = s.referenceType.isDeleteSupported();
 
-        s.eContainer.getPSMEquivalent().operations.add(t);
+        s.eContainer.getTransferDeclarationEquivalent().operations.add(t);
         log.debug("Created CreateGetRangeRelationOperationForTransferType: " + t.name);
 }
 
@@ -72,7 +72,7 @@ rule CreateGetRangeRelationOperationForTransferTypeOutputParameter
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForTransferTypeOutputParameter");
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationTransferTypeOutput");
         t.name = "return";
-        t.type = s.referenceType.getPSMEquivalent();
+        t.type = s.referenceType.getTransferDeclarationEquivalent();
         s.equivalent("CreateGetRangeRelationOperationForTransferType").output = t;
         log.debug("Created CreateGetRangeRelationOperationForTransferTypeOutputParameter: " + t.name);
 }
@@ -100,7 +100,7 @@ rule CreateGetRangeRelationOperationForEntityTypeOutputParameter
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForEntityTypeOutputParameter");
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationEntityTypeOutput");
         t.name = "return";
-        t.type = s.referenceType.getPSMEquivalent();
+        t.type = s.referenceType.getTransferDeclarationEquivalent();
         s.equivalent("CreateGetRangeRelationOperationForEntityType").output = t;
         log.debug("Created CreateGetRangeRelationOperationForEntityTypeOutputParameter: " + t.name);
 }

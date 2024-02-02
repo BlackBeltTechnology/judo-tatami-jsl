@@ -7,7 +7,7 @@ rule CreateNamedOppositeAssociationEnd
 
         t.setId("(jsl/" + s.getId() + ")/CreateNamedOppositeAssociationEnd");
         t.name = s.name;
-        t.target = relationAddedFrom.eContainer.getPSMEquivalent();
+        t.target = relationAddedFrom.eContainer.getEntityDeclarationEquivalent();
         t.cardinality = s.equivalentDiscriminated("CreateCardinalityForOppositeAddedRelation", t.getId());
 
         // Reverse cascade delete not supported yet
@@ -15,7 +15,7 @@ rule CreateNamedOppositeAssociationEnd
 
         t.partner = relationAddedFrom.equivalent("CreateDeclaredAssociationEnd");
 
-        entityToAdd.getPSMEquivalent().relations.add(t);
+        entityToAdd.getEntityDeclarationEquivalent().relations.add(t);
         log.debug("Created Association End (named opposite): " + t.name);
     }
 
@@ -27,7 +27,7 @@ rule CreateDeclaredAssociationEnd
 
         t.setId("(jsl/" + s.getId() + ")/CreateDeclaredAssociationEnd");
         t.name = s.name;
-        t.target = s.getReferenceType().getPSMEquivalent();
+        t.target = s.getReferenceType().getEntityDeclarationEquivalent();
         t.cardinality = s.equivalentDiscriminated("CreateCardinalityForRelationDeclaration", t.getId());
 
         // Reverse cascade delete not supported yet
@@ -44,6 +44,6 @@ rule CreateDeclaredAssociationEnd
 	        }
 	    }
 
-        s.eContainer.getPSMEquivalent().relations.add(t);
+        s.eContainer.getEntityDeclarationEquivalent().relations.add(t);
         log.debug("Created Association End: (declared)" + t.name);
     }

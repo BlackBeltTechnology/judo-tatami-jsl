@@ -11,16 +11,18 @@ type timestamp Timestamp;
 
 entity User {
     identifier String email;
+    field Boolean isActive;
 }
 
 transfer UserTransfer maps User as u {
     field String email <= u.email update: true;
 }
 
-actor Actor
+actor Actor(User user)
     realm: "COMPANY"
     claim: "email"
     identity: UserTransfer::email
+    guard: user.isActive
 {	
     access UserTransfer[] manager <= User.all();	
 };

@@ -1,5 +1,5 @@
 @cached
-operation JSL!ModelDeclaration getPSMEquivalent(): JUDOPSM!Model {
+operation JSL!ModelDeclaration getModelDeclarationEquivalent(): JUDOPSM!Model {
     return defaultModelName.equivalent("CreateRootModel");
 }
 

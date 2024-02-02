@@ -8,9 +8,9 @@ rule CreateRemoveReferenceOperationForEntityType
       guard: generateBehaviours and not s.isActorRelated() and s.isRemoveReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateRemoveReferenceOperationForEntityType");
-      t.instanceRepresentation = s.eContainer.getPSMEquivalent();
+      t.instanceRepresentation = s.eContainer.getTransferDeclarationEquivalent();
       t.name = "removeReferencesFromRelation" + s.getFqName().fqNameToCamelCase();
-      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      s.eContainer.map.entity.getEntityDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateRemoveReferenceOperationForEntityType: " + t.name);
 }
 
@@ -43,7 +43,7 @@ rule CreateRemoveReferenceOperationForTransferType
       t.updateOnResult = s.referenceType.isUpdateSupported();
       t.deleteOnResult = s.referenceType.isDeleteSupported();
       
-      s.eContainer.getPSMEquivalent().operations.add(t);
+      s.eContainer.getTransferDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateRemoveReferenceOperationForTransferType: " + t.name);      
 }
 
@@ -57,7 +57,7 @@ rule CreateRemoveReferenceOperationForTransferTypeInputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateRemoveReferenceOperationForTransferTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRemoveReferenceTransferTypeInput");
       t.name = "input";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateRemoveReferenceOperationForTransferType").input = t;
       log.debug("Created CreateRemoveReferenceOperationForTransferTypeInputParameter: " + t.name);
 }
@@ -71,7 +71,7 @@ rule CreateRemoveReferenceOperationForEntityTypeInputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateRemoveReferenceOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForRemoveReferenceEntityTypeInput");
       t.name = "input";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateRemoveReferenceOperationForEntityType").input = t;
       log.debug("Created CreateRemoveReferenceOperationForEntityTypeInputParameter: " + t.name);
 }

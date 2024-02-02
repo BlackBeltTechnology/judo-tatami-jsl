@@ -55,7 +55,7 @@ operation JSL!TransferFieldDeclaration isGetUploadTokenSupported(): Boolean {
 
 
 @cached 
-operation JSL!TransferFieldDeclaration getPSMEquivalent() : JUDOPSM!TransferAttribute {
+operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent() : JUDOPSM!TransferAttribute {
 	if (not self.maps() and not self.reads()) {
 		return self.equivalent("CreateTransientTransferAttribute");
 	}
