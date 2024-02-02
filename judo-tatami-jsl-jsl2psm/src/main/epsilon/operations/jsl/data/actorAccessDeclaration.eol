@@ -80,7 +80,7 @@ operation JSL!ActorAccessDeclaration isGetRangeSupported() : Boolean {
 }
 
 @cached
-operation JSL!ActorAccessDeclaration getPSMRangeEquivalent(): JUDOPSM!ReferenceAccessor {
+operation JSL!ActorAccessDeclaration getTransferActionRangeEquivalent(): JUDOPSM!ReferenceAccessor {
 	  var choice = self.modifiers.selectOne(m | m.isTypeOf(JSL!TransferChoiceModifier));
 
       if (choice.isDefined() and self.eContainer.map.isDefined()) {

@@ -8,9 +8,9 @@ rule CreateUnsetReferenceOperationForEntityType
       guard: generateBehaviours and not s.isActorRelated() and s.isUnsetReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForEntityType");
-      t.instanceRepresentation = s.eContainer.getPSMEquivalent();
+      t.instanceRepresentation = s.eContainer.getTransferDeclarationEquivalent();
       t.name = "unsetReferencesOfRelation" + s.getFqName().fqNameToCamelCase();
-      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      s.eContainer.map.entity.getEntityDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateUnsetReferenceOperationForEntityType: " + t.name);
 }
 
@@ -44,7 +44,7 @@ rule CreateUnsetReferenceOperationForTransferType
       t.updateOnResult = s.referenceType.isUpdateSupported();
       t.deleteOnResult = s.referenceType.isDeleteSupported();
       
-      s.eContainer.getPSMEquivalent().operations.add(t);
+      s.eContainer.getTransferDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateUnsetReferenceOperationForTransferType: " + t.name);      
 }
 
@@ -58,7 +58,7 @@ rule CreateUnsetReferenceOperationForTransferTypeInputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForTransferTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForUnsetReferenceTransferTypeInput");
       t.name = "input";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateUnsetReferenceOperationForTransferType").input = t;
       log.debug("Created CreateUnsetReferenceOperationForTransferTypeInputParameter: " + t.name);
 }
@@ -72,7 +72,7 @@ rule CreateUnsetReferenceOperationForEntityTypeInputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateUnsetReferenceOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForUnsetReferenceEntityTypeInput");
       t.name = "input";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateUnsetReferenceOperationForEntityType").input = t;
       log.debug("Created CreateUnsetReferenceOperationForEntityTypeInputParameter: " + t.name);
 }

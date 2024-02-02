@@ -8,9 +8,9 @@ rule CreateSetReferenceOperationForEntityType
       guard: generateBehaviours and not s.isActorRelated() and s.isSetReferenceAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateSetReferenceOperationForEntityType");
-      t.instanceRepresentation = s.eContainer.getPSMEquivalent();
+      t.instanceRepresentation = s.eContainer.getTransferDeclarationEquivalent();
       t.name = "setReferencesOfRelation" + s.getFqName().fqNameToCamelCase();
-      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      s.eContainer.map.entity.getEntityDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateSetReferenceOperationForEntityType: " + t.name);
 }
 
@@ -44,7 +44,7 @@ rule CreateSetReferenceOperationForTransferType
       t.updateOnResult = s.referenceType.isUpdateSupported();
       t.deleteOnResult = s.referenceType.isDeleteSupported();
       
-      s.eContainer.getPSMEquivalent().operations.add(t);
+      s.eContainer.getTransferDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateSetReferenceOperationForTransferType: " + t.name);      
 }
 
@@ -58,7 +58,7 @@ rule CreateSetReferenceOperationForTransferTypeInputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateSetReferenceOperationForTransferTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForSetReferenceTransferTypeInput");
       t.name = "input";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateSetReferenceOperationForTransferType").input = t;
       log.debug("Created CreateSetReferenceOperationForTransferTypeInputParameter: " + t.name);
 }
@@ -72,7 +72,7 @@ rule CreateSetReferenceOperationForEntityTypeInputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateSetReferenceOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForSetReferenceEntityTypeInput");
       t.name = "input";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateSetReferenceOperationForEntityType").input = t;
       log.debug("Created CreateSetReferenceOperationForEntityTypeInputParameter: " + t.name);
 }

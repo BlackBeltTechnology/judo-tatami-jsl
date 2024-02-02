@@ -26,7 +26,7 @@ operation JSL!TransferActionDeclaration getFqName(): String {
 }
 
 @cached
-operation JSL!TransferActionDeclaration getPSMRangeEquivalent(): JUDOPSM!ReferenceAccessor {
+operation JSL!TransferActionDeclaration getTransferActionRangeEquivalent(): JUDOPSM!ReferenceAccessor {
 	  var choice = self.modifiers.selectOne(m | m.isTypeOf(JSL!TransferChoiceModifier));
 
       if (choice.isDefined() and self.eContainer.map.isDefined()) {
@@ -40,7 +40,7 @@ operation JSL!TransferActionDeclaration getPSMRangeEquivalent(): JUDOPSM!Referen
 
 
 @cached
-operation JSL!TransferActionDeclaration getPSMOperationEquivalent(): JUDOPSM!OperationDeclaration {
+operation JSL!TransferActionDeclaration getOperationDeclarationEquivalent(): JUDOPSM!OperationDeclaration {
 
 	  if (self.eContainer.map.isUndefined()) {
 	  	return self.equivalent("CreateUnboundOperationForUnmappedTransferObjectType");	  
@@ -54,7 +54,7 @@ operation JSL!TransferActionDeclaration getPSMOperationEquivalent(): JUDOPSM!Ope
 }
 
 @cached
-operation JSL!TransferActionDeclaration getPSMBehaviourOperationEquivalent(): JUDOPSM!OperationDeclaration {
+operation JSL!TransferActionDeclaration getBehaviourOperationDeclarationEquivalent(): JUDOPSM!OperationDeclaration {
 
 	if (self.eContainer.map.isDefined()) {
 		return self.equivalent("CreateGetRangeActionInputOperationForMappedTransferType");

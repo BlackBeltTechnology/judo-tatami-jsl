@@ -200,7 +200,7 @@ rule CreateQueryCustomizerSeekLastItemAttribute
 	  guard: generateBehaviours and s.eContainer.map.isDefined() and (s.isFilterable() or s.isSortable())
       t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerSeekLastItemAttribute");
       t.name = s.name;
-      t.dataType = s.referenceType.getPSMEquivalent();
+      t.dataType = s.referenceType.getPrimitiveDeclarationEquivalent();
       t.required = false;
       s.eContainer.equivalent("CreateQueryCustomizerSeekLastItem").attributes.add(t);
       log.debug("CreateQueryCustomizerSeekLastItemAttribute: " + t.name);

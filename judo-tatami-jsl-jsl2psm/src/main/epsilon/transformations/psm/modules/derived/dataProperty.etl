@@ -9,9 +9,9 @@ rule CreateDataProperty
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateDataProperty");
       t.getterExpression = s.equivalent("CreateGetterExpressionForDataType");
-      t.dataType = s.getReferenceType().getPSMEquivalent();
+      t.dataType = s.getReferenceType().getPrimitiveDeclarationEquivalent();
 
-      s.eContainer.getPSMEquivalent().dataProperties.add(t);
+      s.eContainer.getEntityDeclarationEquivalent().dataProperties.add(t);
       log.debug("Created Data Property: " + t.name);
 }
 

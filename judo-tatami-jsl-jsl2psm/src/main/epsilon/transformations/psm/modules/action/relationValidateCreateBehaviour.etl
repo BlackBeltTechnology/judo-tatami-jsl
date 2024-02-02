@@ -8,9 +8,9 @@ rule CreateValidateCreateOperationForEntityType
       guard: generateBehaviours and not s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateCreateOperationForEntityType");
-      t.instanceRepresentation = s.eContainer.getPSMEquivalent();
+      t.instanceRepresentation = s.eContainer.getTransferDeclarationEquivalent();
       t.name = "validate" + s.referenceType.getCreateEventInsteadOf().name.firstToUpperCase() + "ForRelation" + s.getFqName().fqNameToCamelCase();
-      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      s.eContainer.map.entity.getEntityDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateValidateCreateOperationForEntityType: " + t.name);
 }
 
@@ -44,7 +44,7 @@ rule CreateValidateCreateOperationForTransferType
       t.updateOnResult = s.referenceType.isUpdateSupported();
       t.deleteOnResult = s.referenceType.isDeleteSupported();
       
-      s.eContainer.getPSMEquivalent().operations.add(t);
+      s.eContainer.getTransferDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateValidateCreateOperationForTransferType: " + t.name);      
 }
 
@@ -58,7 +58,7 @@ rule CreateValidateCreateOperationForTransferTypeInputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateValidateCreateOperationForTransferTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForValidateCreateTransferTypeInput");
       t.name = "input";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateValidateCreateOperationForTransferType").input = t;
       log.debug("Created CreateValidateCreateOperationForTransferTypeInputParameter: " + t.name);
 }
@@ -72,7 +72,7 @@ rule CreateValidateCreateOperationForTransferTypeOutputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateValidateCreateOperationForTransferTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForValidateCreateTransferTypeOutput");
       t.name = "return";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateValidateCreateOperationForTransferType").output = t;
       log.debug("Created CreateValidateCreateOperationForTransferTypeOutputParameter: " + t.name);
 }
@@ -86,7 +86,7 @@ rule CreateValidateCreateOperationForEntityTypeInputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateValidateCreateOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForValidateCreateEntityTypeInput");
       t.name = "input";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateValidateCreateOperationForEntityType").input = t;
       log.debug("Created CreateValidateCreateOperationForEntityTypeInputParameter: " + t.name);
 }
@@ -100,7 +100,7 @@ rule CreateValidateCreateOperationForEntityTypeOutputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateValidateCreateOperationForEntityTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForValidateCreateEntityTypeOutput");
       t.name = "return";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateValidateCreateOperationForEntityType").output = t;
       log.debug("Created CreateValidateCreateOperationForEntityTypeOutputParameter: " + t.name);
 }

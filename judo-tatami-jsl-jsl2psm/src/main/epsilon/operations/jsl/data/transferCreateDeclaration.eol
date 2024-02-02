@@ -3,9 +3,5 @@ operation JSL!TransferCreateDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
 
-@cached
-operation JSL!TransferCreateDeclaration getModelRoot(): JUDOPSM!Package {
-    return self.getPSMEquivalent().eContainer().getModelRoot();
-}
 
 

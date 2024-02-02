@@ -1,5 +1,5 @@
 @cached
-operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
+operation JSL!PrimitiveDeclaration getPrimitiveDeclarationEquivalent(): JUDOPSM!Primitive {
     if (self.primitive.isDefined()) {
         var byName = self.eContainer.name.equivalent("CreateModelPackages").elements.selectOne(e | e.name == self.name);
         if (byName.isDefined()) {

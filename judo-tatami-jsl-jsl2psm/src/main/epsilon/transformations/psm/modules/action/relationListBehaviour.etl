@@ -8,9 +8,9 @@ rule CreateListOperationForEntityType
       guard: generateBehaviours and not s.isActorRelated() and (s.maps() or s.reads())
 
       t.setId("(jsl/" + s.getId() + ")/CreateListOperationForEntityType");
-      t.instanceRepresentation = s.eContainer.getPSMEquivalent();
+      t.instanceRepresentation = s.eContainer.getTransferDeclarationEquivalent();
       t.name = "listRelation" + s.getFqName().fqNameToCamelCase();
-      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      s.eContainer.map.entity.getEntityDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateListOperationForEntityType: " + t.name);
 }
 
@@ -44,7 +44,7 @@ rule CreateListOperationForTransferType
       t.updateOnResult = s.referenceType.isUpdateSupported();
       t.deleteOnResult = s.referenceType.isDeleteSupported();
       
-      s.eContainer.getPSMEquivalent().operations.add(t);
+      s.eContainer.getTransferDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateListOperationForTransferType: " + t.name);      
 }
 
@@ -72,7 +72,7 @@ rule CreateListOperationForTransferTypeOutputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateListOperationForTransferTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForListTransferTypeOutput");
       t.name = "return";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateListOperationForTransferType").output = t;
       log.debug("Created CreateListOperationForTransferTypeOutputParameter: " + t.name);
 }
@@ -100,7 +100,7 @@ rule CreateListOperationForEntityTypeOutputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateListOperationForEntityTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForListEntityTypeOutput");
       t.name = "return";
-	  t.type = s.referenceType.getPSMEquivalent();
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
       s.equivalent("CreateListOperationForEntityType").output = t;
       log.debug("Created CreateListOperationForEntityTypeOutputParameter: " + t.name);
 }

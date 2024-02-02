@@ -28,10 +28,10 @@ rule CreateAttributeFromField
     extends CreatePrimitiveTypedElement {
         guard: s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration) and not s.isCalculated()
         t.setId("(jsl/" + s.getId() + ")/CreateAttributeFromField");
-        t.dataType = s.getReferenceType().getPSMEquivalent();
+        t.dataType = s.getReferenceType().getPrimitiveDeclarationEquivalent();
         t.identifier = s.identifier;
 
-        s.eContainer.getPSMEquivalent().attributes.add(t);
+        s.eContainer.getEntityDeclarationEquivalent().attributes.add(t);
         log.debug("Created Attribute (Field): " + t.name);
     }
 
@@ -59,10 +59,10 @@ rule CreateDefaultValueForPrimitiveEntityMember
 
         t.setId("(jsl/" + s.eContainer.getId() + ")/CreateDefaultValueForPrimitiveEntityMember");
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
-        t.dataType = s.eContainer.getReferenceType().getPSMEquivalent();
+        t.dataType = s.eContainer.getReferenceType().getPrimitiveDeclarationEquivalent();
         t.required = false;
 
-        s.eContainer.eContainer.getPSMEquivalent().dataProperties.add(t);
+        s.eContainer.eContainer.getEntityDeclarationEquivalent().dataProperties.add(t);
 
         log.debug("Created DataProperty for Default Value: " + s);
     }
@@ -97,7 +97,7 @@ rule CreateReadsStaticDataForUnmappedTransferObjectTransferFieldDeclaration
 
         t.setId("(jsl/" + s.getId() + ")/CreateReadsStaticDataForUnmappedTransferObjectTransferFieldDeclaration");
         t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
-        t.dataType = s.eContainer.getReferenceType().getPSMEquivalent();
+        t.dataType = s.eContainer.getReferenceType().getPrimitiveDeclarationEquivalent();
         t.required = false;
 
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
@@ -114,10 +114,10 @@ rule CreateReadsDataPropertyForMappedTransferObjectTransferFieldDeclaration
 
         t.setId("(jsl/" + s.getId() + ")/CreateReadsDataPropertyForMappedTransferObjectTransferFieldDeclaration");
         t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
-        t.dataType = s.eContainer.getReferenceType().getPSMEquivalent();
+        t.dataType = s.eContainer.getReferenceType().getPrimitiveDeclarationEquivalent();
         t.required = false;
 
-        s.eContainer.eContainer.map.entity.getPSMEquivalent().dataProperties.add(t);
+        s.eContainer.eContainer.map.entity.getEntityDeclarationEquivalent().dataProperties.add(t);
 
         log.debug("Created DataProperty for TransferField Reads: " + s);
     }
@@ -147,11 +147,11 @@ rule CreateDefaultDataPropertyForMappedTransferObjectConstructor
 
         t.setId("(jsl/" + s.eContainer.getId() + ")/CreateDefaultDataPropertyForMappedTransferObjectConstructor");
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
-        t.dataType = s.eContainer.getReferenceType().getPSMEquivalent();
+        t.dataType = s.eContainer.getReferenceType().getPrimitiveDeclarationEquivalent();
         t.required = false;
 
 
-        s.eContainer.eContainer.map.entity.getPSMEquivalent().dataProperties.add(t);
+        s.eContainer.eContainer.map.entity.getEntityDeclarationEquivalent().dataProperties.add(t);
 
         log.debug("Created DataProperty for Transfer Object Default Value: " + s);
     }
@@ -177,7 +177,7 @@ rule CreateDefaultStaticDataForUnmappedTransferObjectConstructor
 
         t.setId("(jsl/" + s.eContainer.getId() + ")/CreateDefaultStaticDataForUnmappedTransferObjectConstructor");
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
-        t.dataType = s.eContainer.getReferenceType().getPSMEquivalent();
+        t.dataType = s.eContainer.getReferenceType().getPrimitiveDeclarationEquivalent();
         t.required = false;
 
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);

@@ -48,7 +48,7 @@ rule AbstractTransferActionDeclarationReturnParameter
 
       t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationOutput");
       t.name = "return";
-	  t.type = s.`return`.getPSMEquivalent();
+	  t.type = s.`return`.getTransferDeclarationEquivalent();
 }
 
 @abstract
@@ -59,7 +59,7 @@ rule AbstractTransferActionDeclarationInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationInput");
       t.name = s.paramaterName;
 
-	  t.type = s.parameterType.getPSMEquivalent();
+	  t.type = s.parameterType.getTransferDeclarationEquivalent();
 	  
 }
 
@@ -141,7 +141,7 @@ rule CreateUnboundOperationForMappedTransferObjectType
       guard: s.eContainer.map.isDefined() and s.static
 
       t.setId("(jsl/" + s.getId() + ")/CreateUnboundOperationForMappedTransferObjectType");
-      s.eContainer.getPSMEquivalent().operations.add(t);
+      s.eContainer.getTransferDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateUnboundOperationForMappedTransferObjectType: " + t.name);
 }
 
@@ -182,14 +182,14 @@ rule CreateBoundOperationForEntityType
 
       t.`abstract` = false;
       t.implementation = s.equivalent("CreateEmptyOperationBody");
-      t.instanceRepresentation = s.eContainer.getPSMEquivalent();
+      t.instanceRepresentation = s.eContainer.getTransferDeclarationEquivalent();
       t.name = s.name + s.eContainer.getFqName().fqNameToCamelCase();
       
       for (error in s.errors) {
       	t.faults.add(error.equivalentDiscriminated("CreateFaultParameter", s.getId() + "/Entity"));
       }      
       
-      s.eContainer.map.entity.getPSMEquivalent().operations.add(t);
+      s.eContainer.map.entity.getEntityDeclarationEquivalent().operations.add(t);
 
       log.debug("Created CreateBoundOperationForEntity: " + t.name);      
 }
@@ -205,7 +205,7 @@ rule CreateBoundOperationForEntityTypeInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationEntityInput");
       t.name = s.paramaterName;
 
-	  t.type = s.parameterType.getPSMEquivalent();
+	  t.type = s.parameterType.getTransferDeclarationEquivalent();
 
       s.equivalent("CreateBoundOperationForEntityType").input = t;
       log.debug("Created CreateBoundOperationForEntityTypeInputParameter: " + t.name);
@@ -222,7 +222,7 @@ rule CreateBoundOperationForEntityTypeOutputParameter
       t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForEntityTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationEntityOutput");
       t.name = "return";
-	  t.type = s.`return`.getPSMEquivalent();
+	  t.type = s.`return`.getTransferDeclarationEquivalent();
       s.equivalent("CreateBoundOperationForEntityType").output = t;
       log.debug("Created CreateBoundOperationForEntityTypeOutputParameter: " + t.name);
 }
@@ -238,7 +238,7 @@ rule CreateBoundOperationForMappedTransferObjectType
       t.setId("(jsl/" + s.getId() + ")/CreateBoundOperationForMappedTransferObjectType");
       t.binding = s.equivalent("CreateBoundOperationForEntityType");
       
-      s.eContainer.getPSMEquivalent().operations.add(t);
+      s.eContainer.getTransferDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateBoundOperationForMappedTransferObjectType: " + t.name);
 }
 
@@ -349,9 +349,9 @@ rule CreateActionInputParameterRangeNavigationPropertyForMappedTransferActionDec
 
         t.setId("(jsl/" + s.eContainer.getId() + ")/CreateActionInputParameterRangeNavigationPropertyForMappedTransferActionDeclaration");
         t.name = defaultActionInputParameterRangeNamePrefix + s.eContainer.name + defaultActionInputParameterRangeNameMidfix + s.eContainer.eContainer.name + defaultActionInputParameterRangeNamePostfix;
-        t.target = s.eContainer.getParameterType().getPSMEquivalent().entityType;
+        t.target = s.eContainer.getParameterType().getTransferDeclarationEquivalent().entityType;
   	    t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForGetActionInputParameterRangeEntityRelation", t.getId());
-        s.eContainer.eContainer.map.entity.getPSMEquivalent().navigationProperties.add(t);
+        s.eContainer.eContainer.map.entity.getEntityDeclarationEquivalent().navigationProperties.add(t);
 
         log.debug("Created NavigationProperty for Transfer Object Default Value: " + s);
     }
@@ -377,7 +377,7 @@ rule CreateActionInputParameterRangeStaticNavigationForUnmappedTransferActionDec
 
         t.setId("(jsl/" + s.eContainer.getId() + ")/CreateActionInputParameterRangeStaticNavigationForUnmappedTransferActionDeclaration");
         t.name = defaultActionInputParameterRangeNamePrefix + s.eContainer.name + defaultActionInputParameterRangeNameMidfix + s.eContainer.eContainer.name + defaultActionInputParameterRangeNamePostfix;
-        t.target = s.eContainer.getParameterType().getPSMEquivalent().entityType;
+        t.target = s.eContainer.getParameterType().getTransferDeclarationEquivalent().entityType;
   	    t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForGetActionInputParameterRangeEntityRelation", t.getId());
 
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
@@ -394,12 +394,12 @@ rule CreateActionInputParameterRangeTransferObjectRelation
 
         t.setId("(esm/" + s.getId() + ")/CreateActionInputParameterRangeTransferObjectRelation");
 
-        t.name = s.eContainer.getPSMRangeEquivalent().name;
+        t.name = s.eContainer.getTransferActionRangeEquivalent().name;
         t.cardinality = s.eContainer.equivalent("CreateCardinalityForGetActionInputParameterRangeTransferObjectRelation");
-        t.target = s.eContainer.getParameterType().getPSMEquivalent();
-        t.binding = s.eContainer.getPSMRangeEquivalent();
+        t.target = s.eContainer.getParameterType().getTransferDeclarationEquivalent();
+        t.binding = s.eContainer.getTransferActionRangeEquivalent();
 
-        s.eContainer.eContainer.getPSMEquivalent().relations.add(t);
+        s.eContainer.eContainer.getTransferDeclarationEquivalent().relations.add(t);
 }
 
 

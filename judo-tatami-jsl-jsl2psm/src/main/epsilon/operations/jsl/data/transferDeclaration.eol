@@ -1,5 +1,5 @@
 @cached
-operation JSL!TransferDeclaration getPSMEquivalent(): JUDOPSM!TransferObjectType {
+operation JSL!TransferDeclaration getTransferDeclarationEquivalent(): JUDOPSM!TransferObjectType {
     if (self.map.isUndefined()) {
         return self.equivalent("CreateUnmappedTransferObjectType");
     } else {
@@ -14,7 +14,7 @@ operation JSL!TransferDeclaration getId(): String {
 
 @cached
 operation JSL!TransferDeclaration getModelRoot(): JUDOPSM!Package {
-    return self.getPSMEquivalent().eContainer().getModelRoot();
+    return self.getTransferDeclarationEquivalent().eContainer().getModelRoot();
 }
 
 
