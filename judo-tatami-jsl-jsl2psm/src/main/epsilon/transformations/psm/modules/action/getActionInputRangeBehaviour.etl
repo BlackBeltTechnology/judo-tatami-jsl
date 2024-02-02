@@ -1,0 +1,170 @@
+import "../../../../operations/_importAll.eol";
+
+
+@greedy
+rule CreateGetRangeActionInputOperationForEntityType
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!BoundOperation {
+        guard: generateBehaviours and s.parameterType?.map.isDefined() and s.eContainer.map.isDefined()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeActionInputOperationForEntityType");
+        t.instanceRepresentation = s.eContainer.getTransferDeclarationEquivalent();
+        t.name = "getRangeForRelation" + s.getFqName().fqNameToCamelCase();
+        s.eContainer.map.entity.getEntityDeclarationEquivalent().operations.add(t);
+        log.debug("Created CreateGetRangeActionInputOperationForEntityType: " + t.name);
+}
+
+@greedy
+rule CreateGetRangeActionInputBehaviourForTransferType
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+        guard: generateBehaviours and s.parameterType?.map.isDefined()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeActionInputBehaviourForTransferType");
+        t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE;
+        // t.owner = s.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
+        //t.owner = s.modifiers.selectOne(m | m.isTypeOf(JSL!TransferChoiceModifier)).equivalent("CreateActionInputParameterRangeTransferObjectRelation");
+        t.owner = s.getOperationDeclarationEquivalent();
+        log.debug("Created CreateGetRangeActionInputBehaviourForTransferType: " + s.name);
+}
+
+@greedy
+rule CreateGetRangeActionInputOperationForMappedTransferType
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!BoundTransferOperation {
+        guard: generateBehaviours and s.parameterType?.map.isDefined() and s.eContainer.map.isDefined()
+        
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeActionInputOperationForMappedTransferType");
+
+        t.name = "getRangeFor" + s.name.firstToUpperCase();        
+        if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      	}
+        
+        t.binding = s.equivalent("CreateGetRangeActionInputOperationForEntityType");
+        t.behaviour = s.equivalent("CreateGetRangeActionInputBehaviourForTransferType");
+
+        //t.updateOnResult = s.referenceType.isUpdateSupported();
+        //t.deleteOnResult = s.referenceType.isDeleteSupported();
+
+        s.eContainer.getTransferDeclarationEquivalent().operations.add(t);
+        log.debug("Created CreateGetRangeActionInputOperationForMappedTransferType: " + t.name);
+}
+
+@greedy
+rule CreateGetRangeActionInputOperationForUnmappedTransferType
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!UnboundOperation {
+        guard: generateBehaviours and s.parameterType?.map.isDefined() and s.eContainer.map.isUndefined()
+        
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeActionInputOperationForUnmappedTransferType");
+        t.name = "getRangeFor" + s.name.firstToUpperCase();
+        //t.binding = s.equivalent("CreateGetRangeActionInputOperationForEntityType");
+        t.behaviour = s.equivalent("CreateGetRangeActionInputBehaviourForTransferType");
+
+        //t.updateOnResult = s.referenceType.isUpdateSupported();
+        //t.deleteOnResult = s.referenceType.isDeleteSupported();
+
+        s.eContainer.equivalent("CreateUnmappedTransferObjectType").operations.add(t);
+        log.debug("Created CreateGetRangeActionInputOperationForUnmappedTransferType: " + t.name);
+}
+
+
+@greedy
+rule CreateGetRangeActionInputOperationForTransferTypeInputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter {
+        guard: generateBehaviours and s.parameterType?.map.isDefined()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeActionInputOperationForTransferTypeInputParameter");
+        t.cardinality = s.equivalent("CreateCardinalityForGetRangeActionInputTransferTypeInput");
+        t.name = "input";
+        t.type = s.parameterType.equivalent("CreateQueryCustomizerType");
+        // s.equivalent("CreateGetRangeActionInputOperationForTransferType").input = t;
+        s.getBehaviourOperationDeclarationEquivalent().input = t;
+        log.debug("Created CreateGetRangeActionInputOperationForTransferTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateGetRangeActionInputOperationForTransferTypeOutputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter {
+        guard: generateBehaviours and s.parameterType?.map.isDefined()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeActionInputOperationForTransferTypeOutputParameter");
+        t.cardinality = s.equivalent("CreateCardinalityForGetRangeActionInputTransferTypeOutput");
+        t.name = "return";
+        t.type = s.parameterType.getTransferDeclarationEquivalent();
+        //s.equivalent("CreateGetRangeActionInputOperationForTransferType").output = t;
+        s.getBehaviourOperationDeclarationEquivalent().output = t;
+        log.debug("Created CreateGetRangeActionInputOperationForTransferTypeOutputParameter: " + t.name);
+}
+
+@greedy
+rule CreateGetRangeActionInputOperationForEntityTypeInputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter {
+        guard: generateBehaviours and s.parameterType?.map.isDefined() and s.eContainer.map.isDefined()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeActionInputOperationForEntityTypeInputParameter");
+        t.cardinality = s.equivalent("CreateCardinalityForGetRangeActionInputEntityTypeInput");
+        t.name = "input";
+        t.type = s.parameterType.equivalent("CreateQueryCustomizerType");
+        s.equivalent("CreateGetRangeActionInputOperationForEntityType").input = t;
+        log.debug("Created CreateGetRangeActionInputOperationForEntityTypeInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateGetRangeActionInputOperationForEntityTypeOutputParameter
+    transform s: JSL!TransferActionDeclaration
+    to t: JUDOPSM!Parameter {
+        guard: generateBehaviours and s.parameterType?.map.isDefined() and s.eContainer.map.isDefined()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeActionInputOperationForEntityTypeOutputParameter");
+        t.cardinality = s.equivalent("CreateCardinalityForGetRangeActionInputEntityTypeOutput");
+        t.name = "return";
+        t.type = s.parameterType.getTransferDeclarationEquivalent();
+        s.equivalent("CreateGetRangeActionInputOperationForEntityType").output = t;
+        log.debug("Created CreateGetRangeActionInputOperationForEntityTypeOutputParameter: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeActionInputTransferTypeInput
+    transform s: JSL!TransferActionDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeActionInputTransferTypeInput");
+        t.lower = 0;
+        t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeActionInputTransferTypeOutput
+    transform s: JSL!TransferActionDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeActionInputTransferTypeOutput");
+        t.lower = 0;
+        t.upper = -1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeActionInputEntityTypeInput
+    transform s: JSL!TransferActionDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeActionInputEntityTypeInput");
+        t.lower = 0;
+        t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeActionInputEntityTypeOutput
+    transform s: JSL!TransferActionDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeActionInputEntityTypeOutput");
+        t.lower = 0;
+        t.upper = -1;
+}
+

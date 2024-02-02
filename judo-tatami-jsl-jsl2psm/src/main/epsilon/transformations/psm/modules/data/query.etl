@@ -6,7 +6,7 @@ rule AbstractCreateEntityQueryTransferAttributeForStaticQuery
 
         t.name = s.name;
         t.binding = s.equivalent("CreateDataPropertyForStaticQuery");
-        t.dataType = s.getReferenceType().getPSMEquivalent();
+        t.dataType = s.getReferenceType().getPrimitiveDeclarationEquivalent();
 }
 
 rule CreateEntityQueryTransferAttributeForStaticQuery
@@ -146,7 +146,11 @@ rule CreateTransferObjectForStaticQueryParameterDeclaration
         t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectForStaticQueryParameterDeclaration");
 
         t.name = s.name;
-        t.dataType = s.referenceType.getPSMEquivalent();
+        if (s.referenceType.isKindOf(JSL!PrimitiveDeclaration)) {
+	        t.dataType = s.referenceType.getPrimitiveDeclarationEquivalent();
+        } else {
+	        t.dataType = s.referenceType.getEntityDeclarationEquivalent();
+        }
 
         s.eContainer.equivalent("CreateUnmappedTransferObjectForStaticQuery").attributes.add(t);
         log.debug("Created Transfer Attribute for Query Declaration: " + s.name);
@@ -160,7 +164,7 @@ rule CreateStaticDataForStaticQuery
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateStaticDataForStaticQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForStaticQueryParametrizedDataType");
-      t.dataType = s.referenceType.getPSMEquivalent();
+      t.dataType = s.referenceType.getPrimitiveDeclarationEquivalent();
 
       s.eContainer.getModelRoot().elements.add(t);
       log.debug("Created Query Static Data: " + t.name);
@@ -174,9 +178,9 @@ rule CreateDataPropertyForStaticQuery
       t.name = s.name;
       t.setId("(jsl/" + s.getId() + ")/CreateDataPropertyForStaticQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForStaticQueryParametrizedDataType");
-      t.dataType = s.getReferenceType().getPSMEquivalent();
+      t.dataType = s.getReferenceType().getPrimitiveDeclarationEquivalent();
 
-      s.entity.getPSMEquivalent().dataProperties.add(t);
+      s.entity.getEntityDeclarationEquivalent().dataProperties.add(t);
       log.debug("Created Query Data Property: " + t.name);
 }
 
@@ -189,7 +193,7 @@ rule CreateStaticNavigationForStaticQuery
       t.setId("(jsl/" + s.getId() + ")/CreateStaticNavigationForStaticQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForStaticQueryParametrizedReferenceType");
       t.cardinality = s.equivalentDiscriminated("CreateCardinalityForStaticQueryDeclaration", t.getId());
-      t.target = s.referenceType.getPSMEquivalent();
+      t.target = s.referenceType.getEntityDeclarationEquivalent();
 
       s.eContainer.getModelRoot().elements.add(t);
       log.debug("Created Query Static Navigation: " + t.name);
@@ -205,9 +209,9 @@ rule CreateNavigationPropertyForStaticQuery
       t.setId("(jsl/" + s.getId() + ")/CreateNavigationPropertyForStaticQuery");
       t.getterExpression = s.equivalent("CreateGetterExpressionForStaticQueryParametrizedReferenceType");
       t.cardinality = s.equivalentDiscriminated("CreateCardinalityForStaticQueryDeclaration", t.getId());
-      t.target = s.getReferenceType().getPSMEquivalent();
+      t.target = s.getReferenceType().getEntityDeclarationEquivalent();
 
-      s.entity.getPSMEquivalent().navigationProperties.add(t);
+      s.entity.getEntityDeclarationEquivalent().navigationProperties.add(t);
       log.debug("Created Query Navigation Property: " + t.name);
 }
 

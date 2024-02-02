@@ -7,8 +7,8 @@ rule CreateNavigationProperty
       t.setId("(jsl/" + s.getId() + ")/CreateNavigationProperty");
       t.getterExpression = s.equivalent("CreateGetterExpressionForReferenceType");
       t.cardinality = s.equivalentDiscriminated("CreateCardinalityForDerivedDeclaration", t.getId());
-      t.target = s.getReferenceType().getPSMEquivalent();
+      t.target = s.getReferenceType().getEntityDeclarationEquivalent();
 
-      s.eContainer.getPSMEquivalent().navigationProperties.add(t);
+      s.eContainer.getEntityDeclarationEquivalent().navigationProperties.add(t);
       log.debug("Created Navigation Property: " + t.name);
 }
