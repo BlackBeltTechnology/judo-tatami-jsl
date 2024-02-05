@@ -1,0 +1,31 @@
+model ActorTestModel;
+
+type binary Binary max-file-size: 1MB  mime-type: ["image/*"];
+type boolean Boolean;
+type date Date;
+type numeric Numeric scale: 0 precision: 9;
+type string String min-size: 0 max-size: 255;
+type time Time;
+type timestamp Timestamp;
+
+
+entity User {
+    identifier String email;
+    field Boolean isActive;
+}
+
+transfer UserTransfer maps User as u {
+    field String email <= u.email update: true;
+    event instead delete deleteInstance;
+	event instead update updateInstance;
+	event instead create createInstance;
+}
+
+actor Actor(User user)
+    realm: "COMPANY"
+    claim: "email"
+    identity: UserTransfer::email
+    guard: user.isActive
+{	
+    access UserTransfer[] manager <= User.all() create: true update: true delete: true;
+};
