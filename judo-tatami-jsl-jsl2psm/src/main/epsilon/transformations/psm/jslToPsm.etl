@@ -43,6 +43,10 @@ import "modules/action/validateUpdateBehaviour.etl";
 
 import "modules/structure/transferDeclarationQueryCustomizer.etl";
 import "modules/actor/actorType.etl";
+import "modules/actor/access.etl";
+import "modules/action/accessListBehaviour.etl";
+import "modules/action/accessCreateBehaviour.etl";
+import "modules/action/accessValidateCreateBehaviour.etl";
 
 pre {
 	//var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");	

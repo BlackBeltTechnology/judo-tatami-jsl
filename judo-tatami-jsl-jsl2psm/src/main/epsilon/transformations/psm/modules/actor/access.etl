@@ -1,0 +1,48 @@
+
+@greedy
+rule CreateTransientTransferObjectRelationForActorAccessDeclaration
+    transform s: JSL!ActorAccessDeclaration
+    to t: JUDOPSM!TransferObjectRelation {
+
+        t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferObjectRelationForActorAccessDeclaration");
+
+        t.name = s.name;
+        t.target = s.getReferenceType().getTransferDeclarationEquivalent();
+        t.access = true;
+        if (s.isCreateAllowed()) {
+            t.embeddedCreate = true;
+        }
+        if (s.isUpdateAllowed()) {
+            t.embeddedUpdate = true;
+        }
+        if (s.isDeleteAllowed()) {
+            t.embeddedDelete = true;
+        }
+        t.embedded = s.isAggregation();
+
+        t.cardinality = s.equivalentDiscriminated("CreateCardinalityForAccessDeclaration", t.getId());
+
+        if (s.getDefault().isDefined()) {
+          t.defaultValue = s.getDefault().equivalent("CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
+        }      
+        if (s.eContainer.map.isDefined()) {
+           t.binding = s.getterExpr.equivalent("CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclaration");
+        } else {
+           t.binding = s.getterExpr.equivalent("CreateReadsReferenceExpressionForUnmappedTransferObjectTransferRelationDeclaration");
+        }
+
+        s.eContainer.getActorDeclarationEquivalent().relations.add(t);
+
+        log.debug("Created TransferObjectRelation for ActorAccessDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForAccessDeclaration
+    transform s : JSL!ActorAccessDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForAccessDeclaration");
+
+      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = s.isMany ? -1 : 1;
+}
