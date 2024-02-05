@@ -16,6 +16,9 @@ entity User {
 
 transfer UserTransfer maps User as u {
     field String email <= u.email update: true;
+    event instead delete deleteInstance;
+	event instead update updateInstance;
+	event instead create createInstance;
 }
 
 actor Actor(User user)
@@ -24,5 +27,5 @@ actor Actor(User user)
     identity: UserTransfer::email
     guard: user.isActive
 {	
-    access UserTransfer[] manager <= User.all();	
+    access UserTransfer[] manager <= User.all() create: true update: true delete: true;
 };

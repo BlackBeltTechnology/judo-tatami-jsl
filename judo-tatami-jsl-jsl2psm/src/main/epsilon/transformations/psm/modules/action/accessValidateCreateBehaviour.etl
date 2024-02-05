@@ -1,0 +1,87 @@
+import "../../../../operations/_importAll.eol";
+
+
+@greedy
+rule CreateValidateCreateBehaviourForAccess
+    transform s: JSL!ActorAccessDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+      guard: generateBehaviours and s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateValidateCreateBehaviourForAccess");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#VALIDATE_CREATE;
+      t.owner = s.equivalent("CreateTransientTransferObjectRelationForActorAccessDeclaration");
+      log.debug("Created CreateValidateCreateBehaviourForAccess: " + s.name);
+}
+
+@greedy
+rule CreateValidateCreateOperationForAccess
+    transform s: JSL!ActorAccessDeclaration
+    to t: JUDOPSM!UnboundOperation {
+      guard: generateBehaviours and s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateValidateCreateOperationForAccess");
+      t.name = "validate" + s.referenceType.getCreateEventInsteadOf().name.firstToUpperCase() + "Of" + s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+      
+      t.behaviour = s.equivalent("CreateValidateCreateBehaviourForAccess");
+
+      t.updateOnResult = s.referenceType.isUpdateSupported();
+      t.deleteOnResult = s.referenceType.isDeleteSupported();
+      
+      s.eContainer.getActorDeclarationEquivalent().operations.add(t);
+      log.debug("Created CreateValidateCreateOperationForAccess: " + t.name);      
+}
+
+
+@greedy
+rule CreateValidateCreateOperationForAccessInputParameter
+    transform s: JSL!ActorAccessDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateValidateCreateOperationForAccessInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForValidateCreateAccessInput");
+      t.name = "input";
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      s.equivalent("CreateValidateCreateOperationForAccess").input = t;
+      log.debug("Created CreateValidateCreateOperationForAccessInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateValidateCreateOperationForAccessOutputParameter
+    transform s: JSL!ActorAccessDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateValidateCreateOperationForAccessOutputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForValidateCreateAccessOutput");
+      t.name = "return";
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      s.equivalent("CreateValidateCreateOperationForAccess").output = t;
+      log.debug("Created CreateValidateCreateOperationForAccessOutputParameter: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForValidateCreateAccessInput
+    transform s : JSL!ActorAccessDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateCreateAccessInput");
+
+      t.lower = 1; //s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForValidateCreateAccessOutput
+    transform s : JSL!ActorAccessDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateCreateAccessOutput");
+
+      t.lower = 1; // s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = 1;
+}
+

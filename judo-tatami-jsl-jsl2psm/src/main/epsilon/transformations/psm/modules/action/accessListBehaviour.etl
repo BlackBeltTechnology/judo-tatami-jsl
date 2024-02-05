@@ -1,0 +1,87 @@
+import "../../../../operations/_importAll.eol";
+
+
+@greedy
+rule CreateListBehaviourForAccess
+    transform s: JSL!ActorAccessDeclaration
+    to t: JUDOPSM!TransferOperationBehaviour {
+      guard: generateBehaviours and s.isActorRelated()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateListBehaviourForAccess");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#LIST;
+      t.owner = s.equivalent("CreateTransientTransferObjectRelationForActorAccessDeclaration");
+      log.debug("Created CreateListBehaviourForAccess: " + s.name);
+}
+
+@greedy
+rule CreateListOperationForAccess
+    transform s: JSL!ActorAccessDeclaration
+    to t: JUDOPSM!UnboundOperation {
+      guard: generateBehaviours and s.isActorRelated()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateListOperationForAccess");
+      t.name = "listOf" +  s.name.firstToUpperCase();
+      if (s.eContainer.members.exists(m | m.name == t.name)) {
+	      t.name = "_" + t.name;
+      }
+
+      t.behaviour = s.equivalent("CreateListBehaviourForAccess");
+
+      t.updateOnResult = s.referenceType.isUpdateSupported();
+      t.deleteOnResult = s.referenceType.isDeleteSupported();
+      
+      s.eContainer.getActorDeclarationEquivalent().operations.add(t);
+      log.debug("Created CreateListOperationForAccess: " + t.name);      
+}
+
+
+@greedy
+rule CreateListOperationForAccessInputParameter
+    transform s: JSL!ActorAccessDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and s.isActorRelated()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateListOperationForAccessInputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForListAccessInput");
+      t.name = "input";
+	  t.type = s.referenceType.equivalent("CreateQueryCustomizerType");
+      s.equivalent("CreateListOperationForAccess").input = t;
+      log.debug("Created CreateListOperationForAccessInputParameter: " + t.name);
+}
+
+@greedy
+rule CreateListOperationForAccessOutputParameter
+    transform s: JSL!ActorAccessDeclaration
+    to t: JUDOPSM!Parameter {
+      guard: generateBehaviours and s.isActorRelated()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateListOperationForAccessOutputParameter");
+      t.cardinality = s.equivalent("CreateCardinalityForListAccessOutput");
+      t.name = "return";
+	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      s.equivalent("CreateListOperationForAccess").output = t;
+      log.debug("Created CreateListOperationForAccessOutputParameter: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForListAccessInput
+    transform s : JSL!ActorAccessDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForListAccessInput");
+
+      t.lower = 0; //s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForListAccessOutput
+    transform s : JSL!ActorAccessDeclaration
+    to t : JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForListAccessOutput");
+
+
+      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.upper = s.isMany ? -1 : 1;
+}

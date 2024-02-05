@@ -88,173 +88,82 @@ public class JslModel2PsmActorTest extends AbstractTest {
 
         transform();
 
-        /*
-        assertMappedTransferObject("MappedTransfer");
-        assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(19));
+        assertMappedTransferObject("UserTransfer");
+        assertThat(assertMappedTransferObject("UserTransfer").getOperations().size(), equalTo(5));
 
         assertCrudOperation(params()
-        		.transferName("MappedTransfer")
+        		.transferName("UserTransfer")
+        		.operationName("refreshInstance")
+        		.behaviour(TransferOperationBehaviourType.REFRESH)
+        		.isBound(true)
+        		.inputType("_UserTransferQueryCustomizer")
+        		.isMappedInputType(false)
+        		.outputType("UserTransfer")
+        		.isMappedOutputType(true));
+
+        assertCrudOperation(params()
+        		.transferName("UserTransfer")
         		.operationName("deleteInstance")
         		.behaviour(TransferOperationBehaviourType.DELETE_INSTANCE)
         		.isBound(true));
         
         assertCrudOperation(params()
-        		.transferName("MappedTransfer")
+        		.transferName("UserTransfer")
         		.operationName("updateInstance")
         		.behaviour(TransferOperationBehaviourType.UPDATE_INSTANCE)
         		.isBound(true)
-        		.inputType("MappedTransfer")
+        		.inputType("UserTransfer")
         		.isMappedInputType(true)
-        		.outputType("MappedTransfer")
+        		.outputType("UserTransfer")
         		.isMappedOutputType(true));
         
         assertCrudOperation(params()
-        		.transferName("MappedTransfer")
+        		.transferName("UserTransfer")
         		.operationName("validateUpdateInstance")
         		.behaviour(TransferOperationBehaviourType.VALIDATE_UPDATE)
         		.isBound(true)
-        		.inputType("MappedTransfer")
+        		.inputType("UserTransfer")
         		.isMappedInputType(true)
-        		.outputType("MappedTransfer")
+        		.outputType("UserTransfer")
         		.isMappedOutputType(true));
-        
+
         assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("createInstanceOfCreateEntities")
-        		.behaviour(TransferOperationBehaviourType.CREATE_INSTANCE)
-        		.isBound(true)
-        		.inputType("CreateTransfer")
-        		.isMappedInputType(true)
-        		.outputType("CreateTransfer")
-        		.isMappedOutputType(true));  
-        
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("validateCreateInstanceOfCreateEntities")
-        		.behaviour(TransferOperationBehaviourType.VALIDATE_CREATE)
-        		.isBound(true)
-        		.inputType("CreateTransfer")
-        		.isMappedInputType(true)
-        		.outputType("CreateTransfer")
-        		.isMappedOutputType(true));   
-        
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
+        		.transferName("UserTransfer")
         		.operationName("default")
         		.behaviour(TransferOperationBehaviourType.GET_TEMPLATE)
         		.isBound(false)
-        		.outputType("MappedTransfer")
-        		.isMappedOutputType(true));
-  
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("getUploadTokenForBinaryMapped")
-        		.behaviour(TransferOperationBehaviourType.GET_UPLOAD_TOKEN)
-        		.isBound(false)
-        		.outputType("UploadToken")
-        		.isMappedOutputType(false));
-
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("getUploadTokenForBinaryTransient")
-        		.behaviour(TransferOperationBehaviourType.GET_UPLOAD_TOKEN)
-        		.isBound(false)
-        		.outputType("UploadToken")
-        		.isMappedOutputType(false));
-
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("addReferencesToCreateEntities")
-        		.behaviour(TransferOperationBehaviourType.ADD_REFERENCE)
-        		.isBound(true)
-        		.inputType("CreateTransfer")
-        		.isMappedInputType(true));    
-
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("setReferencesOfCreateEntities")
-        		.behaviour(TransferOperationBehaviourType.SET_REFERENCE)
-        		.isBound(true)
-        		.inputType("CreateTransfer")
-        		.isMappedInputType(true));    
-
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("removeReferencesFromCreateEntities")
-        		.behaviour(TransferOperationBehaviourType.REMOVE_REFERENCE)
-        		.isBound(true)
-        		.inputType("CreateTransfer")
-        		.isMappedInputType(true));    
-
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("unsetReferencesOfCreateEntities")
-        		.behaviour(TransferOperationBehaviourType.UNSET_REFERENCE)
-        		.isBound(true)
-        		.inputType("CreateTransfer")
-        		.isMappedInputType(true));    
-
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("refreshInstance")
-        		.behaviour(TransferOperationBehaviourType.REFRESH)
-        		.isBound(true)
-        		.inputType("_MappedTransferQueryCustomizer")
-        		.isMappedInputType(false)
-        		.outputType("MappedTransfer")
+        		.outputType("UserTransfer")
         		.isMappedOutputType(true));
 
         assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("listOfCreateEntities")
+        		.transferName("Actor")
+        		.operationName("listOfManager")
         		.behaviour(TransferOperationBehaviourType.LIST)
-        		.isBound(true)
-        		.inputType("_CreateTransferQueryCustomizer")
-        		.isMappedInputType(false)
-        		.outputType("CreateTransfer")
-        		.isMappedOutputType(true));    
-
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("getRangeForCreateEntities")
-        		.behaviour(TransferOperationBehaviourType.GET_RANGE)
-        		.isBound(true)
-        		.inputType("_CreateTransferQueryCustomizer")
-        		.isMappedInputType(false)
-        		.outputType("CreateTransfer")
-        		.isMappedOutputType(true));    
-        
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("getRangeForMappedChoice")
-        		.behaviour(TransferOperationBehaviourType.GET_RANGE)
-        		.isBound(true)
-        		.inputType("_MappedTransferQueryCustomizer")
-        		.isMappedInputType(false)
-        		.outputType("MappedTransfer")
-        		.isMappedOutputType(true));    
-
-        assertCrudOperation(params()
-        		.transferName("MappedTransfer")
-        		.operationName("getRangeForMappedChoiceStatic")
-        		.behaviour(TransferOperationBehaviourType.GET_RANGE)
-        		.isBound(true)
-        		.inputType("_MappedTransferQueryCustomizer")
-        		.isMappedInputType(false)
-        		.outputType("MappedTransfer")
-        		.isMappedOutputType(true));    
-
-        assertCrudOperation(params()
-        		.transferName("UnmappedTransfer")
-        		.operationName("getRangeForUnmappedChoiceStatic")
-        		.behaviour(TransferOperationBehaviourType.GET_RANGE)
         		.isBound(false)
-        		.inputType("_MappedTransferQueryCustomizer")
+        		.inputType("_UserTransferQueryCustomizer")
         		.isMappedInputType(false)
-        		.outputType("MappedTransfer")
+        		.outputType("UserTransfer")
         		.isMappedOutputType(true));    
-        		*/
 
+        assertCrudOperation(params()
+        		.transferName("Actor")
+        		.operationName("createInstanceOfManager")
+        		.behaviour(TransferOperationBehaviourType.CREATE_INSTANCE)
+        		.isBound(false)
+        		.inputType("UserTransfer")
+        		.isMappedInputType(true)
+        		.outputType("UserTransfer")
+        		.isMappedOutputType(true));  
+
+        assertCrudOperation(params()
+        		.transferName("Actor")
+        		.operationName("validateCreateInstanceOfManager")
+        		.behaviour(TransferOperationBehaviourType.VALIDATE_CREATE)
+        		.isBound(false)
+        		.inputType("UserTransfer")
+        		.isMappedInputType(true)
+        		.outputType("UserTransfer")
+        		.isMappedOutputType(true));   
     }
     
     

@@ -17,7 +17,6 @@ rule CreateActorType
       guard: s.getPrincipal().isDefined() and not s.getPrincipal().map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateActorType");
-
       log.debug("Created ActorType: " + t.name);
 }
 
@@ -29,17 +28,14 @@ rule CreateMappedActorType
       guard: s.getPrincipal().isDefined() and s.getPrincipal().map.isDefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateMappedActorType");
-
       t.entityType = s.getPrincipal().map.entity.getEntityDeclarationEquivalent();
+      t.kind = s.getClaim()?.value.value;
 
       // TODO: Annotation or parameter?
-      t.kind = "EMAIL";
-      t.managed = true;
-      
+      t.managed = true;      
 	  if (s.getGuard().isDefined()) {
 	  	t.filter = s.equivalent("CreateFilterExpressionForMappedActorType");
 	  }
-
       log.debug("Created ActorType: " + t.name);
 }
 
@@ -244,21 +240,28 @@ rule CreateGetMetadataOperationForActorTypeBehaviour
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_METADATA;
       t.owner = s.getActorDeclarationEquivalent();
 }
-/*
+
 @greedy
 rule CreateGetMetadataOperationOutputParameterForActorType
     transform s: JSL!ActorDeclaration
     to t : JUDOPSM!Parameter {
-        t.setId("(esm/" + s.getId() + ")/GetMetadataOperationOutputParameterForActorType");
+        t.setId("(jsl/" + s.getId() + ")/CreateGetMetadataOperationOutputParameterForActorType");
 
         t.name = "output";
         t.type = s.equivalent("CreateMetadataType");
-        t.cardinality = new JUDOPSM!Cardinality;
-        t.cardinality.setId("(esm/" + s.getId() + ")/GetMetadataOperationOutputParameterForActorType/Cardinality");
-        t.cardinality.lower = 0;
-        t.cardinality.upper = 1;
+        t.cardinality = s.equivalent("CreateMetadataOperationOutputParameterForActorTypeCardinality");
 
         s.equivalent("CreateGetMetadataOperationForActorType").output = t;
+}
+
+@greedy
+rule CreateMetadataOperationOutputParameterForActorTypeCardinality
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!Cardinality {
+
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataOperationOutputParameterForActorTypeCardinality");
+      t.lower = 0;
+      t.upper = -1;
 }
 
 @greedy
@@ -266,16 +269,20 @@ rule CreateGetPrincipalOperationForActorType
     transform s: JSL!ActorDeclaration
     to t : JUDOPSM!UnboundOperation {
         guard: s.getPrincipal().isDefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateGetPrincipalOperationForActorType");
+      t.name = "_principal";
+      t.behaviour = s.equivalent("CreateGetPrincipalOperationForActorTypeBehaviour");
+      s.getActorDeclarationEquivalent().operations.add(t);
+}
 
-        t.setId("(esm/" + s.getId() + ")/GetPrincipalOperationForActorType");
-
-        t.name = "_principal";
-        t.behaviour = new JUDOPSM!TransferOperationBehaviour;
-        t.behaviour.setId("(esm/" + s.getId() + ")/GetPrincipalOperationForActorType/Behaviour");
-        t.behaviour.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL;
-        t.behaviour.owner = s.getPSMEquivalent();
-
-        s.getPSMEquivalent().operations.add(t);
+@lazy
+rule CreateGetPrincipalOperationForActorTypeBehaviour
+    transform s: JSL!ActorDeclaration
+    to t : JUDOPSM!TransferOperationBehaviour {
+        guard: s.getPrincipal().isDefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateGetPrincipalOperationForActorTypeBehaviour");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL;
+      t.owner = s.getActorDeclarationEquivalent();
 }
 
 @greedy
@@ -283,377 +290,46 @@ rule CreateGetPrincipalOperationOutputParameterForActorType
     transform s: JSL!ActorDeclaration
     to t : JUDOPSM!Parameter {
         guard: s.getPrincipal().isDefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateGetPrincipalOperationOutputParameterForActorType");
 
-        t.setId("(esm/" + s.getId() + ")/GetPrincipalOperationOutputParameterForActorType");
+      t.name = "output";
+      t.type = s.getPrincipal().getTransferDeclarationEquivalent();
+      t.cardinality = s.equivalent("CreatePrincipalOperationOutputParameterForActorTypeCardinality");
 
-        t.name = "output";
-        t.type = s.principal.getPSMTransferObjectTypeEquivalent();
-        t.cardinality = new JUDOPSM!Cardinality;
-        t.cardinality.setId("(esm/" + s.getId() + ")/GetPrincipalOperationOutputParameterForActorType/Cardinality");
-        t.cardinality.lower = 0;
-        t.cardinality.upper = 1;
-
-        s.equivalent("CreateGetPrincipalOperationForActorType").output = t;
+      s.equivalent("CreateGetPrincipalOperationForActorType").output = t;
 }
 
+@greedy
+rule CreatePrincipalOperationOutputParameterForActorTypeCardinality
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!Cardinality {
+        guard: s.getPrincipal().isDefined()
 
-*/
-
-
-/*
-@abstract
-rule CreateTransferObjectRelationFromAccess
-    transform s: ESM!Access
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateNamedElement {
-        t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
-        t.access = true;
-        t.target = s.target.getPSMTransferObjectTypeEquivalent();
-        s.eContainer.getPSMEquivalent().relations.add(t);
-
-    if (s.isCreateAllowed()) {
-        t.embeddedCreate = true;
-    }
-    if (s.isUpdateAllowed()) {
-        t.embeddedUpdate = true;
-    }
-    if (s.isDeleteAllowed()) {
-        t.embeddedDelete = true;
-    }
-    log.debug("Created access relation: " + t.name + " for actor type: " + t.eContainer.name);
+      t.setId("(jsl/" + s.getId() + ")/CreatePrincipalOperationOutputParameterForActorTypeCardinality");
+      t.lower = 0;
+      t.upper = 1;
 }
 
-rule CreateAccessTransferObjectRelationWithoutBinding
-    transform s: ESM!Access
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateTransferObjectRelationFromAccess {
-        guard: s.accessType == ESM!AccessType#ALL
-
-        t.setId("(esm/" + s.getId() + ")/AccessTransferObjectRelationWithoutBinding");
-
-}
-
-rule CreateAccessTransferObjectRelationWithBinding
-    transform s: ESM!Access
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateTransferObjectRelationFromAccess {
-        guard: s.accessType == ESM!AccessType#DERIVED
-
-    t.setId("(esm/" + s.getId() + ")/AccessTransferObjectRelationWithBinding");
-    t.binding = s.getPSMTransferObjectRelationBindingEquivalent();
-}
-*/
-
-
-/*
-
-  <declarations xsi:type="jsldsl:ActorDeclaration" xmi:id="_4DamScEBEe6EhJwMtuf8rA" name="Actor">
-    <modifiers xsi:type="jsldsl:RealmModifier" xmi:id="_4DamSsEBEe6EhJwMtuf8rA" type="realm">
-      <value xsi:type="jsldsl:EscapedStringLiteral" xmi:id="_4DamS8EBEe6EhJwMtuf8rA" value="COMPANY"/>
-    </modifiers>
-    <modifiers xsi:type="jsldsl:ClaimModifier" xmi:id="_4DamTMEBEe6EhJwMtuf8rA" type="claim">
-      <value xsi:type="jsldsl:EscapedStringLiteral" xmi:id="_4DamTcEBEe6EhJwMtuf8rA" value="email"/>
-    </modifiers>
-    <modifiers xsi:type="jsldsl:IdentityModifier" xmi:id="_4DamTsEBEe6EhJwMtuf8rA" type="identity" field="_4DamRMEBEe6EhJwMtuf8rA"/>
-    <members xsi:type="jsldsl:ActorAccessDeclaration" xmi:id="_4DamT8EBEe6EhJwMtuf8rA" name="manager" many="true" referenceType="_4DamQsEBEe6EhJwMtuf8rA">
-      <getterExpr xsi:type="jsldsl:Navigation" xmi:id="_4DamUMEBEe6EhJwMtuf8rA">
-        <base xsi:type="jsldsl:NavigationBaseDeclarationReference" xmi:id="_4DamUcEBEe6EhJwMtuf8rA" reference="_4DamQMEBEe6EhJwMtuf8rA"/>
-        <features xsi:type="jsldsl:FunctionOrQueryCall" xmi:id="_4DamUsEBEe6EhJwMtuf8rA">
-          <declaration href="platform:/resource/__injectedjudofunctions/_synthetic.jsl#//@declarations.84"/>
-        </features>
-      </getterExpr>
-    </members>
-  </declarations>
-*/
-
-
-/*
-import "../namespace/namespace.etl";
-import "../derived/referenceAccessor.etl";
-import "../../../../operations/_importAll.eol";
-
-@abstract
-rule CreateAbstractActorType
-    transform s: ESM!ActorType
-    to t: JUDOPSM!AbstractActorType
-    extends CreateNamespaceElement {
-      t.transferObjectType = s.principal.getPSMTransferObjectTypeEquivalent();
-      s.principal.getPSMTransferObjectTypeEquivalent().actorType = t;
-      if (not s.isEffectiveAnonymous()) {
-          t.realm = s.realm;
-      }
-}
 
 rule CreateActorTypeClaim
-    transform s : ESM!Claim
+    transform s: JSL!ActorDeclaration
     to t : JUDOPSM!TransferAttribute {
-        guard: not s.eContainer.isEffectiveAnonymous()
+        guard: s.getPrincipal().isDefined() 
+        	and s.getClaim().isDefined()
+        	and s.getIdentity().isDefined() // and s.getPrincipal().map.isDefined()
 
-        t.setId("(esm/" + s.getId() + ")/Claim");
+		var field = s.getIdentity().field;
+        t.setId("(jsl/" + s.getId() + ")/CreateActorTypeClaim");
 
-        t.name = s.attribute.name;
-        t.claimType = s.claimType.asString();
-        t.dataType = s.attribute.dataType.getPSMEquivalent();
-        t.required = s.attribute.required;
+        t.name = field.name;
+        t.claimType = s.getClaim().value.value;
 
-        if (s.attribute.binding.isDefined() and s.attribute.memberType == ESM!MemberType#MAPPED) {
-            t.binding = s.attribute.equivalent("CreateTransferAttributeFromBound").binding;
-        } else if (s.attribute.eContainer.isKindOf(ESM!EntityType) and s.attribute.memberType == ESM!MemberType#STORED) {
-            t.binding = s.attribute.equivalent("CreateAttribute");
-        } else if (s.attribute.binding.isDefined() and s.attribute.binding.eContainer.isKindOf(ESM!EntityType) and s.attribute.memberType == ESM!MemberType#STORED) {
-            t.binding = s.attribute.equivalent("CreateTransferAttributeFromAttributeForDefaultTransferObjectType").binding;
-        } else if (s.attribute.eContainer.isKindOf(ESM!EntityType) and s.attribute.memberType == ESM!MemberType#DERIVED) {
-            t.binding = s.attribute.equivalent("CreateDataProperty");
-        } else if (s.attribute.eContainer.isTypeOf(ESM!TransferObjectType) and s.attribute.memberType == ESM!MemberType#DERIVED) {
-            t.binding = s.attribute.equivalent("CreateDataPropertyForTransferAttributeBinding");
-        } else if (s.attribute.memberType <> ESM!MemberType#TRANSIENT) {
-            log.error("Unsupported claim attribute: " + s.attribute.eContainer.getNamespaceElementFQName() + "." + s.attribute.name);
-        }
+        t.dataType = field.referenceType.getPrimitiveDeclarationEquivalent();
+        t.required = field.getTransferFieldDeclarationEquivalent().required;
 
-        s.eContainer.getPSMEquivalent().attributes.add(t);
+        t.binding = field.getterExpr.features.first.member.equivalent("CreateAttributeFromField");
+        s.getActorDeclarationEquivalent().attributes.add(t);
 
         log.debug("Created ActorType Claim: " + t.name);
 }
 
-rule CreateActorType
-    transform s: ESM!ActorType
-    to t: JUDOPSM!ActorType
-    extends CreateAbstractActorType {
-      guard: s.principal.isDefined() and not s.principal.isMapped()
-
-      t.setId("(esm/" + s.getId() + ")/ActorType");
-
-      log.debug("Created ActorType: " + t.name);
-}
-
-@lazy
-rule CreateMetadataType
-    transform s: ESM!ActorType
-    to t: JUDOPSM!UnmappedTransferObjectType
-    extends CreateNamespaceElement {
-      t.name = "_MetadataFor" + s.name;
-
-      t.setId("(esm/" + s.getId() + ")/MetadataType");
-
-      var security = new JUDOPSM!TransferObjectRelation();
-      security.setId("(esm/" + s.getId() + ")/MetadataType/Security");
-      security.name = "security";
-      security.embedded = true;
-      security.cardinality = new JUDOPSM!Cardinality;
-      security.cardinality.setId("(esm/" + s.getId() + ")/MetadataType/Security/Cardinality");
-      security.cardinality.lower = 0;
-      security.cardinality.upper = -1;
-      security.target = s.equivalent("CreateMetadataSecurityType");
-
-      t.relations.add(security);
-}
-
-@lazy
-rule CreateMetadataSecurityType
-    transform s: ESM!ActorType
-    to t: JUDOPSM!UnmappedTransferObjectType
-    extends CreateNamespaceElement {
-      t.setId("(esm/" + s.getId() + ")/MetadataSecurityType");
-
-      t.name = "_MetadataSecurityFor" + s.name;
-
-      var m : ESM!Model = ESM!Model.all.first();
-
-      var name = new JUDOPSM!TransferAttribute();
-      name.setId("(esm/" + s.getId() + ")/MetadataSecurityType/Name");
-      name.name = "name";
-      name.dataType = m.equivalent("CreateAutoGeneratedStringType");
-      name.required = true;
-
-      var openIdConfigurationUrl = new JUDOPSM!TransferAttribute();
-      openIdConfigurationUrl.setId("(esm/" + s.getId() + ")/MetadataSecurityType/OpenIdConfigurationUrl");
-      openIdConfigurationUrl.name = "openIdConfigurationUrl";
-      openIdConfigurationUrl.dataType = m.equivalent("CreateAutoGeneratedStringType");
-      openIdConfigurationUrl.required = false;
-
-      var issuer = new JUDOPSM!TransferAttribute();
-      issuer.setId("(esm/" + s.getId() + ")/" + s.name + "/Issuer");
-      issuer.name = "issuer";
-      issuer.dataType = m.equivalent("CreateAutoGeneratedStringType");
-      issuer.required = false;
-
-      var authEndpoint = new JUDOPSM!TransferAttribute();
-      authEndpoint.setId("(esm/" + s.getId() + ")/MetadataSecurityType/AuthEndpoint");
-      authEndpoint.name = "authEndpoint";
-      authEndpoint.dataType = m.equivalent("CreateAutoGeneratedStringType");
-      authEndpoint.required = false;
-
-      var tokenEndpoint = new JUDOPSM!TransferAttribute();
-      tokenEndpoint.setId("(esm/" + s.getId() + ")/MetadataSecurityType/TokenEndpoint");
-      tokenEndpoint.name = "tokenEndpoint";
-      tokenEndpoint.dataType = m.equivalent("CreateAutoGeneratedStringType");
-      tokenEndpoint.required = false;
-
-      var logoutEndpoint = new JUDOPSM!TransferAttribute();
-      logoutEndpoint.setId("(esm/" + s.getId() + ")/MetadataSecurityType/LogoutEndpoint");
-      logoutEndpoint.name = "logoutEndpoint";
-      logoutEndpoint.dataType = m.equivalent("CreateAutoGeneratedStringType");
-      logoutEndpoint.required = false;
-
-      var clientId = new JUDOPSM!TransferAttribute();
-      clientId.setId("(esm/" + s.getId() + ")/MetadataSecurityType/ClientId");
-      clientId.name = "clientId";
-      clientId.dataType = m.equivalent("CreateAutoGeneratedStringType");
-      clientId.required = true;
-
-      var clientBaseUrl = new JUDOPSM!TransferAttribute();
-      clientBaseUrl.setId("(esm/" + s.getId() + ")/MetadataSecurityType/ClientBaseUrl");
-      clientBaseUrl.name = "clientBaseUrl";
-      clientBaseUrl.dataType = m.equivalent("CreateAutoGeneratedStringType");
-      clientBaseUrl.required = false;
-
-      var defaultScopes = new JUDOPSM!TransferAttribute();
-      defaultScopes.setId("(esm/" + s.getId() + ")/MetadataSecurityType/DefaultScopes");
-      defaultScopes.name = "defaultScopes";
-      defaultScopes.dataType = m.equivalent("CreateAutoGeneratedStringType");
-      defaultScopes.required = true;
-
-      t.attributes.add(name);
-      t.attributes.add(openIdConfigurationUrl);
-      t.attributes.add(issuer);
-      t.attributes.add(authEndpoint);
-      t.attributes.add(tokenEndpoint);
-      t.attributes.add(logoutEndpoint);
-      t.attributes.add(clientId);
-      t.attributes.add(clientBaseUrl);
-      t.attributes.add(defaultScopes);
-}
-
-rule CreateMappedActorType
-    transform s: ESM!ActorType
-    to t: JUDOPSM!MappedActorType
-    extends CreateAbstractActorType {
-      guard: s.principal.isDefined() and s.principal.isMapped()
-
-      t.setId("(esm/" + s.getId() + ")/MappedActorType");
-
-      t.entityType = s.principal.mapping.target.getPSMEquivalent();
-      t.managed = s.managed;
-      t.kind = s.kind.asString();
-
-      if (s.isActiveExpression.isDefined() and s.isActiveExpression.trim().length() > 0) {
-          t.filter = s.equivalent("CreateFilterExpressionForMappedActorType");
-      }
-
-      log.debug("Created ActorType: " + t.name);
-}
-
-rule CreateActorTypeWithoutPrincipal
-    transform s: ESM!ActorType
-    to t: JUDOPSM!ActorType
-    extends CreateNamespaceElement {
-      guard: s.principal.isUndefined()
-
-      t.setId("(esm/" + s.getId() + ")/ActorTypeWithoutPrincipal");
-
-      if (not s.isEffectiveAnonymous()) {
-          t.realm = s.realm;
-      }
-}
-
-@abstract
-rule CreateTransferObjectRelationFromAccess
-    transform s: ESM!Access
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateNamedElement {
-        t.cardinality = s.equivalent("CreateCardinalityForReferenceTypedElement");
-        t.access = true;
-        t.target = s.target.getPSMTransferObjectTypeEquivalent();
-        s.eContainer.getPSMEquivalent().relations.add(t);
-
-    if (s.isCreateAllowed()) {
-        t.embeddedCreate = true;
-    }
-    if (s.isUpdateAllowed()) {
-        t.embeddedUpdate = true;
-    }
-    if (s.isDeleteAllowed()) {
-        t.embeddedDelete = true;
-    }
-    log.debug("Created access relation: " + t.name + " for actor type: " + t.eContainer.name);
-}
-
-rule CreateAccessTransferObjectRelationWithoutBinding
-    transform s: ESM!Access
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateTransferObjectRelationFromAccess {
-        guard: s.accessType == ESM!AccessType#ALL
-
-        t.setId("(esm/" + s.getId() + ")/AccessTransferObjectRelationWithoutBinding");
-
-}
-
-rule CreateAccessTransferObjectRelationWithBinding
-    transform s: ESM!Access
-    to t: JUDOPSM!TransferObjectRelation
-    extends CreateTransferObjectRelationFromAccess {
-        guard: s.accessType == ESM!AccessType#DERIVED
-
-    t.setId("(esm/" + s.getId() + ")/AccessTransferObjectRelationWithBinding");
-    t.binding = s.getPSMTransferObjectRelationBindingEquivalent();
-}
-
-@lazy
-rule CreateFilterExpressionForMappedActorType
-    transform s : ESM!ActorType
-       to t: JUDOPSM!LogicalExpressionType {
-     t.setId("(esm/" + s.getId() + ")/FilterExpressionForMappedActorType");
-     t.expression = s.isActiveExpression;
-     log.debug("Created Logical Expression Type for Mapped Actor Type filter: " + s.name);
-}
-
-*/
-
-/*
-
-  <elements xsi:type="service:MappedTransferObjectType" xmi:id="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/MappedTransferObjectType" name="UserTransfer" actorType="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MappedActorType" entityType="(esm/_XG6oYMDfEe6oev8MTPoGsQ)/EntityType">
-    <attributes xmi:id="(esm/_gDVw0MDfEe6oev8MTPoGsQ)/TransferAttributeFromBound" name="email" required="true" dataType="(esm/_QdVFQsDfEe6oev8MTPoGsQ)/StringType" binding="(esm/_YxxAoMDfEe6oev8MTPoGsQ)/Attribute"/>
-    <operations xsi:type="service:BoundTransferOperation" xmi:id="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/RefreshTransferOperationForTransferObjectType" name="_refreshInstanceJudo_Default_Project_13_UserTransfer" binding="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/RefreshOperationForTransferObjectType">
-      <output xmi:id="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/RefreshTransferOperationForTransferObjectType/Output" name="output" type="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/MappedTransferObjectType">
-        <cardinality xmi:id="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/RefreshTransferOperationForTransferObjectType/Output/Cardinality" lower="1"/>
-      </output>
-      <input xmi:id="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/RefreshTransferOperationForTransferObjectType/Input" name="input" type="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/QueryCustomizerType">
-        <cardinality xmi:id="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/RefreshTransferOperationForTransferObjectType/Input/Cardinality"/>
-      </input>
-      <behaviour xmi:id="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/RefreshTransferOperationForTransferObjectType/Behaviour" behaviourType="REFRESH" owner="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/MappedTransferObjectType"/>
-    </operations>
-  </elements>
-  <elements xsi:type="accesspoint:MappedActorType" xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MappedActorType" name="Actor" transferObjectType="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/MappedTransferObjectType" realm="DEFAULT" kind="HUMAN" entityType="(esm/_XG6oYMDfEe6oev8MTPoGsQ)/EntityType" managed="true">
-    <attributes xmi:id="(esm/_eiM48MEFEe6oev8MTPoGsQ)/Claim" name="email" required="true" dataType="(esm/_QdVFQsDfEe6oev8MTPoGsQ)/StringType" binding="(esm/_YxxAoMDfEe6oev8MTPoGsQ)/Attribute" claimType="EMAIL"/>
-    <operations xsi:type="service:UnboundOperation" xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/GetMetadataOperationForActorType" name="_metadata">
-      <output xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/GetMetadataOperationOutputParameterForActorType" name="output" type="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataType">
-        <cardinality xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/GetMetadataOperationOutputParameterForActorType/Cardinality"/>
-      </output>
-      <behaviour xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/GetMetadataOperationForActorType/Behaviour" behaviourType="GET_METADATA" owner="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MappedActorType"/>
-    </operations>
-    <operations xsi:type="service:UnboundOperation" xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/GetPrincipalOperationForActorType" name="_principal">
-      <output xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/GetPrincipalOperationOutputParameterForActorType" name="output" type="(esm/_gC_ykMDfEe6oev8MTPoGsQ)/MappedTransferObjectType">
-        <cardinality xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/GetPrincipalOperationOutputParameterForActorType/Cardinality"/>
-      </output>
-      <behaviour xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/GetPrincipalOperationForActorType/Behaviour" behaviourType="GET_PRINCIPAL" owner="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MappedActorType"/>
-    </operations>
-    <filter xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/FilterExpressionForMappedActorType" expression="self.isActive or false"/>
-  </elements>
-  <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataType" name="_MetadataForActor">
-    <relations xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataType/Security" name="security" target="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataSecurityType" embedded="true">
-      <cardinality xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataType/Security/Cardinality" upper="-1"/>
-    </relations>
-  </elements>
-  <elements xsi:type="service:UnmappedTransferObjectType" xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataSecurityType" name="_MetadataSecurityForActor">
-    <attributes xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataSecurityType/Name" name="name" required="true" dataType="(esm/_QdVFQMDfEe6oev8MTPoGsQ)/AutoGeneratedStringType"/>
-    <attributes xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataSecurityType/OpenIdConfigurationUrl" name="openIdConfigurationUrl" dataType="(esm/_QdVFQMDfEe6oev8MTPoGsQ)/AutoGeneratedStringType"/>
-    <attributes xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/Actor/Issuer" name="issuer" dataType="(esm/_QdVFQMDfEe6oev8MTPoGsQ)/AutoGeneratedStringType"/>
-    <attributes xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataSecurityType/AuthEndpoint" name="authEndpoint" dataType="(esm/_QdVFQMDfEe6oev8MTPoGsQ)/AutoGeneratedStringType"/>
-    <attributes xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataSecurityType/TokenEndpoint" name="tokenEndpoint" dataType="(esm/_QdVFQMDfEe6oev8MTPoGsQ)/AutoGeneratedStringType"/>
-    <attributes xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataSecurityType/LogoutEndpoint" name="logoutEndpoint" dataType="(esm/_QdVFQMDfEe6oev8MTPoGsQ)/AutoGeneratedStringType"/>
-    <attributes xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataSecurityType/ClientId" name="clientId" required="true" dataType="(esm/_QdVFQMDfEe6oev8MTPoGsQ)/AutoGeneratedStringType"/>
-    <attributes xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataSecurityType/ClientBaseUrl" name="clientBaseUrl" dataType="(esm/_QdVFQMDfEe6oev8MTPoGsQ)/AutoGeneratedStringType"/>
-    <attributes xmi:id="(esm/_VwMGAMDfEe6oev8MTPoGsQ)/MetadataSecurityType/DefaultScopes" name="defaultScopes" required="true" dataType="(esm/_QdVFQMDfEe6oev8MTPoGsQ)/AutoGeneratedStringType"/>
-  </elements>
-
-*/
