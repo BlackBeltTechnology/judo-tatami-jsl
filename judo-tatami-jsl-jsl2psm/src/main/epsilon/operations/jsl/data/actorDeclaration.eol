@@ -1,0 +1,45 @@
+@cached
+operation JSL!ActorDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!ActorDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}
+
+@cached
+operation JSL!ActorDeclaration getActorDeclarationEquivalent(): JUDOPSM!TransferObjectType {
+    if (self.getPrincipal().isDefined() and not self.getPrincipal().map.isDefined()) {
+        return self.equivalent("CreateActorType");
+    } else if (self.getPrincipal().isDefined() and self.getPrincipal().map.isDefined()) {
+        return self.equivalent("CreateMappedActorType");
+    } else if (self.getPrincipal().isUndefined()) {
+        return self.equivalent("CreateActorTypeWithoutPrincipal");
+    }
+}
+
+@cached
+operation JSL!ActorDeclaration getIdentity(): JSL!IdentityModifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!IdentityModifier));
+}
+
+@cached
+operation JSL!ActorDeclaration getRealm(): JSL!RealmModifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!RealmModifier));
+}
+
+@cached
+operation JSL!ActorDeclaration getClaim(): JSL!ClaimModifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!ClaimModifier));
+}
+
+@cached
+operation JSL!ActorDeclaration getGuard(): JSL!GuardModifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!GuardModifier));
+}
+
+@cached
+operation JSL!ActorDeclaration getPrincipal(): JSL!TransferDeclaration {
+    return self.getIdentity()?.field?.eContainer;
+}

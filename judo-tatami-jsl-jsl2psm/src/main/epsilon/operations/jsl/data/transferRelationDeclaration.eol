@@ -17,3 +17,98 @@ operation JSL!TransferRelationDeclaration maps(): Boolean {
 operation JSL!TransferRelationDeclaration reads(): Boolean {
     return jslUtils.isReads(self);
 }
+
+
+@cached
+operation JSL!TransferRelationDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "#" + self.name;
+}
+
+
+
+@cached
+operation JSL!TransferRelationDeclaration isCreateAllowed() : Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!CreateModifier) and m.`true`);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isUpdateAllowed() : Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and m.`true`);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isDeleteAllowed() : Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!DeleteModifier) and m.`true`);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isChoiceDefined() : Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!TransferChoiceModifier));
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isAddReferenceAllowed() : Boolean {
+    var lower = self.isRequired and not self.isMany ? 1 : 0;
+    var upper = self.isMany ? -1 : 1;
+	return self.maps() and self.eContainer.isUpdateSupported() 
+		and upper != 1 and (lower < upper or upper == -1); 
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isRemoveReferenceAllowed() : Boolean {
+    var lower = self.isRequired and not self.isMany ? 1 : 0;
+    var upper = self.isMany ? -1 : 1;
+	return self.maps() and self.eContainer.isUpdateSupported() 
+		and upper != 1 and (lower < upper or upper == -1); 
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isSetReferenceAllowed() : Boolean {
+	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired;
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isUnsetReferenceAllowed() : Boolean {
+	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired;
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isGetRangeSupported() : Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!TransferChoiceModifier));	
+}
+
+@cached
+operation JSL!TransferRelationDeclaration getTransferActionRangeEquivalent(): JUDOPSM!ReferenceAccessor {
+	  var choice = self.modifiers.selectOne(m | m.isTypeOf(JSL!TransferChoiceModifier));
+
+      if (choice.isDefined() and self.eContainer.map.isDefined()) {
+          return choice.equivalent("CreateRelationRangeNavigationPropertyForMappedTransferObjectRelation");
+      } else if (choice.isDefined()) {
+          return choice.equivalent("CreateRelationRangStaticNavigationForUnmappedTransferObjectRelation");
+      } else {
+      	throw "No choice defined";
+      }
+}
+
+@cached
+operation JSL!TransferRelationDeclaration getMappedTransferRelationEquivalent() : JUDOPSM!TransferObjectRelation {
+  var ret = null;
+  if (self.reads()) {
+  	ret = self.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
+  } else if (self.maps()) {
+  	ret = self.equivalent("CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");	
+  } else {
+  	ret = self.equivalent("CreateTransientTransferObjectRelationForTransferRelationDeclaration");
+  }   
+  if (ret.isUndefined) {
+  	throw "Could not get relation";
+  }
+  return ret;
+}
+
+
+@cached
+operation JSL!TransferRelationDeclaration isActorRelated(): Boolean {
+    return self.isKindOf(JSL!ActorAccessDeclaration);
+}
+

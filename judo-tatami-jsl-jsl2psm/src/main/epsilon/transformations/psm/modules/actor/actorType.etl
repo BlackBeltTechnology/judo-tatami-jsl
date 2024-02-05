@@ -1,0 +1,335 @@
+@abstract
+rule CreateAbstractActorType
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!AbstractActorType {
+      t.name = s.name;
+      t.transferObjectType = s.getPrincipal().getTransferDeclarationEquivalent();
+      s.getPrincipal().getTransferDeclarationEquivalent().actorType = t;
+      t.realm = s.getRealm().value.value;
+      s.eContainer.getModelRoot().elements.add(t);
+}
+
+@greedy
+rule CreateActorType
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!ActorType
+    extends CreateAbstractActorType {
+      guard: s.getPrincipal().isDefined() and not s.getPrincipal().map.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateActorType");
+      log.debug("Created ActorType: " + t.name);
+}
+
+@greedy
+rule CreateMappedActorType
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!MappedActorType
+    extends CreateAbstractActorType {
+      guard: s.getPrincipal().isDefined() and s.getPrincipal().map.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateMappedActorType");
+      t.entityType = s.getPrincipal().map.entity.getEntityDeclarationEquivalent();
+      t.kind = s.getClaim()?.value.value;
+
+      // TODO: Annotation or parameter?
+      t.managed = true;      
+	  if (s.getGuard().isDefined()) {
+	  	t.filter = s.equivalent("CreateFilterExpressionForMappedActorType");
+	  }
+      log.debug("Created ActorType: " + t.name);
+}
+
+@greedy
+rule CreateActorTypeWithoutPrincipal
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!ActorType {
+      guard: s.getPrincipal().isUndefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateActorTypeWithoutPrincipal");
+
+	  if (s.getGuard().isDefined()) {
+	  	t.filter = s.equivalent("CreateFilterExpressionForMappedActorType");
+	  }
+      s.eContainer.getModelRoot().elements.add(t);
+      log.debug("Created MappedTransferObjectType: " + t.name);
+}
+
+
+@lazy
+rule CreateFilterExpressionForMappedActorType
+    transform s: JSL!ActorDeclaration
+       to t: JUDOPSM!LogicalExpressionType {
+     t.setId("(jsl/" + s.getId() + ")/CreateFilterExpressionForMappedActorType");
+     t.expression = expressionUtils.getJqlForExpression(s.getGuard().expression, entityNamePrefix, entityNamePostfix);
+
+     log.debug("Created Logical Expression Type for Mapped Actor Type filter: " + s.name);
+}
+
+@greedy
+rule CreateMetadataType
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!UnmappedTransferObjectType {
+      t.name = "_MetadataFor" + s.name;
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataType");
+      s.eContainer.getModelRoot().elements.add(t);
+}
+
+@greedy
+rule CreateMetadataTypeSecurity
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!TransferObjectRelation {
+
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataTypeSecurity");
+
+      t.name = "security";
+      t.embedded = true;
+      t.cardinality = s.equivalent("CreateMetadataTypeSecurityCardinality");
+      t.target = s.equivalent("CreateMetadataSecurityType");
+      s.equivalent("CreateMetadataType").relations.add(t);
+}
+
+@greedy
+rule CreateMetadataTypeSecurityCardinality
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!Cardinality {
+
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataTypeSecurityCardinality");
+      t.lower = 0;
+      t.upper = -1;
+}
+
+@greedy
+rule CreateMetadataSecurityType
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!UnmappedTransferObjectType {
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataSecurityType");
+
+      t.name = "_MetadataSecurityFor" + s.name;
+      s.eContainer.getModelRoot().elements.add(t);
+}
+
+
+@lazy
+rule CreateActorStringType
+    transform s: String
+    to t : JUDOPSM!StringType {
+      
+      t.setId("(jsl/" + s.replaceAll("::", "_") + ")/CreateActorStringType");
+      t.name = "ActorStringType";
+      t.maxLength = 8192;
+      s.getUniqueModelName().equivalent("CreateModelPackages").elements.add(t);
+      log.debug("CreateActorStringType type created: " + t.name);
+}
+
+
+@greedy
+rule CreateMetadataSecurityTypeName
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!TransferAttribute {
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataSecurityTypeName");
+      t.name = "name";
+      t.dataType = "extensions".equivalent("CreateActorStringType");
+      t.required = true;
+      s.equivalent("CreateMetadataSecurityType").attributes.add(t);
+}
+
+
+@greedy
+rule CreateMetadataSecurityTypeOpenIdConfigurationUrl
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!TransferAttribute {
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataSecurityTypeOpenIdConfigurationUrl");
+      t.name = "openIdConfigurationUrl";
+      t.dataType = "extensions".equivalent("CreateActorStringType");
+      t.required = false;
+      s.equivalent("CreateMetadataSecurityType").attributes.add(t);
+}
+
+@greedy
+rule CreateMetadataSecurityTypeIssuer
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!TransferAttribute {
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataSecurityTypeIssuer");
+      t.name = "issuer";
+      t.dataType = "extensions".equivalent("CreateActorStringType");
+      t.required = false;
+      s.equivalent("CreateMetadataSecurityType").attributes.add(t);
+}
+
+@greedy
+rule CreateMetadataSecurityTypeAuthEndpoint
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!TransferAttribute {
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataSecurityTypeAuthEndpoint");
+      t.name = "authEndpoint";
+      t.dataType = "extensions".equivalent("CreateActorStringType");
+      t.required = false;
+      s.equivalent("CreateMetadataSecurityType").attributes.add(t);
+}
+
+@greedy
+rule CreateMetadataSecurityTypeTokenEndpoint
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!TransferAttribute {
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataSecurityTypeTokenEndpoint");
+      t.name = "tokenEndpoint";
+      t.dataType = "extensions".equivalent("CreateActorStringType");
+      t.required = false;
+      s.equivalent("CreateMetadataSecurityType").attributes.add(t);
+}
+
+@greedy
+rule CreateMetadataSecurityTypeLogoutEndpoint
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!TransferAttribute {
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataSecurityTypeLogoutEndpoint");
+      t.name = "logoutEndpoint";
+      t.dataType = "extensions".equivalent("CreateActorStringType");
+      t.required = false;
+      s.equivalent("CreateMetadataSecurityType").attributes.add(t);
+}
+
+@greedy
+rule CreateMetadataSecurityTypeClientId
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!TransferAttribute {
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataSecurityTypeClientId");
+      t.name = "clientId";
+      t.dataType = "extensions".equivalent("CreateActorStringType");
+      t.required = false;
+      s.equivalent("CreateMetadataSecurityType").attributes.add(t);
+}
+
+@greedy
+rule CreateMetadataSecurityTypeClientBaseUrl
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!TransferAttribute {
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataSecurityTypeClientBaseUrl");
+      t.name = "clientBaseUrl";
+      t.dataType = "extensions".equivalent("CreateActorStringType");
+      t.required = false;
+      s.equivalent("CreateMetadataSecurityType").attributes.add(t);
+}
+
+@greedy
+rule CreateMetadataSecurityTypeDefaultScopes
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!TransferAttribute {
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataSecurityTypeDefaultScopes");
+      t.name = "defaultScopes";
+      t.dataType = "extensions".equivalent("CreateActorStringType");
+      t.required = false;
+      s.equivalent("CreateMetadataSecurityType").attributes.add(t);
+}
+
+@greedy
+rule CreateGetMetadataOperationForActorType
+    transform s: JSL!ActorDeclaration
+    to t : JUDOPSM!UnboundOperation {
+      t.setId("(jsl/" + s.getId() + ")/CreateGetMetadataOperationForActorType");
+      t.name = "_metadata";
+      t.behaviour = s.equivalent("CreateGetMetadataOperationForActorTypeBehaviour");
+      s.getActorDeclarationEquivalent().operations.add(t);
+}
+
+@lazy
+rule CreateGetMetadataOperationForActorTypeBehaviour
+    transform s: JSL!ActorDeclaration
+    to t : JUDOPSM!TransferOperationBehaviour {
+      t.setId("(jsl/" + s.getId() + ")/CreateGetMetadataOperationForActorTypeBehaviour");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_METADATA;
+      t.owner = s.getActorDeclarationEquivalent();
+}
+
+@greedy
+rule CreateGetMetadataOperationOutputParameterForActorType
+    transform s: JSL!ActorDeclaration
+    to t : JUDOPSM!Parameter {
+        t.setId("(jsl/" + s.getId() + ")/CreateGetMetadataOperationOutputParameterForActorType");
+
+        t.name = "output";
+        t.type = s.equivalent("CreateMetadataType");
+        t.cardinality = s.equivalent("CreateMetadataOperationOutputParameterForActorTypeCardinality");
+
+        s.equivalent("CreateGetMetadataOperationForActorType").output = t;
+}
+
+@greedy
+rule CreateMetadataOperationOutputParameterForActorTypeCardinality
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!Cardinality {
+
+      t.setId("(jsl/" + s.getId() + ")/CreateMetadataOperationOutputParameterForActorTypeCardinality");
+      t.lower = 0;
+      t.upper = -1;
+}
+
+@greedy
+rule CreateGetPrincipalOperationForActorType
+    transform s: JSL!ActorDeclaration
+    to t : JUDOPSM!UnboundOperation {
+        guard: s.getPrincipal().isDefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateGetPrincipalOperationForActorType");
+      t.name = "_principal";
+      t.behaviour = s.equivalent("CreateGetPrincipalOperationForActorTypeBehaviour");
+      s.getActorDeclarationEquivalent().operations.add(t);
+}
+
+@lazy
+rule CreateGetPrincipalOperationForActorTypeBehaviour
+    transform s: JSL!ActorDeclaration
+    to t : JUDOPSM!TransferOperationBehaviour {
+        guard: s.getPrincipal().isDefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateGetPrincipalOperationForActorTypeBehaviour");
+      t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_PRINCIPAL;
+      t.owner = s.getActorDeclarationEquivalent();
+}
+
+@greedy
+rule CreateGetPrincipalOperationOutputParameterForActorType
+    transform s: JSL!ActorDeclaration
+    to t : JUDOPSM!Parameter {
+        guard: s.getPrincipal().isDefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateGetPrincipalOperationOutputParameterForActorType");
+
+      t.name = "output";
+      t.type = s.getPrincipal().getTransferDeclarationEquivalent();
+      t.cardinality = s.equivalent("CreatePrincipalOperationOutputParameterForActorTypeCardinality");
+
+      s.equivalent("CreateGetPrincipalOperationForActorType").output = t;
+}
+
+@greedy
+rule CreatePrincipalOperationOutputParameterForActorTypeCardinality
+    transform s: JSL!ActorDeclaration
+    to t: JUDOPSM!Cardinality {
+        guard: s.getPrincipal().isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreatePrincipalOperationOutputParameterForActorTypeCardinality");
+      t.lower = 0;
+      t.upper = 1;
+}
+
+
+rule CreateActorTypeClaim
+    transform s: JSL!ActorDeclaration
+    to t : JUDOPSM!TransferAttribute {
+        guard: s.getPrincipal().isDefined() 
+        	and s.getClaim().isDefined()
+        	and s.getIdentity().isDefined() // and s.getPrincipal().map.isDefined()
+
+		var field = s.getIdentity().field;
+        t.setId("(jsl/" + s.getId() + ")/CreateActorTypeClaim");
+
+        t.name = field.name;
+        t.claimType = s.getClaim().value.value;
+
+        t.dataType = field.referenceType.getPrimitiveDeclarationEquivalent();
+        t.required = field.getTransferFieldDeclarationEquivalent().required;
+
+        t.binding = field.getterExpr.features.first.member.equivalent("CreateAttributeFromField");
+        s.getActorDeclarationEquivalent().attributes.add(t);
+
+        log.debug("Created ActorType Claim: " + t.name);
+}
+
