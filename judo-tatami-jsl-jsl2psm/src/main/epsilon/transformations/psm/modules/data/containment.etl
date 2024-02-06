@@ -8,10 +8,10 @@ rule CreateContainmentFromField
 
         t.setId("(jsl/" + s.getId() + ")/CreateContainmentFromField");
         t.name = s.name;
-        t.target = s.getReferenceType().getPSMEquivalent();
+        t.target = s.getReferenceType().getEntityDeclarationEquivalent();
         t.cardinality = s.equivalentDiscriminated("CreateCardinalityForFieldDeclaration", t.getId());
 
-        s.eContainer.getPSMEquivalent().relations.add(t);
+        s.eContainer.getEntityDeclarationEquivalent().relations.add(t);
         log.debug("Created Containment: " + t.name);
     }
 
@@ -45,7 +45,7 @@ rule CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclara
 
         t.setId("(jsl/" + s.getId() + ")/CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclaration");
         t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
-        t.target = s.eContainer.getReferenceType().getPSMEquivalent().entityType;
+        t.target = s.eContainer.getReferenceType().getTransferDeclarationEquivalent().entityType;
         t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
@@ -62,10 +62,10 @@ rule CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclara
 
         t.setId("(jsl/" + s.getId() + ")/CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclaration");
         t.name = defaultReadsNamePrefix + s.eContainer.name + defaultReadsNameMidfix + s.eContainer.eContainer.name + defaultReadsNamePostfix;
-        t.target = s.eContainer.getReferenceType().getPSMEquivalent().entityType;
+        t.target = s.eContainer.getReferenceType().getTransferDeclarationEquivalent().entityType;
         t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
-        s.eContainer.eContainer.map.entity.getPSMEquivalent().navigationProperties.add(t);
+        s.eContainer.eContainer.map.entity.getEntityDeclarationEquivalent().navigationProperties.add(t);
 
         log.debug("Created NavigationProperty for TransferRelation Reads: " + s);
     }
@@ -96,9 +96,9 @@ rule CreateDefaultNavigationPropertyForMappedTransferObjectConstructor
 
         t.setId("(jsl/" + s.eContainer.getId() + ")/CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
-        t.target = s.eContainer.getReferenceType().getPSMEquivalent().entityType;
+        t.target = s.eContainer.getReferenceType().getTransferDeclarationEquivalent().entityType;
   	    t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
-        s.eContainer.eContainer.map.entity.getPSMEquivalent().navigationProperties.add(t);
+        s.eContainer.eContainer.map.entity.getEntityDeclarationEquivalent().navigationProperties.add(t);
 
         log.debug("Created NavigationProperty for Transfer Object Default Value: " + s);
     }
@@ -124,7 +124,7 @@ rule CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor
 
         t.setId("(jsl/" + s.eContainer.getId() + ")/CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
-        t.target = s.eContainer.getReferenceType().getPSMEquivalent().entityType;
+        t.target = s.eContainer.getReferenceType().getTransferDeclarationEquivalent().entityType;
   	    t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
         s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);

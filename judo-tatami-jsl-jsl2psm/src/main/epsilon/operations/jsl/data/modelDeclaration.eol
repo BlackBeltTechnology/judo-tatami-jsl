@@ -1,5 +1,5 @@
 @cached
-operation JSL!ModelDeclaration getPSMEquivalent(): JUDOPSM!Model {
+operation JSL!ModelDeclaration getModelDeclarationEquivalent(): JUDOPSM!Model {
     return defaultModelName.equivalent("CreateRootModel");
 }
 
@@ -12,4 +12,19 @@ operation JSL!ModelDeclaration getModelRoot(): JUDOPSM!Package {
 @cached
 operation JSL!ModelDeclaration getId(): String {
     return defaultModelName.equivalent("CreateRootModel").name + "/" + self.name.replaceAll("::", "/");
+}
+
+@cached
+operation JSL!ModelDeclaration getFqName(): String {
+    return self.name;
+}
+
+
+@cached
+operation String getUniqueModelName() : String {
+	if (not JSL!ModelDeclaration.all.exists(s | s == self)) {
+		return self;
+	} else {
+		return "_" + self;
+	}
 }
