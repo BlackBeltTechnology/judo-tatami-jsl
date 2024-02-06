@@ -49,9 +49,8 @@ import "modules/action/accessCreateBehaviour.etl";
 import "modules/action/accessValidateCreateBehaviour.etl";
 
 pre {
-	//var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");	
-	var __cacheMap = new ConcurrentMap();
-	var __originalMap = new ConcurrentMap();
+    var __cacheMap = new ConcurrentMap();
+    var __originalMap = new ConcurrentMap();
 
     JUDOPSM.target.resource.contents.add(defaultModelName.equivalent("CreateRootModel"));
 }
@@ -63,10 +62,10 @@ post {
 
     // Collect primitive types which are not directly referenced as field types
     for (c in JSL!NavigationBaseDeclarationReference.all().select(n | n.reference.isKindOf(JSL!PrimitiveDeclaration))) {
-         var dummy = c.reference.getPrimitiveDeclarationEquivalent();
+        var dummy = c.reference.getPrimitiveDeclarationEquivalent();
     }
     for (c in JSL!QueryParameterDeclaration.all()) {
-         var dummy = c.referenceType.getPrimitiveDeclarationEquivalent();
+        var dummy = c.referenceType.getPrimitiveDeclarationEquivalent();
     }
 
     var enumsWithoutOrdinal = JUDOPSM!EnumerationMember.all.select(m | m.ordinal == -1).collect(m | m.eContainer).flatten().asSet();

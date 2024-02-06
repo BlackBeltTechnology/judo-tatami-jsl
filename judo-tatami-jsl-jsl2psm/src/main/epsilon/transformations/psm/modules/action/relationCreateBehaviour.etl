@@ -112,7 +112,7 @@ rule CreateCardinalityForCreateTransferTypeInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForCreateTransferTypeInput");
 
-      t.lower = 1; //s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1;
       t.upper = 1;
 }
 
@@ -123,7 +123,7 @@ rule CreateCardinalityForCreateTransferTypeOutput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForCreateTransferTypeOutput");
 
-      t.lower = 1; // s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1;
       t.upper = 1;
 }
 

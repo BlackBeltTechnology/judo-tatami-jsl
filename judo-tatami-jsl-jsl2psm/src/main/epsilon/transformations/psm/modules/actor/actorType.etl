@@ -316,7 +316,7 @@ rule CreateActorTypeClaim
     to t : JUDOPSM!TransferAttribute {
         guard: s.getPrincipal().isDefined() 
         	and s.getClaim().isDefined()
-        	and s.getIdentity().isDefined() // and s.getPrincipal().map.isDefined()
+        	and s.getIdentity().isDefined()
 
 		var field = s.getIdentity().field;
         t.setId("(jsl/" + s.getId() + ")/CreateActorTypeClaim");

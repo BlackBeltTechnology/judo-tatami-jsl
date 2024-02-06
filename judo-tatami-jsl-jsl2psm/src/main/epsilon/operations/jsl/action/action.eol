@@ -49,7 +49,7 @@ operation JSL!TransferActionDeclaration getOperationDeclarationEquivalent(): JUD
 	  } else if (self.eContainer.map.isDefined() and not self.static) {
   	  	return self.equivalent("CreateBoundOperationForMappedTransferObjectType");	  	  
 	  } else {
-		throw "No choice defined";
+		throw "Could not determinate operation";
 	  }  
 }
 

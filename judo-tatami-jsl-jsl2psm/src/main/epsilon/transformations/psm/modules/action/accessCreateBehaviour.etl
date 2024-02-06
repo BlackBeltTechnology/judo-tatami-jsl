@@ -68,10 +68,10 @@ rule CreateCreateOperationForAccessOutputParameter
 rule CreateCardinalityForCreateAccessInput
     transform s : JSL!ActorAccessDeclaration
     to t : JUDOPSM!Cardinality {
-      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForCreateAccessInput");
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForCreateAccessInput");
 
-      t.lower = 1; //s.isRequired and not s.isMany ? 1 : 0;
-      t.upper = 1;
+        t.lower = 1;
+        t.upper = 1;
 }
 
 @lazy
@@ -79,9 +79,9 @@ rule CreateCardinalityForCreateAccessInput
 rule CreateCardinalityForCreateAccessOutput
     transform s : JSL!ActorAccessDeclaration
     to t : JUDOPSM!Cardinality {
-      t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForCreateAccessOutput");
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForCreateAccessOutput");
 
-      t.lower = 1; // s.isRequired and not s.isMany ? 1 : 0;
-      t.upper = 1;
+        t.lower = 1;
+        t.upper = 1;
 }
 

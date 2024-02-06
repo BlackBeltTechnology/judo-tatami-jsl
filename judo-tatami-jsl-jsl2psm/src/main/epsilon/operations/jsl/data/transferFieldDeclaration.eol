@@ -23,17 +23,6 @@ operation JSL!TransferFieldDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "#" + self.name;
 }
 
-
-//@cached 
-//operation JSL!TransferFieldDeclaration getPSMDefaultValue() : JUDOPSM!TransferAttribute {
-//     if (self.eContainer.map.isUndefined()) {
-//        return self.equivalent("CreateDefaultStaticDataForUnmappedTransferObjectConstructor");
-//     } else {
-//        return self.equivalent("CreateDefaultDataPropertyForMappedTransferObjectConstructor");
-//     }
-//}
-
-
 @cached
 operation JSL!TransferFieldDeclaration isGetUploadTokenSupported(): Boolean {
 	if (self.reads() and not self.maps()) {
