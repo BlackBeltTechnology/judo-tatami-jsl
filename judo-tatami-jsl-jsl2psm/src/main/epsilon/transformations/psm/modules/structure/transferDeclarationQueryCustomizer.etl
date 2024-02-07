@@ -1,0 +1,315 @@
+import "../../../../operations/_importAll.eol";
+
+
+@greedy
+rule CreateQueryCustomizerType
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!UnmappedTransferObjectType {
+      guard: generateBehaviours and s.map.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerType");
+      t.name = "_" + s.name + "QueryCustomizer";
+      t.queryCustomizer = true;
+      s.eContainer.getModelRoot().elements.add(t);
+
+      log.debug("Query customizer type created: " + t.name);
+}
+
+@lazy
+rule CreateQueryCustomizerStringType
+    transform s: String
+    to t : JUDOPSM!StringType {
+      
+      t.setId("(jsl/" + s.replaceAll("::", "_") + ")/CreateQueryCustomizerStringType");
+      t.name = "QueryCustomizerStringType";
+      t.maxLength = 8192;
+      s.getUniqueModelName().equivalent("CreateModelPackages").elements.add(t);
+      log.debug("CreateQueryCustomizerStringType type created: " + t.name);
+}
+
+@greedy
+rule CreateQueryCustomizerMaskAttribute
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!TransferAttribute {
+      guard: generateBehaviours and s.map.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerMaskAttribute");
+      t.name = "_mask";
+      t.required = false;
+      t.dataType = "extensions".equivalent("CreateQueryCustomizerStringType");
+      s.equivalent("CreateQueryCustomizerType").attributes.add(t);
+      log.debug("CreateQueryCustomizerMaskAttribute type created: " + t.name);
+}
+
+@greedy
+rule CreateQueryCustomizerIdentifierAttribute
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!TransferAttribute {
+      guard: generateBehaviours and s.map.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerIdentifierAttribute");
+      t.name = "_identifier";
+      t.required = false;
+      t.dataType = "extensions".equivalent("CreateQueryCustomizerStringType");
+      s.equivalent("CreateQueryCustomizerType").attributes.add(t);
+      log.debug("CreateQueryCustomizerIdentifierAttribute type created: " + t.name);
+}
+
+@greedy
+rule CreateQueryCustomizerTypeOrderByRelation
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!TransferObjectRelation {
+      guard: generateBehaviours and s.map.isDefined() and s.hasSortableField()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerTypeOrderByRelation");
+
+      t.name = "_orderBy";
+      t.target = s.equivalent("CreateQueryOrderingType");
+      t.embedded = true;
+      
+      t.cardinality = s.equivalent("CreateQueryCustomizerTypeOrderByCardinality");
+      s.equivalent("CreateQueryCustomizerType").relations.add(t);
+}
+
+@lazy
+@greedy
+rule CreateQueryCustomizerTypeOrderByCardinality
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!Cardinality {
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerTypeOrderByCardinality");
+      t.lower = 0;
+      t.upper = -1;
+      log.debug("CreateQueryCustomizerTypeOrderByCardinality type created: " + s.name);
+}
+
+@greedy
+rule CreateQueryCustomizerTypeSeekRelation
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!TransferObjectRelation {
+      guard: generateBehaviours and s.map.isDefined() 
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerTypeSeekRelation");
+
+      t.name = "_seek";
+      t.target = s.equivalent("CreateQueryCustomizerSeekingType");
+      t.embedded = true;
+      
+      t.cardinality = s.equivalent("CreateQueryCustomizerTypeSeekCardinality");
+      s.equivalent("CreateQueryCustomizerType").relations.add(t);
+
+      log.debug("CreateQueryCustomizerTypeSeekRelation type created: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateQueryCustomizerTypeSeekCardinality
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!Cardinality {
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerTypeSeekCardinality");
+      t.lower = 0;
+      t.upper = 1;
+      log.debug("CreateQueryCustomizerTypeSeekCardinality type created: " + s.name);
+}
+
+@greedy
+rule CreateQueryOrderingType
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!UnmappedTransferObjectType {
+    guard: generateBehaviours and s.map.isDefined() and s.hasSortableField()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryOrderingType");
+
+      t.name = "_" + s.name + "OrderingType";
+      t.queryCustomizer = true;
+
+      s.eContainer.getModelRoot().elements.add(t);
+      log.debug("CreateQueryOrderingType type created: " + t.name);
+}
+
+@greedy
+rule CreateQueryOrderingTypeEnumerationAttribute
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!TransferAttribute {
+    guard: generateBehaviours and s.map.isDefined() and s.hasSortableField()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryOrderingTypeEnumerationAttribute/Attribute");
+      t.name = "attribute";
+      t.required = true;
+      t.dataType = s.equivalent("CreateQueryCustomizerOrderingEnumeration");
+      s.equivalent("CreateQueryOrderingType").attributes.add(t);
+      log.debug("CreateQueryOrderingTypeEnumerationAttribute type: " + t.name);
+}
+
+@greedy
+rule CreateQueryOrderingTypeDescendingAttribute
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!TransferAttribute {
+    guard: generateBehaviours and s.map.isDefined() and s.hasSortableField()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryOrderingTypeDescendingAttribute");
+      t.name = "descending";
+      t.required = false;
+      t.dataType = "extensions".equivalent("CreateQueryCustomizerBooleanType");
+      s.equivalent("CreateQueryOrderingType").attributes.add(t);
+      log.debug("CreateQueryOrderingTypeDescendingAttribute type: " + t.name);
+}
+
+@greedy
+rule CreateQueryCustomizerOrderingEnumeration
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!EnumerationType {
+      guard: generateBehaviours and s.map.isDefined() and s.hasSortableField()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerOrderingEnumeration");
+      t.name = "_" + s.name + "OrderingAttributes";
+      s.eContainer.getModelRoot().elements.add(t);
+      log.debug("CreateQueryCustomizerOrderingEnumeration created: " + t.name);
+}
+
+
+@greedy
+rule CreateQueryCustomizerOrderingEnumerationMember
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!EnumerationMember {
+	  guard: generateBehaviours and s.eContainer.map.isDefined() and s.isSortable()
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerOrderingEnumerationDerivedTransferAttribute");
+      t.name = s.name;
+      t.ordinal = -1; // will be calculated by post operation      
+      s.eContainer.equivalent("CreateQueryCustomizerOrderingEnumeration").members.add(t);
+      log.debug("CreateQueryCustomizerOrderingEnumerationDerivedTransferAttribute: " + t.name);
+}
+
+@greedy
+rule CreateQueryCustomizerSeekLastItem
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!UnmappedTransferObjectType {
+      guard: generateBehaviours and s.map.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerSeekLastItem");
+      t.name = "_" + s.name + "SeekLastItem";
+      s.eContainer.getModelRoot().elements.add(t);
+      log.debug("CreateQueryCustomizerSeekLastItem created: " + t.name);
+}
+
+
+@greedy
+rule CreateQueryCustomizerSeekLastItemAttribute
+    transform s : JSL!TransferFieldDeclaration
+    to t : JUDOPSM!TransferAttribute {
+	  guard: generateBehaviours and s.eContainer.map.isDefined() and (s.isFilterable() or s.isSortable())
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerSeekLastItemAttribute");
+      t.name = s.name;
+      t.dataType = s.referenceType.getPrimitiveDeclarationEquivalent();
+      t.required = false;
+      s.eContainer.equivalent("CreateQueryCustomizerSeekLastItem").attributes.add(t);
+      log.debug("CreateQueryCustomizerSeekLastItemAttribute: " + t.name);
+}
+
+
+@greedy
+rule CreateQueryCustomizerSeekingType
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!UnmappedTransferObjectType {
+	  guard: generateBehaviours and s.map.isDefined()
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerSeekingType");
+      t.name = "_" + s.name + "Seek";
+      t.queryCustomizer = true;
+      s.eContainer.getModelRoot().elements.add(t);
+      log.debug("Query seeking type created: " + t.name);
+}
+
+@greedy
+rule CreateQuerySeekLastItemRelation
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!TransferObjectRelation {
+	  guard: generateBehaviours and s.map.isDefined()
+    
+      t.setId("(jsl/" + s.getId() + ")/CreateQuerySeekLastItemRelation");
+      t.name = "lastItem";
+      t.target = s.equivalent("CreateQueryCustomizerSeekLastItem");  // s.getPSMEquivalent();
+      t.embedded = true;
+      t.cardinality = s.equivalent("CreateQuerySeekLastItemRelationCardinality");
+      s.equivalent("CreateQueryCustomizerSeekingType").relations.add(t);      
+      log.debug("CreateQuerySeekLastItemRelation type created: " + t.name);
+}
+
+@lazy
+@greedy
+rule CreateQuerySeekLastItemRelationCardinality
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!Cardinality {
+    
+      t.setId("(jsl/" + s.getId() + ")/CreateQuerySeekLastItemRelationCardinality");
+      t.lower = 0;
+      t.upper = 1;
+      log.debug("CreateQuerySeekLastItemRelationCardinality type created: " + s.name);      
+}
+
+@lazy
+rule CreateQueryCustomizerIntegerType
+    transform s: String
+    to t : JUDOPSM!NumericType {
+      t.setId("(jsl/" + s.replaceAll("::", "_") + ")/CreateQueryCustomizerLimitOffsetIntegerType");
+
+      t.name = "QueryCustomizerLimitOffsetIntegerType";
+      t.precision = 9;
+      t.scale = 0;
+
+      s.getUniqueModelName().equivalent("CreateModelPackages").elements.add(t);
+      log.debug("CreateQueryCustomizerLimitOffsetIntegerType type created: " + t.name);
+}
+
+@lazy
+rule CreateQueryCustomizerBooleanType
+    transform s: String
+    to t : JUDOPSM!BooleanType {
+      t.setId("(jsl/" + s.replaceAll("::", "_") + ")/CreateQueryCustomizerBooleanType");
+
+      t.name = "QueryCustomizerBooleanType";
+
+      s.getUniqueModelName().equivalent("CreateModelPackages").elements.add(t);
+      log.debug("CreateQueryCustomizerBooleanType type created: " + t.name);
+}
+
+@greedy
+rule CreateQueryCustomizerSeekingTypeLimitAttribute
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!TransferAttribute {
+	  guard: generateBehaviours and s.map.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerSeekingTypeLimitAttribute");
+      t.name = "limit";
+      t.required = false;
+      t.dataType = "extensions".equivalent("CreateQueryCustomizerIntegerType");
+      s.equivalent("CreateQueryCustomizerSeekingType").attributes.add(t);
+      log.debug("CreateQueryCustomizerSeekingTypeLimitAttribute type created: " + t.name);
+}
+
+@greedy
+rule CreateQueryCustomizerSeekingTypeOffsetAttribute
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!TransferAttribute {
+	  guard: generateBehaviours and s.map.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerSeekingTypeOffsetAttribute");
+      t.name = "offset";
+      t.required = false;
+      t.dataType = "extensions".equivalent("CreateQueryCustomizerIntegerType");
+      s.equivalent("CreateQueryCustomizerSeekingType").attributes.add(t);
+      log.debug("CreateQueryCustomizerSeekingTypeOffsetAttribute type created: " + t.name);
+}
+
+@greedy
+rule CreateQueryCustomizerSeekingTypeReverseAttribute
+    transform s: JSL!TransferDeclaration
+    to t: JUDOPSM!TransferAttribute {
+	  guard: generateBehaviours and s.map.isDefined()
+
+      t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerSeekingTypeReverseAttribute");
+      t.name = "reverse";
+      t.required = false;
+      t.dataType = "extensions".equivalent("CreateQueryCustomizerBooleanType");
+      s.equivalent("CreateQueryCustomizerSeekingType").attributes.add(t);
+      log.debug("CreateQueryCustomizerSeekingTypeLimitAttribute type created: " + t.name);
+}

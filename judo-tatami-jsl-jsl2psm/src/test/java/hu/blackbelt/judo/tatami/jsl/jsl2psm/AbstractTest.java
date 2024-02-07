@@ -88,6 +88,10 @@ abstract public class AbstractTest {
     protected PsmModelResourceSupport psmModelWrapper;
     protected JslDslModelResourceSupport jslModelWrapper;
 
+    public boolean generateBehaviours() {
+    	return false;
+    }
+    
     @BeforeEach
     void setUp(TestInfo testInfo) {
         // Default logger
@@ -154,6 +158,7 @@ abstract public class AbstractTest {
                 .log(slf4jlog)
                 .jslModel(jslModel)
                 .psmModel(psmModel)
+                .generateBehaviours(generateBehaviours())
                 .createTrace(true)));
 
         assertTrue(psmModel.isValid());

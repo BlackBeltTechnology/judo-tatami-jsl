@@ -1,0 +1,6 @@
+@cached
+operation JSL!TransferUpdateDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+
