@@ -93,6 +93,9 @@ public class DefaultWorkflowSetupParameters {
     private Boolean ignoreAsm2Expression = false;
 
     @Builder.Default
+    private Boolean generateBehaviours = true;
+
+    @Builder.Default
     private Boolean validateModels = false;
 
 }
