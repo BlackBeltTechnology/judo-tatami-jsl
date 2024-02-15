@@ -26,6 +26,7 @@ import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflow;
 import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSetupParameters;
 import hu.blackbelt.judo.tatami.jsl.workflow.WorkflowHelper;
+import lombok.Builder;
 import lombok.SneakyThrows;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -180,6 +181,11 @@ public class DefaultWorkflowMojo extends AbstractMojo {
     @Parameter(property = "generateSdkPayloadValidator", defaultValue = "true")
     private Boolean generateSdkPayloadValidator = true;
 
+
+    @Parameter(property = "generateBehaviours", defaultValue = "true")
+    private Boolean generateBehaviours = true;
+
+
     @Parameter
     private Map<String, DialectParam> dialects;
 
@@ -275,6 +281,7 @@ public class DefaultWorkflowMojo extends AbstractMojo {
                         .ignorePsm2AsmTrace(ignorePsm2AsmTrace)
                         .ignorePsm2MeasureTrace(ignorePsm2MeasureTrace)
                         .ignoreAsm2RdbmsTrace(ignoreAsm2RdbmsTrace)
+                        .generateBehaviours(true)
                         .validateModels(validateModels)
                         .modelName(modelName)
                         .dialectList(dialectList);

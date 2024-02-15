@@ -74,7 +74,9 @@ public abstract class AbstractTatamiPipelineWorkflow {
         TransformationContext.TransformationContextVerifier verifier = transformationContext.transformationContextVerifier;
         WorkflowHelper workflowHelper = new WorkflowHelper(transformationContext, metrics);
 
-        transformationContext.put(Jsl2PsmWork.Jsl2PsmWorkParameter.jsl2PsmWorkParameter().createTrace(!parameters.getIgnoreJsl2PsmTrace()).build());
+        transformationContext.put(Jsl2PsmWork.Jsl2PsmWorkParameter.jsl2PsmWorkParameter()
+                        .generateBehaviours(parameters.getGenerateBehaviours())
+                .createTrace(!parameters.getIgnoreJsl2PsmTrace()).build());
 
         transformationContext.put(psm2AsmWorkParameter().createTrace(!parameters.getIgnorePsm2AsmTrace()).build());
         transformationContext.put(asm2RdbmsWorkParameter().createTrace(!parameters.getIgnoreAsm2Rdbms()).build());
