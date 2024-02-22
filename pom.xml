@@ -76,7 +76,7 @@
 
         <judo-runtime-core-version>1.0.6.20240219_005830_58ed3934_develop</judo-runtime-core-version>
         <structured-map-proxy-version>2.0.0.20231122_182717_c1fe065e_develop</structured-map-proxy-version>
-        <judo-tatami-base-version>1.1.6.20240209_041515_d6c64f8b_develop</judo-tatami-base-version>
+        <judo-tatami-base-version>1.1.6-SNAPSHOT</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20231107_041032_332be90a_develop</judo-tatami-core-version>
 
         <!-- Code Quality-->

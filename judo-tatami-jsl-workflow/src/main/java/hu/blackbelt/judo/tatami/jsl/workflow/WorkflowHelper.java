@@ -248,23 +248,7 @@ public class WorkflowHelper {
                                         .toURL().openStream())
                         .name(modelName)))));
     }
-
-    public void loadSdk(final InputStream sdk,
-                        final URI sdkSourceURI,
-                        final InputStream sdkInternal,
-                        final URI sdkInternalSourceURI,
-                        final InputStream sdkGuice,
-                        final URI sdkGuiceSourceURI,
-                        final InputStream sdkSpring,
-                        final URI sdkSpringSourceURI
-
-    ) {
-
-        if (sdk == null && sdkSourceURI == null || sdkInternal == null && sdkInternalSourceURI == null ) {
-            return;
-        }
-    }
-
+    
     public Work createPsmValidateWork() {
         return aNewConditionalFlow()
                 .named("Conditional when Psm model exists then Execute PsmValidation")
