@@ -104,18 +104,22 @@ the correct measurement handling.
         <ignoreAsm2RdbmsTrace>false</ignoreAsm2RdbmsTrace> <!--15-->
         <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase> <!--16-->
         <ignoreAsm2Expression>false</ignoreAsm2Expression> <!--18-->
-        <runInParallel>true</runInParallel> <!--19-->
-        <saveModels>true</saveModels> <!--20-->
-        <enableMetrics>true</enableMetrics> <!--21-->
-        <validateModels>false</validateModels> <!--22-->
-        <sdkOutputDirectory/> <!--23-->
-        <sdkAddSourceToJar>true</sdkAddSourceToJar> <!--24-->
-        <generateSdk>true</generateSdk> <!--25-->
-        <generateSdkInternal>true</generateSdkInternal> <!--26-->
-        <generateSdkGuice>false</generateSdkGuice> <!--27-->
-        <generateSdkSpring>false</generateSdkSpring> <!--28-->
-        <generateOptionalTypes>true</generateOptionalTypes> <!--29-->
-        <generateSdkPayloadValidator>true</generateSdkPayloadValidator> <!--30-->
+        <useCache>false</useCache> <!--19-->
+        <runInParallel>true</runInParallel> <!--20-->
+        <saveModels>true</saveModels> <!--21-->
+        <enableMetrics>true</enableMetrics> <!--22-->
+        <validateModels>false</validateModels> <!--23-->
+        <rdbmsCreateSimpleName>false</rdbmsCreateSimpleName> <!--24-->
+        <rdbmsNameSize>-1</rdbmsNameSize> <!--25-->
+        <rdbmsShortNameSize>-1</rdbmsShortNameSize> <!--26-->
+        <rdbmsTablePrefix>T_</rdbmsTablePrefix> <!--27-->
+        <rdbmsColumnPrefix>C_</rdbmsColumnPrefix> <!--28-->
+        <rdbmsForeignKeyPrefix>FK_</rdbmsForeignKeyPrefix> <!--29-->
+        <rdbmsInverseForeignKeyPrefix>FK_INV_</rdbmsInverseForeignKeyPrefix> <!--30-->
+        <rdbmsJunctionTablePrefix>J_</rdbmsJunctionTablePrefix> <!--31-->
+
+
+
     </configuration>
 </execution>
 ----
@@ -204,56 +208,59 @@ Default: `false`
 +
 Default: `false`
 
-<19> (Optional) Run in parallel when possible, parallel execution is used in multicore system
+<19> (Optional) Use cache in model transformations.
++
+Default: `false`
+
+<20> (Optional) Run in parallel when possible, parallel execution is used in multicore system
 +
 (Default: `true`)
 
-<20> (Optional) Save models after execution. After execution the models are stored on destination.
+<21> (Optional) Save models after execution. After execution the models are stored on destination.
 +
 (Default: `false`)
 
-<21> (Optional) Enable generation time statistics after execution
+<22> (Optional) Enable generation time statistics after execution
 +
 (Default: `true`)
 
-<22> (Optional) Validate model on load and save
+<23> (Optional) Validate model on load and save
 +
 (Default: `false`)
 
-<23> (Optional) When SDK output is defined, it is used instead of destination + modelName.
-+
-(Default: `<none>`)
-
-<24> (Optional) Add generared codes to JAR files. To work the  `createSdkJar` option
-have to be enabled.
-+
-(Default: `true`)
-
-<25> (Optional) Generate SDK interfaces. When internal, guice or spring is generated, it have to be enabled
-+
-(Default: `true`)
-
-<26> (Optional) Generate Internal Wrapper implementation. When guice or spring is generated, it have to be enabled
-+
-(Default: `true`)
-
-<27> (Optional) Generate Guice SDK implementation.
-+
+<24> Create simple name. (Optional)
+Using the model name as SQL name. It does not check namespace collosion.
 (Default: `false`)
 
-<28> (Optional) Generate Spring SDK implementation.
+<25> Full size of SQL name without abbreviation algorithm. When -1 is used it uses
+database specific default.
 +
-(Default: `false`)
+(Default: `-1`)
 
-<29> (Optional) Generate Optional types. It generates
-Optional wrapper for Transfer Object fields and for single relations
-where the cardinality is 0
+<26> Short size of SQL name without abbreviation algorithm. This size is used as namespace fragment size.
+When -1 is used it uses database specific default.
 +
-(Default: `true`)
+(Default: `-1`)
 
-<30> (Optional) Generate SDK Payload validation on DAO calls.
+<27> Table prefix used for table names.
 +
-(Default: `true`)
+(Default: `T_`)
+
+<28> Column prefix used for column names.
++
+(Default: `C_`)
+
+<29> Foreign key prefix used for foreign key names.
++
+(Default: `FK_`)
+
+<30> Inverse Foreign key prefix used for foreign key names.
++
+(Default: `FK_INV_`)
+
+<31> Junction table prefix used for table names.
++
+(Default: `J_`)
 
 
 == Example
