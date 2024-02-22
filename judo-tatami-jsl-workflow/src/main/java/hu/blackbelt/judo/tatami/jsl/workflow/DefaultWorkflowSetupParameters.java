@@ -102,7 +102,7 @@ public class DefaultWorkflowSetupParameters {
     private Boolean useCache = true;
 
     @Builder.Default
-    boolean rdbmsCreateSimpleName = false;
+    Boolean rdbmsCreateSimpleName = false;
 
     @Builder.Default
     Integer rdbmsNameSize = -1;
