@@ -98,4 +98,31 @@ public class DefaultWorkflowSetupParameters {
     @Builder.Default
     private Boolean validateModels = false;
 
+    @Builder.Default
+    private Boolean useCache = true;
+
+    @Builder.Default
+    Boolean rdbmsCreateSimpleName = false;
+
+    @Builder.Default
+    Integer rdbmsNameSize = -1;
+
+    @Builder.Default
+    Integer rdbmsShortNameSize = -1;
+
+    @Builder.Default
+    String rdbmsTablePrefix = "T_";
+
+    @Builder.Default
+    String rdbmsColumnPrefix = "C_";
+
+    @Builder.Default
+    String rdbmsForeignKeyPrefix = "FK_";
+
+    @Builder.Default
+    String rdbmsInverseForeignKeyPrefix = "FK_INV_";
+
+    @Builder.Default
+    String rdbmsJunctionTablePrefix = "J_";
+
 }
