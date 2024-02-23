@@ -117,9 +117,6 @@ the correct measurement handling.
         <rdbmsForeignKeyPrefix>FK_</rdbmsForeignKeyPrefix> <!--29-->
         <rdbmsInverseForeignKeyPrefix>FK_INV_</rdbmsInverseForeignKeyPrefix> <!--30-->
         <rdbmsJunctionTablePrefix>J_</rdbmsJunctionTablePrefix> <!--31-->
-
-
-
     </configuration>
 </execution>
 ----
@@ -242,23 +239,23 @@ When -1 is used it uses database specific default.
 +
 (Default: `-1`)
 
-<27> Table prefix used for table names.
+<27> Table prefix used for table names. When `-` is used no prefix is used.
 +
 (Default: `T_`)
 
-<28> Column prefix used for column names.
+<28> Column prefix used for column names. When `-` is used no prefix is used.
 +
 (Default: `C_`)
 
-<29> Foreign key prefix used for foreign key names.
+<29> Foreign key prefix used for foreign key names. When `-` is used no prefix is used.
 +
 (Default: `FK_`)
 
-<30> Inverse Foreign key prefix used for foreign key names.
+<30> Inverse Foreign key prefix used for foreign key names. When `-` is used no prefix is used.
 +
 (Default: `FK_INV_`)
 
-<31> Junction table prefix used for table names.
+<31> Junction table prefix used for table names. When `-` is used no prefix is used.
 +
 (Default: `J_`)
 

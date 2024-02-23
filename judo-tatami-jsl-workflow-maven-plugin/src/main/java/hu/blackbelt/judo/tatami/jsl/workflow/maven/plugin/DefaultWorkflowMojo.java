@@ -284,11 +284,11 @@ public class DefaultWorkflowMojo extends AbstractMojo {
                         .rdbmsNameSize(rdbmsNameSize)
                         .rdbmsShortNameSize(rdbmsShortNameSize)
                         .rdbmsCreateSimpleName(rdbmsCreateSimpleName)
-                        .rdbmsTablePrefix(rdbmsTablePrefix)
-                        .rdbmsColumnPrefix(rdbmsTablePrefix)
-                        .rdbmsForeignKeyPrefix(rdbmsForeignKeyPrefix)
-                        .rdbmsInverseForeignKeyPrefix(rdbmsInverseForeignKeyPrefix)
-                        .rdbmsJunctionTablePrefix(rdbmsJunctionTablePrefix)
+                        .rdbmsTablePrefix(rdbmsTablePrefix.trim().replace("-", ""))
+                        .rdbmsColumnPrefix(rdbmsColumnPrefix.trim().replace("-", ""))
+                        .rdbmsForeignKeyPrefix(rdbmsForeignKeyPrefix.trim().replace("-", ""))
+                        .rdbmsInverseForeignKeyPrefix(rdbmsInverseForeignKeyPrefix.trim().replace("-", ""))
+                        .rdbmsJunctionTablePrefix(rdbmsJunctionTablePrefix.trim().replace("-", ""))
                         .dialectList(dialectList);
 
         defaultWorkflow = new DefaultWorkflow(parameters);
