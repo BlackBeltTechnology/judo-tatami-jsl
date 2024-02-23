@@ -97,18 +97,6 @@ public class DefaultWorkflowMojo extends AbstractMojo {
     @Parameter(property = "expression")
     private String expression;
 
-    @Parameter(property = "sdk")
-    private String sdk;
-
-    @Parameter(property = "sdkInternal")
-    private String sdkInternal;
-
-    @Parameter(property = "sdkGuice")
-    private String sdkGuice;
-
-    @Parameter(property = "sdkSpring")
-    private String sdkSpring;
-
     @Parameter(property = "ignorePsm2Asm", defaultValue = "false")
     private Boolean ignorePsm2Asm = false;
 
@@ -139,6 +127,9 @@ public class DefaultWorkflowMojo extends AbstractMojo {
     @Parameter(property = "modelName")
     private String modelName;
 
+    @Parameter(property = "useCache", defaultValue = "true")
+    private Boolean useCache = true;
+
     @Parameter(property = "modelVersion", defaultValue = "${project.version}")
     private String modelVersion;
 
@@ -163,27 +154,32 @@ public class DefaultWorkflowMojo extends AbstractMojo {
     @Parameter(property = "saveModels", defaultValue = "true")
     private Boolean saveModels = true;
 
-    @Parameter(property = "sdkAddSourceToJar", defaultValue = "true")
-    private Boolean sdkAddSourceToJar = true;
-
-    @Parameter(property = "generateSdk", defaultValue = "true")
-    private Boolean generateSdk = true;
-
-    @Parameter(property = "generateSdkInternal", defaultValue = "true")
-    private Boolean generateSdkInternal = true;
-
-    @Parameter(property = "generateSdkGuice", defaultValue = "false")
-    private Boolean generateSdkGuice = false;
-
-    @Parameter(property = "generateSdkSpring", defaultValue = "false")
-    private Boolean generateSdkSpring = false;
-
-    @Parameter(property = "generateSdkPayloadValidator", defaultValue = "true")
-    private Boolean generateSdkPayloadValidator = true;
-
-
     @Parameter(property = "generateBehaviours", defaultValue = "true")
     private Boolean generateBehaviours = true;
+
+    @Parameter(property = "rdbmsCreateSimpleName", defaultValue = "false")
+    private boolean rdbmsCreateSimpleName = false;
+
+    @Parameter(property = "rdbmsNameSize", defaultValue = "-1")
+    private Integer rdbmsNameSize = -1;
+
+    @Parameter(property = "rdbmsShortNameSize", defaultValue = "-1")
+    private Integer rdbmsShortNameSize = -1;
+
+    @Parameter(property = "rdbmsTablePrefix", defaultValue = "T_")
+    private String rdbmsTablePrefix = "T_";
+
+    @Parameter(property = "rdbmsColumnPrefix", defaultValue = "C_")
+    private String rdbmsColumnPrefix = "C_";
+
+    @Parameter(property = "rdbmsForeignKeyPrefix", defaultValue = "FK_")
+    private String rdbmsForeignKeyPrefix = "FK_";
+
+    @Parameter(property = "rdbmsInverseForeignKeyPrefix", defaultValue = "FK_INV_")
+    private String rdbmsInverseForeignKeyPrefix = "FK_INV_";
+
+    @Parameter(property = "rdbmsJunctionTablePrefix", defaultValue = "J_")
+    private String rdbmsJunctionTablePrefix = "J_";
 
 
     @Parameter
@@ -284,6 +280,15 @@ public class DefaultWorkflowMojo extends AbstractMojo {
                         .generateBehaviours(true)
                         .validateModels(validateModels)
                         .modelName(modelName)
+                        .useCache(useCache)
+                        .rdbmsNameSize(rdbmsNameSize)
+                        .rdbmsShortNameSize(rdbmsShortNameSize)
+                        .rdbmsCreateSimpleName(rdbmsCreateSimpleName)
+                        .rdbmsTablePrefix(rdbmsTablePrefix.trim().replace("-", ""))
+                        .rdbmsColumnPrefix(rdbmsColumnPrefix.trim().replace("-", ""))
+                        .rdbmsForeignKeyPrefix(rdbmsForeignKeyPrefix.trim().replace("-", ""))
+                        .rdbmsInverseForeignKeyPrefix(rdbmsInverseForeignKeyPrefix.trim().replace("-", ""))
+                        .rdbmsJunctionTablePrefix(rdbmsJunctionTablePrefix.trim().replace("-", ""))
                         .dialectList(dialectList);
 
         defaultWorkflow = new DefaultWorkflow(parameters);
@@ -309,13 +314,6 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 
         if (expression != null && !expression.trim().equals("")) {
             workflowHelper.loadExpressionModel(modelName, null, artifactResolver.getArtifact(expression).toURI());
-        }
-
-        if (sdk != null && !sdk.trim().equals("") && sdkInternal != null && !sdkInternal.trim().equals("")) {
-            workflowHelper.loadSdk(null, artifactResolver.getArtifact(sdk).toURI(),
-                    null, artifactResolver.getArtifact(sdkInternal).toURI(),
-                    null, sdkGuice != null && !sdkGuice.isBlank() ? artifactResolver.getArtifact(sdkGuice).toURI() : null,
-                    null, sdkSpring != null && !sdkSpring.isBlank() ? artifactResolver.getArtifact(sdkSpring).toURI() : null);
         }
 
         if (dialects != null) {

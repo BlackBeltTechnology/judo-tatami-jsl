@@ -43,6 +43,7 @@ import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilde
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork.Psm2AsmWorkParameter.psm2AsmWorkParameter;
+import static hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork.Psm2MeasureWorkParameter.psm2MeasureWorkParameter;
 
 
 @Slf4j
@@ -78,8 +79,29 @@ public abstract class AbstractTatamiPipelineWorkflow {
                         .generateBehaviours(parameters.getGenerateBehaviours())
                 .createTrace(!parameters.getIgnoreJsl2PsmTrace()).build());
 
-        transformationContext.put(psm2AsmWorkParameter().createTrace(!parameters.getIgnorePsm2AsmTrace()).build());
-        transformationContext.put(asm2RdbmsWorkParameter().createTrace(!parameters.getIgnoreAsm2Rdbms()).build());
+        transformationContext.put(psm2AsmWorkParameter()
+                .createTrace(!parameters.getIgnorePsm2AsmTrace())
+                .useCache(parameters.getUseCache())
+                .parallel(parameters.getRunInParallel())
+                .build());
+        transformationContext.put(psm2MeasureWorkParameter()
+                .createTrace(!parameters.getIgnorePsm2MeasureTrace())
+                .useCache(parameters.getUseCache())
+                .parallel(parameters.getRunInParallel())
+                .build());
+        transformationContext.put(asm2RdbmsWorkParameter()
+                .createTrace(!parameters.getIgnoreAsm2RdbmsTrace())
+                .useCache(parameters.getUseCache())
+                .parallel(parameters.getRunInParallel())
+                .createSimpleName(parameters.getRdbmsCreateSimpleName())
+                .nameSize(parameters.getRdbmsNameSize())
+                .shortNameSize(parameters.getRdbmsShortNameSize())
+                .tablePrefix(parameters.getRdbmsTablePrefix())
+                .columnPrefix(parameters.getRdbmsColumnPrefix())
+                .foreignKeyPrefix(parameters.getRdbmsForeignKeyPrefix())
+                .inverseForeignKeyPrefix(parameters.getRdbmsInverseForeignKeyPrefix())
+                .junctionTablePrefix(parameters.getRdbmsJunctionTablePrefix())
+                .build());
 
         loadModels(workflowHelper, metrics, transformationContext, parameters);
 
