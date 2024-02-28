@@ -1,0 +1,4 @@
+@cached
+operation JSL!ActorAccessDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
