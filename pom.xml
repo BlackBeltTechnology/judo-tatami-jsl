@@ -432,6 +432,12 @@
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-jsl2ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-jsl-workflow</artifactId>
                 <version>${project.version}</version>
             </dependency>
