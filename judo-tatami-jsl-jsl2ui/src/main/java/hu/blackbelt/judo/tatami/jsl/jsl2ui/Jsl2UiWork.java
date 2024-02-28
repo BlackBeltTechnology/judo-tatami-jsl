@@ -72,7 +72,7 @@ public class Jsl2UiWork extends AbstractTransformationWork {
 
         File jslModelFile = new File(args[0]);
         String modelName = args[1];
-        File psmModelFile = new File(args[2]);
+        File uiModelFile = new File(args[2]);
         @SuppressWarnings("unused")
         Boolean validate = true;
 
@@ -104,6 +104,6 @@ public class Jsl2UiWork extends AbstractTransformationWork {
         WorkReport workReport = workFlowEngine.run(workflow);
 
         UiModel uiModel = transformationContext.getByClass(UiModel.class).get();
-        uiModel.saveUiModel(uiSaveArgumentsBuilder().file(psmModelFile).build());
+        uiModel.saveUiModel(uiSaveArgumentsBuilder().file(uiModelFile).build());
     }
 }

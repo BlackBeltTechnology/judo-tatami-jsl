@@ -153,14 +153,14 @@ public class Jsl2Ui {
     }
 
     public static URI calculateURI(String path) throws URISyntaxException {
-        URI psmRoot = Jsl2Ui.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-        if (psmRoot.toString().endsWith(".jar")) {
-            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + path);
-        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
-            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + path);
+        URI uiRoot = Jsl2Ui.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (uiRoot.toString().endsWith(".jar")) {
+            uiRoot = new URI("jar:" + uiRoot.toString() + "!/" + path);
+        } else if (uiRoot.toString().startsWith("jar:bundle:")) {
+            uiRoot = new URI(uiRoot.toString().substring(4, uiRoot.toString().indexOf("!")) + path);
         } else {
-            psmRoot = new URI(psmRoot.toString() + "/" + path);
+            uiRoot = new URI(uiRoot.toString() + "/" + path);
         }
-        return psmRoot;
+        return uiRoot;
     }
 }
