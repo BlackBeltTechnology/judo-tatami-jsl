@@ -117,6 +117,10 @@ public abstract class AbstractTatamiPipelineWorkflow {
                 Optional.empty() :
                 Optional.of(workflowHelper.createJsl2PsmWork());
 
+        Optional<Work> createUiWork = parameters.getIgnoreJsl2Ui() || workflowHelper.jsl2UiOutputPredicate().get() ?
+                Optional.empty() :
+                Optional.of(workflowHelper.createJsl2UiWork());
+
         Optional<Work> createAsmWork = parameters.getIgnorePsm2Asm() || workflowHelper.psm2AsmOutputPredicate().get() ?
                 Optional.empty() :
                 Optional.of(workflowHelper.createPsm2AsmWork());

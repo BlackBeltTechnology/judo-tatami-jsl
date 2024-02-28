@@ -1,0 +1,9 @@
+@cached
+operation JSL!SimpleTransferDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!SimpleTransferDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}

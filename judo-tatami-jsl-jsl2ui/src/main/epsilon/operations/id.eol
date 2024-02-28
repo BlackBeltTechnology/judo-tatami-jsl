@@ -1,0 +1,32 @@
+operation Any setId(id: String) {
+ 	if (id.isUndefined()) {
+ 		throw "ID is not defined" + self;
+ 	}
+ 	if (self.isUndefined()) {
+ 		throw "Could not determinate ID of " + self;
+ 	}
+ 	var r = self.eResource;
+    if (r.isUndefined()) {
+    	throw "Object is not added to resource " + self;
+    }
+    if (__originalMap.containsKey(self)) {
+    	__originalMap.put(self, id);
+    }
+    if (__cacheMap.containsKey(self.getId())) {
+	    __cacheMap.remove(self.getId());
+	    __cacheMap.put(id, self);
+    }
+    r.setId(self, id);
+}
+
+operation Any getId() : String {
+ 	if (self.isUndefined()) {
+ 		throw "Could not determinate ID of " + self;
+ 	}
+ 	var r = self.eResource;
+    if (r.isUndefined()) {
+    	throw "Object is not added to resource " + self;
+    }
+
+    return r.getId(self);
+}

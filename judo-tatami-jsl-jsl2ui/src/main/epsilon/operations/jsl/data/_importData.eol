@@ -1,0 +1,4 @@
+import "actorAccessDeclaration.eol";
+import "actorDeclaration.eol";
+import "modelDeclaration.eol";
+import "simpleTransferDeclaration.eol";
