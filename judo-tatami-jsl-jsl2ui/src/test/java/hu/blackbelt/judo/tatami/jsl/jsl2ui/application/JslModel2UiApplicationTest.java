@@ -70,6 +70,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         Application app1 = apps.get(0);
 
         assertEquals("AppActor", app1.getName());
+        assertEquals("ApplicationTestModel", app1.getModelName());
         assertEquals("judo-color-logo.png", app1.getLogo());
         assertEquals("en-US", app1.getDefaultLanguage());
 
