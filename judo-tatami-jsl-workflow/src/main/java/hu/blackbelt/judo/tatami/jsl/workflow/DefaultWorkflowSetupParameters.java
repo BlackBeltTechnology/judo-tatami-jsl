@@ -63,6 +63,9 @@ public class DefaultWorkflowSetupParameters {
     private Boolean enableMetrics = true;
 
     @Builder.Default
+    private Boolean ignoreJsl2Ui = false;
+
+    @Builder.Default
     private Boolean ignoreJsl2Psm = false;
 
     @Builder.Default

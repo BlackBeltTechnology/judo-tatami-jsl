@@ -1,0 +1,62 @@
+operation Any equivalentDiscriminated(transformation : String, id : String, discriminator : String) : Any {
+	if (self.isUndefined()) {
+	    	throw "Transformation called in empty object: " + id + " / " + discriminator + " Transformation: " + transformation;		
+	}
+	var targetId = id + "/(discriminator/" + discriminator + ")";
+    var r = JSL.target.resource;
+
+    // Find the discriminated id in cahe first
+	var f = __cacheMap.get(targetId);
+
+    // Whenit is not found in cache, search from the model and put to cache when found
+	if (f.isUndefined()) {
+    	f = ecoreUtil.getAllContents(r, false).select(e | e.getId() == targetId).first;
+    	if (f.isDefined()) {
+    		__cacheMap.put(targetId, f);
+    		return f;
+    	}
+	}
+	
+	// When the element found, but ID is different, it is missused of discriminated API, error
+    if (f.isDefined()) {
+        if (f.getId() != targetId) {
+			throw "ID does not match defined in cache: " + f.getId() + " Cache ID: " + targetId;    
+        }
+    	return f;
+    } else {
+		// When no model element with discriminated ID found, call equivalent to create original element or get it
+	    f = self.equivalent(transformation);
+
+	    if (f.isUndefined()) {
+	    	throw "No instance of transformation call: " + id + " / " + discriminator + " Transformation: " + transformation;
+	    }
+	
+		// When discriminated ID not matches new clone have to be created
+	    if (__originalMap.containsKey(f) and f.getId() != targetId) {
+	        f = ecoreUtil.copy(f);	        
+	        r.contents.add(f);
+
+	        __cacheMap.put(targetId, f);   
+	        // Store traceability links
+	        /*
+	        for (t in transTrace.transformations) {
+	            if (t.source == self and t.rule.name == transformation) {
+	                t.targets.add(f);
+	            }
+	        } */
+        }
+		f.eResource.setId(f, targetId);
+		if (not __originalMap.containsKey(f)) {
+		    __originalMap.put(f, targetId);
+		}
+		__cacheMap.put(targetId, f); 
+	    return f;
+    }
+}
+
+operation Any equivalentDiscriminated(transformation : String, discriminator : String) : Any {
+	return self.equivalentDiscriminated(transformation,
+			"(jsl/" + self.getId() + ")/" + transformation,
+        	discriminator
+	);
+}

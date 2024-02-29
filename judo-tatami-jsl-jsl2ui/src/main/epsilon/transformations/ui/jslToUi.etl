@@ -1,0 +1,39 @@
+import "../../operations/_importAll.eol";
+
+import "modules/application/actorDeclaration.etl";
+
+import "modules/structure/class.etl";
+
+pre {
+    var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+    var __cacheMap = new ConcurrentMap();
+    var __originalMap = new ConcurrentMap();
+    var System = Native("java.lang.System");
+
+    //UI.target.resource.contents.add(defaultModelName.equivalent("CreateRootApplication"));
+}
+/*
+post {
+    for (c in JUDOPSM!Cardinality.all()) {
+        c.setId(c.eContainer.getId()+"/cardinality");
+    }
+
+    // Collect primitive types which are not directly referenced as field types
+    for (c in JSL!NavigationBaseDeclarationReference.all().select(n | n.reference.isKindOf(JSL!PrimitiveDeclaration))) {
+        var dummy = c.reference.getPrimitiveDeclarationEquivalent();
+    }
+    for (c in JSL!QueryParameterDeclaration.all()) {
+        var dummy = c.referenceType.getPrimitiveDeclarationEquivalent();
+    }
+
+    var enumsWithoutOrdinal = JUDOPSM!EnumerationMember.all.select(m | m.ordinal == -1).collect(m | m.eContainer).flatten().asSet();
+    for (e in enumsWithoutOrdinal) {
+        log.debug("Set/overwrite ordinals of enumeration: " + e.name);
+        var index = 0;
+        for (m in e.members) {
+            m.ordinal = index;
+            index = index + 1;
+        }
+    }
+}
+*/
