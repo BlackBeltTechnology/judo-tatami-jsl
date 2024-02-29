@@ -1,0 +1,11 @@
+rule ViewDeclaration
+    transform s: JSL!ViewDeclaration
+    to t: UI!ui::PageDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewDeclaration");
+
+        t.name = s.getFqName();
+
+        actorDeclaration.equivalent("Application").pages.add(t);
+
+        log.debug("Create ViewDeclaration: " + t.name);
+    }

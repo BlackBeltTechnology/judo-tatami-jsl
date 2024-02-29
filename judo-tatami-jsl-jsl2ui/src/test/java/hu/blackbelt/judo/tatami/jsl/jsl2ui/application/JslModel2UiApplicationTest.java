@@ -93,4 +93,52 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals("#FAFAFAFF", theme.getBackgroundColor());
         assertEquals("#8C8C8C", theme.getSubtitleColor());
     }
+
+    @Test
+    void testMenu() throws Exception {
+        jslModel = JslParser.getModelFromStrings("MenuTestModel", List.of("""
+            model MenuTestModel;
+            
+            import judo::types;
+            
+            entity User {
+                identifier required String userName;
+            }
+            
+            view UserListView {
+                table UserRow[] users <= User.all();
+            }
+            
+            row UserRow(User user) {
+                column String userName <= user.userName;
+            }
+            
+            entity Product {
+                identifier required String name;
+                field required Integer price;
+            }
+            
+            view ProductListView {
+                table ProductRow[] products <= Product.all();
+            }
+            
+            row ProductRow(Product product) {
+                column String name <= product.name;
+                column String price <= product.price.asString() + " HUF";
+            }
+            
+            actor human MenuActor(User user) {
+                menu ProductListView products label:"Products";
+                menu UserListView users label:"Users" icon:"account-multiple";
+            }
+        """));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        assertEquals(1, apps.size());
+
+        Application app1 = apps.get(0);
+    }
 }

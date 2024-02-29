@@ -1,6 +1,9 @@
 import "../../operations/_importAll.eol";
 
 import "modules/application/actorDeclaration.etl";
+import "modules/application/actorMenuDeclaration.etl";
+import "modules/application/modifiable.etl";
+import "modules/application/viewDeclaration.etl";
 
 import "modules/structure/class.etl";
 

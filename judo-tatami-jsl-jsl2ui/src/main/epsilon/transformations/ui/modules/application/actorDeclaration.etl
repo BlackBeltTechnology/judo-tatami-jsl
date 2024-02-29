@@ -29,6 +29,7 @@ rule Application
 	    }
 
         t.theme = s.equivalent("Theme");
+        t.navigationController = s.equivalent("NavigationController");
 }
 
 rule Theme
@@ -76,3 +77,14 @@ rule Actor
 
         log.debug("Create class type (Actor): " + t.name);
 }
+
+rule NavigationController
+    transform s: JSL!ActorDeclaration
+    to t : UI!ui::NavigationController {
+        guard: s = actorDeclaration
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NavigationController");
+
+        t.name = s.getFqName();
+
+        log.debug("Create NavigationController: " + t.name);
+    }

@@ -1,4 +1,6 @@
 import "actorAccessDeclaration.eol";
 import "actorDeclaration.eol";
 import "modelDeclaration.eol";
+import "modifiable.eol";
 import "simpleTransferDeclaration.eol";
+import "viewDeclaration.eol";
