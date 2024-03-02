@@ -61,6 +61,7 @@
         <antlr-runtime-version>3.2</antlr-runtime-version>
         <build-helper-maven-plugin-version>3.3.0</build-helper-maven-plugin-version>
 
+        
         <!-- Model versions -->
         <judo-meta-jsl-version>1.0.3.20240131_173240_9301ca71_develop</judo-meta-jsl-version>
         <judo-meta-rdbms-version>1.0.2.20231107_041230_4167c814_develop</judo-meta-rdbms-version>
