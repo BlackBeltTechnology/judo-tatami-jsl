@@ -20,6 +20,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui;
  * #L%
  */
 
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.support.JslDslModelResourceSupport;
 import hu.blackbelt.judo.meta.ui.PageContainer;
@@ -133,8 +134,11 @@ abstract public class AbstractTest {
                 .uiModel(uiModel)
                 .createTrace(true)));
 
+        if (!uiModel.isValid()) {
+            log.error(uiModel.getDiagnosticsAsString());
+        }
         assertTrue(uiModel.isValid());
-        validateUi(createLog(), uiModel, calculateUiValidationScriptURI());
+        validateUi(slf4jlog, uiModel, calculateUiValidationScriptURI());
     }
 
     public Jsl2Ui.Jsl2UiParameter.Jsl2UiParameterBuilder addTransformationParameters(String testName, Jsl2Ui.Jsl2UiParameter.Jsl2UiParameterBuilder parameters) {
