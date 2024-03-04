@@ -7,7 +7,7 @@ rule ClassType
 		
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ClassType");
 
-        t.name = s.getFqName();
+        t.name = s.getFqName() + "::ClassType";
         //t.transferObjectTypeName = s.transferObjectTypeName();
         t.simpleName = s.name;
         //t.setPackageNameTokens(s);

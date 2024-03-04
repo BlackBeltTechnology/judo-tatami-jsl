@@ -1,0 +1,14 @@
+@cached
+operation JSL!Modifiable getId(): String {
+    return (self.eContainer.getId() + "/" + self.id);
+}
+
+@cached
+operation JSL!Modifiable getLabelModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!LabelModifier));
+}
+
+@cached
+operation JSL!Modifiable getIconModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!IconModifier));
+}
