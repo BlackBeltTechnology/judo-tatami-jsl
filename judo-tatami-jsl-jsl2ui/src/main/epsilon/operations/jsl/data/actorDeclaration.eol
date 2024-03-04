@@ -32,3 +32,28 @@ operation JSL!ActorDeclaration getGuard(): JSL!GuardModifier {
 operation JSL!ActorDeclaration getPrincipal(): JSL!TransferDeclaration {
     return self.getIdentity()?.field?.eContainer;
 }
+
+@cached
+operation JSL!ActorDeclaration getAllMenuDeclarations(): Set {
+    var menuDeclarations = new Set();
+    for (declaration : Any in self.members) {
+        if (declaration.isTypeOf(JSL!ActorMenuDeclaration)) {
+            menuDeclarations.add(declaration);
+        } else if (declaration.isTypeOf(JSL!ActorGroupDeclaration)) {
+            menuDeclarations.addAll(declaration.getAllMenuDeclarations());
+        }
+    }
+    return menuDeclarations;
+}
+
+operation JSL!ActorGroupDeclaration getAllMenuDeclarations(): Set {
+    var menuDeclarations = new Set();
+    for (declaration : Any in self.members) {
+        if (declaration.isTypeOf(JSL!ActorMenuDeclaration)) {
+            menuDeclarations.add(declaration);
+        } else if (declaration.isTypeOf(JSL!ActorGroupDeclaration)) {
+            menuDeclarations.addAll(declaration.getAllMenuDeclarations());
+        }
+    }
+    return menuDeclarations;
+}

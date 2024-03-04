@@ -1,21 +1,25 @@
-rule PageDefinition
-    transform s: JSL!ViewDeclaration
+rule AccessPageDefinition
+    transform s: JSL!ActorMenuDeclaration
     to t: UI!ui::PageDefinition {
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/PageDefinition");
+        guard: s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/AccessPageDefinition");
 
         t.name = s.getFqName() + "::PageDefinition";
-        t.container = s.equivalent("PageContainer");
+        t.container = s.equivalent("AccessPageContainer");
 
         actorDeclaration.equivalent("Application").pages.add(t);
 
-        log.debug("Create PageDefinition: " + t.name);
+        log.debug("Create AccessPageDefinition: " + t.name);
     }
 
 @lazy
-rule PageContainer
-    transform s: JSL!ViewDeclaration
+rule AccessPageContainer
+    transform s: JSL!ActorMenuDeclaration
     to t: UI!ui::PageContainer {
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/PageContainer");
+        guard: s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/AccessPageContainer");
         t.name = s.getFqName() + "::PageContainer";
         var label = s.getLabelModifier();
         if (label.isDefined()) {
@@ -29,5 +33,5 @@ rule PageContainer
         // t.actionButtonGroup = s.equivalent("TransferObjectTableAddSelectorButtonGroup");
         // t.dataElement = s.eContainer.equivalent("ClassType");
 
-        log.debug("PageContainer: " + t.name);
+        log.debug("AccessPageContainer: " + t.name);
     }

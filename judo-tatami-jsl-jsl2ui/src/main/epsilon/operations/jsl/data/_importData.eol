@@ -4,4 +4,5 @@ import "actorMenuDeclaration.eol";
 import "modelDeclaration.eol";
 import "modifiable.eol";
 import "simpleTransferDeclaration.eol";
+import "transferDeclaration.eol";
 import "viewDeclaration.eol";

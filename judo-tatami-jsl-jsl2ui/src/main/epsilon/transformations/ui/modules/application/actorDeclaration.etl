@@ -24,11 +24,6 @@ rule Application
         	t.logo = "judo-color-logo.png";
         //}
 
-	    if (s.getPrincipal().isDefined()) {
-	    	t.principal = s.getPrincipal().equivalent("ClassType");
-	    }
-
-        t.theme = s.equivalent("Theme");
         t.navigationController = s.equivalent("NavigationController");
 }
 
@@ -62,6 +57,8 @@ rule Theme
         t.secondaryColor = "#E7501DFF";
         t.subtitleColor = "#8C8C8C";
         t.backgroundColor = "#FAFAFAFF";
+
+        actorDeclaration.equivalent("Application").theme = t;
 }
 
 rule Actor

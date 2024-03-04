@@ -2,10 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
-import hu.blackbelt.judo.meta.ui.Application;
-import hu.blackbelt.judo.meta.ui.NavigationController;
-import hu.blackbelt.judo.meta.ui.NavigationItem;
-import hu.blackbelt.judo.meta.ui.Theme;
+import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
@@ -185,5 +182,169 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals("MenuTestModel::MenuActor::MenuItemGroup::first::MenuItemGroup::second::products", third1.getName());
         assertEquals("Products", third1.getLabel());
         assertEquals("close", third1.getIcon().getIconName());
+    }
+
+    @Test
+    void testMultipleActors() throws Exception {
+        jslModel = JslParser.getModelFromStrings("MultipleActorsTestModel", List.of("""
+            model MultipleActorsTestModel;
+            
+            import judo::types;
+            
+            entity User {
+                identifier required String userName;
+            }
+            
+            entity User2 {
+                identifier required String userName;
+            }
+            
+            view UserListView {
+                table UserRow[] users <= User.all();
+            }
+            
+            view User2ListView {
+                table User2Row[] users <= User2.all();
+            }
+            
+            row UserRow(User user) {
+                column String userName <= user.userName;
+            }
+            
+            row User2Row(User2 user) {
+                column String userName <= user.userName;
+            }
+            
+            entity Product {
+                identifier required String name;
+                field required Integer price;
+            }
+            
+            view ProductListView {
+                table ProductRow[] products <= Product.all() detail:ProductDetailView;
+            }
+            
+            view ProductDetailView(Product product) {
+                field String name <= product.name;
+                field String price <= product.price.asString() + " HUF";
+            }
+            
+            row ProductRow(Product product) {
+                column String name <= product.name;
+                column String price <= product.price.asString() + " HUF";
+            }
+            
+            actor human Actor1(User user) {
+                group first label:"Group1" {
+                    menu ProductListView products2 label:"Products11";
+                }
+                menu ProductListView allProducts label:"All Products" icon:"tools";
+            }
+            
+            actor human Actor2(User2 user2) {
+                group first label:"Group2" {
+                    menu ProductListView products22 label:"Products21";
+                }
+                menu ProductListView allProducts2 label:"All Products 2" icon:"tools";
+            }
+        """));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        // Apps
+
+        assertEquals(2, apps.size());
+
+        Application app1 = apps.get(0);
+        Application app2 = apps.get(1);
+
+        assertEquals("Actor1::Application", app1.getName());
+        assertEquals("MultipleActorsTestModel", app1.getModelName());
+        assertEquals("judo-color-logo.png", app1.getLogo());
+        assertEquals("en-US", app1.getDefaultLanguage());
+
+        assertNotNull(app1.getActor());
+
+        ClassType actor = app1.getActor();
+
+        assertEquals("MultipleActorsTestModel::Actor1::ClassType", actor.getName());
+        assertEquals("Actor1", actor.getSimpleName());
+        assertTrue(actor.isIsActor());
+
+        assertEquals("Actor1::Application", app1.getName());
+        assertEquals("MultipleActorsTestModel", app1.getModelName());
+        assertEquals("judo-color-logo.png", app1.getLogo());
+        assertEquals("en-US", app1.getDefaultLanguage());
+
+        assertNotNull(app2.getActor());
+
+        ClassType actor2 = app2.getActor();
+
+        assertEquals("MultipleActorsTestModel::Actor2::ClassType", actor2.getName());
+        assertEquals("Actor2", actor2.getSimpleName());
+        assertTrue(actor2.isIsActor());
+
+        assertEquals("Actor2::Application", app2.getName());
+        assertEquals("MultipleActorsTestModel", app2.getModelName());
+        assertEquals("judo-color-logo.png", app2.getLogo());
+        assertEquals("en-US", app2.getDefaultLanguage());
+
+        // Menus
+
+        NavigationController navigationController = app1.getNavigationController();
+        assertNotNull(navigationController);
+
+        List<NavigationItem> firstLevelMenus = navigationController.getItems();
+
+        NavigationItem first1 = firstLevelMenus.get(0);
+        NavigationItem first2 = firstLevelMenus.get(1);
+
+        assertEquals("MultipleActorsTestModel::Actor1::MenuItemGroup::first", first1.getName());
+        assertEquals("Group1", first1.getLabel());
+        assertEquals("MultipleActorsTestModel::Actor1::allProducts", first2.getName());
+        assertEquals("All Products", first2.getLabel());
+
+        NavigationController navigationController2 = app2.getNavigationController();
+        assertNotNull(navigationController2);
+
+        List<NavigationItem> firstLevelMenus2 = navigationController2.getItems();
+
+        NavigationItem first21 = firstLevelMenus2.get(0);
+        NavigationItem first22 = firstLevelMenus2.get(1);
+
+        assertEquals("MultipleActorsTestModel::Actor2::MenuItemGroup::first", first21.getName());
+        assertEquals("Group2", first21.getLabel());
+        assertEquals("MultipleActorsTestModel::Actor2::allProducts2", first22.getName());
+        assertEquals("All Products 2", first22.getLabel());
+
+        // Data Elements
+
+        List<ClassType> classTypes = app1.getClassTypes();
+
+        assertEquals(1, classTypes.size());
+
+        assertEquals("MultipleActorsTestModel::Actor1::ClassType", classTypes.get(0).getName());
+
+        List<PageDefinition> pages = app1.getPages();
+
+        assertEquals(2, pages.size());
+
+        PageDefinition page = pages.get(0);
+        PageDefinition page2 = pages.get(1);
+
+        assertEquals("MultipleActorsTestModel::Actor1::MenuItemGroup::first::products2::PageDefinition", page.getName());
+        assertEquals("MultipleActorsTestModel::Actor1::allProducts::PageDefinition", page2.getName());
+
+        List<PageDefinition> pages2 = app2.getPages();
+
+        assertEquals(2, pages2.size());
+
+        PageDefinition page21 = pages2.get(0);
+        PageDefinition page22 = pages2.get(1);
+
+        assertEquals("MultipleActorsTestModel::Actor2::MenuItemGroup::first::products22::PageDefinition", page21.getName());
+        assertEquals("MultipleActorsTestModel::Actor2::allProducts2::PageDefinition", page22.getName());
     }
 }
