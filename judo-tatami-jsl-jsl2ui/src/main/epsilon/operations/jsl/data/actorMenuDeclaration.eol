@@ -1,0 +1,15 @@
+@cached
+operation JSL!ActorMenuDeclaration getFqName(): String {
+    if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration) or self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
+        return self.eContainer.getFqName() + "::" + self.name;
+    }
+    return self.name;
+}
+
+@cached
+operation JSL!ActorGroupDeclaration getFqName(): String {
+    if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration) or self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
+        return self.eContainer.getFqName() + "::MenuItemGroup::" + self.tag;
+    }
+    return self.tag;
+}

@@ -1,0 +1,8 @@
+@cached
+operation UI!ui::NamedElement getRootApplication() : UI!ui::Application {
+    if (self.eContainer.isTypeOf(UI!ui::Application)) {
+        return self.eContainer;
+    } else {
+        return self.eContainer.getRootApplication();
+    }
+}

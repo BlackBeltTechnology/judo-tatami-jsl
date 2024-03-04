@@ -1,10 +1,8 @@
 rule ActorNavigationItem
     transform s: JSL!ActorMenuDeclaration
     to t : UI!ui::NavigationItem {
-        guard: s.eContainer == actorDeclaration
-
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ActorNavigationItem");
-        t.name = s.name + "::NavigationItem";
+        t.name = s.getFqName();
 
         var label = s.getLabelModifier();
         if (label.isDefined()) {
@@ -18,8 +16,46 @@ rule ActorNavigationItem
 
         t.target = s.referenceType.equivalent("PageDefinition");
 
-        actorDeclaration.equivalent("Application").navigationController.items.add(t);
-        // TODO handle menu groups
+        if (s.eContainer.isTypeOf(JSL!ActorGroupDeclaration)) {
+            s.eContainer.equivalent("MenuItemGroup").items.add(t);
+            t.~pos = s.eContainer.members.indexOf(s);
+        } else {
+            var navigationController = actorDeclaration.equivalent("Application").navigationController;
+            navigationController.items.add(t);
+            t.~pos = s.eContainer.members.indexOf(s);
+        }
 
         log.debug("ActorNavigationItem: " + s.name);
+    }
+
+rule MenuItemGroup
+    transform s: JSL!ActorGroupDeclaration
+    to t : UI!ui::NavigationItem {
+	      t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/MenuItemGroup");
+	      t.name = s.getFqName();
+
+        log.debug("Create Navigation Group: " + s.tag );
+
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+
+        var icon = s.getIconModifier();
+        if (icon.isDefined()) {
+            t.icon = icon.equivalent("IconModifierIcon");
+        }
+
+        /*if (s.hiddenBy.isDefined()) {
+            t.hiddenBy = s.hiddenBy.name;
+        }*/
+
+        if (s.eContainer.isKindOf(JSL!ActorGroupDeclaration)) {
+            s.eContainer.equivalent("MenuItemGroup").items.add(t);
+            t.~pos = s.eContainer.members.indexOf(s);
+        } else {
+            var navigationController = actorDeclaration.equivalent("Application").navigationController;
+            navigationController.items.add(t);
+            t.~pos = s.eContainer.members.indexOf(s);
+        }
     }
