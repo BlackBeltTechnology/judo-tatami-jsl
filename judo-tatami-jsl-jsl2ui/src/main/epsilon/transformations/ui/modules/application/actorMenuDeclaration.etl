@@ -1,10 +1,10 @@
-rule ActorMenuDeclaration
+rule ActorNavigationItem
     transform s: JSL!ActorMenuDeclaration
     to t : UI!ui::NavigationItem {
         guard: s.eContainer == actorDeclaration
 
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ActorMenuDeclaration");
-        t.name = s.name;
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ActorNavigationItem");
+        t.name = s.name + "::NavigationItem";
 
         var label = s.getLabelModifier();
         if (label.isDefined()) {
@@ -16,10 +16,10 @@ rule ActorMenuDeclaration
             t.icon = icon.equivalent("IconModifierIcon");
         }
 
-        t.target = s.referenceType.equivalent("ViewDeclaration");
+        t.target = s.referenceType.equivalent("PageDefinition");
 
         actorDeclaration.equivalent("Application").navigationController.items.add(t);
         // TODO handle menu groups
 
-        log.debug("ActorMenuDeclaration: " + s.name);
+        log.debug("ActorNavigationItem: " + s.name);
     }

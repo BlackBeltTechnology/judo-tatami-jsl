@@ -10,7 +10,7 @@ rule Application
 
         //t.version = esmUtils.getModel(s).version;
 
-        t.name = s.name;
+        t.name = s.name + "::Application";
         t.modelName = defaultModelName;
 
         t.actor = s.equivalent("Actor");
@@ -70,7 +70,7 @@ rule Actor
         guard: s = actorDeclaration
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Actor");
 
-        t.name = s.getFqName();
+        t.name = s.getFqName() + "::ClassType";
         t.simpleName = s.name;
         //t.setPackageNameTokens(s);
         t.isActor = true;
@@ -84,7 +84,7 @@ rule NavigationController
         guard: s = actorDeclaration
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NavigationController");
 
-        t.name = s.getFqName();
+        t.name = s.getFqName() + "::NavigationController";
 
         log.debug("Create NavigationController: " + t.name);
     }

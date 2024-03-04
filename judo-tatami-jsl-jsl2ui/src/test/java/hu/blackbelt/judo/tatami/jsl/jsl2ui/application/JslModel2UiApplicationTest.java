@@ -36,7 +36,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
     @Override
     protected Logger createLog() {
-        return new BufferedSlf4jLogger(log);
+        return log;
     }
 
     @BeforeAll
@@ -69,7 +69,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         Application app1 = apps.get(0);
 
-        assertEquals("AppActor", app1.getName());
+        assertEquals("AppActor::Application", app1.getName());
         assertEquals("ApplicationTestModel", app1.getModelName());
         assertEquals("judo-color-logo.png", app1.getLogo());
         assertEquals("en-US", app1.getDefaultLanguage());
@@ -78,7 +78,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         ClassType actor = app1.getActor();
 
-        assertEquals("ApplicationTestModel::AppActor", actor.getName());
+        assertEquals("ApplicationTestModel::AppActor::ClassType", actor.getName());
         assertEquals("AppActor", actor.getSimpleName());
         assertTrue(actor.isIsActor());
 
