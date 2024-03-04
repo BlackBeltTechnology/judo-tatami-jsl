@@ -1,0 +1,8 @@
+@lazy
+rule IconModifierIcon
+    transform s: JSL!IconModifier
+    to t: UI!ui::Icon {
+        t.iconName = s.value.value;
+        t.name = s.getId() + "/Icon";
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/IconModifierIcon");
+}

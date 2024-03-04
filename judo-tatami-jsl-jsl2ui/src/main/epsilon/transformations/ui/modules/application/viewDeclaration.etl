@@ -1,0 +1,33 @@
+rule PageDefinition
+    transform s: JSL!ViewDeclaration
+    to t: UI!ui::PageDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/PageDefinition");
+
+        t.name = s.getFqName() + "::PageDefinition";
+        t.container = s.equivalent("PageContainer");
+
+        actorDeclaration.equivalent("Application").pages.add(t);
+
+        log.debug("Create PageDefinition: " + t.name);
+    }
+
+@lazy
+rule PageContainer
+    transform s: JSL!ViewDeclaration
+    to t: UI!ui::PageContainer {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/PageContainer");
+        t.name = s.getFqName() + "::PageContainer";
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+        t.titleFrom = UI!ui::TitleFrom#LABEL;
+        // t.type = UI!ui::PageContainerType#TABLE; // TODO figure out how to determine type
+        // t.onInit = s.equivalent("TransferObjectTableAddSelectorTableRangeActionDefinition");
+        actorDeclaration.equivalent("Application").pageContainers.add(t);
+        // t.children.add(s.equivalent("TransferObjectTableAddSelectorVisualElement"));
+        // t.actionButtonGroup = s.equivalent("TransferObjectTableAddSelectorButtonGroup");
+        // t.dataElement = s.eContainer.equivalent("ClassType");
+
+        log.debug("PageContainer: " + t.name);
+    }
