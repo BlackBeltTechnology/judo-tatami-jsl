@@ -6,3 +6,4 @@ import "modifiable.eol";
 import "simpleTransferDeclaration.eol";
 import "transferDeclaration.eol";
 import "viewDeclaration.eol";
+import "visibleDeclaration.eol";

@@ -1,0 +1,86 @@
+@cached
+operation JSL!VisibleDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!VisibleDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}
+
+@cached
+operation JSL!VisibleDeclaration getExposedTransferObjects() : Set {
+    return self.getExposedRelations().collect(r | r.eContainer).asSet();
+}
+
+@cached
+operation JSL!VisibleDeclaration getExposedRelations() : Set {
+    return self.collectExposedRelations(new Set());
+}
+
+operation JSL!VisibleDeclaration collectExposedRelations(collected : Set) : Set {
+    var relations = self.getAllRelations();
+    // var operations = self.getAllOperations().select(op | not op.hasQueryParameters());
+    /*relations.addAll(operations
+        .select(o | o.input.isDefined())
+        .collect(o | o.input.target)
+        .collect(i | i.getAllRelations().select(r | not r.isQuery)).flatten());
+    relations.addAll(operations
+        .select(o | o.output.isDefined())
+        .collect(o | o.output.target)
+        .collect(o | o.getAllRelations().select(r | not r.isQuery)).flatten());
+    */
+    for (relation in relations) {
+        if (not collected.includes(relation) and relation.referenceType.isKindOf(JSL!TransferDeclaration)) {
+            collected.add(relation);
+            relation.referenceType.collectExposedRelations(collected);
+        }
+    }
+    return collected;
+}
+
+
+operation TransferDeclaration collectExposed(collectedRelations : Set, collectedTransferObjects : Set, collectedOperations : Set) {
+
+	if (collectedTransferObjects.includes(self)) {
+		return;
+	}
+	collectedTransferObjects.add(self);
+
+    var relations = self.getAllRelations();
+    //var operations = self.getAllOperations().select(op | not op.hasQueryParameters());
+
+    /*relations.addAll(operations
+        .select(o | o.input.isDefined())
+        .collect(o | o.input.target)
+        .collect(i | i.getAllRelations().select(r | not r.isQuery)).flatten());
+    relations.addAll(operations
+        .select(o | o.output.isDefined())
+        .collect(o | o.output.target)
+        .collect(o | o.getAllRelations().select(r | not r.isQuery)).flatten());
+    */
+
+	var transfers = new Set();
+	transfers.addAll(relations.select(r | r.referenceType.isKindOf(JSL!TransferDeclaration)).collect(r | r.referenceType));
+	//transfers.addAll(operations.select(o | o.input.isDefined()).collect(o | o.input.target));
+	//transfers.addAll(operations.select(o | o.output.isDefined()).collect(o | o.output.target));
+	//transfers.addAll(transfers.asSet().collect(t | t.getGeneralizations()).flatten().collect(g | g.target));
+	/*transfers.addAll(operations
+	        .collect(o | o.faults).flatten()
+	        .collect(f | f.target));
+    */
+
+    for (transfer in transfers) {
+        if (not collectedTransferObjects.includes(transfer)) {
+	        transfer.collectExposed(collectedRelations, collectedTransferObjects, collectedOperations);
+        }
+    }
+    collectedRelations.addAll(relations);
+	collectedTransferObjects.addAll(transfers);
+ 	//collectedOperations.addAll(operations);
+
+}
+
+operation TransferDeclaration getAllRelations() : Set {
+    return self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration));
+}

@@ -2,7 +2,7 @@
 rule ClassType
     transform s: JSL!TransferDeclaration
     to t: UI!ui::data::ClassType {
-		    guard: s.eContainer == actorDeclaration
+        guard: actorDeclaration.getExposedTransferObjects().includes(s)
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ClassType");
 

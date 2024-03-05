@@ -57,3 +57,24 @@ operation JSL!ActorGroupDeclaration getAllMenuDeclarations(): Set {
     }
     return menuDeclarations;
 }
+
+@cached
+operation JSL!ActorDeclaration getExposedTransferObjects() : Set {
+    var declarations = self.getAllMenuDeclarations().select(m | m.referenceType.isKindOf(JSL!VisibleDeclaration)).collect(m | m.referenceType).asSet();
+
+    var collected = new Set();
+    collected.addAll(declarations);
+
+    for (vd in declarations) {
+        collected.addAll(vd.getExposedTransferObjects());
+    }
+
+    return declarations;
+}
+
+@cached
+operation JSL!ActorDeclaration getTransferObjects() : Set {
+	var transfers = new Set();
+    self.collectExposed(new Set(), transfers, new Set());
+    return transfers;
+}

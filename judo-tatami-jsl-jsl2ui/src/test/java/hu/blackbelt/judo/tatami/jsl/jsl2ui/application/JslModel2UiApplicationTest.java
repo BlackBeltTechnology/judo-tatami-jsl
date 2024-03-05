@@ -323,9 +323,19 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         List<ClassType> classTypes = app1.getClassTypes();
 
-        assertEquals(1, classTypes.size());
+        assertEquals(2, classTypes.size());
 
         assertEquals("MultipleActorsTestModel::Actor1::ClassType", classTypes.get(0).getName());
+        assertEquals("MultipleActorsTestModel::ProductListView::ClassType", classTypes.get(1).getName());
+
+        List<ClassType> classTypes2 = app2.getClassTypes();
+
+        assertEquals(2, classTypes2.size());
+
+        assertEquals("MultipleActorsTestModel::Actor2::ClassType", classTypes2.get(0).getName());
+        assertEquals("MultipleActorsTestModel::ProductListView::ClassType", classTypes2.get(1).getName());
+
+        // Pages
 
         List<PageDefinition> pages = app1.getPages();
 
