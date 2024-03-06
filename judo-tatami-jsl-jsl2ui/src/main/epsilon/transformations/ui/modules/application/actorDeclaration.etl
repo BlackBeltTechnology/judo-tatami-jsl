@@ -85,3 +85,21 @@ rule NavigationController
 
         log.debug("Create NavigationController: " + t.name);
     }
+
+rule Authentication
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::Authentication {
+        guard: s = actorDeclaration
+            and s.getPrincipal().isDefined()
+            and s.getRealm().isDefined()
+            and s.getIdentity().isDefined()
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Authentication");
+        t.realm = s.getRealm().value.value;
+
+        s.equivalent("Application").authentication = t;
+
+        // TODO map claims
+
+        log.debug("Create Authentication: " + t.realm);
+    }

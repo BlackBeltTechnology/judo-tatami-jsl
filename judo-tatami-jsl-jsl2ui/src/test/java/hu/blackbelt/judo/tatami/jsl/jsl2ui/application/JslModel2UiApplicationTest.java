@@ -1,6 +1,8 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
+import hu.blackbelt.judo.meta.jsl.jsldsl.TransferDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.impl.TransferDeclarationImpl;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
@@ -15,6 +17,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -199,29 +203,22 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 identifier required String userName;
             }
             
-            view UserListView {
-                table UserRow[] users <= User.all();
-            }
-            
-            view User2ListView {
-                table User2Row[] users <= User2.all();
-            }
-            
-            row UserRow(User user) {
-                column String userName <= user.userName;
-            }
-            
-            row User2Row(User2 user) {
-                column String userName <= user.userName;
-            }
-            
             entity Product {
                 identifier required String name;
                 field required Integer price;
             }
             
+            entity Product2 {
+                identifier required String name2;
+                field required Integer price2;
+            }
+            
             view ProductListView {
                 table ProductRow[] products <= Product.all() detail:ProductDetailView;
+            }
+            
+            view ProductListView2 {
+                table ProductRow2[] products2 <= Product2.all() detail:ProductDetailView2;
             }
             
             view ProductDetailView(Product product) {
@@ -229,9 +226,19 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 field String price <= product.price.asString() + " HUF";
             }
             
+            view ProductDetailView2(Product2 product2) {
+                field String name2 <= product2.name2;
+                field String price2 <= product2.price2.asString() + " HUF";
+            }
+            
             row ProductRow(Product product) {
                 column String name <= product.name;
                 column String price <= product.price.asString() + " HUF";
+            }
+            
+            row ProductRow2(Product2 product2) {
+                column String name <= product2.name2;
+                column String price <= product2.price2.asString() + " HUF";
             }
             
             actor human Actor1(User user) {
@@ -243,9 +250,9 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             
             actor human Actor2(User2 user2) {
                 group first label:"Group2" {
-                    menu ProductListView products22 label:"Products21";
+                    menu ProductListView2 products22 label:"Products21";
                 }
-                menu ProductListView allProducts2 label:"All Products 2" icon:"tools";
+                menu ProductListView2 allProducts2 label:"All Products 2" icon:"tools";
             }
         """));
 
@@ -323,17 +330,30 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         List<ClassType> classTypes = app1.getClassTypes();
 
-        assertEquals(2, classTypes.size());
+        assertEquals(4, classTypes.size());
 
-        assertEquals("MultipleActorsTestModel::Actor1::ClassType", classTypes.get(0).getName());
-        assertEquals("MultipleActorsTestModel::ProductListView::ClassType", classTypes.get(1).getName());
+        Set<String> class1Names = classTypes.stream().map(c -> c.getName()).collect(Collectors.toSet());
+
+        assertTrue(Set.of(
+                "MultipleActorsTestModel::Actor1::ClassType",
+                "MultipleActorsTestModel::ProductDetailView::ClassType",
+                "MultipleActorsTestModel::ProductListView::ClassType",
+                "MultipleActorsTestModel::ProductRow::ClassType"
+        ).containsAll(class1Names));
+
 
         List<ClassType> classTypes2 = app2.getClassTypes();
 
-        assertEquals(2, classTypes2.size());
+        assertEquals(4, classTypes2.size());
 
-        assertEquals("MultipleActorsTestModel::Actor2::ClassType", classTypes2.get(0).getName());
-        assertEquals("MultipleActorsTestModel::ProductListView::ClassType", classTypes2.get(1).getName());
+        Set<String> class2Names = classTypes2.stream().map(c -> c.getName()).collect(Collectors.toSet());
+
+        assertTrue(Set.of(
+                "MultipleActorsTestModel::Actor2::ClassType",
+                "MultipleActorsTestModel::ProductDetailView2::ClassType",
+                "MultipleActorsTestModel::ProductListView2::ClassType",
+                "MultipleActorsTestModel::ProductRow2::ClassType"
+        ).containsAll(class2Names));
 
         // Pages
 
@@ -356,5 +376,34 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         assertEquals("MultipleActorsTestModel::Actor2::MenuItemGroup::first::products22::PageDefinition", page21.getName());
         assertEquals("MultipleActorsTestModel::Actor2::allProducts2::PageDefinition", page22.getName());
+    }
+
+    @Test
+    void testSecurity() throws Exception {
+        jslModel = JslParser.getModelFromStrings("SecurityTestModel", List.of("""
+            model SecurityTestModel;
+            
+            import judo::types;
+            
+            entity User {
+                identifier required String email;
+            }
+            
+            transfer UserTransfer maps User as u {
+                field String email <= u.email update: true;
+            }
+            
+            actor human Actor(User user) realm:"COMPANY" claim:"email" identity:UserTransfer::email {
+            }
+        """));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        // Apps
+
+        assertEquals(1, apps.size());
+
     }
 }

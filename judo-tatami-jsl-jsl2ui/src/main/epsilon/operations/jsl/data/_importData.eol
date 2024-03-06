@@ -5,5 +5,6 @@ import "modelDeclaration.eol";
 import "modifiable.eol";
 import "simpleTransferDeclaration.eol";
 import "transferDeclaration.eol";
+import "transferRelationDeclaration.eol";
 import "viewDeclaration.eol";
 import "visibleDeclaration.eol";

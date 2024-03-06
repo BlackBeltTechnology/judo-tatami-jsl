@@ -69,7 +69,7 @@ operation JSL!ActorDeclaration getExposedTransferObjects() : Set {
         collected.addAll(vd.getExposedTransferObjects());
     }
 
-    return declarations;
+    return collected;
 }
 
 @cached
