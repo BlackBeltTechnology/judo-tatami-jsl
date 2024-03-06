@@ -32,3 +32,49 @@ operation JSL!ActorDeclaration getGuard(): JSL!GuardModifier {
 operation JSL!ActorDeclaration getPrincipal(): JSL!TransferDeclaration {
     return self.getIdentity()?.field?.eContainer;
 }
+
+@cached
+operation JSL!ActorDeclaration getAllMenuDeclarations(): Set {
+    var menuDeclarations = new Set();
+    for (declaration : Any in self.members) {
+        if (declaration.isTypeOf(JSL!ActorMenuDeclaration)) {
+            menuDeclarations.add(declaration);
+        } else if (declaration.isTypeOf(JSL!ActorGroupDeclaration)) {
+            menuDeclarations.addAll(declaration.getAllMenuDeclarations());
+        }
+    }
+    return menuDeclarations;
+}
+
+operation JSL!ActorGroupDeclaration getAllMenuDeclarations(): Set {
+    var menuDeclarations = new Set();
+    for (declaration : Any in self.members) {
+        if (declaration.isTypeOf(JSL!ActorMenuDeclaration)) {
+            menuDeclarations.add(declaration);
+        } else if (declaration.isTypeOf(JSL!ActorGroupDeclaration)) {
+            menuDeclarations.addAll(declaration.getAllMenuDeclarations());
+        }
+    }
+    return menuDeclarations;
+}
+
+@cached
+operation JSL!ActorDeclaration getExposedTransferObjects() : Set {
+    var declarations = self.getAllMenuDeclarations().select(m | m.referenceType.isKindOf(JSL!VisibleDeclaration)).collect(m | m.referenceType).asSet();
+
+    var collected = new Set();
+    collected.addAll(declarations);
+
+    for (vd in declarations) {
+        collected.addAll(vd.getExposedTransferObjects());
+    }
+
+    return collected;
+}
+
+@cached
+operation JSL!ActorDeclaration getTransferObjects() : Set {
+	var transfers = new Set();
+    self.collectExposed(new Set(), transfers, new Set());
+    return transfers;
+}

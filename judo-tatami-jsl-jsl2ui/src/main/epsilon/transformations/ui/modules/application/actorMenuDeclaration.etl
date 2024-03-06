@@ -1,6 +1,8 @@
 rule ActorNavigationItem
     transform s: JSL!ActorMenuDeclaration
     to t : UI!ui::NavigationItem {
+        guard: s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ActorNavigationItem");
         t.name = s.getFqName();
 
@@ -14,7 +16,7 @@ rule ActorNavigationItem
             t.icon = icon.equivalent("IconModifierIcon");
         }
 
-        t.target = s.referenceType.equivalent("PageDefinition");
+        t.target = s.equivalent("AccessPageDefinition");
 
         if (s.eContainer.isTypeOf(JSL!ActorGroupDeclaration)) {
             s.eContainer.equivalent("MenuItemGroup").items.add(t);
@@ -31,6 +33,8 @@ rule ActorNavigationItem
 rule MenuItemGroup
     transform s: JSL!ActorGroupDeclaration
     to t : UI!ui::NavigationItem {
+        guard: s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
 	      t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/MenuItemGroup");
 	      t.name = s.getFqName();
 

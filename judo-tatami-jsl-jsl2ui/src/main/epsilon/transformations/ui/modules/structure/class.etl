@@ -1,10 +1,9 @@
 @greedy
-@primary
-@lazy
 rule ClassType
     transform s: JSL!TransferDeclaration
     to t: UI!ui::data::ClassType {
-		
+        guard: actorDeclaration.getExposedTransferObjects().includes(s)
+
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ClassType");
 
         t.name = s.getFqName() + "::ClassType";
@@ -12,8 +11,8 @@ rule ClassType
         t.simpleName = s.name;
         //t.setPackageNameTokens(s);
 
-        t.isMapped = s.isMapped();
-        t.isOptional = s.isMapped();
+        // t.isMapped = s.isMapped();
+        // t.isOptional = s.isMapped();
 
         /*
         if (s.isRefreshSupported()) {
@@ -40,8 +39,8 @@ rule ClassType
 
         actorDeclaration.equivalent("Application").dataElements.add(t);
 
-        //t.isPrincipal = s.actorType.isDefined() and s.actorType == actorType;
+        // t.isPrincipal = s.getPrincipal() == s;
+        t.isActor = s.isKindOf(JSL!ActorDeclaration);
 
-
-        log.debug("Create class type: " + t.name);
+        log.debug("Create ClassType: " + t.name);
 }

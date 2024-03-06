@@ -24,11 +24,6 @@ rule Application
         	t.logo = "judo-color-logo.png";
         //}
 
-	    if (s.getPrincipal().isDefined()) {
-	    	t.principal = s.getPrincipal().equivalent("ClassType");
-	    }
-
-        t.theme = s.equivalent("Theme");
         t.navigationController = s.equivalent("NavigationController");
 }
 
@@ -62,6 +57,8 @@ rule Theme
         t.secondaryColor = "#E7501DFF";
         t.subtitleColor = "#8C8C8C";
         t.backgroundColor = "#FAFAFAFF";
+
+        actorDeclaration.equivalent("Application").theme = t;
 }
 
 rule Actor
@@ -87,4 +84,22 @@ rule NavigationController
         t.name = s.getFqName() + "::NavigationController";
 
         log.debug("Create NavigationController: " + t.name);
+    }
+
+rule Authentication
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::Authentication {
+        guard: s = actorDeclaration
+            and s.getPrincipal().isDefined()
+            and s.getRealm().isDefined()
+            and s.getIdentity().isDefined()
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Authentication");
+        t.realm = s.getRealm().value.value;
+
+        s.equivalent("Application").authentication = t;
+
+        // TODO map claims
+
+        log.debug("Create Authentication: " + t.realm);
     }
