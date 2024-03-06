@@ -1,8 +1,5 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
-import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
-import hu.blackbelt.judo.meta.jsl.jsldsl.TransferDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.impl.TransferDeclarationImpl;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
@@ -12,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -404,6 +400,14 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         // Apps
 
         assertEquals(1, apps.size());
+
+        // Authentication
+
+        Authentication authentication = apps.get(0).getAuthentication();
+
+        assertNotNull(authentication);
+
+        assertEquals("COMPANY", authentication.getRealm());
 
     }
 }
