@@ -75,7 +75,7 @@
         <judo-dispatcher-api-version>1.0.3.20230826_230134_1ce94d88_develop</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20240209_041311_9fed3fdd_develop</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20240305_094510_d281c56c_develop</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20240307_222603_f637d4c4_feature_JNG_5593_AddMaskSupportForUpdate</judo-runtime-core-version>
         <structured-map-proxy-version>2.0.0.20240304_134724_72ade506_develop</structured-map-proxy-version>
         <judo-tatami-base-version>1.1.6.20240305_040632_288c5ce2_develop</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20231107_041032_332be90a_develop</judo-tatami-core-version>
