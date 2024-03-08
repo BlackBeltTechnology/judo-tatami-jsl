@@ -13,3 +13,23 @@ operation JSL!ActorGroupDeclaration getFqName(): String {
     }
     return self.tag;
 }
+
+@cached
+operation JSL!ActorMenuDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration)) {
+        return self.eContainer.getActorDeclaration();
+    } else if (self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
+        return self.eContainer;
+    }
+    return null;
+}
+
+@cached
+operation JSL!ActorGroupDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration)) {
+        return self.eContainer.getActorDeclaration();
+    } else if (self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
+        return self.eContainer;
+    }
+    return null;
+}
