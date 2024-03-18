@@ -110,7 +110,7 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
     @Parameter(property = "modelVersion", defaultValue = "${project.version}")
     private String modelVersion;
 
-    @Parameter(property = "dialects")
+    @Parameter(property = "dialects", defaultValue = "postgresql,hsqldb")
     private List<String> dialects;
 
     @Parameter(property = "runInParallel", defaultValue = "true")
