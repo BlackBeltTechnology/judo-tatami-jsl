@@ -134,31 +134,28 @@ public abstract class AbstractJslDslWorkflowProjectMojo extends AbstractMojo {
             Collection<String> effectiveModelsNames = calculateEffectiveModelDeclarations(allModelDeclcarations);
             Collection<ModelDeclaration> effectiveModels = allModelDeclcarations.stream().filter(m -> effectiveModelsNames.contains(m.getName())).collect(Collectors.toList());
 
-            if (effectiveModels.size() > 1) {
-                throw new MojoExecutionException("Multiple root models are defined, please remove or define the correct ones in 'modelNames' -  "
-                        + effectiveModels.stream().map(m -> m.getName()).collect(Collectors.joining()));
-            }
-
             if (effectiveModels.size() == 0) {
                 throw new MojoExecutionException("No model found");
             }
 
             checkErrors(effectiveModels);
 
-            ModelDeclaration modelDeclaration = effectiveModels.stream().findFirst().get();
-            jslDslModel = JslParser.getModelFromXtextResourceSet(modelDeclaration.getName(), resourceSet);
+            for (ModelDeclaration modelDeclaration : effectiveModels) {
+                jslDslModel = JslParser.getModelFromXtextResourceSet(modelDeclaration.getName(), resourceSet);
 
-            if (srcModelTarget != null) {
-                srcModelTarget.mkdirs();
-                try {
-                    jslDslModel.saveJslDslModel(JslDslModel.SaveArguments.jslDslSaveArgumentsBuilder()
-                                    .file(new File(srcModelTarget, modelDeclaration.getName() + "-jsl.model"))
-                            .build());
-                } catch (IOException e) {
-                    throw new MojoExecutionException("Could not save model: ", e);
-                } catch (JslDslModel.JslDslValidationException e) {
-                    throw new MojoExecutionException("Model validation error", e);
+                if (srcModelTarget != null) {
+                    srcModelTarget.mkdirs();
+                    try {
+                        jslDslModel.saveJslDslModel(JslDslModel.SaveArguments.jslDslSaveArgumentsBuilder()
+                                .file(new File(srcModelTarget, modelDeclaration.getName() + "-jsl.model"))
+                                .build());
+                    } catch (IOException e) {
+                        throw new MojoExecutionException("Could not save model: ", e);
+                    } catch (JslDslModel.JslDslValidationException e) {
+                        throw new MojoExecutionException("Model validation error", e);
+                    }
                 }
+                performExecution(jslDslModel);
             }
         } else {
             try {
@@ -171,8 +168,8 @@ public abstract class AbstractJslDslWorkflowProjectMojo extends AbstractMojo {
             } catch (JslDslModel.JslDslValidationException e) {
                 throw new MojoExecutionException("Model validation error", e);
             }
+            performExecution(jslDslModel);
         }
-        performExecution(jslDslModel);
     }
 
     private void checkErrors(Collection<ModelDeclaration> modulesToProcess) throws MojoExecutionException {
