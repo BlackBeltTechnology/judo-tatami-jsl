@@ -57,27 +57,7 @@ import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArgument
 @Mojo(name = "default-model-workflow",
         defaultPhase = LifecyclePhase.COMPILE,
         requiresDependencyResolution = ResolutionScope.COMPILE)
-public class DefaultWorkflowMojo extends AbstractMojo {
-
-    final int BUFFER_SIZE = 4096;
-
-    @Parameter(defaultValue = "${project}", readonly = true, required = true)
-    private MavenProject project;
-
-    @Component
-    public RepositorySystem repoSystem;
-
-    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true, required = true)
-    public RepositorySystemSession repoSession;
-
-    @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true, required = true)
-    public List<RemoteRepository> repositories;
-
-    @Parameter(defaultValue = "${plugin}", readonly = true)
-    private PluginDescriptor pluginDescriptor;
-
-    @Parameter(property = "jsl")
-    private String jsl;
+public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
 
     @Parameter(property = "psm")
     private String psm;
@@ -124,9 +104,6 @@ public class DefaultWorkflowMojo extends AbstractMojo {
     @Parameter(property = "destination", defaultValue = "${project.basedir}/target/model")
     private File destination;
 
-    @Parameter(property = "modelName")
-    private String modelName;
-
     @Parameter(property = "useCache", defaultValue = "true")
     private Boolean useCache = true;
 
@@ -147,6 +124,9 @@ public class DefaultWorkflowMojo extends AbstractMojo {
 
     @Parameter(property = "ignoreJsl2PsmTrace", defaultValue = "true")
     private Boolean ignoreJsl2PsmTrace = true;
+
+    @Parameter(property = "ignoreJsl2Ui", defaultValue = "false")
+    private Boolean ignoreJsl2Ui = false;
 
     @Parameter(property = "validateModels", defaultValue = "false")
     private Boolean validateModels = false;
@@ -185,83 +165,10 @@ public class DefaultWorkflowMojo extends AbstractMojo {
     @Parameter
     private Map<String, DialectParam> dialects;
 
-    Set<URL> classPathUrls = new TreeSet<>();
-
-    private void setContextClassLoader() throws DependencyResolutionRequiredException, MalformedURLException {
-        // Project dependencies
-        for (Object mavenCompilePath : project.getCompileClasspathElements()) {
-            String currentPathProcessed = (String) mavenCompilePath;
-            classPathUrls.add(new File(currentPathProcessed).toURI().toURL());
-        }
-
-        // Add plugin defined dependencies
-        for (Artifact artifact : pluginDescriptor.getArtifacts()) {
-            classPathUrls.add(getArtifactFile(artifact));
-        }
-
-        // Plugin dependencies
-        final ClassRealm classRealm = pluginDescriptor.getClassRealm();
-        for (URL url : classRealm.getURLs()) {
-            classPathUrls.add(url);
-        }
-
-        URL[] urlsForClassLoader = classPathUrls.toArray(new URL[classPathUrls.size()]);
-        getLog().debug("Set urls for URLClassLoader: " + Arrays.asList(urlsForClassLoader));
-
-        // need to define parent classloader which knows all dependencies of the plugin
-        ClassLoader classLoader = new URLClassLoader(urlsForClassLoader, DefaultWorkflowMojo.class.getClassLoader());
-        Thread.currentThread().setContextClassLoader(classLoader);
-    }
-
-    @SneakyThrows({MalformedURLException.class})
-    private URL getArtifactFile(Artifact artifact) {
-        return artifact.getFile().toURI().toURL();
-    }
-
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-
-        // Needed for to access project's dependencies.
-        // Info: http://blog.chalda.cz/2018/02/17/Maven-plugin-and-fight-with-classloading.html
-        try {
-            setContextClassLoader();
-        } catch (Exception e) {
-            throw new MojoExecutionException("Failed to set classloader", e);
-        }
-
-        JslDslModel jslModel = null;
-        URI jslUri = null;
-
-        ArtifactResolver artifactResolver = ArtifactResolver.builder()
-                .log(getLog())
-                .project(project)
-                .repoSession(repoSession)
-                .repositories(repositories)
-                .repoSystem(repoSystem)
-                .build();
-
-        if (jsl != null && !jsl.trim().equals("")) {
-            jslUri = artifactResolver.getArtifact(jsl).toURI();
-
-            if (modelName == null || modelName.trim().equals("")) {
-                try {
-                    JslDslModel jslModelForName = JslDslModel.loadJslDslModel(jslDslLoadArgumentsBuilder()
-                            .inputStream(
-                                    Optional.of(jslUri).orElseThrow(() ->
-                                                    new IllegalArgumentException("jslModel or jslModelSourceUri have to be defined"))
-                                            .toURL().openStream())
-                            .validateModel(false)
-                            .name("forName"));
-
-                    modelName = getStreamOf(jslModelForName.getResourceSet(), ModelDeclaration.class)
-                            .findFirst().orElseThrow(() -> new IllegalStateException("Cannot find Model element")).getName();
-                } catch (IOException | JslDslModel.JslDslValidationException e) {
-                    throw new MojoExecutionException("Could not load model: ", e);
-                }
-            }
-        }
-
+    public void performExecution(JslDslModel jslModel) throws MojoExecutionException, MojoFailureException {
         DefaultWorkflow defaultWorkflow;
+        String modelName = jslModel.getName();
 
         DefaultWorkflowSetupParameters.DefaultWorkflowSetupParametersBuilder parameters =
                 DefaultWorkflowSetupParameters
@@ -269,6 +176,9 @@ public class DefaultWorkflowMojo extends AbstractMojo {
                         .modelVersion(modelVersion)
                         .runInParallel(runInParallel)
                         .enableMetrics(enableMetrics)
+                        .ignoreJsl2Psm(ignoreJsl2Psm)
+                        .ignoreJsl2Ui(ignoreJsl2Ui)
+                        .ignoreJsl2PsmTrace(true)
                         .ignorePsm2Asm(ignorePsm2Asm)
                         .ignorePsm2Measure(ignoreAsm2Measure)
                         .ignoreAsm2Rdbms(ignoreAsm2Rdbms)
@@ -294,10 +204,7 @@ public class DefaultWorkflowMojo extends AbstractMojo {
         defaultWorkflow = new DefaultWorkflow(parameters);
 
         WorkflowHelper workflowHelper = new WorkflowHelper(defaultWorkflow);
-
-        if (jsl != null && !jsl.trim().equals("")) {
-            workflowHelper.loadJslModel(modelName, jslModel, jslUri);
-        }
+        workflowHelper.loadJslModel(modelName, jslModel, null);
 
         if (psm != null && !psm.trim().equals("")) {
             workflowHelper.loadPsmModel(modelName, null, artifactResolver.getArtifact(psm).toURI());
@@ -358,39 +265,4 @@ public class DefaultWorkflowMojo extends AbstractMojo {
         return StreamSupport.stream(contents.spliterator(), false)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
     }
-
-    private static ArrayList<File> listFileTree(File dir, boolean recursive) {
-        if (null == dir || !dir.isDirectory()) {
-            return new ArrayList<>();
-        }
-        final Set<File> fileTree = new HashSet<File>();
-        FileFilter fileFilter = new FileFilter() {
-            private final String[] acceptedExtensions = new String[]{"jsl"};
-
-            @Override
-            public boolean accept(File file) {
-                if (file.isDirectory()) {
-                    return true;
-                }
-                for (String extension : acceptedExtensions) {
-                    if (file.getName().toLowerCase().endsWith(extension)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        };
-        File[] listed = dir.listFiles(fileFilter);
-        if(listed!=null){
-            for (File entry : listed) {
-                if (entry.isFile()) {
-                    fileTree.add(entry);
-                } else if(recursive){
-                    fileTree.addAll(listFileTree(entry,true));
-                }
-            }
-        }
-        return new ArrayList<>(fileTree);
-    }
-
 }
