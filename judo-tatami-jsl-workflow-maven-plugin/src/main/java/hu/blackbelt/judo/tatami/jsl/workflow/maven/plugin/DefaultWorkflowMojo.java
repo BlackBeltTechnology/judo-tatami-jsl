@@ -110,8 +110,8 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
     @Parameter(property = "modelVersion", defaultValue = "${project.version}")
     private String modelVersion;
 
-    @Parameter(property = "dialectList")
-    private List<String> dialectList;
+    @Parameter(property = "dialects")
+    private List<String> dialects;
 
     @Parameter(property = "runInParallel", defaultValue = "true")
     private Boolean runInParallel = true;
@@ -163,7 +163,7 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
 
 
     @Parameter
-    private Map<String, DialectParam> dialects;
+    private Map<String, DialectParam> dialectsMap;
 
     @Override
     public void performExecution(JslDslModel jslModel) throws MojoExecutionException, MojoFailureException {
@@ -199,7 +199,7 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
                         .rdbmsForeignKeyPrefix(rdbmsForeignKeyPrefix.trim().replace("-", ""))
                         .rdbmsInverseForeignKeyPrefix(rdbmsInverseForeignKeyPrefix.trim().replace("-", ""))
                         .rdbmsJunctionTablePrefix(rdbmsJunctionTablePrefix.trim().replace("-", ""))
-                        .dialectList(dialectList);
+                        .dialectList(dialects);
 
         defaultWorkflow = new DefaultWorkflow(parameters);
 
@@ -224,7 +224,7 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
         }
 
         if (dialects != null) {
-            for (Map.Entry<String, DialectParam> entry : dialects.entrySet()) {
+            for (Map.Entry<String, DialectParam> entry : dialectsMap.entrySet()) {
 
                 if (entry.getValue().getRdbms() != null && entry.getValue().getAsm2rdbmsTrace() != null) {
                     workflowHelper.loadRdbmsModel(modelName, entry.getKey(), null, artifactResolver.getArtifact(entry.getValue().getRdbms()).toURI(),
@@ -246,7 +246,7 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
         if (destination != null && (error != null || saveModels)) {
             destination.mkdirs();
             try {
-                DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialectList);
+                DefaultWorkflowSave.saveModels(defaultWorkflow.getTransformationContext(), destination, dialects);
             } catch (Exception e) {
                 if (error != null) {
                     throw new MojoFailureException("An error occurred during the execution phase of the workflow.", error);
