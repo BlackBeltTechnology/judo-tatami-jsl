@@ -86,7 +86,7 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
     @Parameter(property = "ignorePsm2Measure", defaultValue = "false")
     private Boolean ignoreAsm2Measure = false;
 
-    @Parameter(property = "ignorePsm2MeasureTrace", defaultValue = "false")
+    @Parameter(property = "ignorePsm2MeasureTrace", defaultValue = "true")
     private Boolean ignorePsm2MeasureTrace = true;
 
     @Parameter(property = "ignoreAsm2Rdbms", defaultValue = "false")

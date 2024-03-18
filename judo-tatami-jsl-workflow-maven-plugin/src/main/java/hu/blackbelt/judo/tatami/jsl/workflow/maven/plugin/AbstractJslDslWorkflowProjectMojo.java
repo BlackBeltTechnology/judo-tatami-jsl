@@ -135,7 +135,7 @@ public abstract class AbstractJslDslWorkflowProjectMojo extends AbstractMojo {
             Collection<ModelDeclaration> effectiveModels = allModelDeclcarations.stream().filter(m -> effectiveModelsNames.contains(m.getName())).collect(Collectors.toList());
 
             if (effectiveModels.size() > 1) {
-                throw new MojoExecutionException("Multiple root model, please remove or define the correct ones in 'modelNames' -  "
+                throw new MojoExecutionException("Multiple root models are defined, please remove or define the correct ones in 'modelNames' -  "
                         + effectiveModels.stream().map(m -> m.getName()).collect(Collectors.joining()));
             }
 
