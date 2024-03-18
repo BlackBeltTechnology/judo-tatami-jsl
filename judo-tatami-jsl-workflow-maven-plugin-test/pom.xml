@@ -30,7 +30,7 @@
                     <execution>
                         <id>generate-models</id>
                         <goals>
-                            <goal>parser-workflow</goal>
+                            <goal>default-model-workflow</goal>
                         </goals>
                         <phase>generate-test-sources</phase>
                     </execution>
