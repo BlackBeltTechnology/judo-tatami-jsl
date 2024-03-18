@@ -223,7 +223,7 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
             workflowHelper.loadExpressionModel(modelName, null, artifactResolver.getArtifact(expression).toURI());
         }
 
-        if (dialects != null) {
+        if (dialectsMap != null) {
             for (Map.Entry<String, DialectParam> entry : dialectsMap.entrySet()) {
 
                 if (entry.getValue().getRdbms() != null && entry.getValue().getAsm2rdbmsTrace() != null) {
