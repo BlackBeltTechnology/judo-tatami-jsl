@@ -26,6 +26,7 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
@@ -43,6 +44,7 @@ import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriH
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.SaveArguments.measureSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork.getAsm2RdbmsTrace;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork.getRdbmsModel;
 import static hu.blackbelt.judo.tatami.jsl.workflow.ThrowingCosumerWrapper.executeWrapper;
@@ -74,6 +76,11 @@ public class DefaultWorkflowSave {
                 m.savePsmModel(psmSaveArgumentsBuilder()
                         .validateModel(VALIDATE_MODELS_ON_SAVE)
                         .file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-psm.model"))))));
+
+        transformationContext.getByClass(UiModel.class).ifPresent(executeWrapper(catchError, (m) ->
+                m.saveUiModel(uiSaveArgumentsBuilder()
+                        .validateModel(VALIDATE_MODELS_ON_SAVE)
+                        .file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-ui.model"))))));
 
         transformationContext.getByClass(Jsl2PsmTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
                 m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "jsl2psm.model")))));

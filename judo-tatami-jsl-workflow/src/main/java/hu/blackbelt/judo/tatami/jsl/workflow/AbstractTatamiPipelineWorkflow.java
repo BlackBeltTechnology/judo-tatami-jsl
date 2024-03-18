@@ -164,7 +164,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
                             Optional.of(
                                     aNewParallelFlow()
                                             .named("Parallel JSL Transformations")
-                                            .execute(Stream.of(createPsmWork))
+                                            .execute(Stream.of(createPsmWork, createUiWork))
                                             .build()),
 
                             Optional.of(
