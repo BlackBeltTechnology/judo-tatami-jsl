@@ -20,6 +20,8 @@ package hu.blackbelt.judo.tatami.jsl.workflow.maven.plugin;
  * #L%
  */
 
+import com.google.common.io.Files;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -47,6 +49,8 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 @Builder
 public class ArtifactResolver {
@@ -69,7 +73,7 @@ public class ArtifactResolver {
     private Log log;
 
     @SneakyThrows({MalformedURLException.class})
-    private URL getArtifactFile(Artifact artifact) {
+    public URL getArtifactFile(Artifact artifact) {
         return artifact.getFile().toURI().toURL();
     }
 
@@ -120,10 +124,15 @@ public class ArtifactResolver {
         }
     }
 
-    public File getFileFromArchive(File archive, String path) throws IOException {
+    @AllArgsConstructor
+    class ArchiveTuplet {
+        ArchiveEntry archiveEntry;
+        ArchiveInputStream archiveInputStream;
+    }
+
+    public void iterateArchive(File archive, Function<ArchiveTuplet, Boolean> callOnArchiveEntry) throws IOException {
         CompressorInputStream compressorInputStream = null;
         ArchiveInputStream archiveInputStream = null;
-        File outFile = null;
         try {
             if (archive.getName().toLowerCase().endsWith(".tgz") || archive.getName().toLowerCase().endsWith(".tar.gz")) {
                 compressorInputStream = new GzipCompressorInputStream(new FileInputStream(archive));
@@ -141,18 +150,8 @@ public class ArtifactResolver {
             if (archiveInputStream != null) {
                 ArchiveEntry entry;
                 while ((entry = archiveInputStream.getNextEntry()) != null) {
-                    if (!entry.isDirectory() && entry.getName().equals(path)) {
-                        FileNameUtils.getExtension(path);
-                        outFile = File.createTempFile("artifacthandler", entry.getName().replaceAll("/", "_"));
-                        int count;
-                        byte data[] = new byte[BUFFER_SIZE];
-                        FileOutputStream fos = new FileOutputStream(outFile, false);
-                        try (BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER_SIZE)) {
-                            while ((count = archiveInputStream.read(data, 0, BUFFER_SIZE)) != -1) {
-                                dest.write(data, 0, count);
-                            }
-                        }
-                        return outFile;
+                    if (callOnArchiveEntry.apply(new ArchiveTuplet(entry, archiveInputStream))) {
+                        return;
                     }
                 }
             }
@@ -171,7 +170,63 @@ public class ArtifactResolver {
                 }
             }
         }
-        return null;
+    }
+
+    public File extractArchive(File archive, String path) throws IOException {
+        File targetDir = Files.createTempDir();
+        targetDir.mkdirs();
+        iterateArchive(archive, a -> {
+            ArchiveEntry archiveEntry = a.archiveEntry;
+            ArchiveInputStream archiveInputStream = a.archiveInputStream;
+
+            if (!archiveEntry.isDirectory() && archiveEntry.getName().startsWith(path)) {
+                String relPath = archiveEntry.getName().substring(path.length());
+                File outFile = new File(targetDir, relPath);
+                outFile.getParentFile().mkdirs();
+                int count;
+                byte data[] = new byte[BUFFER_SIZE];
+
+                try (FileOutputStream fos = new FileOutputStream(outFile, false);
+                     BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER_SIZE)) {
+                    while ((count = archiveInputStream.read(data, 0, BUFFER_SIZE)) != -1) {
+                        dest.write(data, 0, count);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException("Could not extract: ", e);
+                }
+            }
+            return false;
+        });
+        return targetDir;
+    }
+
+    public File getFileFromArchive(File archive, String path) throws IOException {
+        AtomicReference<File> outFile = new AtomicReference<>();
+        iterateArchive(archive, a -> {
+            ArchiveEntry archiveEntry = a.archiveEntry;
+            ArchiveInputStream archiveInputStream = a.archiveInputStream;
+
+            if (!archiveEntry.isDirectory() && archiveEntry.getName().equals(path)) {
+                try {
+                    FileNameUtils.getExtension(path);
+                    outFile.set(File.createTempFile("artifacthandler", archiveEntry.getName().replaceAll("/", "_")));
+                    int count;
+                    byte data[] = new byte[BUFFER_SIZE];
+                    FileOutputStream fos = new FileOutputStream(outFile.get(), false);
+                    try (BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER_SIZE)) {
+                        while ((count = archiveInputStream.read(data, 0, BUFFER_SIZE)) != -1) {
+                            dest.write(data, 0, count);
+                        }
+                    }
+                    return true;
+                } catch (IOException e) {
+                    throw new RuntimeException("Could not extract file: " + archiveEntry.getName());
+                }
+            }
+            return false;
+        });
+
+        return outFile.get();
     }
 
     /**
@@ -191,6 +246,49 @@ public class ArtifactResolver {
             throw new MojoExecutionException("Artifact " + url.toString() + " could not be resolved.", e);
         }
         return resolutionResult;
+    }
+
+    public File getResolvedTemplateDirectory(String url) throws MojoExecutionException {
+        if (url.startsWith("mvn:")) {
+            String mvnUrl = url;
+            String subUrl = "";
+            if (mvnUrl.contains("!")) {
+                subUrl = mvnUrl.substring(mvnUrl.lastIndexOf("!") + 1);
+                mvnUrl = mvnUrl.substring(0, mvnUrl.lastIndexOf("!"));
+            }
+            ArtifactResult resolutionResult = getArtifactResult(mvnUrl);
+            // The file should exists, but we never know.
+            File file = resolutionResult.getArtifact().getFile();
+            if (file == null || !file.exists()) {
+                throw new MojoExecutionException("Artifact " + url.toString() + " has no attached file. Its content will not be copied in the target model directory.");
+            }
+
+            if (!file.getName().toLowerCase().endsWith(".jar") &&
+                    !file.getName().toLowerCase().endsWith(".zip")) {
+                return file;
+            } else {
+                // Extract file from JAR or ZIP
+                File fileFromArchive = null;
+                try {
+                    if (subUrl.startsWith("/")) {
+                        subUrl = subUrl.substring(1);
+                    }
+                    fileFromArchive = extractArchive(file, subUrl);
+                } catch (IOException e) {
+                    throw new MojoExecutionException("Could not decompress: " + fileFromArchive.getAbsolutePath() + " file: " + fileFromArchive);
+                }
+                if (fileFromArchive == null || !fileFromArchive.exists()) {
+                    throw new MojoExecutionException("File " + subUrl + " does not exists in " + file.getAbsolutePath());
+                }
+                return fileFromArchive;
+            }
+        } else {
+            File file = new File(url);
+            if (file == null || !file.exists() || !file.isDirectory()) {
+                throw new MojoExecutionException("Directory " + url.toString() + " does not existt.");
+            }
+            return file;
+        }
     }
 
 }
