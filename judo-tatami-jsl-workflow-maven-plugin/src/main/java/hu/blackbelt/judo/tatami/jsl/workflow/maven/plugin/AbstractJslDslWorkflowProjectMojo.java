@@ -24,6 +24,7 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParseException;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
+import hu.blackbelt.judo.meta.jsl.runtime.JslStreamSource;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -141,7 +142,25 @@ public abstract class AbstractJslDslWorkflowProjectMojo extends AbstractMojo {
             checkErrors(effectiveModels);
 
             for (ModelDeclaration modelDeclaration : effectiveModels) {
-                jslDslModel = JslParser.getModelFromXtextResourceSet(modelDeclaration.getName(), resourceSet);
+
+                if (effectiveModels.size() > 1) {
+                    // Reload model
+                    jslDslModel = JslParser.getModelFromStreamSources(
+                            modelDeclaration.getName(),
+                            JslParser.collectReferencedModelDeclarations(modelDeclaration, allModelDeclcarations).stream().map(d -> d.eResource().getURI())
+                                    .map(s -> new File(s.toString()).toURI())
+                                    .map(s -> {
+                                        try {
+                                            return new JslStreamSource(s.toURL().openStream(), org.eclipse.emf.common.util.URI.createURI("platform:/" + s.getPath()));
+                                        } catch (IOException e) {
+                                            throw new RuntimeException("Could not open stream: " + s);
+                                        }
+                                    })
+                                    .collect(Collectors.toList()));
+
+                } else {
+                    jslDslModel = JslParser.getModelFromXtextResourceSet(modelDeclaration.getName(), resourceSet);
+                }
 
                 if (srcModelTarget != null) {
                     srcModelTarget.mkdirs();
