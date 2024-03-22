@@ -1,0 +1,46 @@
+@greedy
+rule ClassType
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::data::ClassType {
+        guard: actorDeclaration.getExposedTransferObjects().includes(s)
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ClassType");
+
+        t.name = s.getFqName() + "::ClassType";
+        //t.transferObjectTypeName = s.transferObjectTypeName();
+        t.simpleName = s.name;
+        //t.setPackageNameTokens(s);
+
+        // t.isMapped = s.isMapped();
+        // t.isOptional = s.isMapped();
+
+        /*
+        if (s.isRefreshSupported()) {
+            t.behaviours.add(UI!ui::data::ClassBehaviourType#REFRESH);
+        }
+        if (s.isUpdateSupported()) {
+            t.behaviours.add(UI!ui::data::ClassBehaviourType#UPDATE);
+            t.isForCreateOrUpdateType = true;
+        }
+        if (s.isValidateUpdateSupported()) {
+            t.behaviours.add(UI!ui::data::ClassBehaviourType#VALIDATE_UPDATE);
+            t.isForCreateOrUpdateType = true;
+        }
+
+        if (s.isDeleteSupported()) {
+            t.behaviours.add(UI!ui::data::ClassBehaviourType#DELETE);
+        }
+
+        if (s.isGetTemplateSupported()) {
+            t.behaviours.add(UI!ui::data::ClassBehaviourType#TEMPLATE);
+            t.isOptional = true;
+        }
+        */
+
+        actorDeclaration.equivalent("Application").dataElements.add(t);
+
+        // t.isPrincipal = s.getPrincipal() == s;
+        t.isActor = s.isKindOf(JSL!ActorDeclaration);
+
+        log.debug("Create ClassType: " + t.name);
+}

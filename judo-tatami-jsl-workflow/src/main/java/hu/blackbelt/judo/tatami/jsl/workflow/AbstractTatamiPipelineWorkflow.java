@@ -43,6 +43,7 @@ import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilde
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork.Psm2AsmWorkParameter.psm2AsmWorkParameter;
+import static hu.blackbelt.judo.tatami.psm2measure.Psm2MeasureWork.Psm2MeasureWorkParameter.psm2MeasureWorkParameter;
 
 
 @Slf4j
@@ -74,10 +75,33 @@ public abstract class AbstractTatamiPipelineWorkflow {
         TransformationContext.TransformationContextVerifier verifier = transformationContext.transformationContextVerifier;
         WorkflowHelper workflowHelper = new WorkflowHelper(transformationContext, metrics);
 
-        transformationContext.put(Jsl2PsmWork.Jsl2PsmWorkParameter.jsl2PsmWorkParameter().createTrace(!parameters.getIgnoreJsl2PsmTrace()).build());
+        transformationContext.put(Jsl2PsmWork.Jsl2PsmWorkParameter.jsl2PsmWorkParameter()
+                        .generateBehaviours(parameters.getGenerateBehaviours())
+                .createTrace(!parameters.getIgnoreJsl2PsmTrace()).build());
 
-        transformationContext.put(psm2AsmWorkParameter().createTrace(!parameters.getIgnorePsm2AsmTrace()).build());
-        transformationContext.put(asm2RdbmsWorkParameter().createTrace(!parameters.getIgnoreAsm2Rdbms()).build());
+        transformationContext.put(psm2AsmWorkParameter()
+                .createTrace(!parameters.getIgnorePsm2AsmTrace())
+                .useCache(parameters.getUseCache())
+                .parallel(parameters.getRunInParallel())
+                .build());
+        transformationContext.put(psm2MeasureWorkParameter()
+                .createTrace(!parameters.getIgnorePsm2MeasureTrace())
+                .useCache(parameters.getUseCache())
+                .parallel(parameters.getRunInParallel())
+                .build());
+        transformationContext.put(asm2RdbmsWorkParameter()
+                .createTrace(!parameters.getIgnoreAsm2RdbmsTrace())
+                .useCache(parameters.getUseCache())
+                .parallel(parameters.getRunInParallel())
+                .createSimpleName(parameters.getRdbmsCreateSimpleName())
+                .nameSize(parameters.getRdbmsNameSize())
+                .shortNameSize(parameters.getRdbmsShortNameSize())
+                .tablePrefix(parameters.getRdbmsTablePrefix())
+                .columnPrefix(parameters.getRdbmsColumnPrefix())
+                .foreignKeyPrefix(parameters.getRdbmsForeignKeyPrefix())
+                .inverseForeignKeyPrefix(parameters.getRdbmsInverseForeignKeyPrefix())
+                .junctionTablePrefix(parameters.getRdbmsJunctionTablePrefix())
+                .build());
 
         loadModels(workflowHelper, metrics, transformationContext, parameters);
 
@@ -92,6 +116,10 @@ public abstract class AbstractTatamiPipelineWorkflow {
         Optional<Work> createPsmWork = parameters.getIgnoreJsl2Psm() || workflowHelper.jsl2PsmOutputPredicate().get() ?
                 Optional.empty() :
                 Optional.of(workflowHelper.createJsl2PsmWork());
+
+        Optional<Work> createUiWork = parameters.getIgnoreJsl2Ui() || workflowHelper.jsl2UiOutputPredicate().get() ?
+                Optional.empty() :
+                Optional.of(workflowHelper.createJsl2UiWork());
 
         Optional<Work> createAsmWork = parameters.getIgnorePsm2Asm() || workflowHelper.psm2AsmOutputPredicate().get() ?
                 Optional.empty() :
@@ -136,7 +164,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
                             Optional.of(
                                     aNewParallelFlow()
                                             .named("Parallel JSL Transformations")
-                                            .execute(Stream.of(createPsmWork))
+                                            .execute(Stream.of(createPsmWork, createUiWork))
                                             .build()),
 
                             Optional.of(

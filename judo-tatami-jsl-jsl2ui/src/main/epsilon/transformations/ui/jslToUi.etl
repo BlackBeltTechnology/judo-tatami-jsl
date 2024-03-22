@@ -1,0 +1,27 @@
+import "../../operations/_importAll.eol";
+
+import "modules/application/actorDeclaration.etl";
+import "modules/application/actorMenuDeclaration.etl";
+import "modules/application/modifiable.etl";
+import "modules/application/viewDeclaration.etl";
+
+import "modules/structure/class.etl";
+
+pre {
+    var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
+    var __cacheMap = new ConcurrentMap();
+    var __originalMap = new ConcurrentMap();
+    var System = Native("java.lang.System");
+
+    //UI.target.resource.contents.add(defaultModelName.equivalent("CreateRootApplication"));
+}
+
+post {
+    for (navigationController : UI!ui::NavigationController in UI!ui::NavigationController.all()) {
+        navigationController.items = navigationController.items.sortBy(e | e.~pos);
+    }
+
+    for (group : UI!ui::NavigationItem in UI!ui::NavigationItem.all()) {
+        group.items = group.items.sortBy(e | e.~pos);
+    }
+}

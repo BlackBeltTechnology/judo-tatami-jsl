@@ -14,7 +14,7 @@ rule AbstractCreateTransferAttributeForDefaultTransferObjectType
         t.required = s.isRequired();
         t.name = s.name;
         t.binding = s.equivalent("CreateAttributeFromField");
-        t.dataType = s.getReferenceType().getPSMEquivalent();
+        t.dataType = s.getReferenceType().getPrimitiveDeclarationEquivalent();
 
         if (s.getDefault().isDefined()) {
             t.defaultValue = s.getDefault().equivalent("CreateDefaultValueForPrimitiveEntityMember");
@@ -62,7 +62,11 @@ rule AbstractCreateDerivedTransferAttributeForDefaultTransferObjectType
 
         t.name = s.name;
         t.binding = s.equivalent("CreateDataProperty");
-        t.dataType = s.getReferenceType().getPSMEquivalent();
+        if (s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
+	        t.dataType = s.getReferenceType().getPrimitiveDeclarationEquivalent();
+        } else {
+	        t.dataType = s.getReferenceType().getEntityDeclarationEquivalent();
+        }
 }
 
 @greedy
@@ -102,7 +106,11 @@ rule AbstractCreateEntityQueryTransferAttributeForDefaultTransferObjectType
 
         t.name = s.name;
         t.binding = s.equivalent("CreateDataPropertyForEntityQuery");
-        t.dataType = s.getReferenceType().getPSMEquivalent();
+        if (s.getReferenceType().isKindOf(JSL!PrimitiveDeclaration)) {
+	        t.dataType = s.getReferenceType().getPrimitiveDeclarationEquivalent();
+        } else {
+	        t.dataType = s.getReferenceType().getEntityDeclarationEquivalent();
+        }        
 }
 
 @greedy
@@ -143,7 +151,7 @@ rule AbstractCreateTransferDefaultValueAttributeForDefaultTransferObjectType
 
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultValueForPrimitiveEntityMember");
-        t.dataType = s.eContainer.getReferenceType().getPSMEquivalent();
+        t.dataType = s.eContainer.getReferenceType().getPrimitiveDeclarationEquivalent();
 }
 
 // Create default transfer object attribute for default value expression and add it to default transfer object

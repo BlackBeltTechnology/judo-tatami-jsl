@@ -1,0 +1,108 @@
+model shop;
+
+import judo::types;
+
+type string Email min-size:0 max-size:64 regex:r"^\w+@\w+(\.\w+)+$";
+
+enum OrderStatus {
+    OPEN = 1;
+    ORDERED = 2;
+    DELIVERED = 3;
+}
+
+entity Address {
+    field required String street;
+    field required String city;
+    field String country;
+}
+
+entity User {
+    identifier required Email email;
+}
+
+entity abstract Customer {
+    field required Address address;
+    relation Order[] orders opposite:customer;
+    relation Order cart <= self.orders.filter(o | o.status == OrderStatus#OPEN).any();
+}
+
+query Integer NumOfCustomers(String country) <=
+                Customer.
+                all().
+                filter(c | c.address.country == country).
+                size();
+
+entity Person extends Customer, User {
+    field required String firstName;
+    field required String lastName;
+    field String fullName <= self.firstName + " " + self.lastName;
+}
+
+entity Enterprise extends Customer {
+    field required String name;
+}
+
+entity Order {
+    field required OrderStatus status default:OrderStatus#OPEN;
+    field OrderItem[] orderItems;
+    relation required Customer customer opposite:orders;
+    field Integer price <= self.orderItems.sum(item | item.price);
+}
+
+entity OrderItem {
+    relation required Product product opposite-add:orderItems[];
+    field required Integer amount;
+    field String productName <= self.product.name;
+    field Integer price <= self.amount * self.product.price;
+}
+
+entity Product {
+    identifier required String name;
+    field required Integer price;
+}
+
+view ProductListView {
+    table ProductRow[] products <= Product.all();
+}
+
+row ProductRow(Product product) {
+    column String name <= product.name;
+    column String price <= product.price.asString() + " HUF";
+}
+
+view ProductView(Product product) {
+    vertical head {
+        field String price <= product.price.asString() + " HUF";
+        field String name <= product.name default:"";
+    }
+}
+
+view CartView maps Customer as customer {
+    table OrderItemRow[] items <= customer.cart.orderItems;
+    field Integer price <= customer.cart.price;
+
+    link ProductListView productList text:"Back to shopping";
+
+    // set the status of the order to OrderStatus#ORDERED
+    action ThankYouView order(CouponView coupon);
+}
+
+view CouponView {
+    field String code;
+}
+
+view ThankYouView {
+    text message <= "Thank you for your order. Please check other products at";
+    link ProductListView productList text:"Our products page";
+}
+
+row OrderItemRow(OrderItem item) {
+    column String name <= item.productName;
+    column Integer amount <= item.amount;
+    column Integer price <= item.price;
+}
+
+actor human CustomerActor(Customer customer) {
+    menu CartView myCart <= customer label:"My cart";
+    menu ProductListView products label:"Products";
+}

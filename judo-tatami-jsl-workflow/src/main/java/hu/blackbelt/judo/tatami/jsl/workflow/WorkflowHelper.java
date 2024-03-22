@@ -29,11 +29,13 @@ import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.support.RdbmsModelResourceSupport;
+import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork;
 import hu.blackbelt.judo.tatami.expression.asm.validation.ExpressionValidationOnAsmWork;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmWork;
+import hu.blackbelt.judo.tatami.jsl.jsl2ui.Jsl2UiWork;
 import hu.blackbelt.judo.tatami.psm.validation.PsmValidationWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReportPredicate;
 import hu.blackbelt.judo.tatami.core.workflow.work.NoOpWork;
@@ -248,23 +250,7 @@ public class WorkflowHelper {
                                         .toURL().openStream())
                         .name(modelName)))));
     }
-
-    public void loadSdk(final InputStream sdk,
-                        final URI sdkSourceURI,
-                        final InputStream sdkInternal,
-                        final URI sdkInternalSourceURI,
-                        final InputStream sdkGuice,
-                        final URI sdkGuiceSourceURI,
-                        final InputStream sdkSpring,
-                        final URI sdkSpringSourceURI
-
-    ) {
-
-        if (sdk == null && sdkSourceURI == null || sdkInternal == null && sdkInternalSourceURI == null ) {
-            return;
-        }
-    }
-
+    
     public Work createPsmValidateWork() {
         return aNewConditionalFlow()
                 .named("Conditional when Psm model exists then Execute PsmValidation")
@@ -280,6 +266,10 @@ public class WorkflowHelper {
         return () -> transformationContext.transformationContextVerifier.verifyClassPresent(PsmModel.class);
     }
 
+    public Supplier<Boolean> jsl2UiOutputPredicate() {
+        return () -> transformationContext.transformationContextVerifier.verifyClassPresent(UiModel.class);
+    }
+
     public Work createJsl2PsmWork() {
         return aNewConditionalFlow()
                 .named("Conditional when Jsl model exists then Execute Jsl2Psm")
@@ -291,6 +281,24 @@ public class WorkflowHelper {
                                 .execute(
                                         new Jsl2PsmWork(transformationContext).withMetricsCollector(workflowMetrics),
                                         new CheckWork(jsl2PsmOutputPredicate())
+                                )
+                                .build()
+                )
+                .otherwise(new NoOpWork())
+                .build();
+    }
+
+    public Work createJsl2UiWork() {
+        return aNewConditionalFlow()
+                .named("Conditional when Jsl model exists then Execute Jsl2Ui")
+                .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyClassPresent(JslDslModel.class)))
+                .when(WorkReportPredicate.COMPLETED)
+                .then(
+                        aNewSequentialFlow()
+                                .named("Execute Jsl2Ui")
+                                .execute(
+                                        new Jsl2UiWork(transformationContext).withMetricsCollector(workflowMetrics),
+                                        new CheckWork(jsl2UiOutputPredicate())
                                 )
                                 .build()
                 )

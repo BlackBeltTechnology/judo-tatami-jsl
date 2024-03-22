@@ -1,0 +1,14 @@
+@cached
+operation JSL!TransferRelationDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}
+
+@cached
+operation JSL!TransferRelationDeclaration getDetail(): JSL!DetailModifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!DetailModifier));
+}

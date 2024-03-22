@@ -8,14 +8,22 @@ rule AbstractCreateTransferObjectRelationForTransferRelationDeclaration
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!TransferObjectRelation {
         t.name = s.name;
-        t.target = s.getReferenceType().getPSMEquivalent();
+        t.target = s.getReferenceType().getTransferDeclarationEquivalent();
 
-        // TODO:
-        // t.embeddedCreate = not s.eContainer.isAbstract;
-        // t.embeddedUpdate = not s.eContainer.isAbstract;
-        // t.embeddedDelete = not s.eContainer.isAbstract;
-
+        if (s.isCreateAllowed()) {
+            t.embeddedCreate = true;
+        }
+        if (s.isUpdateAllowed()) {
+            t.embeddedUpdate = true;
+        }
+        if (s.isDeleteAllowed()) {
+            t.embeddedDelete = true;
+        }
         t.embedded = s.isAggregation();
+
+        if (s.isGetRangeSupported()) {
+            t.range = s.getTransferActionRangeEquivalent();
+        }
 }
 
 
@@ -24,7 +32,7 @@ rule CreateTransientTransferObjectRelationForTransferRelationDeclaration
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationForTransferRelationDeclaration {
-        guard: not s.maps() and not s.reads()
+        guard: not s.maps() and not s.reads() and not s.isActorRelated()
 
         t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferObjectRelationForTransferRelationDeclaration");
         t.cardinality = s.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
@@ -37,7 +45,7 @@ rule CreateTransientTransferObjectRelationForTransferRelationDeclaration
            }
         }      
 
-        s.eContainer.getPSMEquivalent().relations.add(t);
+        s.eContainer.getTransferDeclarationEquivalent().relations.add(t);
 
         log.debug("Created TransferObjectRelation for TransferRelationDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
@@ -47,7 +55,7 @@ rule CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration
     transform s : JSL!TransferRelationDeclaration
     to t : JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationForTransferRelationDeclaration {
-      guard: s.reads()
+      guard: s.reads() and not s.isActorRelated()
 
       t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
       t.cardinality = s.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
@@ -58,7 +66,7 @@ rule CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration
          t.binding = s.getterExpr.equivalent("CreateReadsReferenceExpressionForUnmappedTransferObjectTransferRelationDeclaration");
       }
 
-      s.eContainer.getPSMEquivalent().relations.add(t);
+      s.eContainer.getTransferDeclarationEquivalent().relations.add(t);
       log.debug("Created TransferObjectRelation for TransferRelationDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
@@ -67,7 +75,7 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration
     transform s : JSL!TransferRelationDeclaration
     to t : JUDOPSM!TransferObjectRelation
     extends AbstractCreateTransferObjectRelationForTransferRelationDeclaration {
-      guard: s.maps()
+      guard: s.maps() and not s.isActorRelated()
 
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
       t.cardinality = s.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
@@ -88,7 +96,7 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration
         t.defaultValue = s.getDefault().equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
       }      
 
-      s.eContainer.getPSMEquivalent().relations.add(t);
+      s.eContainer.getTransferDeclarationEquivalent().relations.add(t);
       log.debug("Created TransferObjectRelation for TransferRelationDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
@@ -105,9 +113,9 @@ rule CreateTransferEntityDefaultValueRelationForMappedTransferObjectConstructor
         t.setId("(jsl/" + s.getId() + ")/CreateTransferEntityDefaultValueRelationForMappedTransferObjectConstructor");
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultNavigationPropertyForMappedTransferObjectConstructor");
-        t.target = s.eContainer.getReferenceType().getPSMEquivalent();        
+        t.target = s.eContainer.getReferenceType().getTransferDeclarationEquivalent();        
         t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
-        s.eContainer.eContainer.getPSMEquivalent().relations.add(t);
+        s.eContainer.eContainer.getTransferDeclarationEquivalent().relations.add(t);
 }
 
 
@@ -120,9 +128,106 @@ rule CreateTransferEntityDefaultValueRelationForUnmappedTransferObjectConstructo
         t.setId("(jsl/" + s.getId() + ")/CreateTransferEntityDefaultValueRelationForUnmappedTransferObjectConstructor");
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.binding = s.equivalent("CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
-        t.target = s.eContainer.getReferenceType().getPSMEquivalent();        
+        t.target = s.eContainer.getReferenceType().getPrimitiveDeclarationEquivalent();        
         t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
-        s.eContainer.eContainer.getPSMEquivalent().relations.add(t);
+        s.eContainer.eContainer.getTransferDeclarationEquivalent().relations.add(t);
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////
+// Relation range
+////////////////////////////////////////////////////////////////////////////////////////////
+@greedy
+rule CreateRelationRangeReferenceExpressionTypeForMappedTransferObjectRelation
+    transform s : JSL!TransferChoiceModifier
+    to t: JUDOPSM!ReferenceExpressionType {
+        guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.eContainer.map.isDefined()
+
+        t.setId("(jsl/" + s.eContainer.getId() + ")/CreateRelationRangeReferenceExpressionTypeForMappedTransferObjectRelation");
+        t.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
+        s.equivalent("CreateRelationRangeNavigationPropertyForMappedTransferObjectRelation").getterExpression = t;
+
+        log.debug("Created ReferenceExpressionType for Transfer Object Default Value: " + t.expression);
+    }
+
+@greedy
+rule CreateRelationRangeNavigationPropertyForMappedTransferObjectRelation
+    transform s : JSL!TransferChoiceModifier
+    to t: JUDOPSM!NavigationProperty {
+        guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.eContainer.map.isDefined()
+
+        t.setId("(jsl/" + s.eContainer.getId() + ")/CreateRelationRangeNavigationPropertyForMappedTransferObjectRelation");
+        t.name = defaultRelationRangeNamePrefix + s.eContainer.name + defaultRelationRangeNameMidfix + s.eContainer.eContainer.name + defaultRelationRangeNamePostfix;
+        t.target = s.eContainer.getReferenceType().getTransferDeclarationEquivalent().entityType;
+  	    t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForGetRelationRangeEntityRelation", t.getId());
+        s.eContainer.eContainer.map.entity.getEntityDeclarationEquivalent().navigationProperties.add(t);
+
+        log.debug("Created NavigationProperty for Transfer Object Default Value: " + s);
+    }
+
+@greedy
+rule CreateRelationRangeReferenceExpressionTypeForUnmappedTransferObjectRelation
+    transform s : JSL!TransferChoiceModifier
+    to t: JUDOPSM!ReferenceExpressionType {
+        guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.eContainer.map.isUndefined()
+        
+        t.setId("(jsl/" + s.eContainer.getId() + ")/CreateRelationRangeReferenceExpressionTypeForUnmappedTransferObjectRelation");
+        t.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
+        s.equivalent("CreateRelationRangStaticNavigationForUnmappedTransferObjectRelation").getterExpression = t;
+
+        log.debug("Created ReferenceExpressionType for Transfer Object Default Value: " + t.expression);
+    }
+
+@greedy
+rule CreateRelationRangStaticNavigationForUnmappedTransferObjectRelation
+    transform s : JSL!TransferChoiceModifier
+    to t: JUDOPSM!StaticNavigation {
+        guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.eContainer.map.isUndefined()
+
+        t.setId("(jsl/" + s.eContainer.getId() + ")/CreateRelationRangStaticNavigationForUnmappedTransferObjectRelation");
+        t.name = defaultRelationRangeNamePrefix + s.eContainer.name + defaultRelationRangeNameMidfix + s.eContainer.eContainer.name + defaultRelationRangeNamePostfix;
+        t.target = s.eContainer.getReferenceType().getTransferDeclarationEquivalent().entityType;
+  	    t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForGetRelationRangeEntityRelation", t.getId());
+
+        s.eContainer.eContainer.eContainer.getModelRoot().elements.add(t);
+        
+        log.debug("Created StaticNavigation for Transfer Object Default Value: " + s);
+    }
+
+
+@greedy
+rule CreateRelationRangeTransferObjectRelation
+    transform s : JSL!TransferChoiceModifier
+    to t : JUDOPSM!TransferObjectRelation {
+        guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.isGetRangeSupported()
+
+        t.setId("(esm/" + s.getId() + ")/CreateRelationRangeTransferObjectRelation");
+
+        t.name = s.eContainer.getTransferActionRangeEquivalent().name;
+        t.cardinality = s.eContainer.equivalent("CreateCardinalityForGetRelationRangeTransferObjectRelation");
+        t.target = s.eContainer.getReferenceType().getTransferDeclarationEquivalent();
+        t.binding = s.eContainer.getTransferActionRangeEquivalent();
+
+        s.eContainer.eContainer.getTransferDeclarationEquivalent().relations.add(t);
+}
+
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRelationRangeEntityRelation
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRelationRangeEntityRelation");
+        t.lower = 0;
+        t.upper = -1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRelationRangeTransferObjectRelation
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRelationRangeTransferObjectRelation");
+        t.lower = 0;
+        t.upper = -1;
+}

@@ -8,7 +8,7 @@ rule CreateEntityType
     t.name = entityNamePrefix + s.name + entityNamePostfix;
     t.`abstract` = s.isAbstract();
     for (super in s.`extends`) {
-        t.superEntityTypes.add(super.getPSMEquivalent());
+        t.superEntityTypes.add(super.getEntityDeclarationEquivalent());
     }
 
     s.eContainer.getModelRoot().elements.add(t);

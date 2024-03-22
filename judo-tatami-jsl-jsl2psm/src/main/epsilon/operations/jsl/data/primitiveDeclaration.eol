@@ -1,5 +1,5 @@
 @cached
-operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
+operation JSL!PrimitiveDeclaration getPrimitiveDeclarationEquivalent(): JUDOPSM!Primitive {
     if (self.primitive.isDefined()) {
         var byName = self.eContainer.name.equivalent("CreateModelPackages").elements.selectOne(e | e.name == self.name);
         if (byName.isDefined()) {
@@ -28,4 +28,11 @@ operation JSL!PrimitiveDeclaration getPSMEquivalent(): JUDOPSM!Primitive {
     if (self.instanceOf(JSL!EnumDeclaration)) {
         return self.equivalent("CreateEnumerationType");
     }
+}
+
+
+
+@cached
+operation JSL!PrimitiveDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "#" + self.name;
 }

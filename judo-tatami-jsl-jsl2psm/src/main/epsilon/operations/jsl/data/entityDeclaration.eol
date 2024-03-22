@@ -1,5 +1,5 @@
 @cached
-operation JSL!EntityDeclaration getPSMEquivalent(): JUDOPSM!EntityType {
+operation JSL!EntityDeclaration getEntityDeclarationEquivalent(): JUDOPSM!EntityType {
     return self.equivalent("CreateEntityType");
 }
 
@@ -10,7 +10,7 @@ operation JSL!EntityDeclaration getId(): String {
 
 @cached
 operation JSL!EntityDeclaration getModelRoot(): JUDOPSM!Package {
-    return self.getPsmEquivalent().getModelRoot();
+    return self.getEntityDeclarationEquivalent().getModelRoot();
 }
 
 
@@ -34,4 +34,10 @@ operation JSL!EntityDeclaration getInheritedMembers(): Sequence<EntityMemberDecl
 @cached
 operation JSL!EntityDeclaration isAbstract(): Boolean {
     return jslUtils.isAbstract(self);
+}
+
+
+@cached
+operation JSL!EntityDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
 }

@@ -9,7 +9,7 @@ rule CreateEntityDefaultTransferObjectType
     to t : JUDOPSM!MappedTransferObjectType {
         guard: generateDefaultTransferObject
         t.setId("(jsl/" + s.getId() + ")/CreateEntityDefaultTransferObjectType");
-        t.entityType = s.getPSMEquivalent();
+        t.entityType = s.getEntityDeclarationEquivalent();
 
         t.entityType.defaultRepresentation = t;
 

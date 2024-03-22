@@ -51,6 +51,8 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
         Boolean createTrace = false;
         @Builder.Default
         Boolean parallel = true;
+        @Builder.Default
+        Boolean generateBehaviours = true;
     }
 
     final URI transformationScriptRoot;
@@ -82,6 +84,7 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
                 .log(getTransformationContext().getByClass(Logger.class).orElse(null))
                 .scriptUri(transformationScriptRoot)
                 .createTrace(workParam.createTrace)
+                .generateBehaviours(workParam.generateBehaviours)
                 .parallel(workParam.parallel));
 
         getTransformationContext().put(jsl2PsmTransformationTrace);

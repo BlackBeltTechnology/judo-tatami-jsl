@@ -34,19 +34,19 @@ transfer MappedTransfer maps Entity as e {
 	action UnmappedOutputParameter unmappedOutputAction();
 	action UnmappedOutputParameter staticUnmappedOutputAction() static;
 
-	action MappedOutputParameter mappedOutputAction();
+	action MappedOutputParameter mappedOutputAction() update: true delete: true;
 	action MappedOutputParameter staticMappedOutputAction() static;
 
 	action UnmappedOutputParameter unmappedOutputActionWithUnmappedInput(UnmappedInputParameter param);
 	action UnmappedOutputParameter staticUnmappedOutputActionWithUnmappedInput(UnmappedInputParameter param) static;
 
-	action MappedOutputParameter mappedOutputActionWithUnmappedInput(UnmappedInputParameter param);
+	action MappedOutputParameter mappedOutputActionWithUnmappedInput(UnmappedInputParameter param) update: true delete: true;;
 	action MappedOutputParameter staticMappedOutputActionWithUnmappedInput(UnmappedInputParameter param) static;
 
 	action UnmappedOutputParameter unmappedOutputActionWithMappedInput(MappedInputParameter param choices:InputParameterEntity.all());
 	action UnmappedOutputParameter staticUnmappedOutputActionWithMappedInput(MappedInputParameter param choices:InputParameterEntity.all()) static;
 
-	action MappedOutputParameter mappedOutputActionWithMappedInput(MappedInputParameter param choices:InputParameterEntity.all());
+	action MappedOutputParameter mappedOutputActionWithMappedInput(MappedInputParameter param choices:InputParameterEntity.all()) update: true delete: true;;
 	action MappedOutputParameter staticMappedOutputActionWithMappedInput(MappedInputParameter param choices:InputParameterEntity.all()) static;
 }
 
@@ -77,6 +77,8 @@ transfer UnmappedInputParameter {
 
 
 transfer MappedOutputParameter maps OutputParameterEntity as o {
+	event instead update update();
+	event instead delete delete();
 }
 
 transfer MappedInputParameter maps InputParameterEntity as i {	

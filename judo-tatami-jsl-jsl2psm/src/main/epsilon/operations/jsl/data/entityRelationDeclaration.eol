@@ -2,3 +2,8 @@
 operation JSL!EntityRelationDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
+
+@cached
+operation JSL!EntityRelationDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "#" + self.name;
+}

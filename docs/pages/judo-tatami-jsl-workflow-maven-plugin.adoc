@@ -31,7 +31,7 @@ Generating application with minimal settings.
         <execution>
             <id>generate-application-from-jsl</id>
             <goals>
-                <goal>parser-workflow</goal>
+                <goal>default-model-workflow</goal>
             </goals>
             <phase>generate-sources</phase>
         </execution>
@@ -89,33 +89,33 @@ the correct measurement handling.
         <modelNames/> <!--3-->
         <modelVersion>${project.version}</modelVersion> <!--4-->
 
-        <sdkPackagePrefix>my.best.package</sdkPackagePrefix> <!--5-->
-        <useDependencies>false</useDependencies> <!--6-->
-        <createSdkJar>false</createSdkJar> <!--7-->
-        <compileSdk>false</compileSdk> <!--8-->
+        <useDependencies>false</useDependencies> <!--5-->
 
-        <dialects>hsqldb,postgresql</dialects> <!--9-->
+        <dialects>hsqldb,postgresql</dialects> <!--6-->
 
-        <ignorePsm2Asm>false</ignorePsm2Asm> <!--10-->
-        <ignorePsm2AsmTrace>false</ignorePsm2AsmTrace> <!--11-->
-        <ignorePsm2Measure>false</ignorePsm2Measure> <!--12-->
-        <ignorePsm2MeasureTrace>false</ignorePsm2MeasureTrace> <!--13-->
-        <ignoreAsm2Rdbms>false</ignoreAsm2Rdbms> <!--14-->
-        <ignoreAsm2RdbmsTrace>false</ignoreAsm2RdbmsTrace> <!--15-->
-        <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase> <!--16-->
-        <ignoreAsm2Expression>false</ignoreAsm2Expression> <!--18-->
-        <runInParallel>true</runInParallel> <!--19-->
-        <saveModels>true</saveModels> <!--20-->
-        <enableMetrics>true</enableMetrics> <!--21-->
-        <validateModels>false</validateModels> <!--22-->
-        <sdkOutputDirectory/> <!--23-->
-        <sdkAddSourceToJar>true</sdkAddSourceToJar> <!--24-->
-        <generateSdk>true</generateSdk> <!--25-->
-        <generateSdkInternal>true</generateSdkInternal> <!--26-->
-        <generateSdkGuice>false</generateSdkGuice> <!--27-->
-        <generateSdkSpring>false</generateSdkSpring> <!--28-->
-        <generateOptionalTypes>true</generateOptionalTypes> <!--29-->
-        <generateSdkPayloadValidator>true</generateSdkPayloadValidator> <!--30-->
+        <ignoreJsl2Psm>false</ignorePsm2Asm> <!--7-->
+        <ignoreJsl2Ui>false</ignorePsm2Asm> <!--8-->
+        <ignorePsm2Asm>false</ignorePsm2Asm> <!--9-->
+        <ignorePsm2AsmTrace>false</ignorePsm2AsmTrace> <!--10-->
+        <ignorePsm2Measure>false</ignorePsm2Measure> <!--11-->
+        <ignorePsm2MeasureTrace>false</ignorePsm2MeasureTrace> <!--12-->
+        <ignoreAsm2Rdbms>false</ignoreAsm2Rdbms> <!--13-->
+        <ignoreAsm2RdbmsTrace>false</ignoreAsm2RdbmsTrace> <!--14-->
+        <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase> <!--15-->
+        <ignoreAsm2Expression>false</ignoreAsm2Expression> <!--16-->
+        <useCache>false</useCache> <!--17-->
+        <runInParallel>true</runInParallel> <!--18-->
+        <saveModels>true</saveModels> <!--19-->
+        <enableMetrics>true</enableMetrics> <!--20-->
+        <validateModels>false</validateModels> <!--21-->
+        <rdbmsCreateSimpleName>false</rdbmsCreateSimpleName> <!--22-->
+        <rdbmsNameSize>-1</rdbmsNameSize> <!--23-->
+        <rdbmsShortNameSize>-1</rdbmsShortNameSize> <!--24-->
+        <rdbmsTablePrefix>T_</rdbmsTablePrefix> <!--25-->
+        <rdbmsColumnPrefix>C_</rdbmsColumnPrefix> <!--26-->
+        <rdbmsForeignKeyPrefix>FK_</rdbmsForeignKeyPrefix> <!--27-->
+        <rdbmsInverseForeignKeyPrefix>FK_INV_</rdbmsInverseForeignKeyPrefix> <!--28-->
+        <rdbmsJunctionTablePrefix>J_</rdbmsJunctionTablePrefix> <!--29-->
     </configuration>
 </execution>
 ----
@@ -144,116 +144,110 @@ have to enable `compileSdk` and `createSdkJar` option.
 +
 (Default: `${project.version}`)
 
-<5> (Optional) SDK Package prefix used to store all generated model element under.
-The generated Java package form <prefix>.<model fq name>.<sdk type>.<model defined packages>.<model name>
-+
-- `model fq name` is created from `model` tag. There `::` used for package separation. In this form it replaced with `_`
-- `sdk type` name includes the type of generated package. It can be `internal`, `sdk` or `daoprovider` currently.
-- `model defined packages` is the base and imported model's packages. The `::` replaced with `.`.
-- `model name` The mode name without package. All of name tokens in package context are in lowercase format.
-+
-(Default: <none>)
-<6> (Optional) Use maven dependencies as source of JSL files. When it is `true`, scans all dependencies transitively for `.jsl` files. When you have `.jsl` files packaged and stored
+<5> (Optional) Use maven dependencies as source of JSL files. When it is `true`, scans all dependencies transitively for `.jsl` files. When you have `.jsl` files packaged and stored
 in maven, add to your `pom.xml`.
 +
 (Default: `false`)
 
-<7> (Optional) Create SDK Jar with pipeline. In this case the generated and compiled codes
-are stored in a OSGi compliant JAR file. This JAR files can be used as dependency. When model compilation is seperated from application development these JAR files can be used as dependency, and the model loader can load models from classpath too.
-+
-(Default: `false`)
-
-<8> (Optional)  In this case the pipeline calls own compiler
-API to compile generated source codes. When it is `true`, use `createSdkJar` option too.
-
-<9> (Optional) Coma separated list of dialects generated. Valid values are: 
+<6> (Optional) Coma separated list of dialects generated. Valid values are: 
 - hsqldb, 
 - postgresql
 +
 (Default: `hsqldb,postgresql`)
 
-<10> (Optional) Ignore Psm2Asm work. 
+<7> (Optional) Ignore Jsl2Psm work. 
 +
 Default: `false`
 
-<11> (Optional) Ignore Psm2Asm Trace. 
+<8> (Optional) Ignore Jsl2Ui work. 
++
+Default: `false`
+
+<9> (Optional) Ignore Psm2Asm work. 
++
+Default: `false`
+
+<10> (Optional) Ignore Psm2Asm Trace. 
 +
 Default: `true`
 
-<12> (Optional) Ignore Psm2Measure work. 
+<11> (Optional) Ignore Psm2Measure work. 
 +
 Default: `false`
 
-<13> (Optional) Ignore Psm2Measure Trace. 
+<12> (Optional) Ignore Psm2Measure Trace. 
 +
 Default: `true`
 
-<14> (Optional) Ignore Asm2Rdbms work. 
+<13> (Optional) Ignore Asm2Rdbms work. 
 +
 Default: `false`
 
-<15> (Optional) Ignore Asm2Rdbms Trace. 
+<14> (Optional) Ignore Asm2Rdbms Trace. 
 +
 Default: `false`
 
-<16> (Optional) Ignore Rdbms2Liquibase work.
+<15> (Optional) Ignore Rdbms2Liquibase work.
 +
 Default: `false`
 
-<18> (Optional) Ignore Asm2Expression work.
+<16> (Optional) Ignore Asm2Expression work.
 +
 Default: `false`
 
-<19> (Optional) Run in parallel when possible, parallel execution is used in multicore system
+<17> (Optional) Use cache in model transformations.
++
+Default: `false`
+
+<18> (Optional) Run in parallel when possible, parallel execution is used in multicore system
 +
 (Default: `true`)
 
-<20> (Optional) Save models after execution. After execution the models are stored on destination.
+<19> (Optional) Save models after execution. After execution the models are stored on destination.
 +
 (Default: `false`)
 
-<21> (Optional) Enable generation time statistics after execution
+<20> (Optional) Enable generation time statistics after execution
 +
 (Default: `true`)
 
-<22> (Optional) Validate model on load and save
+<21> (Optional) Validate model on load and save
 +
 (Default: `false`)
 
-<23> (Optional) When SDK output is defined, it is used instead of destination + modelName.
-+
-(Default: `<none>`)
-
-<24> (Optional) Add generared codes to JAR files. To work the  `createSdkJar` option
-have to be enabled.
-+
-(Default: `true`)
-
-<25> (Optional) Generate SDK interfaces. When internal, guice or spring is generated, it have to be enabled
-+
-(Default: `true`)
-
-<26> (Optional) Generate Internal Wrapper implementation. When guice or spring is generated, it have to be enabled
-+
-(Default: `true`)
-
-<27> (Optional) Generate Guice SDK implementation.
-+
+<22> Create simple name. (Optional)
+Using the model name as SQL name. It does not check namespace collosion.
 (Default: `false`)
 
-<28> (Optional) Generate Spring SDK implementation.
+<23> Full size of SQL name without abbreviation algorithm. When -1 is used it uses
+database specific default.
 +
-(Default: `false`)
+(Default: `-1`)
 
-<29> (Optional) Generate Optional types. It generates
-Optional wrapper for Transfer Object fields and for single relations
-where the cardinality is 0
+<24> Short size of SQL name without abbreviation algorithm. This size is used as namespace fragment size.
+When -1 is used it uses database specific default.
 +
-(Default: `true`)
+(Default: `-1`)
 
-<30> (Optional) Generate SDK Payload validation on DAO calls.
+<25> Table prefix used for table names. When `-` is used no prefix is used.
 +
-(Default: `true`)
+(Default: `T_`)
+
+<26> Column prefix used for column names. When `-` is used no prefix is used.
++
+(Default: `C_`)
+
+<27> Foreign key prefix used for foreign key names. When `-` is used no prefix is used.
++
+(Default: `FK_`)
+
+<28> Inverse Foreign key prefix used for foreign key names. When `-` is used no prefix is used.
++
+(Default: `FK_INV_`)
+
+<29> Junction table prefix used for table names. When `-` is used no prefix is used.
++
+(Default: `J_`)
 
 
 == Example
@@ -345,7 +339,7 @@ entity Customer {
                     <execution>
                         <id>generate-models</id>
                         <goals>
-                            <goal>parser-workflow</goal>
+                            <goal>default-model-workflow</goal>
                         </goals>
                         <phase>generate-sources</phase>
                     </execution>
@@ -353,9 +347,7 @@ entity Customer {
                 <configuration>
                     <modelNames>SalesModel</modelNames>
                     <sources>${basedir}/src/main/model</sources>
-                    <sdkPackagePrefix>hu.blackbelt.judo.test</sdkPackagePrefix>
                     <dialects>hsqldb</dialects>
-                    <generateSdkGuice>true</generateSdkGuice>
                 </configuration>
             </plugin>
 
