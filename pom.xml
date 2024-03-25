@@ -335,12 +335,6 @@
             </dependency>
 
             <dependency>
-                <groupId>hu.blackbelt</groupId>
-                <artifactId>structured-map-proxy</artifactId>
-                <version>${structured-map-proxy-version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>hu.blackbelt.judo</groupId>
                 <artifactId>judo-operation-utils</artifactId>
                 <version>${judo-operation-utils-version}</version>
