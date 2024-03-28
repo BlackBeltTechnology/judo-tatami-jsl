@@ -32,6 +32,12 @@ operation JSL!EntityDeclaration getInheritedMembers(): Sequence<EntityMemberDecl
 }
 
 @cached
+operation JSL!EntityDeclaration isAbstract(): Boolean {
+    return jslUtils.isAbstract(self);
+}
+
+
+@cached
 operation JSL!EntityDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "::" + self.name;
 }

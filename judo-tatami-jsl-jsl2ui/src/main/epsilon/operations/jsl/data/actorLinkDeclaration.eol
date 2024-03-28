@@ -1,0 +1,17 @@
+@cached
+operation JSL!ActorLinkDeclaration getFqName(): String {
+    if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration) or self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
+        return self.eContainer.getFqName() + "::" + self.name;
+    }
+    return self.name;
+}
+
+@cached
+operation JSL!ActorLinkDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration)) {
+        return self.eContainer.getActorDeclaration();
+    } else if (self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
+        return self.eContainer;
+    }
+    return null;
+}

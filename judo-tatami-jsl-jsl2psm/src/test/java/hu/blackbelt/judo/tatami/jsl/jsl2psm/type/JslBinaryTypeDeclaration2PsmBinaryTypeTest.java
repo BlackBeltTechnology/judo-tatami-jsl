@@ -94,7 +94,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                         "type binary Picture mime-type:[\"image/png\", \"image/*\"] max-file-size:1024 KiB;\n" +
                         "\n" +
                         "entity User {\n" +
-                        "\tfield required Picture profilePicture;\n" +
+                        "\tfield Picture profilePicture required;\n" +
                         "}"
                 )
         );

@@ -9,7 +9,7 @@ entity Entity {
 }
 
 transfer MappedRelated maps Entity as e {
-	field Integer attributeMapped <= e.attribute update:auto;
+	field Integer attributeMapped <= e.attribute set;
 }
 
 transfer UnmappedRelated {
@@ -18,12 +18,12 @@ transfer UnmappedRelated {
 
 transfer Unmapped {
 	field String transient;
-	field required String `required`;
+	field String `required` required;
 
 	field Integer derived <= Entity.any().attribute;
 
     relation UnmappedRelated unmappedRelated;
-    relation required UnmappedRelated unmappedRelatedRequired;
+    relation UnmappedRelated unmappedRelatedRequired required;
     relation UnmappedRelated[] unmappedRelatedCollection;
 
     relation MappedRelated mappedDerived <= Entity.any();

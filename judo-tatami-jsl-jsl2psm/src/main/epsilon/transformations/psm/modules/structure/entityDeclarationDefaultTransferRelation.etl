@@ -11,9 +11,9 @@ rule AbstractCreateTransferObjectRelationFromEntityFieldForDefaultTransferObject
         t.name = s.name;
         t.target = s.getReferenceType().equivalent("CreateEntityDefaultTransferObjectType");
 
-        t.embeddedCreate = not s.eContainer.isAbstract;
-        t.embeddedUpdate = not s.eContainer.isAbstract;
-        t.embeddedDelete = not s.eContainer.isAbstract;
+        t.embeddedCreate = not s.eContainer.isAbstract();
+        t.embeddedUpdate = not s.eContainer.isAbstract();
+        t.embeddedDelete = not s.eContainer.isAbstract();
 
         t.embedded = s.isEager();
         t.binding = s.equivalent("CreateContainmentFromField");
@@ -58,9 +58,9 @@ rule AbstractCreateTransferObjectRelationFromEntityRelationForDefaultTransferObj
         t.name = s.name;
         t.target = s.getReferenceType().equivalent("CreateEntityDefaultTransferObjectType");
 
-        t.embeddedCreate = not s.eContainer.isAbstract;
-        t.embeddedUpdate = not s.eContainer.isAbstract;
-        t.embeddedDelete = not s.eContainer.isAbstract;
+        t.embeddedCreate = not s.eContainer.isAbstract();
+        t.embeddedUpdate = not s.eContainer.isAbstract();
+        t.embeddedDelete = not s.eContainer.isAbstract();
 
         t.binding = s.equivalent("CreateDeclaredAssociationEnd");
         t.embedded = s.isEager();
@@ -109,9 +109,9 @@ rule AbstractCreateTransferObjectAssociatedOppositeRelationForDefaultTransferObj
         t.name = s.name;
         t.target = relationAddedFrom.eContainer.equivalent("CreateEntityDefaultTransferObjectType");
 
-        t.embeddedCreate = not entityToAdd.isAbstract;
-        t.embeddedUpdate = not entityToAdd.isAbstract;
-        t.embeddedDelete = not entityToAdd.isAbstract;
+        t.embeddedCreate = not entityToAdd.isAbstract();
+        t.embeddedUpdate = not entityToAdd.isAbstract();
+        t.embeddedDelete = not entityToAdd.isAbstract();
 
         t.embedded = false;
 

@@ -18,7 +18,7 @@ rule CreateDefaultValueAnnotationForPrimitiveEntityMember
 rule CreatePrimitiveTypedElement
     transform s: JSL!EntityMemberDeclaration
     to t: JUDOPSM!PrimitiveTypedElement {
-        t.required = s.isRequired;
+        t.required = s.isRequired();
         t.name = s.name;
     }
 

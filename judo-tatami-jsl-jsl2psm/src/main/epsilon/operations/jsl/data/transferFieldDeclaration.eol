@@ -9,6 +9,11 @@ operation JSL!TransferFieldDeclaration isCalculated(): Boolean {
 }
 
 @cached
+operation JSL!TransferFieldDeclaration isRequired(): Boolean {
+    return jslUtils.isRequired(self);
+}
+
+@cached
 operation JSL!TransferFieldDeclaration maps(): Boolean {
     return jslUtils.isMaps(self);
 }

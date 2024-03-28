@@ -118,7 +118,7 @@ public class JslStringTypeDeclaration2PsmStringTypeTest extends AbstractTest {
                         "type string Name min-size:0 max-size:32;\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield required Name name;\n" +
+                        "\tfield Name name required;\n" +
                         "}"
                 )
         );

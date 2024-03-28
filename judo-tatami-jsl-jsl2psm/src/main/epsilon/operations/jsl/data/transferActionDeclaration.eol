@@ -1,0 +1,4 @@
+@cached
+operation JSL!TransferActionDeclaration isStatic(): Boolean {
+    return jslUtils.isStatic(self);
+}
