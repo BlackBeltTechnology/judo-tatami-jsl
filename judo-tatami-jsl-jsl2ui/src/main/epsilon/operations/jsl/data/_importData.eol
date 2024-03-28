@@ -1,6 +1,7 @@
 import "actorAccessDeclaration.eol";
 import "actorDeclaration.eol";
-import "actorMenuDeclaration.eol";
+import "actorGroupDeclaration.eol";
+import "actorLinkDeclaration.eol";
 import "modelDeclaration.eol";
 import "modifiable.eol";
 import "simpleTransferDeclaration.eol";

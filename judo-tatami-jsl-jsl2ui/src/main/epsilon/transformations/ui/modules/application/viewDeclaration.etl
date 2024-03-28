@@ -1,5 +1,5 @@
 rule AccessPageDefinition
-    transform s: JSL!ActorMenuDeclaration
+    transform s: JSL!ActorLinkDeclaration
     to t: UI!ui::PageDefinition {
         guard: s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
 
@@ -15,7 +15,7 @@ rule AccessPageDefinition
 
 @lazy
 rule AccessPageContainer
-    transform s: JSL!ActorMenuDeclaration
+    transform s: JSL!ActorLinkDeclaration
     to t: UI!ui::PageContainer {
         guard: s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
 
