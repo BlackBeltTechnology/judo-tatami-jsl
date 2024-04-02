@@ -11,6 +11,7 @@ operation JSL!EntityMemberDeclaration isCalculated(): Boolean {
 @cached
 operation JSL!EntityMemberDeclaration isRequired(): Boolean {
     return jslUtils.isRequired(self);
+}
 
 @cached
 operation JSL!EntityMemberDeclaration getFqName(): String {

@@ -132,3 +132,20 @@ operation JSL!Modifiable getVAlign(): JSL!Modifier {
 operation JSL!Modifiable getWidth(): JSL!Modifier {
 	return (self.modifiers.selectOne(m|m.type == "width"));
 }
+
+/////////////
+
+@cached
+operation JSL!Modifiable isEventInstead(): Boolean {
+	return (not self.modifiers.exists(m|m.type == "on"));
+}
+
+@cached
+operation JSL!Modifiable isEventBefore(): Boolean {
+	return (self.modifiers.exists(m|m.type == "on" and m.before));
+}
+
+@cached
+operation JSL!Modifiable isEventAfter(): Boolean {
+	return (self.modifiers.exists(m|m.type == "on" and m.after));
+}

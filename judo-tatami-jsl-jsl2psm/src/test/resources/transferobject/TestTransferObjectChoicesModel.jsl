@@ -29,5 +29,5 @@ transfer Unmapped {
     relation MappedRelated unmappedTransientRelationWithDefinedChoices choices: EntityRelated.all();
     relation MappedRelated[] unmappedTransientRelationCollectionWithDefinedChoices choices: EntityRelated.all();
 
-	action static void unmappedActionChoicesStatic(MappedRelated input choices: EntityRelated.all());
+	action void unmappedActionChoicesStatic(MappedRelated input choices: EntityRelated.all()) static;
 }

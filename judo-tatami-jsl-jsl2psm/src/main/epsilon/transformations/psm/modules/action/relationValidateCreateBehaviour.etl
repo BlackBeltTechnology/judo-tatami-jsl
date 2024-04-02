@@ -112,7 +112,7 @@ rule CreateCardinalityForValidateCreateTransferTypeInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateCreateTransferTypeInput");
 
-      t.lower = 1; //s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; //s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 
@@ -123,7 +123,7 @@ rule CreateCardinalityForValidateCreateTransferTypeOutput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateCreateTransferTypeOutput");
 
-      t.lower = 1; // s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; // s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 
@@ -134,7 +134,7 @@ rule CreateCardinalityForValidateCreateEntityTypeInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateCreateEntityTypeInput");
 
-      t.lower = 1; //s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; //s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 
@@ -145,7 +145,7 @@ rule CreateCardinalityForValidateCreateEntityTypeOutput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateCreateEntityTypeOutput");
 
-      t.lower = 1; // s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; // s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 

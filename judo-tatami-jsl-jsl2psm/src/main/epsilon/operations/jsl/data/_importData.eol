@@ -1,3 +1,4 @@
+import "modifiable.eol";
 import "dataTypeDeclaration.eol";
 import "entityDeclaration.eol";
 import "entityFieldDeclaration.eol";
@@ -17,7 +18,6 @@ import "transferFieldDeclaration.eol";
 import "transferRelationDeclaration.eol";
 import "expression.eol";
 import "navigation.eol";
-import "modifiable.eol";
 import "defaultModifier.eol";
 import "errorDeclaration.eol";
 import "errorField.eol";

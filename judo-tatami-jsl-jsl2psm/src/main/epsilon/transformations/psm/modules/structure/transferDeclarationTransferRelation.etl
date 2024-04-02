@@ -139,7 +139,7 @@ rule CreateTransferEntityDefaultValueRelationForUnmappedTransferObjectConstructo
 ////////////////////////////////////////////////////////////////////////////////////////////
 @greedy
 rule CreateRelationRangeReferenceExpressionTypeForMappedTransferObjectRelation
-    transform s : JSL!TransferChoiceModifier
+    transform s : JSL!ChoiceModifier
     to t: JUDOPSM!ReferenceExpressionType {
         guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.eContainer.map.isDefined()
 
@@ -152,7 +152,7 @@ rule CreateRelationRangeReferenceExpressionTypeForMappedTransferObjectRelation
 
 @greedy
 rule CreateRelationRangeNavigationPropertyForMappedTransferObjectRelation
-    transform s : JSL!TransferChoiceModifier
+    transform s : JSL!ChoiceModifier
     to t: JUDOPSM!NavigationProperty {
         guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.eContainer.map.isDefined()
 
@@ -167,7 +167,7 @@ rule CreateRelationRangeNavigationPropertyForMappedTransferObjectRelation
 
 @greedy
 rule CreateRelationRangeReferenceExpressionTypeForUnmappedTransferObjectRelation
-    transform s : JSL!TransferChoiceModifier
+    transform s : JSL!ChoiceModifier
     to t: JUDOPSM!ReferenceExpressionType {
         guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.eContainer.map.isUndefined()
         
@@ -180,7 +180,7 @@ rule CreateRelationRangeReferenceExpressionTypeForUnmappedTransferObjectRelation
 
 @greedy
 rule CreateRelationRangStaticNavigationForUnmappedTransferObjectRelation
-    transform s : JSL!TransferChoiceModifier
+    transform s : JSL!ChoiceModifier
     to t: JUDOPSM!StaticNavigation {
         guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.eContainer.map.isUndefined()
 
@@ -197,7 +197,7 @@ rule CreateRelationRangStaticNavigationForUnmappedTransferObjectRelation
 
 @greedy
 rule CreateRelationRangeTransferObjectRelation
-    transform s : JSL!TransferChoiceModifier
+    transform s : JSL!ChoiceModifier
     to t : JUDOPSM!TransferObjectRelation {
         guard: s.eContainer.isKindOf(JSL!TransferRelationDeclaration) and s.eContainer.isGetRangeSupported()
 

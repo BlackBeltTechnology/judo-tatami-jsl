@@ -60,5 +60,5 @@ transfer Mapped maps Entity as e {
 
 transfer MappedRelated maps EntityRelated as e {
     field Integer mappedAttribute <= e.attribute set;
-    event instead create create;
+    event create onCreate;
 }

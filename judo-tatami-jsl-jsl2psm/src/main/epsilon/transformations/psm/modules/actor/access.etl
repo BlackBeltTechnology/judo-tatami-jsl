@@ -43,6 +43,6 @@ rule CreateCardinalityForAccessDeclaration
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForAccessDeclaration");
 
-      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = s.isMany ? -1 : 1;
 }

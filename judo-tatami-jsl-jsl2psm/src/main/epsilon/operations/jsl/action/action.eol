@@ -27,7 +27,7 @@ operation JSL!TransferActionDeclaration getFqName(): String {
 
 @cached
 operation JSL!TransferActionDeclaration getTransferActionRangeEquivalent(): JUDOPSM!ReferenceAccessor {
-	  var choice = self.modifiers.selectOne(m | m.isTypeOf(JSL!TransferChoiceModifier));
+	  var choice = self.modifiers.selectOne(m | m.isTypeOf(JSL!ChoiceModifier));
 
       if (choice.isDefined() and self.eContainer.map.isDefined()) {
           return choice.equivalent("CreateActionInputParameterRangeNavigationPropertyForMappedTransferActionDeclaration");
@@ -44,9 +44,9 @@ operation JSL!TransferActionDeclaration getOperationDeclarationEquivalent(): JUD
 
 	  if (self.eContainer.map.isUndefined()) {
 	  	return self.equivalent("CreateUnboundOperationForUnmappedTransferObjectType");	  
-	  } else if (self.eContainer.map.isDefined() and self.static) {
+	  } else if (self.eContainer.map.isDefined() and self.isStatic()) {
   	  	return self.equivalent("CreateUnboundOperationForMappedTransferObjectType");	  	  
-	  } else if (self.eContainer.map.isDefined() and not self.static) {
+	  } else if (self.eContainer.map.isDefined() and not self.isStatic()) {
   	  	return self.equivalent("CreateBoundOperationForMappedTransferObjectType");	  	  
 	  } else {
 		throw "Could not determinate operation";
