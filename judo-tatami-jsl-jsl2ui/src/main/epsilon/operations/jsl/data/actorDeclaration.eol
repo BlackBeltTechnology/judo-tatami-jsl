@@ -37,7 +37,7 @@ operation JSL!ActorDeclaration getPrincipal(): JSL!TransferDeclaration {
 operation JSL!ActorDeclaration getAllMenuDeclarations(): Set {
     var menuDeclarations = new Set();
     for (declaration : Any in self.members) {
-        if (declaration.isTypeOf(JSL!ActorMenuDeclaration)) {
+        if (declaration.isTypeOf(JSL!ActorLinkDeclaration)) {
             menuDeclarations.add(declaration);
         } else if (declaration.isTypeOf(JSL!ActorGroupDeclaration)) {
             menuDeclarations.addAll(declaration.getAllMenuDeclarations());
@@ -49,7 +49,7 @@ operation JSL!ActorDeclaration getAllMenuDeclarations(): Set {
 operation JSL!ActorGroupDeclaration getAllMenuDeclarations(): Set {
     var menuDeclarations = new Set();
     for (declaration : Any in self.members) {
-        if (declaration.isTypeOf(JSL!ActorMenuDeclaration)) {
+        if (declaration.isTypeOf(JSL!ActorLinkDeclaration)) {
             menuDeclarations.add(declaration);
         } else if (declaration.isTypeOf(JSL!ActorGroupDeclaration)) {
             menuDeclarations.addAll(declaration.getAllMenuDeclarations());

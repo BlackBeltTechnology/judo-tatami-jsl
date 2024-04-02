@@ -50,14 +50,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         jslModel = JslParser.getModelFromStrings("ApplicationTestModel", List.of("""
             model ApplicationTestModel;
             
-            import judo::types;
-            
-            entity User {
-                identifier required String userName;
-            }
-            
-            actor human AppActor(User user) {
-            }
+            actor AppActor human;
         """));
 
         transform();
@@ -101,7 +94,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             import judo::types;
             
             entity User {
-                identifier required String userName;
+                identifier String userName required;
             }
             
             view UserListView {
@@ -109,12 +102,12 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             }
             
             row UserRow(User user) {
-                column String userName <= user.userName;
+                field String userName <= user.userName;
             }
             
             entity Product {
-                identifier required String name;
-                field required Integer price;
+                identifier String name required;
+                field Integer price required;
             }
             
             view ProductListView {
@@ -122,18 +115,18 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             }
             
             row ProductRow(Product product) {
-                column String name <= product.name;
-                column String price <= product.price.asString() + " HUF";
+                field String name <= product.name;
+                field String price <= product.price.asString() + " HUF";
             }
             
-            actor human MenuActor(User user) {
+            actor MenuActor human {
                 group first label:"Group1" {
                     group second label:"Group2" {
-                        menu ProductListView products label:"Products" icon:"close";
+                        link ProductListView products label:"Products" icon:"close";
                     }
-                    menu ProductListView products2 label:"Products2";
+                    link ProductListView products2 label:"Products2";
                 }
-                menu UserListView users label:"Users" icon:"account-multiple";
+                link UserListView users label:"Users" icon:"account-multiple";
             }
         """));
 
@@ -192,29 +185,29 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             import judo::types;
             
             entity User {
-                identifier required String userName;
+                identifier String userName required;
             }
             
             entity User2 {
-                identifier required String userName;
+                identifier String userName required;
             }
             
             entity Product {
-                identifier required String name;
-                field required Integer price;
+                identifier String name required;
+                field Integer price required;
             }
             
             entity Product2 {
-                identifier required String name2;
-                field required Integer price2;
+                identifier String name2 required;
+                field Integer price2 required;
             }
             
             view ProductListView {
-                table ProductRow[] products <= Product.all() detail:ProductDetailView;
+                table ProductRow[] products <= Product.all();
             }
             
             view ProductListView2 {
-                table ProductRow2[] products2 <= Product2.all() detail:ProductDetailView2;
+                table ProductRow2[] products2 <= Product2.all();
             }
             
             view ProductDetailView(Product product) {
@@ -228,27 +221,29 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             }
             
             row ProductRow(Product product) {
-                column String name <= product.name;
-                column String price <= product.price.asString() + " HUF";
+                link ProductDetailView detail <= product eager detail;
+                field String name <= product.name;
+                field String price <= product.price.asString() + " HUF";
             }
             
             row ProductRow2(Product2 product2) {
-                column String name <= product2.name2;
-                column String price <= product2.price2.asString() + " HUF";
+                link ProductDetailView2 detail <= product2 eager detail;
+                field String name <= product2.name2;
+                field String price <= product2.price2.asString() + " HUF";
             }
             
-            actor human Actor1(User user) {
+            actor Actor1 human {
                 group first label:"Group1" {
-                    menu ProductListView products2 label:"Products11";
+                    link ProductListView products2 label:"Products11";
                 }
-                menu ProductListView allProducts label:"All Products" icon:"tools";
+                link ProductListView allProducts label:"All Products" icon:"tools";
             }
             
-            actor human Actor2(User2 user2) {
+            actor Actor2 human {
                 group first label:"Group2" {
-                    menu ProductListView2 products22 label:"Products21";
+                    link ProductListView2 products22 label:"Products21";
                 }
-                menu ProductListView2 allProducts2 label:"All Products 2" icon:"tools";
+                link ProductListView2 allProducts2 label:"All Products 2" icon:"tools";
             }
         """));
 
@@ -382,15 +377,14 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             import judo::types;
             
             entity User {
-                identifier required String email;
+                identifier String email required;
             }
             
             transfer UserTransfer maps User as u {
-                field String email <= u.email update: true;
+                field String email <= u.email set;
             }
             
-            actor human Actor(User user) realm:"COMPANY" claim:"email" identity:UserTransfer::email {
-            }
+            actor Actor human realm:"COMPANY" claim:"email" identity:UserTransfer::email;
         """));
 
         transform();

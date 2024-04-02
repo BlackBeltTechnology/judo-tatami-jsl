@@ -30,10 +30,10 @@ transfer Mapped maps Entity as e {
     field Integer unmappedAttribute;
     
     relation UnmappedRelated unmappedContainment;
-    relation required UnmappedRelated unmappedContainmentRequired;
+    relation UnmappedRelated unmappedContainmentRequired required;
     relation UnmappedRelated[] unmappedContainmentCollection;
 
-    field Integer mappedAttribute <= e.attribute update:auto;
+    field Integer mappedAttribute <= e.attribute set;
 
     relation MappedRelated mappedAssociation <= e.association create:true;
     relation MappedRelated mappedAssociationOpposite <= e.entityRelatedOpposite create:true;
@@ -53,12 +53,12 @@ transfer Mapped maps Entity as e {
     relation MappedRelated mappedContainmentDerived <= e.containmentDerived;
     relation MappedRelated[] mappedContainmentCollectionDerived <= e.containmentCollectionDerived;
 
-    field Integer mappedIdentifier <= e.id update:auto;
+    field Integer mappedIdentifier <= e.id set;
     field Integer derivedIdentifier <= e.id;
 
 }
 
 transfer MappedRelated maps EntityRelated as e {
-    field Integer mappedAttribute <= e.attribute update:auto;
-    event instead create create;
+    field Integer mappedAttribute <= e.attribute set;
+    event create onCreate;
 }

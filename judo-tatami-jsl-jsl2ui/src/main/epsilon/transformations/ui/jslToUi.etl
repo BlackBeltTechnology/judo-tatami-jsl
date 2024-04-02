@@ -1,7 +1,8 @@
 import "../../operations/_importAll.eol";
 
 import "modules/application/actorDeclaration.etl";
-import "modules/application/actorMenuDeclaration.etl";
+import "modules/application/actorGroupDeclaration.etl";
+import "modules/application/actorLinkDeclaration.etl";
 import "modules/application/modifiable.etl";
 import "modules/application/viewDeclaration.etl";
 

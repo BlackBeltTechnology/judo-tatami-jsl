@@ -8,6 +8,7 @@ import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ActorAccessDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ActorDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.HumanModifier;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.support.JslDslModelResourceSupport;
 import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
@@ -82,7 +83,7 @@ public class Jsl2Ui {
                     .uri(parameter.jslModel.getUri())
                     .build();
 
-            for (ActorDeclaration actorDeclaration : jslDslModelResourceSupport.getStreamOfJsldslActorDeclaration().filter(ActorDeclaration::isHuman).toList()) {
+            for (ActorDeclaration actorDeclaration : jslDslModelResourceSupport.getStreamOfJsldslActorDeclaration().filter(actorDeclaration -> actorDeclaration.getModifiers().stream().anyMatch(m -> m instanceof HumanModifier)).toList()) {
                 ExecutionContext executionContext = executionContextBuilder
                         .log(log)
                         .modelContexts(ImmutableList.<ModelContext>builder()
