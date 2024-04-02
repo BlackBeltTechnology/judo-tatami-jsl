@@ -116,7 +116,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
                         "type time MyTime;\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield required MyTime arrivalTime;\n" +
+                        "\tfield MyTime arrivalTime required;\n" +
                         "}"
                 )
         );

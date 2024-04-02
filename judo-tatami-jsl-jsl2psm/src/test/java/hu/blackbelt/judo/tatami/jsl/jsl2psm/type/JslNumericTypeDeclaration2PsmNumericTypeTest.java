@@ -118,7 +118,7 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
                         "type numeric Height precision:3 scale:0;\n" +
                         "\n" +
                         "entity Person {\n" +
-                        "\tfield required Height height;\n" +
+                        "\tfield Height height required;\n" +
                         "}"
                 )
         );

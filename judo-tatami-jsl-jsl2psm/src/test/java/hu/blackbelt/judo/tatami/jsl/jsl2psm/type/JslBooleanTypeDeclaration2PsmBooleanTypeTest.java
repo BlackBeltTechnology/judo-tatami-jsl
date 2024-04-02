@@ -115,7 +115,7 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
                         "type boolean Vaccinated;\n" +
                         "\n" +
                         "entity Patient {\n" +
-                        "\tfield required Vaccinated vaccinated;\n" +
+                        "\tfield Vaccinated vaccinated required;\n" +
                         "}"
                 )
         );

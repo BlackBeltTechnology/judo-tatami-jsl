@@ -23,7 +23,7 @@ rule CreateGetRangeActionInputBehaviourForTransferType
         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeActionInputBehaviourForTransferType");
         t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE;
         // t.owner = s.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
-        //t.owner = s.modifiers.selectOne(m | m.isTypeOf(JSL!TransferChoiceModifier)).equivalent("CreateActionInputParameterRangeTransferObjectRelation");
+        //t.owner = s.modifiers.selectOne(m | m.isTypeOf(JSL!ChoiceModifier)).equivalent("CreateActionInputParameterRangeTransferObjectRelation");
         t.owner = s.getOperationDeclarationEquivalent();
         log.debug("Created CreateGetRangeActionInputBehaviourForTransferType: " + s.name);
 }

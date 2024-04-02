@@ -134,7 +134,7 @@ rule CreateCardinalityForCreateEntityTypeInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForCreateEntityTypeInput");
 
-      t.lower = 1; //s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; //s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 
@@ -145,7 +145,7 @@ rule CreateCardinalityForCreateEntityTypeOutput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForCreateEntityTypeOutput");
 
-      t.lower = 1; // s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; // s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 

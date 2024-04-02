@@ -6,7 +6,7 @@ import "../../../../operations/_importAll.eol";
 rule CreateValidateUpdateOperationForEntityType
     transform s: JSL!TransferUpdateDeclaration
     to t: JUDOPSM!BoundOperation {
-      guard: generateBehaviours and s.instead ?: false
+      guard: generateBehaviours and s.isEventInstead() ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForEntityType");
       t.instanceRepresentation = s.eContainer.getTransferDeclarationEquivalent();
@@ -19,7 +19,7 @@ rule CreateValidateUpdateOperationForEntityType
 rule CreateValidateUpdateBehaviourForTransferType
     transform s: JSL!TransferUpdateDeclaration
     to t: JUDOPSM!TransferOperationBehaviour {
-      guard: generateBehaviours and s.instead ?: false
+      guard: generateBehaviours and s.isEventInstead() ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateBehaviourForTransferType");
       t.behaviourType = JUDOPSM!TransferOperationBehaviourType#VALIDATE_UPDATE;
@@ -31,7 +31,7 @@ rule CreateValidateUpdateBehaviourForTransferType
 rule CreateValidateUpdateOperationForTransferType
     transform s: JSL!TransferUpdateDeclaration
     to t: JUDOPSM!BoundTransferOperation {
-      guard: generateBehaviours and s.instead ?: false
+      guard: generateBehaviours and s.isEventInstead() ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForTransferType");
       t.name = "validate" + s.name.firstToUpperCase();
@@ -49,7 +49,7 @@ rule CreateValidateUpdateOperationForTransferType
 rule CreateValidateUpdateOperationForTransferTypeInputParameter
     transform s: JSL!TransferUpdateDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and s.instead ?: false
+      guard: generateBehaviours and s.isEventInstead() ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForTransferTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForValidateUpdateTransferTypeInput");
@@ -63,7 +63,7 @@ rule CreateValidateUpdateOperationForTransferTypeInputParameter
 rule CreateValidateUpdateOperationForTransferTypeOutputParameter
     transform s: JSL!TransferUpdateDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and s.instead ?: false
+      guard: generateBehaviours and s.isEventInstead() ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForTransferTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForValidateUpdateTransferTypeOutput");
@@ -77,7 +77,7 @@ rule CreateValidateUpdateOperationForTransferTypeOutputParameter
 rule CreateValidateUpdateOperationForEntityTypeInputParameter
     transform s: JSL!TransferUpdateDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and s.instead ?: false
+      guard: generateBehaviours and s.isEventInstead() ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForEntityTypeInputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForValidateUpdateEntityTypeInput");
@@ -91,7 +91,7 @@ rule CreateValidateUpdateOperationForEntityTypeInputParameter
 rule CreateValidateUpdateOperationForEntityTypeOutputParameter
     transform s: JSL!TransferUpdateDeclaration
     to t: JUDOPSM!Parameter {
-      guard: generateBehaviours and s.instead ?: false
+      guard: generateBehaviours and s.isEventInstead() ?: false
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateUpdateOperationForEntityTypeOutputParameter");
       t.cardinality = s.equivalent("CreateCardinalityForValidateUpdateEntityTypeOutput");

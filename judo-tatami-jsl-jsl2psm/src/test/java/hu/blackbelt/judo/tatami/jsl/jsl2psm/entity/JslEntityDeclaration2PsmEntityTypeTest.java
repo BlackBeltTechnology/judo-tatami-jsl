@@ -78,7 +78,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
                         "\n" +
                         "entity Test {\n" +
                         "}\n" +
-                        "entity abstract Person {\n" +
+                        "entity Person abstract {\n" +
                         "}\n" +
                         "entity SalesPerson extends Person, Test {\n" +
                         "}\n"

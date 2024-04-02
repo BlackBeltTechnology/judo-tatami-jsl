@@ -45,12 +45,12 @@ operation JSL!ActorAccessDeclaration isDeleteAllowed() : Boolean {
 
 @cached
 operation JSL!ActorAccessDeclaration isChoiceDefined() : Boolean {
-	return self.modifiers.exists(m | m.isTypeOf(JSL!TransferChoiceModifier));
+	return self.modifiers.exists(m | m.isTypeOf(JSL!ChoiceModifier));
 }
 
 @cached
 operation JSL!ActorAccessDeclaration isAddReferenceAllowed() : Boolean {
-    var lower = self.isRequired and not self.isMany ? 1 : 0;
+    var lower = self.isRequired() and not self.isMany ? 1 : 0;
     var upper = self.isMany ? -1 : 1;
 	return self.maps() and self.eContainer.isUpdateSupported() 
 		and upper != 1 and (lower < upper or upper == -1); 
@@ -58,7 +58,7 @@ operation JSL!ActorAccessDeclaration isAddReferenceAllowed() : Boolean {
 
 @cached
 operation JSL!ActorAccessDeclaration isRemoveReferenceAllowed() : Boolean {
-    var lower = self.isRequired and not self.isMany ? 1 : 0;
+    var lower = self.isRequired() and not self.isMany ? 1 : 0;
     var upper = self.isMany ? -1 : 1;
 	return self.maps() and self.eContainer.isUpdateSupported() 
 		and upper != 1 and (lower < upper or upper == -1); 
@@ -66,22 +66,22 @@ operation JSL!ActorAccessDeclaration isRemoveReferenceAllowed() : Boolean {
 
 @cached
 operation JSL!ActorAccessDeclaration isSetReferenceAllowed() : Boolean {
-	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired;
+	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
 }
 
 @cached
 operation JSL!ActorAccessDeclaration isUnsetReferenceAllowed() : Boolean {
-	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired;
+	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
 }
 
 @cached
 operation JSL!ActorAccessDeclaration isGetRangeSupported() : Boolean {
-	return self.modifiers.exists(m | m.isTypeOf(JSL!TransferChoiceModifier));	
+	return self.modifiers.exists(m | m.isTypeOf(JSL!ChoiceModifier));	
 }
 
 @cached
 operation JSL!ActorAccessDeclaration getTransferActionRangeEquivalent(): JUDOPSM!ReferenceAccessor {
-	  var choice = self.modifiers.selectOne(m | m.isTypeOf(JSL!TransferChoiceModifier));
+	  var choice = self.modifiers.selectOne(m | m.isTypeOf(JSL!ChoiceModifier));
 
       if (choice.isDefined() and self.eContainer.map.isDefined()) {
           return choice.equivalent("CreateRelationRangeNavigationPropertyForMappedTransferObjectRelation");

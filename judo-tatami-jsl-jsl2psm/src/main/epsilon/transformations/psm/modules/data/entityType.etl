@@ -6,7 +6,7 @@ rule CreateEntityType
   {
     t.setId("(jsl/" + s.getId() + ")/CreateEntityType");
     t.name = entityNamePrefix + s.name + entityNamePostfix;
-    t.`abstract` = s.`isAbstract`;
+    t.`abstract` = s.isAbstract();
     for (super in s.`extends`) {
         t.superEntityTypes.add(super.getEntityDeclarationEquivalent());
     }
