@@ -116,7 +116,7 @@ public class JslTimestampTypeDeclaration2PsmTimestampTypeTest extends AbstractTe
                         "type timestamp Timestamp;\n" +
                         "\n" +
                         "entity Email {\n" +
-                        "\tfield required Timestamp receivedAt;\n" +
+                        "\tfield Timestamp receivedAt required;\n" +
                         "}"
                 )
         );

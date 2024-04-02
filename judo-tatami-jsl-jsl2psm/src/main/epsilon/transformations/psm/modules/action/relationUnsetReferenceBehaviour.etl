@@ -84,7 +84,7 @@ rule CreateCardinalityForUnsetReferenceTransferTypeInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForUnsetReferenceTransferTypeInput");
 
-      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = s.isMany ? -1 : 1;      
 }
 
@@ -95,6 +95,6 @@ rule CreateCardinalityForUnsetReferenceEntityTypeInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForUnsetReferenceEntityTypeInput");
       
-      t.lower = s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = s.isMany ? -1 : 1;      
 }

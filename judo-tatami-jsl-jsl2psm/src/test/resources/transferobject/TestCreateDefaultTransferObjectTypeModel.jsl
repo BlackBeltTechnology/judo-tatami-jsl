@@ -18,7 +18,7 @@ entity PersonWithAge extends Named {
 	field Age age;
 }
 
-entity abstract Person {
+entity Person abstract {
 	identifier Identifier id;
 	field Name birthName;
 	field Address residentAddress;

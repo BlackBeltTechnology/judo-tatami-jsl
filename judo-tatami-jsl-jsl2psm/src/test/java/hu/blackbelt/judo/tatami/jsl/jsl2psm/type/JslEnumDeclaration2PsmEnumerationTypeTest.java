@@ -140,7 +140,7 @@ public class JslEnumDeclaration2PsmEnumerationTypeTest extends AbstractTest {
                         "}\n" +
                         "\n" +
                         "entity Lead {\n" +
-                        "\tfield required LeadStatus status;\n" +
+                        "\tfield LeadStatus status required;\n" +
                         "}"
                 )
         );

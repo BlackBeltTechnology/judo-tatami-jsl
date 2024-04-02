@@ -116,7 +116,7 @@ public class JslDateDeclaration2PsmDateTypeTest extends AbstractTest {
                         "type date Date;\n" +
                         "\n" +
                         "entity Patient {\n" +
-                        "\tfield required Date birthDate;\n" +
+                        "\tfield Date birthDate required;\n" +
                         "}"
                 )
         );

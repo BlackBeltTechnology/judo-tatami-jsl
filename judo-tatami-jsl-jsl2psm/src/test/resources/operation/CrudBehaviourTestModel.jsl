@@ -10,9 +10,9 @@ type timestamp Timestamp;
 
 
 transfer MappedTransfer maps Entity as e {
-	event instead delete deleteInstance;
-	event instead update updateInstance;
-	event instead create createInstance;	
+	event delete deleteInstance();
+	event update updateInstance();
+	event create createInstance();	
 	
 	relation CreateTransfer[] createEntities <= e.createEntities 
 			create: true 
@@ -36,16 +36,16 @@ transfer MappedTransfer maps Entity as e {
 	field Time timeTransient;
 	field Timestamp timestampTransient;	
 
-	field Binary binaryMapped <= e.binary update: auto;
-	field String stringMapped <= e.string update: auto;
-	field Boolean booleanMapped <= e.boolean update: auto;
-	field Date dateMapped <= e.date update: auto;
-	field Numeric numericMapped <= e.numeric update: auto;
-	field Time timeMapped <= e.time update: auto;
-	field Timestamp timestampMapped <= e.timestamp update: auto;	
+	field Binary binaryMapped <= e.binary set: true;
+	field String stringMapped <= e.string set: true;
+	field Boolean booleanMapped <= e.boolean set: true;
+	field Date dateMapped <= e.date set: true;
+	field Numeric numericMapped <= e.numeric set: true;
+	field Time timeMapped <= e.time set: true;
+	field Timestamp timestampMapped <= e.timestamp set: true;	
 
 	action void mappedChoice(MappedTransfer input choices: Entity.all());
-	action static void mappedChoiceStatic(MappedTransfer input choices: Entity.all());
+	action void mappedChoiceStatic(MappedTransfer input choices: Entity.all()) static;
 
 }
 
@@ -62,7 +62,7 @@ entity Entity {
 
 
 transfer CreateTransfer maps CreateEntity as e {
-	event instead create createInstance;		
+	event create createInstance;		
 }
 
 entity CreateEntity {
@@ -70,7 +70,7 @@ entity CreateEntity {
 
 
 transfer UnmappedTransfer {
-	action static void unmappedChoiceStatic(MappedTransfer input choices: Entity.all());
+	action void unmappedChoiceStatic(MappedTransfer input choices: Entity.all()) static;
 }
 
 entity User {
@@ -78,13 +78,13 @@ entity User {
 }
 
 transfer UserTransfer maps User as u {
-    field String email <= u.email update: true;
+    field String email <= u.email set: true;
 }
 
-actor Actor maps User as u
+actor Actor
     realm: "COMPANY"
     claim: "email"
     identity: UserTransfer::email
 {	
-    access UserTransfer[] manager <= User.all();	
+    access UserTransfer[] manager <= User.all();
 };

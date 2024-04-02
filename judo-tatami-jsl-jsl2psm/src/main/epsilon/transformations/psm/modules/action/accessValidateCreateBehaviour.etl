@@ -70,7 +70,7 @@ rule CreateCardinalityForValidateCreateAccessInput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateCreateAccessInput");
 
-      t.lower = 1; //s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; //s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 
@@ -81,7 +81,7 @@ rule CreateCardinalityForValidateCreateAccessOutput
     to t : JUDOPSM!Cardinality {
       t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForValidateCreateAccessOutput");
 
-      t.lower = 1; // s.isRequired and not s.isMany ? 1 : 0;
+      t.lower = 1; // s.isRequired() and not s.isMany ? 1 : 0;
       t.upper = 1;
 }
 
