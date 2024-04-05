@@ -128,4 +128,10 @@ public class DefaultWorkflowSetupParameters {
     @Builder.Default
     String rdbmsJunctionTablePrefix = "J_";
 
+    @Builder.Default
+    private Integer rdbmsTableNameMaxSize = -1;
+
+    @Builder.Default
+    private Integer rdbmsColumnMaxNameSize = -1;
+
 }

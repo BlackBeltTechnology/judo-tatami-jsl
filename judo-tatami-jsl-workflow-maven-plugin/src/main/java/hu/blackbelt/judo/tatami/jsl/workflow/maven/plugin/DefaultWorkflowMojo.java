@@ -146,6 +146,12 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
     @Parameter(property = "rdbmsShortNameSize", defaultValue = "-1")
     private Integer rdbmsShortNameSize = -1;
 
+    @Parameter(property = "rdbmsTableNameMaxSize", defaultValue = "-1")
+    private Integer rdbmsTableNameMaxSize = -1;
+
+    @Parameter(property = "rdbmsColumnMaxNameSize", defaultValue = "-1")
+    private Integer rdbmsColumnMaxNameSize = -1;
+
     @Parameter(property = "rdbmsTablePrefix", defaultValue = "T_")
     private String rdbmsTablePrefix = "T_";
 
@@ -193,6 +199,8 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
                         .useCache(useCache)
                         .rdbmsNameSize(rdbmsNameSize)
                         .rdbmsShortNameSize(rdbmsShortNameSize)
+                        .rdbmsTableNameMaxSize(rdbmsTableNameMaxSize)
+                        .rdbmsColumnMaxNameSize(rdbmsColumnMaxNameSize)
                         .rdbmsCreateSimpleName(rdbmsCreateSimpleName)
                         .rdbmsTablePrefix(rdbmsTablePrefix.trim().replace("-", ""))
                         .rdbmsColumnPrefix(rdbmsColumnPrefix.trim().replace("-", ""))

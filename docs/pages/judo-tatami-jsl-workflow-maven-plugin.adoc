@@ -116,6 +116,8 @@ the correct measurement handling.
         <rdbmsForeignKeyPrefix>FK_</rdbmsForeignKeyPrefix> <!--27-->
         <rdbmsInverseForeignKeyPrefix>FK_INV_</rdbmsInverseForeignKeyPrefix> <!--28-->
         <rdbmsJunctionTablePrefix>J_</rdbmsJunctionTablePrefix> <!--29-->
+        <rdbmsTableNameMaxSize>-1</rdbmsTableNameMaxSize> <!--30-->
+        <rdbmsColumnNameMaxSize>-1</rdbmsColumnNameMaxSize> <!--31-->
     </configuration>
 </execution>
 ----
@@ -249,6 +251,15 @@ When -1 is used it uses database specific default.
 +
 (Default: `J_`)
 
+<30> Maximum table name size of SQL name. This size is used as table name maximum size.
+When -1 is used it uses database specific default.
++
+(Default: `-1`)
+
+<31> Maximum column name size of SQL name. This size is used as column name maximum size.
+When -1 is used it uses database specific default.
++
+(Default: `-1`)
 
 == Example
 
