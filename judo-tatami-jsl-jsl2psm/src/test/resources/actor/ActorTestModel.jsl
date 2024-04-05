@@ -15,7 +15,7 @@ entity User {
 }
 
 transfer UserTransfer maps User as u {
-    field String email <= u.email set: true;
+    field String email <= u.email bind: true;
     event delete deleteInstance;
 	event update updateInstance;
 	event create createInstance;
