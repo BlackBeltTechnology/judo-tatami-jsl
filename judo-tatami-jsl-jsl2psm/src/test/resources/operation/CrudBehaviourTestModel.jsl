@@ -36,13 +36,13 @@ transfer MappedTransfer maps Entity as e {
 	field Time timeTransient;
 	field Timestamp timestampTransient;	
 
-	field Binary binaryMapped <= e.binary set: true;
-	field String stringMapped <= e.string set: true;
-	field Boolean booleanMapped <= e.boolean set: true;
-	field Date dateMapped <= e.date set: true;
-	field Numeric numericMapped <= e.numeric set: true;
-	field Time timeMapped <= e.time set: true;
-	field Timestamp timestampMapped <= e.timestamp set: true;	
+	field Binary binaryMapped <= e.binary bind: true;
+	field String stringMapped <= e.string bind: true;
+	field Boolean booleanMapped <= e.boolean bind: true;
+	field Date dateMapped <= e.date bind: true;
+	field Numeric numericMapped <= e.numeric bind: true;
+	field Time timeMapped <= e.time bind: true;
+	field Timestamp timestampMapped <= e.timestamp bind: true;	
 
 	action void mappedChoice(MappedTransfer input choices: Entity.all());
 	action void mappedChoiceStatic(MappedTransfer input choices: Entity.all()) static;
@@ -78,7 +78,7 @@ entity User {
 }
 
 transfer UserTransfer maps User as u {
-    field String email <= u.email set: true;
+    field String email <= u.email bind: true;
 }
 
 actor Actor

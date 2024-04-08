@@ -39,15 +39,15 @@ transfer Unmapped {
 
 transfer Mapped maps Entity as e {
     field Integer unmappedAttribute default:1;
-	field Integer mappedAttribute <= e.attribute set default:2;
-	field Integer mappedIdentifier <= e.id set default:3;
-    field MyEnum mappedEnum <= e.`enum` set default:MyEnum#Crazy;
-	field Integer mappedAttributeEntityDefault <= e.attribute  set;
-	field Integer mappedIdentifierEntityDefault <= e.id  set;
-    field MyEnum mappedEnumEntityDefault <= e.`enum` set;
-	field Integer mappedAttributeAncestorEntityDefault <= e.attributeAncestor set;
-	field Integer mappedIdentifierAncestorEntityDefault <= e.identifierAncestor set;
-    field MyEnum mappedEnumAncestorEntityDefault <= e.enumAncestor set;
+	field Integer mappedAttribute <= e.attribute bind default:2;
+	field Integer mappedIdentifier <= e.id bind default:3;
+    field MyEnum mappedEnum <= e.`enum` bind default:MyEnum#Crazy;
+	field Integer mappedAttributeEntityDefault <= e.attribute  bind;
+	field Integer mappedIdentifierEntityDefault <= e.id  bind;
+    field MyEnum mappedEnumEntityDefault <= e.`enum` bind;
+	field Integer mappedAttributeAncestorEntityDefault <= e.attributeAncestor bind;
+	field Integer mappedIdentifierAncestorEntityDefault <= e.identifierAncestor bind;
+    field MyEnum mappedEnumAncestorEntityDefault <= e.enumAncestor bind;
 
 	relation MappedRelated mappedAssociation <= e.association choices:EntityRelated.all() default:EntityRelated.any();
 	relation MappedRelated[] mappedAssociationCollection <= e.associationCollection choices:EntityRelated.all() default:EntityRelated.all();
@@ -59,5 +59,5 @@ transfer Mapped maps Entity as e {
 }
 
 transfer MappedRelated maps EntityRelated as e {
-	field Integer mappedAttribute <= e.attribute set;
+	field Integer mappedAttribute <= e.attribute bind;
 }

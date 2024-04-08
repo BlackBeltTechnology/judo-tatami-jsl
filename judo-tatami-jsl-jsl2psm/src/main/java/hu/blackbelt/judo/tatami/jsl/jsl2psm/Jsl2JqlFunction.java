@@ -173,15 +173,15 @@ public class Jsl2JqlFunction {
                             ParameterValue.builder().name("seconds").mandatory(false).build(),
                             ParameterValue.builder().name("milliseconds").mandatory(false).build())))
                     .put("typeOf", ImmutableList.of(ImmutableList.of(
-                            ParameterValue.builder().name("entityType").build())))
+                            ParameterValue.builder().name("type").build())))
                     .put("kindOf", ImmutableList.of(ImmutableList.of(
-                            ParameterValue.builder().name("entityType").build())))
+                            ParameterValue.builder().name("type").build())))
                     .put("asCollection", ImmutableList.of(ImmutableList.of(
-                            ParameterValue.builder().name("entityType").build())))
+                            ParameterValue.builder().name("type").build())))
                     .put("container", ImmutableList.of(ImmutableList.of(
-                            ParameterValue.builder().name("entityType").build())))
+                            ParameterValue.builder().name("type").build())))
                     .put("asType", ImmutableList.of(ImmutableList.of(
-                            ParameterValue.builder().name("entityType").build())))
+                            ParameterValue.builder().name("type").build())))
                     .put("memberOf", ImmutableList.of(ImmutableList.of(
                             ParameterValue.builder().name("instances").build())))
                     .put("contains", ImmutableList.of(ImmutableList.of(

@@ -12,8 +12,8 @@ entity B {
 
 
 entity C {
-	relation A allCfromAPlainName <= self.container(entityType = A);
-	relation A allCfromAFqName <= self.container(entityType = TestInstanceFunctionModel::A);
-	relation I allCfromAImport <= self.container(entityType = ImportedTestInstanceFunctionModel::I);
+	relation A allCfromAPlainName <= self.container(type = A);
+	relation A allCfromAFqName <= self.container(type = TestInstanceFunctionModel::A);
+	relation I allCfromAImport <= self.container(type = ImportedTestInstanceFunctionModel::I);
 }
 
