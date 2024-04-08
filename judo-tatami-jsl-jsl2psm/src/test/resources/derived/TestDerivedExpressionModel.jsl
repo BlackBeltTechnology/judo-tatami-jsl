@@ -46,7 +46,7 @@ entity Lead {
     field Integer orElseValue3 <= self.value.orElse(value = 9.orElse(value = 5)).abs();
     relation Lead orElseValue4 <= Lead.all().filter(l | l.value < 1000).any().orElse(value = Lead.any());
     field Integer orElseValue5 <= self.value.orElse(value = +10);
-    field Boolean b <= self.salesPerson.kindOf(entityType = SalesPerson);
+    field Boolean b <= self.salesPerson.kindOf(type = SalesPerson);
 }
 
 query Lead[] leadsBetween(Integer minLeadsBetween = 1, Integer maxLeadsBetween = 50) on SalesPerson <= self.leads.filter(lead | lead.value > minLeadsBetween and lead.value < maxLeadsBetween);

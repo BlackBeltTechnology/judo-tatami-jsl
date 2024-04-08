@@ -381,7 +381,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             }
             
             transfer UserTransfer maps User as u {
-                field String email <= u.email set;
+                field String email <= u.email bind;
             }
             
             actor Actor human realm:"COMPANY" claim:"email" identity:UserTransfer::email;
