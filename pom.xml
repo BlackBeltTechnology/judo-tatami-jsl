@@ -70,13 +70,13 @@
         <judo-meta-asm-version>1.1.4.20240410_091913_a09b0984_develop</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.5.20240410_092154_dd47ca0c_develop</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.2.20240410_091908_71320618_develop</judo-meta-liquibase-version>
-        <judo-dao-api-version>1.0.4.20240411_093907_0452aa2c_feature_JNG_5676_Replace_keySet_to_entrySet</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.4.20240411_120851_c12abce2_feature_JNG_5676_Replace_keySet_to_entrySet</judo-sdk-common-version>
+        <judo-dao-api-version>1.0.4.20240411_140837_58d4ecbd_develop</judo-dao-api-version>
+        <judo-sdk-common-version>1.0.4.20240412_041425_6cb3ae27_develop</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.3.20230826_230134_1ce94d88_develop</judo-dispatcher-api-version>
-        <judo-operation-utils-version>1.1.3.20240411_120907_661dd575_feature_JNG_5676_Replace_keySet_to_entrySet</judo-operation-utils-version>
+        <judo-operation-utils-version>1.1.3.20240412_041428_8a8ab3a6_develop</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20240411_121233_0cd73046_feature_JNG_5676_Replace_keySet_to_entrySet</judo-runtime-core-version>
-        <judo-tatami-base-version>1.1.6.20240411_120956_55b58764_feature_JNG_5676_Replace_keySet_to_entrySet</judo-tatami-base-version>
+        <judo-runtime-core-version>1.0.6.20240412_042033_821d12d2_develop</judo-runtime-core-version>
+        <judo-tatami-base-version>1.1.6.20240412_041614_7d78a3ad_develop</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20240410_091550_047da654_develop</judo-tatami-core-version>
 
         <!-- Code Quality-->
