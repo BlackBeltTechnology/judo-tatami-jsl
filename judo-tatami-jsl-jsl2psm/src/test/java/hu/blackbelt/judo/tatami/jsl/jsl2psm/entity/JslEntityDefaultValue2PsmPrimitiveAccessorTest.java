@@ -89,7 +89,6 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
 
         assertDefault("LiteralEntityWithIdentifiers", "idBooleanLiteral", "true", () -> assertBooleanType("Boolean"));
         assertDefault("LiteralEntityWithIdentifiers", "idIntLiteral", "1", () -> assertNumericType("Integer"));
-        assertDefault("LiteralEntityWithIdentifiers", "idDecimalLiteral", "1.23", () -> assertNumericType("Decimal"));
         assertDefault("LiteralEntityWithIdentifiers", "idEscapedStringLiteral", "\"escaped\nstring\"", () -> assertStringType("String"));
         assertDefault("LiteralEntityWithIdentifiers", "idRawStringLiteral", "\"raw\\nstring\"", () -> assertStringType("String"));
         assertDefault("LiteralEntityWithIdentifiers", "idDateLiteral", "`2020-02-18`", () -> assertDateType("Date"));

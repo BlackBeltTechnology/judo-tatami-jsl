@@ -26,7 +26,6 @@ entity LiteralEntity {
 entity LiteralEntityWithIdentifiers {
     identifier Boolean idBooleanLiteral default:true;
     identifier Integer idIntLiteral default:1;
-    identifier Decimal idDecimalLiteral default:1.23;
     identifier String idEscapedStringLiteral default:"escaped\nstring";
     identifier String idRawStringLiteral default:r"raw\nstring";
     identifier Date idDateLiteral default:`2020-02-18`;
