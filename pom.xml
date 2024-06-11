@@ -71,12 +71,12 @@
         <judo-meta-expression-version>1.0.5.20240414_043040_426cab39_develop</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.2.20240414_042408_3af8577f_develop</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.4.20240411_140837_58d4ecbd_develop</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.4.20240414_042831_d7103200_develop</judo-sdk-common-version>
+        <judo-sdk-common-version>1.0.4.20240611_084126_c70a55d1_feature_JNG_5755_Identifiable_equals_check_version_and_type</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.3.20230826_230134_1ce94d88_develop</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20240414_042846_45b9c1dd_develop</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20240611_040951_6b13955b_develop</judo-runtime-core-version>
-        <judo-tatami-base-version>1.1.6.20240611_040656_613792a3_develop</judo-tatami-base-version>
+        <judo-runtime-core-version>1.0.6.20240611_084620_ee0d2a7a_feature_JNG_5755_Identifiable_equals_check_version_and_type</judo-runtime-core-version>
+        <judo-tatami-base-version>1.1.6.20240611_084352_e627c1f7_feature_JNG_5755_Identifiable_equals_check_version_and_type</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20240414_042056_ec303c5b_develop</judo-tatami-core-version>
 
         <!-- Code Quality-->
