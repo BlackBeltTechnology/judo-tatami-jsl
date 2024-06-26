@@ -75,7 +75,7 @@
         <judo-dispatcher-api-version>1.0.3.20230826_230134_1ce94d88_develop</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20240414_042846_45b9c1dd_develop</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20240625_200617_676da1bc_feature_JNG_5759_Deleting_compositions_that_had_a_mandatory_relation_with_eachother_resulting_exception</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20240626_100740_0382708d_feature_JNG_5759_Deleting_compositions_that_had_a_mandatory_relation_with_eachother_resulting_exception</judo-runtime-core-version>
         <judo-tatami-base-version>1.1.6.20240622_041947_54bdff1e_develop</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20240414_042056_ec303c5b_develop</judo-tatami-core-version>
 
