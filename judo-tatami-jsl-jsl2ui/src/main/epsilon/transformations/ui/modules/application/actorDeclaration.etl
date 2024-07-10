@@ -16,6 +16,12 @@ rule Application
         t.actor = s.equivalent("Actor");
         t.dataElements.add(t.actor);
 
+        var identity = s.getIdentityTransferDeclaration();
+
+        if (identity.isDefined()) {
+            t.principal = identity.equivalent("ClassType");
+        }
+
         //if (s.defaultLanguage.isDefined()) {
         	t.defaultLanguage = "en-US";
         //}
