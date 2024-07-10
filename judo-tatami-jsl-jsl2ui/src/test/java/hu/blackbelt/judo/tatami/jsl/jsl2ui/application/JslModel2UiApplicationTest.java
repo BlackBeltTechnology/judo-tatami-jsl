@@ -418,7 +418,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertNotNull(principal);
         assertEquals("SecurityTestModel::UserTransfer::ClassType", principal.getName());
         assertEquals("UserTransfer", principal.getSimpleName());
-        assertEquals(true, principal.isIsPrincipal());
+        assertTrue(principal.isIsPrincipal());
 
     }
 }

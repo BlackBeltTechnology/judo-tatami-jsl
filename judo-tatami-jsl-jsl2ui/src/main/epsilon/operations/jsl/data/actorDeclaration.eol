@@ -61,7 +61,7 @@ operation JSL!ActorGroupDeclaration getAllMenuDeclarations(): Set {
 @cached
 operation JSL!ActorDeclaration getIdentityTransferDeclaration() : JSL!TransferDeclaration {
     if (self.getIdentity().isDefined()) {
-        var identityFiled = self.getIdentity().isDefined() ? self.getIdentity().field : null;
+        var identityFiled = self.getIdentity().field;
         if (identityFiled.isDefined() and identityFiled.isKindOf(JSL!TransferFieldDeclaration) and identityFiled.eContainer.isKindOf(JSL!TransferDeclaration)) {
             return identityFiled.eContainer;
         }
