@@ -59,6 +59,17 @@ operation JSL!ActorGroupDeclaration getAllMenuDeclarations(): Set {
 }
 
 @cached
+operation JSL!ActorDeclaration getIdentityTransferDeclaration() : JSL!TransferDeclaration {
+    if (self.getIdentity().isDefined()) {
+        var identityFiled = self.getIdentity().isDefined() ? self.getIdentity().field : null;
+        if (identityFiled.isDefined() and identityFiled.isKindOf(JSL!TransferFieldDeclaration) and identityFiled.eContainer.isKindOf(JSL!TransferDeclaration)) {
+            return identityFiled.eContainer;
+        }
+    }
+    return null;
+}
+
+@cached
 operation JSL!ActorDeclaration getExposedTransferObjects() : Set {
     var declarations = self.getAllMenuDeclarations().select(m | m.referenceType.isKindOf(JSL!VisibleDeclaration)).collect(m | m.referenceType).asSet();
 
@@ -67,6 +78,13 @@ operation JSL!ActorDeclaration getExposedTransferObjects() : Set {
 
     for (vd in declarations) {
         collected.addAll(vd.getExposedTransferObjects());
+    }
+
+    var identity = self.getIdentityTransferDeclaration();
+
+    if (identity.isDefined()) {
+        // Principal Transfers are not required to be present in the view graph
+        collected.add(identity);
     }
 
     return collected;
