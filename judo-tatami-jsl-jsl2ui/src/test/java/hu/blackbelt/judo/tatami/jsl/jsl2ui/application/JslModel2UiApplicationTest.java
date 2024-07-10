@@ -373,17 +373,17 @@ public class JslModel2UiApplicationTest extends AbstractTest {
     void testSecurity() throws Exception {
         jslModel = JslParser.getModelFromStrings("SecurityTestModel", List.of("""
             model SecurityTestModel;
-            
+        
             import judo::types;
-            
+        
             entity User {
                 identifier String email required;
             }
-            
+        
             transfer UserTransfer maps User as u {
                 field String email <= u.email bind;
             }
-            
+        
             actor Actor human realm:"COMPANY" claim:"email" identity:UserTransfer::email;
         """));
 
@@ -402,6 +402,23 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertNotNull(authentication);
 
         assertEquals("COMPANY", authentication.getRealm());
+
+        // Actor
+
+        ClassType actor = apps.get(0).getActor();
+
+        assertNotNull(actor);
+        assertEquals("SecurityTestModel::Actor::ClassType", actor.getName());
+        assertEquals("Actor", actor.getSimpleName());
+
+        // Principal
+
+        ClassType principal = apps.get(0).getPrincipal();
+
+        assertNotNull(principal);
+        assertEquals("SecurityTestModel::UserTransfer::ClassType", principal.getName());
+        assertEquals("UserTransfer", principal.getSimpleName());
+        assertEquals(true, principal.isIsPrincipal());
 
     }
 }

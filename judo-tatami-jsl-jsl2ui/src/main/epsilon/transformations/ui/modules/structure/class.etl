@@ -39,7 +39,12 @@ rule ClassType
 
         actorDeclaration.equivalent("Application").dataElements.add(t);
 
-        // t.isPrincipal = s.getPrincipal() == s;
+        var identity = actorDeclaration.getIdentityTransferDeclaration();
+
+        if (identity.isDefined() and identity == s) {
+            t.isPrincipal = true;
+        }
+
         t.isActor = s.isKindOf(JSL!ActorDeclaration);
 
         log.debug("Create ClassType: " + t.name);
