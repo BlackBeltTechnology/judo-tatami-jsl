@@ -8,6 +8,8 @@ import "modules/application/viewDeclaration.etl";
 
 import "modules/structure/class.etl";
 
+import "modules/type/type.etl";
+
 pre {
     var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
     var __cacheMap = new ConcurrentMap();
