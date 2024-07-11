@@ -1,0 +1,140 @@
+@greedy
+rule CreateNumericType
+    transform s: JSL!DataTypeDeclaration
+    to t: UI!ui::data::NumericType {
+        guard: s.`primitive` == "numeric" and s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId("(jsl/" + s.getId() + ")/CreateNumericType");
+        t.name = s.name;
+        t.precision = s.getPrecision().value.intValue();
+        t.scale = s.getScale().value.intValue();
+        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        log.debug("Created NumericType: " + t.name);
+}
+
+@greedy
+rule CreateDateType
+    transform s: JSL!DataTypeDeclaration
+    to t: UI!ui::data::DateType {
+        guard: s.`primitive` == "date" and s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDateType");
+        t.name = s.name;
+        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        log.debug("Created DateType: " + t.name);
+}
+
+@greedy
+rule CreateTimeType
+    transform s: JSL!DataTypeDeclaration
+    to t: UI!ui::data::TimeType {
+        guard: s.`primitive` == "time" and s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId("(jsl/" + s.getId() + ")/CreateTimeType");
+        t.name = s.name;
+        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        log.debug("Created TimeType: " + t.name);
+}
+
+@greedy
+rule CreateTimestampType
+    transform s: JSL!DataTypeDeclaration
+    to t: UI!ui::data::TimestampType {
+        guard: s.`primitive` == "timestamp" and s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId("(jsl/" + s.getId() + ")/CreateTimestampType");
+        t.name = s.name;
+        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        log.debug("Created TimestampType: " + t.name);
+}
+
+@greedy
+rule CreateEnumerationType
+    transform s: JSL!EnumDeclaration
+    to t: UI!ui::data::EnumerationType {
+        guard: s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId("(jsl/" + s.getId() + ")/CreateEnumerationType");
+        t.name = s.name;
+        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        log.debug("Created EnumerationType: " + t.name);
+}
+
+@greedy
+rule CreateEnumerationMember
+    transform s: JSL!EnumLiteral
+    to t: UI!ui::data::EnumerationMember {
+        guard: s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId("(jsl/" + s.getId() + ")/CreateEnumerationMember");
+        t.name = s.name;
+        t.ordinal = s.value.intValue();
+        s.eContainer.equivalent("CreateEnumerationType").members.add(t);
+        log.debug("Created EnumerationMember: " + t.name);
+}
+
+@greedy   
+rule CreateBooleanType 
+	transform s : JSL!DataTypeDeclaration
+	to t : UI!ui::data::BooleanType {
+        guard: s.`primitive` == "boolean" and s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId("(jsl/" + s.getId() + ")/CreateBooleanType");
+        t.name = s.name;
+        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        log.debug("Created BooleanType: " + t.name);
+}
+
+@greedy
+rule CreateStringType 
+	transform s : JSL!DataTypeDeclaration
+	to t : UI!ui::data::StringType {
+        guard: s.`primitive` == "string" and s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId("(jsl/" + s.getId() + ")/CreateStringType");
+        t.name = s.name;
+        t.maxLength = s.getMaxSize().value.intValue();
+
+        if (s.getRegex().isDefined() and s.getRegex().regex.value.isDefined()) {
+            t.regExp = s.getRegex().regex.value;
+        }
+
+        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        log.debug("Created StringType: " + t.name);
+}
+
+@lazy
+rule MimeType
+    transform s: String
+    to t: UI!ui::data::MimeType {
+	    t.setId("(jsl/" + s + ")/MimeType");
+	    var split = s.split("/");
+	    t.type = split[0];
+	    t.subType = split[1];
+
+	    actorDeclaration.equivalent("Application").mimeTypes.add(t);
+	    log.debug("Created MimeType: " + s);
+}
+
+@greedy
+rule CreateBinaryType
+    transform s : JSL!DataTypeDeclaration
+    to t : UI!ui::data::BinaryType {
+        guard: s.`primitive` == "binary" and s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId("(jsl/" + s.getId() + ")/CreateBinaryType");
+        t.name = s.name;
+
+        if (s.getMimeType().isDefined()) {
+            for (mimeType in s.getMimeType().values) {
+                t.mimeTypes.add(mimeType.value.value.equivalent("MimeType"));
+            }
+        }
+
+        if (s.getMaxFileSize().isDefined()) {
+            t.maxFileSize = jslUtils.getMaxFileSizeValue(s.getMaxFileSize()).longValue();
+        }
+
+        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        log.debug("Created BinaryType: " + t.name);
+}
