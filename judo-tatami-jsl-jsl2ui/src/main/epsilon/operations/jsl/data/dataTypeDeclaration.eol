@@ -1,0 +1,9 @@
+@cached
+operation JSL!DataTypeDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    if (self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
+        return self.eContainer;
+    } else if (self.eContainer.isTypeOf(JSL!ModelDeclaration)) {
+        return self.eContainer.declarations.selectOne(e | e.isTypeOf(JSL!ActorDeclaration));
+    }
+    return null;
+}
