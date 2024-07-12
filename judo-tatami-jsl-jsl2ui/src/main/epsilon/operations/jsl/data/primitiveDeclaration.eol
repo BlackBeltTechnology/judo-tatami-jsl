@@ -1,0 +1,26 @@
+@cached
+operation JSL!PrimitiveDeclaration getPrimitiveDeclarationEquivalent(): UI!ui::data::DataType {
+    if (self.primitive.isDefined()) {
+        switch (self.primitive) {
+            case "numeric":
+                return self.equivalent("CreateNumericType");
+            case "date":
+                return self.equivalent("CreateDateType");
+            case "time":
+                return self.equivalent("CreateTimeType");
+            case "timestamp":
+                return self.equivalent("CreateTimestampType");
+            case "boolean":
+                return self.equivalent("CreateBooleanType");
+            case "string":
+                return self.equivalent("CreateStringType");
+            case "binary":
+                return self.equivalent("CreateBinaryType");
+            default:
+                throw "Unsupported primitive type: " + self.primitive;
+        }
+    }
+    if (self.instanceOf(JSL!EnumDeclaration)) {
+        return self.equivalent("CreateEnumerationType");
+    }
+}

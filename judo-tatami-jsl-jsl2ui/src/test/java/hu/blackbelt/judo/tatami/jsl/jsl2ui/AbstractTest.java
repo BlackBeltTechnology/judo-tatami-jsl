@@ -20,7 +20,6 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui;
  * #L%
  */
 
-import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.support.JslDslModelResourceSupport;
 import hu.blackbelt.judo.meta.ui.PageContainer;
@@ -29,6 +28,7 @@ import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
@@ -172,4 +172,10 @@ abstract public class AbstractTest {
         return to.get();
     }
 
+    public static String getXMIID(EObject element) {
+        if (element.eResource() instanceof XMIResource) {
+            return ((XMIResource)element.eResource()).getID(element);
+        }
+        throw new IllegalArgumentException("Cannot get XMIID of element: " + element.toString());
+    }
 }

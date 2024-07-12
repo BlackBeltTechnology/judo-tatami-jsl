@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
+import hu.blackbelt.judo.meta.ui.data.DataType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -212,6 +213,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             
             view ProductDetailView(Product product) {
                 field String name <= product.name;
+                field Integer priceNumber <= product.price;
                 field String price <= product.price.asString() + " HUF";
             }
             
@@ -332,6 +334,16 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 "MultipleActorsTestModel::ProductRow::ClassType"
         ).containsAll(class1Names));
 
+        List<DataType> dataTypes1 = app1.getDataTypes();
+
+        Set<String> dataTypes1Names = dataTypes1.stream().map(c -> c.getName()).collect(Collectors.toSet());
+
+        assertTrue(Set.of(
+                "Integer",
+                "String"
+        ).containsAll(dataTypes1Names));
+        assertTrue(getXMIID(dataTypes1.get(0)).contains("judo::types"));
+        assertTrue(getXMIID(dataTypes1.get(1)).contains("judo::types"));
 
         List<ClassType> classTypes2 = app2.getClassTypes();
 

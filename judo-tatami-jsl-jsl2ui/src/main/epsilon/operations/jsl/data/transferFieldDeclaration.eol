@@ -1,0 +1,81 @@
+@cached
+operation JSL!TransferFieldDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
+        return self.eContainer.getActorDeclaration();
+    }
+    return null;
+}
+
+@cached
+operation JSL!TransferFieldDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!TransferFieldDeclaration isCalculated(): Boolean {
+    return jslUtils.isCalculated(self);
+}
+
+@cached
+operation JSL!TransferFieldDeclaration isRequired(): Boolean {
+    return jslUtils.isRequired(self);
+}
+
+@cached
+operation JSL!TransferFieldDeclaration maps(): Boolean {
+    return jslUtils.isMaps(self);
+}
+
+@cached
+operation JSL!TransferFieldDeclaration reads(): Boolean {
+    return jslUtils.isReads(self);
+}
+
+@cached
+operation JSL!TransferFieldDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "#" + self.name;
+}
+
+@cached
+operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent() : UI!ui::data::AttributeType {
+    if (not self.maps() and not self.reads()) {
+        return self.equivalent("CreateTransientTransferAttribute");
+    }
+    if (self.reads()) {
+        return self.equivalent("CreateDerivedTransferAttribute");
+    }
+    if (self.maps()) {
+        return self.equivalent("CreateMappedTransferAttribute");
+    }
+    throw "Could not determinate attribute type: " + s.fqName();
+}
+
+@cached
+operation JSL!TransferFieldDeclaration isSortable() : Boolean {
+    if (self.referenceType.`primitive`.isUndefined()) {
+        return false;
+    }
+    return (self.maps() or self.reads()) and (
+        self.referenceType.`primitive` == "string" or
+        self.referenceType.`primitive` == "numeric"  or
+        self.referenceType.`primitive` == "date" or
+        self.referenceType.`primitive` == "timestamp" or
+        self.referenceType.`primitive` == "time" or
+        self.referenceType.`primitive` == "boolean"
+    );
+}
+
+@cached
+operation JSL!TransferFieldDeclaration isFilterable() : Boolean {
+    if (self.referenceType.`primitive`.isUndefined()) {
+        return false;
+    }
+    return (self.maps() or self.reads()) and (
+      self.referenceType.`primitive` == "string" or
+      self.referenceType.`primitive` == "numeric"  or
+      self.referenceType.`primitive` == "date" or
+      self.referenceType.`primitive` == "timestamp" or
+      self.referenceType.`primitive` == "time" or
+      self.referenceType.`primitive` == "boolean"
+    );
+}
