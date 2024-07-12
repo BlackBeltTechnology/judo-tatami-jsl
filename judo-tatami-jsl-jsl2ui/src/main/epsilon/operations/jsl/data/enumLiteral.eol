@@ -1,0 +1,7 @@
+@cached
+operation JSL!EnumLiteral getActorDeclaration(): JSL!ActorDeclaration {
+    if (self.eContainer.isTypeOf(JSL!EnumDeclaration)) {
+        return self.eContainer.getActorDeclaration();
+    }
+    return null;
+}
