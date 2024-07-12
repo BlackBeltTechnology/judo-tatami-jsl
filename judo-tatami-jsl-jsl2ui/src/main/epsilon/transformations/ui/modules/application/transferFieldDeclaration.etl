@@ -1,0 +1,60 @@
+@abstract
+rule AbstractCreateTransferAttribute
+    transform s: JSL!TransferFieldDeclaration
+    to t: UI!ui::data::AttributeType {
+        guard: s.getActorDeclaration().isDefined()
+            and s.getActorDeclaration() == actorDeclaration
+            and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
+            and actorDeclaration.getExposedTransferObjects().includes(s.eContainer)
+
+        t.name = s.name;
+
+        t.dataType = s.referenceType.getPrimitiveDeclarationEquivalent();
+        t.isRequired = s.isRequired();
+        t.isFilterable = s.isFilterable();
+}
+
+@greedy
+rule CreateTransientTransferAttribute
+    transform s : JSL!TransferFieldDeclaration
+    to t : UI!ui::data::AttributeType
+    extends AbstractCreateTransferAttribute {
+        guard: not s.maps() and not s.reads()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferAttribute");
+        t.memberType = UI!ui::data::MemberType#TRANSIENT;
+        t.isReadOnly = false;
+
+        s.eContainer.equivalent("ClassType").attributes.add(t);
+        log.debug("Created AttributeType (Transient) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@greedy
+rule CreateDerivedTransferAttribute
+    transform s : JSL!TransferFieldDeclaration
+    to t : UI!ui::data::AttributeType
+    extends AbstractCreateTransferAttribute {
+        guard: s.reads()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");
+        t.memberType = UI!ui::data::MemberType#DERIVED;
+        t.isReadOnly = true;
+
+        s.eContainer.equivalent("ClassType").attributes.add(t);
+        log.debug("Created AttributeType (Derived) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}
+
+@greedy
+rule CreateMappedTransferAttribute
+    transform s : JSL!TransferFieldDeclaration
+    to t : UI!ui::data::AttributeType
+    extends AbstractCreateTransferAttribute {
+        guard: s.maps()
+
+        t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferAttribute");
+        t.memberType = UI!ui::data::MemberType#MAPPED;
+        t.isReadOnly = false;
+
+        s.eContainer.equivalent("ClassType").attributes.add(t);
+        log.debug("Created AttributeType (Mapped) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
+}

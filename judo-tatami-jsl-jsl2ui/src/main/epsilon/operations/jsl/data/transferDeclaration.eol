@@ -9,6 +9,16 @@ operation JSL!TransferDeclaration getFqName(): String {
 }
 
 @cached
+operation JSL!TransferDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    if (self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
+        return self.eContainer;
+    } else if (self.eContainer.isTypeOf(JSL!ModelDeclaration)) {
+        return self.eContainer.declarations.selectOne(e | e.isTypeOf(JSL!ActorDeclaration));
+    }
+    return null;
+}
+
+@cached
 operation JSL!TransferDeclaration getExposedTransferObjects() : Set {
     var transfers = new Set();
     var relations = self.getExposedRelations();

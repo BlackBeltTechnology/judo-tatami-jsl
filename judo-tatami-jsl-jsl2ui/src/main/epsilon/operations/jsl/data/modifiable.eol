@@ -67,3 +67,8 @@ operation JSL!Modifiable getDefault(): JSL!Modifier {
 operation JSL!Modifiable getChoices(): JSL!Modifier {
 	return (self.modifiers.selectOne(m | m.type == "choices"));
 }
+
+@cached
+operation JSL!Modifiable getBind(): JSL!Modifier {
+	return (self.modifiers.selectOne(m | m.type == "bind"));
+}
