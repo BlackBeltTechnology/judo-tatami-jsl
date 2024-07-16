@@ -32,13 +32,18 @@ operation JSL!TransferFieldDeclaration reads(): Boolean {
 }
 
 @cached
+operation JSL!TransferFieldDeclaration isTransient(): Boolean {
+    return not self.maps() and not self.reads();
+}
+
+@cached
 operation JSL!TransferFieldDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "#" + self.name;
 }
 
 @cached
 operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
-    if (not self.maps() and not self.reads()) {
+    if (self.isTransient()) {
         return self.equivalent("CreateTransientTransferAttribute");
     }
     if (self.reads()) {
