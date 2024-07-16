@@ -37,7 +37,7 @@ operation JSL!TransferFieldDeclaration getFqName(): String {
 }
 
 @cached
-operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent() : UI!ui::data::AttributeType {
+operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
     if (not self.maps() and not self.reads()) {
         return self.equivalent("CreateTransientTransferAttribute");
     }
@@ -51,7 +51,7 @@ operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent() :
 }
 
 @cached
-operation JSL!TransferFieldDeclaration isSortable() : Boolean {
+operation JSL!TransferFieldDeclaration isSortable(): Boolean {
     if (self.referenceType.`primitive`.isUndefined()) {
         return false;
     }
@@ -66,7 +66,7 @@ operation JSL!TransferFieldDeclaration isSortable() : Boolean {
 }
 
 @cached
-operation JSL!TransferFieldDeclaration isFilterable() : Boolean {
+operation JSL!TransferFieldDeclaration isFilterable(): Boolean {
     if (self.referenceType.`primitive`.isUndefined()) {
         return false;
     }

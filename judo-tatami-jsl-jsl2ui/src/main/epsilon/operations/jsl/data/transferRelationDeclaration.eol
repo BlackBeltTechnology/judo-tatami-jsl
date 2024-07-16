@@ -9,6 +9,101 @@ operation JSL!TransferRelationDeclaration getFqName(): String {
 }
 
 @cached
+operation JSL!TransferDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    if (self.eContainer.isTypeOf(JSL!TransferDeclaration)) {
+        return self.eContainer.getActorDeclaration();
+    }
+    return null;
+}
+
+@cached
 operation JSL!TransferRelationDeclaration getDetail(): JSL!DetailModifier {
     return self.modifiers.selectOne(m | m.isTypeOf(JSL!DetailModifier));
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isAggregation(): Boolean {
+    return jslUtils.isAggregation(self);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isRequired(): Boolean {
+    return jslUtils.isRequired(self);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration maps(): Boolean {
+    return jslUtils.isMaps(self);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration reads(): Boolean {
+    return jslUtils.isReads(self);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isCreateAllowed(): Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!CreateModifier) and m.`true`);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isUpdateAllowed(): Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and m.`true`);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isDeleteAllowed(): Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!DeleteModifier) and m.`true`);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isChoiceDefined(): Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!ChoiceModifier));
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isAddReferenceAllowed(): Boolean {
+    var lower = self.isRequired() and not self.isMany ? 1 : 0;
+    var upper = self.isMany ? -1 : 1;
+	return self.maps() and self.eContainer.isUpdateSupported()
+		and upper != 1 and (lower < upper or upper == -1);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isRemoveReferenceAllowed(): Boolean {
+    var lower = self.isRequired() and not self.isMany ? 1 : 0;
+    var upper = self.isMany ? -1 : 1;
+	return self.maps() and self.eContainer.isUpdateSupported()
+		and upper != 1 and (lower < upper or upper == -1);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isSetReferenceAllowed(): Boolean {
+	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isUnsetReferenceAllowed(): Boolean {
+	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isGetRangeSupported(): Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!ChoiceModifier));
+}
+
+@cached
+operation JSL!TransferRelationDeclaration getMappedTransferRelationEquivalent(): UI!ui::data::RelationType {
+    var ret = null;
+    if (self.reads()) {
+        ret = self.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
+    } else if (self.maps()) {
+        ret = self.equivalent("CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
+    } else {
+        ret = self.equivalent("CreateTransientTransferObjectRelationForTransferRelationDeclaration");
+    }
+    if (ret.isUndefined) {
+        throw "Could not get relation";
+    }
+    return ret;
 }
