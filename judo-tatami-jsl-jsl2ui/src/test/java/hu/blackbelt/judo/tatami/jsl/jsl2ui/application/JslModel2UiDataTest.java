@@ -115,14 +115,14 @@ public class JslModel2UiDataTest extends AbstractTest {
         // DataTypes
 
         var dataTypes = app.getDataTypes();
-        StringType stringType = (StringType) dataTypes.stream().filter(t -> t instanceof StringType).findFirst().get();
-        BooleanType booleanType = (BooleanType) dataTypes.stream().filter(t -> t instanceof BooleanType).findFirst().get();
-        BinaryType binaryType = (BinaryType) dataTypes.stream().filter(t -> t instanceof BinaryType).findFirst().get();
-        NumericType numericType = (NumericType) dataTypes.stream().filter(t -> t instanceof NumericType).findFirst().get();
-        EnumerationType enumType = (EnumerationType) dataTypes.stream().filter(t -> t instanceof EnumerationType).findFirst().get();
-        DateType dateType = (DateType) dataTypes.stream().filter(t -> t instanceof DateType).findFirst().get();
-        TimeType timeType = (TimeType) dataTypes.stream().filter(t -> t instanceof TimeType).findFirst().get();
-        TimestampType timestampType = (TimestampType) dataTypes.stream().filter(t -> t instanceof TimestampType).findFirst().get();
+        StringType stringType = (StringType) dataTypes.stream().filter(t -> t instanceof StringType).findFirst().orElseThrow();
+        BooleanType booleanType = (BooleanType) dataTypes.stream().filter(t -> t instanceof BooleanType).findFirst().orElseThrow();
+        BinaryType binaryType = (BinaryType) dataTypes.stream().filter(t -> t instanceof BinaryType).findFirst().orElseThrow();
+        NumericType numericType = (NumericType) dataTypes.stream().filter(t -> t instanceof NumericType).findFirst().orElseThrow();
+        EnumerationType enumType = (EnumerationType) dataTypes.stream().filter(t -> t instanceof EnumerationType).findFirst().orElseThrow();
+        DateType dateType = (DateType) dataTypes.stream().filter(t -> t instanceof DateType).findFirst().orElseThrow();
+        TimeType timeType = (TimeType) dataTypes.stream().filter(t -> t instanceof TimeType).findFirst().orElseThrow();
+        TimestampType timestampType = (TimestampType) dataTypes.stream().filter(t -> t instanceof TimestampType).findFirst().orElseThrow();
 
         assertEquals(8, dataTypes.size());
 
@@ -168,77 +168,77 @@ public class JslModel2UiDataTest extends AbstractTest {
 
         AttributeAssertion asserter = new AttributeAssertion("Actor::Application::BasicDataTestModel::UserTransfer::ClassType::");
 
-        ClassType userTransfer = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataTestModel::UserTransfer::ClassType")).findFirst().get();
+        ClassType userTransfer = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataTestModel::UserTransfer::ClassType")).findFirst().orElseThrow();
         assertNotNull(userTransfer);
         assertEquals(23, userTransfer.getAttributes().size());
 
-        AttributeType email = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("email")).findFirst().get();
+        AttributeType email = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("email")).findFirst().orElseThrow();
         asserter.assertAttributeType(email, "email", "String", MemberType.MAPPED, true, true, false);
 
-        AttributeType binaryDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("binaryDerived")).findFirst().get();
+        AttributeType binaryDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("binaryDerived")).findFirst().orElseThrow();
         asserter.assertAttributeType(binaryDerived, "binaryDerived", "Binary", MemberType.DERIVED, false, false, true);
 
-        AttributeType stringDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("stringDerived")).findFirst().get();
+        AttributeType stringDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("stringDerived")).findFirst().orElseThrow();
         asserter.assertAttributeType(stringDerived, "stringDerived", "String", MemberType.DERIVED, false, true, true);
 
-        AttributeType booleanDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("booleanDerived")).findFirst().get();
+        AttributeType booleanDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("booleanDerived")).findFirst().orElseThrow();
         asserter.assertAttributeType(booleanDerived, "booleanDerived", "Boolean", MemberType.DERIVED, false, true, true);
 
-        AttributeType dateDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("dateDerived")).findFirst().get();
+        AttributeType dateDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("dateDerived")).findFirst().orElseThrow();
         asserter.assertAttributeType(dateDerived, "dateDerived", "Date", MemberType.DERIVED, false, true, true);
 
-        AttributeType numericDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("numericDerived")).findFirst().get();
+        AttributeType numericDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("numericDerived")).findFirst().orElseThrow();
         asserter.assertAttributeType(numericDerived, "numericDerived", "Numeric", MemberType.DERIVED, false, true, true);
 
-        AttributeType timeDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timeDerived")).findFirst().get();
+        AttributeType timeDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timeDerived")).findFirst().orElseThrow();
         asserter.assertAttributeType(timeDerived, "timeDerived", "Time", MemberType.DERIVED, false, true, true);
 
-        AttributeType timestampDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timestampDerived")).findFirst().get();
+        AttributeType timestampDerived = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timestampDerived")).findFirst().orElseThrow();
         asserter.assertAttributeType(timestampDerived, "timestampDerived", "Timestamp", MemberType.DERIVED, false, true, true);
 
-        AttributeType mappedEnum = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("mappedEnum")).findFirst().get();
+        AttributeType mappedEnum = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("mappedEnum")).findFirst().orElseThrow();
         asserter.assertAttributeType(mappedEnum, "mappedEnum", "MyEnum", MemberType.MAPPED, false, false, false);
 
-        AttributeType binaryTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("binaryTransient")).findFirst().get();
+        AttributeType binaryTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("binaryTransient")).findFirst().orElseThrow();
         asserter.assertAttributeType(binaryTransient, "binaryTransient", "Binary", MemberType.TRANSIENT, false, false, false);
 
-        AttributeType stringTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("stringTransient")).findFirst().get();
+        AttributeType stringTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("stringTransient")).findFirst().orElseThrow();
         asserter.assertAttributeType(stringTransient, "stringTransient", "String", MemberType.TRANSIENT, false, false, false);
 
-        AttributeType booleanTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("booleanTransient")).findFirst().get();
+        AttributeType booleanTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("booleanTransient")).findFirst().orElseThrow();
         asserter.assertAttributeType(booleanTransient, "booleanTransient", "Boolean", MemberType.TRANSIENT, false, false, false);
 
-        AttributeType dateTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("dateTransient")).findFirst().get();
+        AttributeType dateTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("dateTransient")).findFirst().orElseThrow();
         asserter.assertAttributeType(dateTransient, "dateTransient", "Date", MemberType.TRANSIENT, false, false, false);
 
-        AttributeType numericTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("numericTransient")).findFirst().get();
+        AttributeType numericTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("numericTransient")).findFirst().orElseThrow();
         asserter.assertAttributeType(numericTransient, "numericTransient", "Numeric", MemberType.TRANSIENT, false, false, false);
 
-        AttributeType timeTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timeTransient")).findFirst().get();
+        AttributeType timeTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timeTransient")).findFirst().orElseThrow();
         asserter.assertAttributeType(timeTransient, "timeTransient", "Time", MemberType.TRANSIENT, false, false, false);
 
-        AttributeType timestampTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timestampTransient")).findFirst().get();
+        AttributeType timestampTransient = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timestampTransient")).findFirst().orElseThrow();
         asserter.assertAttributeType(timestampTransient, "timestampTransient", "Timestamp", MemberType.TRANSIENT, false, false, false);
 
-        AttributeType binaryMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("binaryMapped")).findFirst().get();
+        AttributeType binaryMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("binaryMapped")).findFirst().orElseThrow();
         asserter.assertAttributeType(binaryMapped, "binaryMapped", "Binary", MemberType.MAPPED, false, false, false);
 
-        AttributeType stringMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("stringMapped")).findFirst().get();
+        AttributeType stringMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("stringMapped")).findFirst().orElseThrow();
         asserter.assertAttributeType(stringMapped, "stringMapped", "String", MemberType.MAPPED, false, true, false);
 
-        AttributeType booleanMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("booleanMapped")).findFirst().get();
+        AttributeType booleanMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("booleanMapped")).findFirst().orElseThrow();
         asserter.assertAttributeType(booleanMapped, "booleanMapped", "Boolean", MemberType.MAPPED, false, true, false);
 
-        AttributeType dateMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("dateMapped")).findFirst().get();
+        AttributeType dateMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("dateMapped")).findFirst().orElseThrow();
         asserter.assertAttributeType(dateMapped, "dateMapped", "Date", MemberType.MAPPED, false, true, false);
 
-        AttributeType numericMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("numericMapped")).findFirst().get();
+        AttributeType numericMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("numericMapped")).findFirst().orElseThrow();
         asserter.assertAttributeType(numericMapped, "numericMapped", "Numeric", MemberType.MAPPED, false, true, false);
 
-        AttributeType timeMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timeMapped")).findFirst().get();
+        AttributeType timeMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timeMapped")).findFirst().orElseThrow();
         asserter.assertAttributeType(timeMapped, "timeMapped", "Time", MemberType.MAPPED, false, true, false);
 
-        AttributeType timestampMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timestampMapped")).findFirst().get();
+        AttributeType timestampMapped = userTransfer.getAttributes().stream().filter(a -> a.getName().equals("timestampMapped")).findFirst().orElseThrow();
         asserter.assertAttributeType(timestampMapped, "timestampMapped", "Timestamp", MemberType.MAPPED, false, true, false);
     }
 
@@ -289,25 +289,25 @@ public class JslModel2UiDataTest extends AbstractTest {
 
         Application app = apps.get(0);
 
-        ClassType transfer1Row = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataCrossTransfersTestModel::Transfer1Row::ClassType")).findFirst().get();
+        ClassType transfer1Row = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataCrossTransfersTestModel::Transfer1Row::ClassType")).findFirst().orElseThrow();
         assertNotNull(transfer1Row);
         assertEquals(2, transfer1Row.getAttributes().size());
 
         AttributeAssertion tr1Asserter = new AttributeAssertion("Actor1::Application::BasicDataCrossTransfersTestModel::Transfer1Row::ClassType::");
 
-        AttributeType string = transfer1Row.getAttributes().stream().filter(a -> a.getName().equals("string")).findFirst().get();
+        AttributeType string = transfer1Row.getAttributes().stream().filter(a -> a.getName().equals("string")).findFirst().orElseThrow();
         tr1Asserter.assertAttributeType(string, "string", "String", MemberType.DERIVED, false, true, true);
 
-        AttributeType booleanAttr = transfer1Row.getAttributes().stream().filter(a -> a.getName().equals("boolean")).findFirst().get();
+        AttributeType booleanAttr = transfer1Row.getAttributes().stream().filter(a -> a.getName().equals("boolean")).findFirst().orElseThrow();
         tr1Asserter.assertAttributeType(booleanAttr, "boolean", "Boolean", MemberType.DERIVED, false, true, true);
 
-        ClassType transfer2Row = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataCrossTransfersTestModel::Transfer2Row::ClassType")).findFirst().get();
+        ClassType transfer2Row = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataCrossTransfersTestModel::Transfer2Row::ClassType")).findFirst().orElseThrow();
         assertNotNull(transfer2Row);
         assertEquals(1, transfer2Row.getAttributes().size());
 
         AttributeAssertion tr2Asserter = new AttributeAssertion("Actor1::Application::BasicDataCrossTransfersTestModel::Transfer2Row::ClassType::");
 
-        AttributeType integer = transfer2Row.getAttributes().stream().filter(a -> a.getName().equals("integer")).findFirst().get();
+        AttributeType integer = transfer2Row.getAttributes().stream().filter(a -> a.getName().equals("integer")).findFirst().orElseThrow();
         tr2Asserter.assertAttributeType(integer, "integer", "Integer", MemberType.DERIVED, false, true, true);
     }
 
@@ -323,35 +323,59 @@ public class JslModel2UiDataTest extends AbstractTest {
         
                 field EntityRelated containment;
                 field EntityRelated[] containmentCollection;
-        
+
                 relation EntityRelated association;
-                relation EntityRelated containmentDerived <= self.containment eager:true;
-                relation EntityRelated[] containmentCollectionDerived <= self.containmentCollection eager:true;
+                relation EntityRelated[] associationCollection;
+                relation EntityRelated derivedContainment <= self.containment eager:true;
+                relation EntityRelated[] derivedContainmentCollection <= self.containmentCollection eager:true;
             }
 
             entity EntityRelated {
-                relation User `user` opposite-add:userRelatedOpposite;
                 field String hello;
+
+                relation User user opposite-add:userRelatedOpposite;
+                relation User userCollection opposite-add:userRelatedOppositeCollection[];
             }
 
             transfer UserTransfer maps User as u {
                 field String email <= u.email bind;
-                relation UnmappedRelated unmappedContainment;
-                relation UnmappedRelated unmappedContainmentRequired required;
-                relation UnmappedRelated[] unmappedContainmentCollection;
 
-                relation MappedRelated mappedAssociation <= u.association create:true;
-                relation MappedRelated mappedAssociationOpposite <= u.userRelatedOpposite create:true;
-                relation MappedRelated derivedAssociation <= u.association;
-                relation MappedRelated derivedAssociationOpposite <= u.userRelatedOpposite create:true;
-                relation MappedRelated derivedContainmentStatic <= EntityRelated.any();
-                relation MappedRelated[] derivedContainmentCollectionStatic <= EntityRelated.all();
-                relation MappedRelated mappedContainmentDerived <= u.containmentDerived;
-                relation MappedRelated[] mappedContainmentCollectionDerived <= u.containmentCollectionDerived;
+                relation UnmappedRelated unmappedLazy;
+                relation UnmappedRelated unmappedLazyRequired required;
+                relation UnmappedRelated[] unmappedLazyCollection;
+
+                relation MappedRelated lazyAssociation <= u.association create:true;
+                relation MappedRelated lazyAssociationOpposite <= u.userRelatedOpposite create:true;
+
+                relation MappedRelated derivedLazyContainment <= u.containment;
+                relation MappedRelated[] derivedLazyContainmentCollection <= u.containmentCollection;
+
+                relation MappedRelated derivedEagerContainment <= u.containment eager:true;
+                relation MappedRelated[] derivedEagerContainmentCollection <= u.containmentCollection eager:true;
+
+                relation MappedRelated derivedLazyAssociation <= u.association;
+                relation MappedRelated derivedLazyAssociationOpposite <= u.userRelatedOpposite create:true;
+
+                relation MappedRelated derivedEagerAssociation <= u.association eager:true;
+                relation MappedRelated derivedEagerAssociationOpposite <= u.userRelatedOpposite create:true eager:true;
+
+                relation MappedRelated derivedLazyStatic <= EntityRelated.any();
+                relation MappedRelated[] derivedLazyCollectionStatic <= EntityRelated.all();
+
+                relation MappedRelated mappedLazyAssociationDerived <= u.derivedContainment;
+                relation MappedRelated[] mappedLazyAssociationCollectionDerived <= u.derivedContainmentCollection;
+
+                relation MappedRelated lazyAssociationWithChoicesAndDefault <= u.association choices:EntityRelated.all() default:EntityRelated.any();
+                relation MappedRelated[] lazyAssociationCollectionWithChoicesAndDefault <= u.associationCollection choices:EntityRelated.all() default:EntityRelated.all();
+                relation MappedRelated lazyAssociationOppositeWithChoicesAndDefault <= u.userRelatedOpposite choices:EntityRelated.all() default:EntityRelated.any();
+                relation MappedRelated[] lazyAssociationOppositeCollectionWithChoicesAndDefault <= u.userRelatedOppositeCollection choices:EntityRelated.all() default:EntityRelated.all();
+
+                relation MappedRelated lazyTransientWithDefault default:EntityRelated.any();
+                relation MappedRelated[] lazyTransientCollectionWithDefault default:EntityRelated.all();
             }
 
             transfer UnmappedRelated {
-                field String someField;
+                field String transient;
             }
 
             transfer MappedRelated maps EntityRelated as e {
