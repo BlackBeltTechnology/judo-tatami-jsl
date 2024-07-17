@@ -89,10 +89,3 @@ operation JSL!ActorDeclaration getExposedTransferObjects() : Set {
 
     return collected;
 }
-
-@cached
-operation JSL!ActorDeclaration getTransferObjects() : Set {
-	  var transfers = new Set();
-    self.collectExposed(new Set(), transfers, new Set());
-    return transfers;
-}
