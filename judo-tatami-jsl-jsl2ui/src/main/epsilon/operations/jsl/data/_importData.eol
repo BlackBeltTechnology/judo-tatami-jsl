@@ -1,16 +1,9 @@
-import "actorAccessDeclaration.eol";
-import "actorDeclaration.eol";
-import "actorGroupDeclaration.eol";
-import "actorLinkDeclaration.eol";
 import "dataTypeDeclaration.eol";
-import "modelDeclaration.eol";
 import "enumDeclaration.eol";
 import "enumLiteral.eol";
-import "modifiable.eol";
 import "primitiveDeclaration.eol";
 import "simpleTransferDeclaration.eol";
 import "transferDeclaration.eol";
 import "transferFieldDeclaration.eol";
 import "transferRelationDeclaration.eol";
-import "viewDeclaration.eol";
-import "visibleDeclaration.eol";
+

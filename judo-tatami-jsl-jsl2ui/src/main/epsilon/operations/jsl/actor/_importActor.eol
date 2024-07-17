@@ -1,0 +1,4 @@
+import "actorAccessDeclaration.eol";
+import "actorDeclaration.eol";
+import "actorGroupDeclaration.eol";
+import "actorLinkDeclaration.eol";

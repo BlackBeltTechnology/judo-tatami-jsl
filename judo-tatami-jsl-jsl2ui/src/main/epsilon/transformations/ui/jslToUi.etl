@@ -4,12 +4,14 @@ import "modules/application/actorDeclaration.etl";
 import "modules/application/actorGroupDeclaration.etl";
 import "modules/application/actorLinkDeclaration.etl";
 import "modules/application/modifiable.etl";
-import "modules/application/transferFieldDeclaration.etl";
-import "modules/application/viewDeclaration.etl";
 
-import "modules/structure/class.etl";
+import "modules/structure/transferDeclaration.etl";
+import "modules/structure/transferFieldDeclaration.etl";
+import "modules/structure/transferRelationDeclaration.etl";
 
 import "modules/type/type.etl";
+
+import "modules/view/viewDeclaration.etl";
 
 pre {
     var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
