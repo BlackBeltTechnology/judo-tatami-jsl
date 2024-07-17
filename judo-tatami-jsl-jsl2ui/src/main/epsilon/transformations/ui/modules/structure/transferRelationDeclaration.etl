@@ -4,6 +4,7 @@ rule AbstractRelationType
     to t: UI!ui::data::RelationType {
         guard: s.getActorDeclaration().isDefined()
             and s.getActorDeclaration() == actorDeclaration
+            and actorDeclaration.getExposedRelations().includes(s)
 
 	    t.name = s.name;
 	    t.target = s.referenceType.equivalent("ClassType");
@@ -113,8 +114,6 @@ rule RelationType
 	transform s: JSL!TransferRelationDeclaration
     to t: UI!ui::data::RelationType
     extends AbstractRelationType {
-		guard: actorDeclaration.getExposedRelations().includes(s)
-
 	    t.setId("(jsl/" + s.getId() + ")/RelationType");
         var containerClassType = s.getContainerEquivalentClassType();
         containerClassType.relations.add(t);

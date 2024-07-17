@@ -339,51 +339,64 @@ public class JslModel2UiDataTest extends AbstractTest {
 
             transfer UserTransfer maps User as u {
                 field String email <= u.email bind;
-
-                relation UnmappedRelated unmappedLazy;
-                relation UnmappedRelated unmappedLazyRequired required;
-                relation UnmappedRelated[] unmappedLazyCollection;
-
-                relation MappedRelated lazyAssociation <= u.association create:true;
-                relation MappedRelated lazyAssociationOpposite <= u.userRelatedOpposite create:true;
-
-                relation MappedRelated derivedLazyContainment <= u.containment;
-                relation MappedRelated[] derivedLazyContainmentCollection <= u.containmentCollection;
-
-                relation MappedRelated derivedEagerContainment <= u.containment eager:true;
-                relation MappedRelated[] derivedEagerContainmentCollection <= u.containmentCollection eager:true;
-
-                relation MappedRelated derivedLazyAssociation <= u.association;
-                relation MappedRelated derivedLazyAssociationOpposite <= u.userRelatedOpposite create:true;
-
-                relation MappedRelated derivedEagerAssociation <= u.association eager:true;
-                relation MappedRelated derivedEagerAssociationOpposite <= u.userRelatedOpposite create:true eager:true;
-
-                relation MappedRelated derivedLazyStatic <= EntityRelated.any();
-                relation MappedRelated[] derivedLazyCollectionStatic <= EntityRelated.all();
-
-                relation MappedRelated mappedLazyAssociationDerived <= u.derivedContainment;
-                relation MappedRelated[] mappedLazyAssociationCollectionDerived <= u.derivedContainmentCollection;
-
-                relation MappedRelated lazyAssociationWithChoicesAndDefault <= u.association choices:EntityRelated.all() default:EntityRelated.any();
-                relation MappedRelated[] lazyAssociationCollectionWithChoicesAndDefault <= u.associationCollection choices:EntityRelated.all() default:EntityRelated.all();
-                relation MappedRelated lazyAssociationOppositeWithChoicesAndDefault <= u.userRelatedOpposite choices:EntityRelated.all() default:EntityRelated.any();
-                relation MappedRelated[] lazyAssociationOppositeCollectionWithChoicesAndDefault <= u.userRelatedOppositeCollection choices:EntityRelated.all() default:EntityRelated.all();
-
-                relation MappedRelated lazyTransientWithDefault default:EntityRelated.any();
-                relation MappedRelated[] lazyTransientCollectionWithDefault default:EntityRelated.all();
             }
 
-            transfer UnmappedRelated {
+            view UserView(User u) {
+                link UnmappedRelated unmappedLazy;
+                link UnmappedRelated unmappedLazyRequired required;
+                table UnmappedRelatedRow[] unmappedLazyCollection;
+
+                link MappedRelated lazyAssociation <= u.association create:true;
+                link MappedRelated lazyAssociationOpposite <= u.userRelatedOpposite create:true;
+
+                link MappedRelated derivedLazyContainment <= u.containment;
+                table MappedRelatedRow[] derivedLazyContainmentCollection <= u.containmentCollection;
+
+                link MappedRelated derivedEagerContainment <= u.containment eager:true;
+                table MappedRelatedRow[] derivedEagerContainmentCollection <= u.containmentCollection eager:true;
+
+                link MappedRelated derivedLazyAssociation <= u.association;
+                link MappedRelated derivedLazyAssociationOpposite <= u.userRelatedOpposite create:true;
+
+                link MappedRelated derivedEagerAssociation <= u.association eager:true;
+                link MappedRelated derivedEagerAssociationOpposite <= u.userRelatedOpposite create:true eager:true;
+
+                link MappedRelated derivedLazyStatic <= EntityRelated.any();
+                table MappedRelatedRow[] derivedLazyCollectionStatic <= EntityRelated.all();
+
+                link MappedRelated mappedLazyAssociationDerived <= u.derivedContainment;
+                table MappedRelatedRow[] mappedLazyAssociationCollectionDerived <= u.derivedContainmentCollection;
+
+                link MappedRelated lazyAssociationWithChoicesAndDefault <= u.association choices:EntityRelated.all() default:EntityRelated.any();
+                table MappedRelatedRow[] lazyAssociationCollectionWithChoicesAndDefault <= u.associationCollection choices:EntityRelated.all() default:EntityRelated.all();
+                link MappedRelated lazyAssociationOppositeWithChoicesAndDefault <= u.userRelatedOpposite choices:EntityRelated.all() default:EntityRelated.any();
+                table MappedRelatedRow[] lazyAssociationOppositeCollectionWithChoicesAndDefault <= u.userRelatedOppositeCollection choices:EntityRelated.all() default:EntityRelated.all();
+
+                link MappedRelated lazyTransientWithDefault default:EntityRelated.any();
+                table MappedRelatedRow[] lazyTransientCollectionWithDefault default:EntityRelated.all();
+            }
+
+            view UnmappedRelated {
                 field String transient;
             }
 
-            transfer MappedRelated maps EntityRelated as e {
-                field String mappedAttribute <= e.hello bind;
+            row UnmappedRelatedRow {
+                field String transient;
+            }
+
+            view MappedRelated(EntityRelated e) {
+                field String mappedAttribute <= e.hello;
+                event create onCreate;
+            }
+
+            row MappedRelatedRow(EntityRelated e) {
+                field String mappedAttribute <= e.hello;
                 event create onCreate;
             }
         
-            actor Actor human realm:"COMPANY" claim:"email" identity:UserTransfer::email;
+            actor Actor human realm:"COMPANY" claim:"email" identity:UserTransfer::email {
+                link UserView users label:"Users";
+            }
         """));
 
         transform();

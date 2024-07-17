@@ -23,14 +23,10 @@ operation JSL!TransferDeclaration getExposedTransferObjects(): Set {
     var transfers = new Set();
     var relations = self.getExposedRelations();
 
-    transfers.addAll(relations.collect(r | r.referenceType).asSet());
+    transfers.addAll(relations.collect(r | r.referenceType));
 
     for (relation in relations) {
-        var detail = relation.getDetail();
-
-        if (detail.isDefined() and detail.view.isDefined()) {
-            transfers.add(detail.view);
-        }
+        transfers.addAll(relation.referenceType.getExposedTransferObjects());
     }
 
     return transfers;
@@ -69,7 +65,7 @@ operation JSL!TransferDeclaration getAllRelations(): Set {
     relations.addAll(self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration)));
 
     if (self.isKindOf(JSL!ActorDeclaration)) {
-        var linkRelations = self.getAllMenuDeclarations().asSet();
+        var linkRelations = self.getAllMenuDeclarations();
         relations.addAll(linkRelations);
     }
 
@@ -78,7 +74,7 @@ operation JSL!TransferDeclaration getAllRelations(): Set {
 
 @cached
 operation JSL!TransferDeclaration getAllPrimitiveFields(): Set {
-    return self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.`primitive`.isDefined());
+    return self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.referenceType.isDefined() and m.referenceType.`primitive`.isDefined());
 }
 
 @cached

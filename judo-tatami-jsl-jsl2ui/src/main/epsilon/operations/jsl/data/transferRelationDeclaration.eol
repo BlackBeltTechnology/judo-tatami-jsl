@@ -10,7 +10,7 @@ operation JSL!TransferRelationDeclaration getFqName(): String {
 
 @cached
 operation JSL!TransferRelationDeclaration getActorDeclaration(): JSL!ActorDeclaration {
-    if (self.eContainer.isTypeOf(JSL!TransferDeclaration)) {
+    if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
         return self.eContainer.getActorDeclaration();
     }
     return null;
@@ -150,12 +150,13 @@ operation JSL!TransferRelationDeclaration getMappedTransferRelationEquivalent():
 
 @cached
 operation JSL!TransferRelationDeclaration getContainerEquivalentClassType(): UI!ui::data::ClassType {
-    if (self.eContainer.isTypeOf(JSL!TransferDeclaration)) {
+    if (self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
+        return self.eContainer.equivalent("Actor");
+    } else if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
         return self.eContainer.equivalent("ClassType");
     } else if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration)) {
         return self.eContainer.getActorDeclaration().equivalent("Actor");
-    } else if (self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
-        return self.eContainer.equivalent("Actor");
-    }
+    } else
+    // TODO handle view group case (multiple jumps up)
     return null;
 }

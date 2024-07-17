@@ -3,6 +3,7 @@ operation JSL!TransferFieldDeclaration getActorDeclaration(): JSL!ActorDeclarati
     if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
         return self.eContainer.getActorDeclaration();
     }
+    // TODO handle view group case (multiple jumps up)
     return null;
 }
 
@@ -53,6 +54,15 @@ operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent(): 
         return self.equivalent("CreateMappedTransferAttribute");
     }
     throw "Could not determinate attribute type: " + s.fqName();
+}
+
+@cached
+operation JSL!TransferFieldDeclaration getContainerEquivalentClassType(): UI!ui::data::ClassType {
+    if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
+        return self.eContainer.equivalent("ClassType");
+    }
+    // TODO handle view group case (multiple jumps up)
+    return null;
 }
 
 @cached

@@ -25,7 +25,7 @@ rule CreateTransientTransferAttribute
         t.memberType = UI!ui::data::MemberType#TRANSIENT;
         t.isReadOnly = false;
 
-        s.eContainer.equivalent("ClassType").attributes.add(t);
+        s.getContainerEquivalentClassType().attributes.add(t);
         log.debug("Created AttributeType (Transient) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
@@ -40,7 +40,7 @@ rule CreateDerivedTransferAttribute
         t.memberType = UI!ui::data::MemberType#DERIVED;
         t.isReadOnly = true;
 
-        s.eContainer.equivalent("ClassType").attributes.add(t);
+        s.getContainerEquivalentClassType().attributes.add(t);
         log.debug("Created AttributeType (Derived) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
 
@@ -55,6 +55,6 @@ rule CreateMappedTransferAttribute
         t.memberType = UI!ui::data::MemberType#MAPPED;
         t.isReadOnly = false;
 
-        s.eContainer.equivalent("ClassType").attributes.add(t);
+        s.getContainerEquivalentClassType().attributes.add(t);
         log.debug("Created AttributeType (Mapped) for TransferFieldDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }
