@@ -1,9 +1,11 @@
 @cached
 operation JSL!TransferFieldDeclaration getActorDeclaration(): JSL!ActorDeclaration {
-    if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
-        return self.eContainer.getActorDeclaration();
+    var container = self.getTransferContainer();
+    if (container.isDefined() and container.isTypeOf(JSL!ActorDeclaration)) {
+        return container;
+    } else if (container.isDefined() and container.isKindOf(JSL!TransferDeclaration)) {
+        return container.getActorDeclaration();
     }
-    // TODO handle view group case (multiple jumps up)
     return null;
 }
 
@@ -57,11 +59,23 @@ operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent(): 
 }
 
 @cached
-operation JSL!TransferFieldDeclaration getContainerEquivalentClassType(): UI!ui::data::ClassType {
+operation JSL!TransferFieldDeclaration getTransferContainer(): JSL!TransferDeclaration {
     if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
-        return self.eContainer.equivalent("ClassType");
+        return self.eContainer;
+    } else if (self.eContainer.isKindOf(JSL!ViewGroupDeclaration) or self.eContainer.isKindOf(JSL!ViewTabsDeclaration) ) {
+        return self.eContainer.getTransferContainer();
     }
-    // TODO handle view group case (multiple jumps up)
+    return null;
+}
+
+@cached
+operation JSL!TransferFieldDeclaration getContainerEquivalentClassType(): UI!ui::data::ClassType {
+    var container = self.getTransferContainer();
+    if (container.isDefined() and container.isTypeOf(JSL!ActorDeclaration)) {
+        return self.getTransferContainer().equivalent("Actor");
+    } else if (container.isDefined() and container.isKindOf(JSL!TransferDeclaration)) {
+        return self.getTransferContainer().equivalent("ClassType");
+    }
     return null;
 }
 

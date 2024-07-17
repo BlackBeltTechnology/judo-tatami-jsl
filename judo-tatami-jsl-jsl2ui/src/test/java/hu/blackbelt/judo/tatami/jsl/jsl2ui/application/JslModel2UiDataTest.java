@@ -312,6 +312,104 @@ public class JslModel2UiDataTest extends AbstractTest {
     }
 
     @Test
+    void testNestedFieldsAndRelations() throws Exception {
+        jslModel = JslParser.getModelFromStrings("NestedFieldsAndRelationsTestModel", List.of("""
+            model NestedFieldsAndRelationsTestModel;
+
+            import judo::types;
+
+            entity Entity1 {
+                field String string;
+                field Boolean boolean;
+            }
+
+            row Transfer1Row(Entity1 e1) {
+                field String stringOnRow <= e1.string;
+                field Boolean booleanOnRow <= e1.boolean;
+            }
+
+            view Transfer1View(Entity1 e1) {
+                field String stringOnView <= e1.string;
+                field Boolean booleanOnView <= e1.boolean;
+            }
+
+            view TransferRootView {
+                group level1 frame {
+                    group level2 {
+                        table Transfer1Row[] tr1s <= Entity1.all();
+                        link Transfer1View tr1 <= Entity1.any();
+                        field String transientNested;
+                    }
+                }
+            }
+
+            actor ActorForNestedMembers human {
+                link TransferRootView root label:"Root";
+            }
+        """));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        assertEquals(1, apps.size());
+
+        Application app = apps.get(0);
+
+        List<ClassType> classTypes = app.getClassTypes();
+
+        assertEquals(4, classTypes.size());
+
+        ClassType actorClass = classTypes.stream().filter(c -> c.isIsActor()).findFirst().orElseThrow();
+        ClassType transferRootViewClass = classTypes.stream().filter(c -> c.getName().equals("NestedFieldsAndRelationsTestModel::TransferRootView::ClassType")).findFirst().orElseThrow();
+        ClassType transfer1ViewClass = classTypes.stream().filter(c -> c.getName().equals("NestedFieldsAndRelationsTestModel::Transfer1View::ClassType")).findFirst().orElseThrow();
+        ClassType transfer1RowClass = classTypes.stream().filter(c -> c.getName().equals("NestedFieldsAndRelationsTestModel::Transfer1Row::ClassType")).findFirst().orElseThrow();
+
+        assertEquals("NestedFieldsAndRelationsTestModel::ActorForNestedMembers::ClassType", actorClass.getName());
+        assertEquals(1, actorClass.getRelations().size());
+
+        RelationType relation = actorClass.getRelations().get(0);
+        assertEquals("root", relation.getName());
+        assertEquals(transferRootViewClass, relation.getTarget());
+
+        assertEquals(1, transferRootViewClass.getAttributes().size());
+        assertEquals("transientNested", transferRootViewClass.getAttributes().get(0).getName());
+
+        assertEquals(2, transferRootViewClass.getRelations().size());
+
+        RelationType tr1 = transferRootViewClass.getRelations().stream().filter(r -> r.getTarget().equals(transfer1ViewClass)).findFirst().orElseThrow();
+        RelationType tr1s = transferRootViewClass.getRelations().stream().filter(r -> r.getTarget().equals(transfer1RowClass)).findFirst().orElseThrow();
+
+        assertEquals("tr1", tr1.getName());
+        assertFalse(tr1.isIsCollection());
+
+        assertEquals("tr1s", tr1s.getName());
+        assertTrue(tr1s.isIsCollection());
+
+        assertEquals(2, transfer1RowClass.getAttributes().size());
+
+        AttributeType stringOnRow = transfer1RowClass.getAttributes().stream().filter(a -> a.getName().equals("stringOnRow")).findFirst().orElseThrow();
+        AttributeType booleanOnRow = transfer1RowClass.getAttributes().stream().filter(a -> a.getName().equals("booleanOnRow")).findFirst().orElseThrow();
+
+        assertEquals("String", stringOnRow.getDataType().getName());
+        assertTrue(stringOnRow.getIsMemberTypeDerived());
+
+        assertEquals("Boolean", booleanOnRow.getDataType().getName());
+        assertTrue(booleanOnRow.getIsMemberTypeDerived());
+
+        assertEquals(2, transfer1ViewClass.getAttributes().size());
+
+        AttributeType stringOnView = transfer1ViewClass.getAttributes().stream().filter(a -> a.getName().equals("stringOnView")).findFirst().orElseThrow();
+        AttributeType booleanOnView = transfer1ViewClass.getAttributes().stream().filter(a -> a.getName().equals("booleanOnView")).findFirst().orElseThrow();
+
+        assertEquals("String", stringOnView.getDataType().getName());
+        assertTrue(stringOnView.getIsMemberTypeDerived());
+
+        assertEquals("Boolean", booleanOnView.getDataType().getName());
+        assertTrue(booleanOnView.getIsMemberTypeDerived());
+    }
+
+    @Test
     void testRelations() throws Exception {
         jslModel = JslParser.getModelFromStrings("RelationsTestModel", List.of("""
             model RelationsTestModel;

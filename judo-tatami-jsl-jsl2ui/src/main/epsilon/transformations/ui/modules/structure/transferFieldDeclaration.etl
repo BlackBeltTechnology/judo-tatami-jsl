@@ -5,7 +5,7 @@ rule AbstractCreateTransferAttribute
         guard: s.getActorDeclaration().isDefined()
             and s.getActorDeclaration() == actorDeclaration
             and s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
-            and actorDeclaration.getExposedTransferObjects().includes(s.eContainer)
+            and actorDeclaration.getExposedTransferObjects().includes(s.getTransferContainer())
 
         t.name = s.name;
 
