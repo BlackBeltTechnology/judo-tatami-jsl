@@ -1,63 +1,52 @@
 @cached
-operation JSL!ViewGroupDeclaration getAllRelations(): Set {
+operation JSL!ViewPanelDeclaration getAllRelations(): Set {
     var relations = new Set();
-    relations.addAll(self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration)));
-    for (group in self.members.select(m | m.isKindOf(JSL!ViewGroupDeclaration))) {
-        relations.addAll(group.getAllRelations());
+
+    if (self.isTypeOf(JSL!ViewGroupDeclaration)) {
+        relations.addAll(self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration)));
+        for (group in self.members.select(m | m.isKindOf(JSL!ViewGroupDeclaration))) {
+            relations.addAll(group.getAllRelations());
+        }
+        for (tabs in self.members.select(m | m.isKindOf(JSL!ViewTabsDeclaration))) {
+            relations.addAll(tabs.getAllRelations());
+        }
+    } else if (self.isTypeOf(JSL!ViewTabsDeclaration)) {
+        for (group in self.groups) {
+            relations.addAll(group.getAllRelations());
+        }
     }
-    for (tabs in self.members.select(m | m.isKindOf(JSL!ViewTabsDeclaration))) {
-        relations.addAll(tabs.getAllRelations());
-    }
+
     return relations;
 }
 
 @cached
-operation JSL!ViewTabsDeclaration getAllRelations(): Set {
-    var relations = new Set();
-    for (group in self.groups) {
-        relations.addAll(group.getAllRelations());
-    }
-    return relations;
-}
-
-@cached
-operation JSL!ViewGroupDeclaration getAllPrimitiveFields(): Set {
+operation JSL!ViewPanelDeclaration getAllPrimitiveFields(): Set {
     var fields = new Set();
-    fields.addAll(self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.referenceType.isDefined() and m.referenceType.`primitive`.isDefined()));
-    for (group in self.members.select(m | m.isKindOf(JSL!ViewGroupDeclaration))) {
-        fields.addAll(group.getAllPrimitiveFields());
+
+    if (self.isTypeOf(JSL!ViewGroupDeclaration)) {
+        fields.addAll(self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.referenceType.isDefined() and m.referenceType.`primitive`.isDefined()));
+        for (group in self.members.select(m | m.isKindOf(JSL!ViewGroupDeclaration))) {
+            fields.addAll(group.getAllPrimitiveFields());
+        }
+        for (tab in self.members.select(m | m.isKindOf(JSL!ViewTabsDeclaration))) {
+            fields.addAll(tab.getAllPrimitiveFields());
+        }
+    } else if (self.isTypeOf(JSL!ViewTabsDeclaration)) {
+        for (group in self.groups) {
+            fields.addAll(group.getAllPrimitiveFields());
+        }
     }
-    for (tabs in self.members.select(m | m.isKindOf(JSL!ViewTabsDeclaration))) {
-        fields.addAll(tabs.getAllPrimitiveFields());
-    }
+
     return fields;
 }
 
 @cached
-operation JSL!ViewTabsDeclaration getAllPrimitiveFields(): Set {
-    var fields = new Set();
-    for (group in self.groups) {
-        fields.addAll(group.getAllPrimitiveFields());
-    }
-    return fields;
-}
-
-@cached
-operation JSL!ViewGroupDeclaration getTransferContainer(): JSL!TransferDeclaration {
+operation JSL!ViewPanelDeclaration getTransferContainer(): JSL!TransferDeclaration {
     if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
         return self.eContainer;
-    } else if (self.eContainer.isKindOf(JSL!ViewGroupDeclaration) or self.eContainer.isKindOf(JSL!ViewTabsDeclaration)) {
-        return self.eContainer.getTransferContainer();
+    } else if (self.eContainer.isKindOf(JSL!ViewPanelDeclaration)) {
+         return self.eContainer.getTransferContainer();
     }
-    return null;
-}
 
-@cached
-operation JSL!ViewTabsDeclaration getTransferContainer(): JSL!TransferDeclaration {
-    if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
-        return self.eContainer;
-    } else if (self.eContainer.isKindOf(JSL!ViewGroupDeclaration) or self.eContainer.isKindOf(JSL!ViewTabsDeclaration)) {
-        return self.eContainer.getTransferContainer();
-    }
     return null;
 }

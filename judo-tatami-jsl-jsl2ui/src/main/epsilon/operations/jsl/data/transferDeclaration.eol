@@ -69,7 +69,7 @@ operation JSL!TransferDeclaration getAllRelations(): Set {
         relations.addAll(linkRelations);
     }
 
-    for (member in self.members.select(m | m.isTypeOf(JSL!ViewGroupDeclaration) or m.isTypeOf(JSL!ViewTabsDeclaration))) {
+    for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
         relations.addAll(member.getAllRelations());
     }
 
@@ -81,7 +81,7 @@ operation JSL!TransferDeclaration getAllPrimitiveFields(): Set {
     var fields = new Set();
     fields.addAll(self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.referenceType.isDefined() and m.referenceType.`primitive`.isDefined()));
 
-    for (member in self.members.select(m | m.isTypeOf(JSL!ViewPanelDeclaration))) {
+    for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
         fields.addAll(member.getAllPrimitiveFields());
     }
 
