@@ -536,7 +536,7 @@ public class JslModel2UiDataTest extends AbstractTest {
         assertRelationType(unmappedLazyCollection, unmappedRelatedRow, RelationKind.AGGREGATION, MemberType.TRANSIENT, true, true, false, false, Set.of());
 
         RelationType lazyAssociation = userViewRelations.stream().filter(r -> r.getName().equals("lazyAssociation")).findFirst().orElseThrow();
-        assertRelationType(lazyAssociation, mappedRelated, RelationKind.ASSOCIATION, MemberType.STORED, false, true, true, true, Set.of(RelationBehaviourType.VALIDATE_CREATE, RelationBehaviourType.REFRESH, RelationBehaviourType.CREATE, RelationBehaviourType.LIST));
+        assertRelationType(lazyAssociation, mappedRelated, RelationKind.ASSOCIATION, MemberType.STORED, false, true, true, true, Set.of(RelationBehaviourType.VALIDATE_CREATE, RelationBehaviourType.CREATE, RelationBehaviourType.REFRESH, RelationBehaviourType.LIST));
 
     }
 
