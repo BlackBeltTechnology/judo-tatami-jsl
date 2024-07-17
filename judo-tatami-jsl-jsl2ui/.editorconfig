@@ -1,0 +1,4 @@
+[src/main/epsilon/**.{eol,etl}]
+charset = utf-8
+indent_style = space
+indent_size = 4

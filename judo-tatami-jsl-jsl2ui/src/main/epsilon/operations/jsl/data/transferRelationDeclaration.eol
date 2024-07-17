@@ -56,68 +56,68 @@ operation JSL!TransferRelationDeclaration isTransient(): Boolean {
 
 @cached
 operation JSL!TransferRelationDeclaration isListAllowed(): Boolean {
-	return self.maps() or self.reads();
+    return self.maps() or self.reads();
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isCreateAllowed(): Boolean {
-	return self.modifiers.exists(m | m.isTypeOf(JSL!CreateModifier) and m.`true`);
+    return self.modifiers.exists(m | m.isTypeOf(JSL!CreateModifier) and m.`true`);
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isUpdateAllowed(): Boolean {
-	return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and m.`true`);
+    return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and m.`true`);
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isDeleteAllowed(): Boolean {
-	return self.modifiers.exists(m | m.isTypeOf(JSL!DeleteModifier) and m.`true`);
+    return self.modifiers.exists(m | m.isTypeOf(JSL!DeleteModifier) and m.`true`);
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isChoiceDefined(): Boolean {
-	return self.modifiers.exists(m | m.isTypeOf(JSL!ChoiceModifier));
+    return self.modifiers.exists(m | m.isTypeOf(JSL!ChoiceModifier));
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isAddReferenceAllowed(): Boolean {
     var lower = self.isRequired() and not self.isMany ? 1 : 0;
     var upper = self.isMany ? -1 : 1;
-	return self.maps() and self.eContainer.isUpdateSupported()
-		and upper != 1 and (lower < upper or upper == -1);
+    return self.maps() and self.eContainer.isUpdateSupported()
+        and upper != 1 and (lower < upper or upper == -1);
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isRemoveReferenceAllowed(): Boolean {
     var lower = self.isRequired() and not self.isMany ? 1 : 0;
     var upper = self.isMany ? -1 : 1;
-	return self.maps() and self.eContainer.isUpdateSupported()
-		and upper != 1 and (lower < upper or upper == -1);
+    return self.maps() and self.eContainer.isUpdateSupported()
+        and upper != 1 and (lower < upper or upper == -1);
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isSetReferenceAllowed(): Boolean {
-	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
+    return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isUnsetReferenceAllowed(): Boolean {
-	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
+    return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isGetRangeAllowed(): Boolean {
-	return self.modifiers.exists(m | m.isTypeOf(JSL!ChoiceModifier));
+    return self.modifiers.exists(m | m.isTypeOf(JSL!ChoiceModifier));
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isValidateCreateAllowed(): Boolean {
-	return (self.maps() or self.reads()) and self.referenceType.isCreateSupported();
+    return (self.maps() or self.reads()) and self.referenceType.isCreateSupported();
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isValidateUpdateAllowed(): Boolean {
-	return (self.maps() or self.reads()) and self.referenceType.isUpdateSupported();
+    return (self.maps() or self.reads()) and self.referenceType.isUpdateSupported();
 }
 
 @cached

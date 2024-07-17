@@ -1,16 +1,16 @@
 @abstract
 rule AbstractRelationType
-	transform s: JSL!TransferRelationDeclaration
+    transform s: JSL!TransferRelationDeclaration
     to t: UI!ui::data::RelationType {
         guard: s.getActorDeclaration().isDefined()
             and s.getActorDeclaration() == actorDeclaration
             and actorDeclaration.getExposedRelations().includes(s)
 
-	    t.name = s.name;
-	    t.target = s.referenceType.equivalent("ClassType");
-	    t.isOptional = not s.isRequired() or s.isMany;
+        t.name = s.name;
+        t.target = s.referenceType.equivalent("ClassType");
+        t.isOptional = not s.isRequired() or s.isMany;
         t.isCollection = s.isMany;
-	    t.isReadOnly = s.reads();
+        t.isReadOnly = s.reads();
 
         t.memberType = UI!ui::data::MemberType#TRANSIENT;
 
@@ -21,100 +21,100 @@ rule AbstractRelationType
         }
 
 /*
-	    if (s.memberType == ESM!esm::structure::MemberType#STORED) {
-	        t.memberType = UI!ui::data::MemberType#STORED;
-	    } else if (s.memberType == ESM!esm::structure::MemberType#DERIVED) {
-	        t.memberType = UI!ui::data::MemberType#DERIVED;
-	    } else if (s.memberType == ESM!esm::structure::MemberType#MAPPED) {
-	        if (s.binding.memberType == ESM!esm::structure::MemberType#STORED) {
-	            t.memberType = UI!ui::data::MemberType#STORED;
-	        }
-	        if (s.binding.memberType == ESM!esm::structure::MemberType#DERIVED) {
-	            t.memberType = UI!ui::data::MemberType#DERIVED;
-	        }
-	    } else if (s.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
-	        t.memberType = UI!ui::data::MemberType#TRANSIENT;
-	    } else {
-	        t.memberType = UI!ui::data::MemberType#STORED;
-	    }
+        if (s.memberType == ESM!esm::structure::MemberType#STORED) {
+            t.memberType = UI!ui::data::MemberType#STORED;
+        } else if (s.memberType == ESM!esm::structure::MemberType#DERIVED) {
+            t.memberType = UI!ui::data::MemberType#DERIVED;
+        } else if (s.memberType == ESM!esm::structure::MemberType#MAPPED) {
+            if (s.binding.memberType == ESM!esm::structure::MemberType#STORED) {
+                t.memberType = UI!ui::data::MemberType#STORED;
+            }
+            if (s.binding.memberType == ESM!esm::structure::MemberType#DERIVED) {
+                t.memberType = UI!ui::data::MemberType#DERIVED;
+            }
+        } else if (s.memberType == ESM!esm::structure::MemberType#TRANSIENT) {
+            t.memberType = UI!ui::data::MemberType#TRANSIENT;
+        } else {
+            t.memberType = UI!ui::data::MemberType#STORED;
+        }
 
       if (s.isInlineCreateSupported()) {
           t.isInlineCreatable = true;
       }
 
-	    if (s.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) {
-	        t.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
-	    } else if (s.relationKind == ESM!esm::structure::RelationKind#COMPOSITION) {
-	        t.relationKind = UI!ui::data::RelationKind#COMPOSITION;
-	    } else if (s.relationKind == ESM!esm::structure::RelationKind#AGGREGATION) {
-	        if (s.memberType == ESM!esm::structure::MemberType#MAPPED and s.binding.relationKind == ESM!esm::structure::RelationKind#COMPOSITION) {
-	            t.relationKind = UI!ui::data::RelationKind#COMPOSITION;
-	        } else {
-	            t.relationKind = UI!ui::data::RelationKind#AGGREGATION;
-	        }
-	    } else {
-	        t.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
-	    }
+        if (s.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) {
+            t.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
+        } else if (s.relationKind == ESM!esm::structure::RelationKind#COMPOSITION) {
+            t.relationKind = UI!ui::data::RelationKind#COMPOSITION;
+        } else if (s.relationKind == ESM!esm::structure::RelationKind#AGGREGATION) {
+            if (s.memberType == ESM!esm::structure::MemberType#MAPPED and s.binding.relationKind == ESM!esm::structure::RelationKind#COMPOSITION) {
+                t.relationKind = UI!ui::data::RelationKind#COMPOSITION;
+            } else {
+                t.relationKind = UI!ui::data::RelationKind#AGGREGATION;
+            }
+        } else {
+            t.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
+        }
 
 */
 
-	    if (s.isListAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
-	    }
-	    if (s.isCreateAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
-	        t.target.isForCreateOrUpdateType = true;
-	    }
-	    if (s.isSetReferenceAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#SET);
-	    }
-	    if (s.isUnsetReferenceAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#UNSET);
-	    }
-	    if (s.isAddReferenceAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
-	    }
-	    if (s.isRemoveReferenceAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#REMOVE);
-	    }
-	    if (s.isGetRangeAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
-	        t.isOptional = true;
-	    }
-	    if (s.isValidateCreateAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
-	        t.target.isForCreateOrUpdateType = true;
-	    }
-	    if (s.isRefreshAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#REFRESH);
-	    }
-	    /*
+        if (s.isListAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
+        }
+        if (s.isCreateAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
+            t.target.isForCreateOrUpdateType = true;
+        }
+        if (s.isSetReferenceAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#SET);
+        }
+        if (s.isUnsetReferenceAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#UNSET);
+        }
+        if (s.isAddReferenceAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
+        }
+        if (s.isRemoveReferenceAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#REMOVE);
+        }
+        if (s.isGetRangeAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
+            t.isOptional = true;
+        }
+        if (s.isValidateCreateAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
+            t.target.isForCreateOrUpdateType = true;
+        }
+        if (s.isRefreshAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#REFRESH);
+        }
+        /*
         if (s.isExportSupported()) {
             t.behaviours.add(UI!ui::data::RelationBehaviourType#EXPORT);
         }
         */
-	    if (s.isUpdateAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#UPDATE);
-	        t.target.isForCreateOrUpdateType = true;
-	    }
-	    if (s.isValidateUpdateAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_UPDATE);
-	        t.target.isForCreateOrUpdateType = true;
-	    }
-	    if (s.isDeleteAllowed()) {
-	        t.behaviours.add(UI!ui::data::RelationBehaviourType#DELETE);
-	    }
+        if (s.isUpdateAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#UPDATE);
+            t.target.isForCreateOrUpdateType = true;
+        }
+        if (s.isValidateUpdateAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_UPDATE);
+            t.target.isForCreateOrUpdateType = true;
+        }
+        if (s.isDeleteAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#DELETE);
+        }
 
-	    t.isOrderable = s.isOrderSupported();
-	    t.isFilterable = s.isFilterSupported();
+        t.isOrderable = s.isOrderSupported();
+        t.isFilterable = s.isFilterSupported();
 }
 
 @greedy
 rule RelationType
-	transform s: JSL!TransferRelationDeclaration
+    transform s: JSL!TransferRelationDeclaration
     to t: UI!ui::data::RelationType
     extends AbstractRelationType {
-	    t.setId("(jsl/" + s.getId() + ")/RelationType");
+        t.setId("(jsl/" + s.getId() + ")/RelationType");
         var containerClassType = s.getContainerEquivalentClassType();
         containerClassType.relations.add(t);
         log.debug("Created RelationType [" + t.name + "] into [" + containerClassType.name + "]");
@@ -123,7 +123,7 @@ rule RelationType
 @lazy
 @greedy
 rule CloneRelationType
-	transform s: JSL!TransferRelationDeclaration
+    transform s: JSL!TransferRelationDeclaration
     to t: UI!ui::data::RelationType
     extends AbstractRelationType {
         log.debug("Cloned RelationType [" + t.name + "]");

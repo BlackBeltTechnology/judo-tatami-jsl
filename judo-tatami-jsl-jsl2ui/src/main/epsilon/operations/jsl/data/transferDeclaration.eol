@@ -90,42 +90,42 @@ operation JSL!TransferDeclaration getAllPrimitiveFields(): Set {
 
 @cached
 operation JSL!TransferDeclaration isDeleteSupported(): Boolean {
-	if (self.map.isDefined()) {
-		return self.members.exists(m | m.isKindOf(JSL!TransferDeleteDeclaration) and m.isEventInstead());
-	}
-	return false;
+    if (self.map.isDefined()) {
+        return self.members.exists(m | m.isKindOf(JSL!TransferDeleteDeclaration) and m.isEventInstead());
+    }
+    return false;
 }
 
 @cached
 operation JSL!TransferDeclaration isCreateSupported(): Boolean {
-	if (self.map.isDefined()) {
-		return self.members.exists(m | m.isKindOf(JSL!TransferCreateDeclaration) and m.isEventInstead());
-	}
-	return false;
+    if (self.map.isDefined()) {
+        return self.members.exists(m | m.isKindOf(JSL!TransferCreateDeclaration) and m.isEventInstead());
+    }
+    return false;
 }
 
 @cached
 operation JSL!TransferDeclaration isUpdateSupported(): Boolean {
-	if (self.map.isDefined()) {
-		return self.members.exists(m | m.isKindOf(JSL!TransferUpdateDeclaration) and m.isEventInstead());
-	}
-	return false;
+    if (self.map.isDefined()) {
+        return self.members.exists(m | m.isKindOf(JSL!TransferUpdateDeclaration) and m.isEventInstead());
+    }
+    return false;
 }
 
 @cached
 operation JSL!TransferDeclaration isDefinedAsInputParameter(): Boolean {
-	return JSL!TransferActionDeclaration.all().collect(a | a.getParameterType()).contains(self);
+    return JSL!TransferActionDeclaration.all().collect(a | a.getParameterType()).contains(self);
 }
 
 @cached
 operation JSL!TransferDeclaration isGetTemplateSupported(): Boolean {
-	if (self.isCreateSupported()) {
-		return true;
-	}
-	if (self.map.isUndefined()) {
-		return self.isDefinedAsInputParameter();
-	}
-	return false;
+    if (self.isCreateSupported()) {
+        return true;
+    }
+    if (self.map.isUndefined()) {
+        return self.isDefinedAsInputParameter();
+    }
+    return false;
 }
 
 @cached

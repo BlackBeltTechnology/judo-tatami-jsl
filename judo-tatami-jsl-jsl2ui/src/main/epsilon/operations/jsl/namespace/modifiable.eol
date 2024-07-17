@@ -15,75 +15,75 @@ operation JSL!Modifiable getIconModifier(): JSL!Modifier {
 
 @cached
 operation JSL!Modifiable getPrecision(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "precision"));
+    return (self.modifiers.selectOne(m | m.type == "precision"));
 }
 
 @cached
 operation JSL!Modifiable getScale(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "scale"));
+    return (self.modifiers.selectOne(m | m.type == "scale"));
 }
 
 @cached
 operation JSL!Modifiable getRegex(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "regex"));
+    return (self.modifiers.selectOne(m | m.type == "regex"));
 }
 
 @cached
 operation JSL!Modifiable getRequired(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "required"));
+    return (self.modifiers.selectOne(m | m.type == "required"));
 }
 
 @cached
 operation JSL!Modifiable getMaxSize(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "max-size"));
+    return (self.modifiers.selectOne(m | m.type == "max-size"));
 }
 
 @cached
 operation JSL!Modifiable getMaxFileSize(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "max-file-size"));
+    return (self.modifiers.selectOne(m | m.type == "max-file-size"));
 }
 
 @cached
 operation JSL!Modifiable getMinSize(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "min-size"));
+    return (self.modifiers.selectOne(m | m.type == "min-size"));
 }
 
 @cached
 operation JSL!Modifiable getMimeType(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "mime-type"));
+    return (self.modifiers.selectOne(m | m.type == "mime-type"));
 }
 
 @cached
 operation JSL!Modifiable getOpposite(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "opposite" or m.type == "opposite-add"));
+    return (self.modifiers.selectOne(m | m.type == "opposite" or m.type == "opposite-add"));
 }
 
 @cached
 operation JSL!Modifiable getDefault(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "default"));
+    return (self.modifiers.selectOne(m | m.type == "default"));
 }
 
 @cached
 operation JSL!Modifiable getChoices(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "choices"));
+    return (self.modifiers.selectOne(m | m.type == "choices"));
 }
 
 @cached
 operation JSL!Modifiable getBind(): JSL!Modifier {
-	return (self.modifiers.selectOne(m | m.type == "bind"));
+    return (self.modifiers.selectOne(m | m.type == "bind"));
 }
 
 @cached
 operation JSL!Modifiable isEventInstead(): Boolean {
-	return (not self.modifiers.exists(m|m.type == "on"));
+    return (not self.modifiers.exists(m|m.type == "on"));
 }
 
 @cached
 operation JSL!Modifiable isEventBefore(): Boolean {
-	return (self.modifiers.exists(m|m.type == "on" and m.before));
+    return (self.modifiers.exists(m|m.type == "on" and m.before));
 }
 
 @cached
 operation JSL!Modifiable isEventAfter(): Boolean {
-	return (self.modifiers.exists(m|m.type == "on" and m.after));
+    return (self.modifiers.exists(m|m.type == "on" and m.after));
 }
