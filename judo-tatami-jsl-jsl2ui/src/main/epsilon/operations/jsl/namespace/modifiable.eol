@@ -72,3 +72,18 @@ operation JSL!Modifiable getChoices(): JSL!Modifier {
 operation JSL!Modifiable getBind(): JSL!Modifier {
 	return (self.modifiers.selectOne(m | m.type == "bind"));
 }
+
+@cached
+operation JSL!Modifiable isEventInstead(): Boolean {
+	return (not self.modifiers.exists(m|m.type == "on"));
+}
+
+@cached
+operation JSL!Modifiable isEventBefore(): Boolean {
+	return (self.modifiers.exists(m|m.type == "on" and m.before));
+}
+
+@cached
+operation JSL!Modifiable isEventAfter(): Boolean {
+	return (self.modifiers.exists(m|m.type == "on" and m.after));
+}
