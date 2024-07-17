@@ -1,4 +1,5 @@
 import "dataTypeDeclaration.eol";
+import "entityMemberDeclaration.eol";
 import "enumDeclaration.eol";
 import "enumLiteral.eol";
 import "primitiveDeclaration.eol";

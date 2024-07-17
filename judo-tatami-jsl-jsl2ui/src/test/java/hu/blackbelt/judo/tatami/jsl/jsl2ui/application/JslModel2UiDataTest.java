@@ -12,7 +12,10 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -504,6 +507,37 @@ public class JslModel2UiDataTest extends AbstractTest {
         assertEquals(1, apps.size());
 
         Application app1 = apps.get(0);
+
+        assertEquals(7, app1.getClassTypes().size());
+        assertEquals(24, app1.getRelationTypes().size());
+
+        RelationType users = (RelationType) app1.getRelationTypes().stream().filter(r -> ((RelationType) r).getName().equals("users")).findFirst().orElseThrow();
+
+        ClassType userTransfer = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::UserTransfer::ClassType")).findFirst().orElseThrow();
+        ClassType userView = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::UserView::ClassType")).findFirst().orElseThrow();
+        ClassType mappedRelated = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::MappedRelated::ClassType")).findFirst().orElseThrow();
+        ClassType mappedRelatedRow = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::MappedRelatedRow::ClassType")).findFirst().orElseThrow();
+        ClassType unmappedRelated = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::UnmappedRelated::ClassType")).findFirst().orElseThrow();
+        ClassType unmappedRelatedRow = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::UnmappedRelatedRow::ClassType")).findFirst().orElseThrow();
+
+        assertEquals(userView, users.getTarget());
+
+        List<RelationType> userViewRelations = userView.getRelations();
+
+        assertEquals(23, userViewRelations.size());
+
+        RelationType unmappedLazy = userViewRelations.stream().filter(r -> r.getName().equals("unmappedLazy")).findFirst().orElseThrow();
+        assertRelationType(unmappedLazy, unmappedRelated, RelationKind.AGGREGATION, MemberType.TRANSIENT, false, true, false, false, Set.of());
+
+        RelationType unmappedLazyRequired = userViewRelations.stream().filter(r -> r.getName().equals("unmappedLazyRequired")).findFirst().orElseThrow();
+        assertRelationType(unmappedLazyRequired, unmappedRelated, RelationKind.AGGREGATION, MemberType.TRANSIENT, false, false, false, false, Set.of());
+
+        RelationType unmappedLazyCollection = userViewRelations.stream().filter(r -> r.getName().equals("unmappedLazyCollection")).findFirst().orElseThrow();
+        assertRelationType(unmappedLazyCollection, unmappedRelatedRow, RelationKind.AGGREGATION, MemberType.TRANSIENT, true, true, false, false, Set.of());
+
+        RelationType lazyAssociation = userViewRelations.stream().filter(r -> r.getName().equals("lazyAssociation")).findFirst().orElseThrow();
+        assertRelationType(lazyAssociation, mappedRelated, RelationKind.ASSOCIATION, MemberType.STORED, false, true, true, true, Set.of(RelationBehaviourType.VALIDATE_CREATE, RelationBehaviourType.REFRESH, RelationBehaviourType.CREATE, RelationBehaviourType.LIST));
+
     }
 
     static class AttributeAssertion {
@@ -522,5 +556,16 @@ public class JslModel2UiDataTest extends AbstractTest {
             assertEquals(isFilterable, attributeType.isIsFilterable());
             assertEquals(isReadonly,attributeType.isIsReadOnly());
         }
+    }
+
+    static void assertRelationType(RelationType relationType, ClassType target, RelationKind relationKind, MemberType memberType, boolean isCollection, boolean isOptional, boolean isOrderable, boolean isFilterable, Set<RelationBehaviourType> behaviourTypes) {
+        assertEquals(isCollection, relationType.isIsCollection());
+        assertEquals(isOptional, relationType.isIsOptional());
+        assertEquals(target, relationType.getTarget());
+        assertEquals(memberType, relationType.getMemberType());
+        assertEquals(relationKind, relationType.getRelationKind());
+        assertEquals(behaviourTypes, new HashSet<>(relationType.getBehaviours()));
+        assertEquals(isOrderable, relationType.isIsOrderable());
+        assertEquals(isFilterable, relationType.isIsFilterable());
     }
 }
