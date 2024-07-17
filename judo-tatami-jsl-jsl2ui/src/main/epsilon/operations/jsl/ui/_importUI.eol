@@ -1,0 +1,3 @@
+import "viewDeclaration.eol";
+import "viewPanelDeclaration.eol";
+import "visibleDeclaration.eol";
