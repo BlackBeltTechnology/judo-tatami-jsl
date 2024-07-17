@@ -19,29 +19,25 @@ operation JSL!TransferDeclaration getActorDeclaration(): JSL!ActorDeclaration {
 }
 
 @cached
-operation JSL!TransferDeclaration getExposedTransferObjects() : Set {
+operation JSL!TransferDeclaration getExposedTransferObjects(): Set {
     var transfers = new Set();
     var relations = self.getExposedRelations();
 
-    transfers.addAll(relations.collect(r | r.referenceType).asSet());
+    transfers.addAll(relations.collect(r | r.referenceType));
 
     for (relation in relations) {
-        var detail = relation.getDetail();
-
-        if (detail.isDefined() and detail.view.isDefined()) {
-            transfers.add(detail.view);
-        }
+        transfers.addAll(relation.referenceType.getExposedTransferObjects());
     }
 
     return transfers;
 }
 
 @cached
-operation JSL!TransferDeclaration getExposedRelations() : Set {
+operation JSL!TransferDeclaration getExposedRelations(): Set {
     return self.collectExposedRelations(new Set());
 }
 
-operation JSL!TransferDeclaration collectExposedRelations(collected : Set) : Set {
+operation JSL!TransferDeclaration collectExposedRelations(collected: Set): Set {
     var relations = self.getAllRelations();
     // var operations = self.getAllOperations().select(op | not op.hasQueryParameters());
     /*relations.addAll(operations
@@ -63,6 +59,76 @@ operation JSL!TransferDeclaration collectExposedRelations(collected : Set) : Set
     return collected;
 }
 
-operation JSL!TransferDeclaration getAllRelations() : Set {
-    return self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration));
+@cached
+operation JSL!TransferDeclaration getAllRelations(): Set {
+    var relations = new Set();
+    relations.addAll(self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration)));
+
+    if (self.isKindOf(JSL!ActorDeclaration)) {
+        var linkRelations = self.getAllMenuDeclarations();
+        relations.addAll(linkRelations);
+    }
+
+    for (member in self.members.select(m | m.isTypeOf(JSL!ViewGroupDeclaration) or m.isTypeOf(JSL!ViewTabsDeclaration))) {
+        relations.addAll(member.getAllRelations());
+    }
+
+    return relations;
+}
+
+@cached
+operation JSL!TransferDeclaration getAllPrimitiveFields(): Set {
+    var fields = new Set();
+    fields.addAll(self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.referenceType.isDefined() and m.referenceType.`primitive`.isDefined()));
+
+    for (member in self.members.select(m | m.isTypeOf(JSL!ViewPanelDeclaration))) {
+        fields.addAll(member.getAllPrimitiveFields());
+    }
+
+    return fields;
+}
+
+@cached
+operation JSL!TransferDeclaration isDeleteSupported(): Boolean {
+	if (self.map.isDefined()) {
+		return self.members.exists(m | m.isKindOf(JSL!TransferDeleteDeclaration) and m.isEventInstead());
+	}
+	return false;
+}
+
+@cached
+operation JSL!TransferDeclaration isCreateSupported(): Boolean {
+	if (self.map.isDefined()) {
+		return self.members.exists(m | m.isKindOf(JSL!TransferCreateDeclaration) and m.isEventInstead());
+	}
+	return false;
+}
+
+@cached
+operation JSL!TransferDeclaration isUpdateSupported(): Boolean {
+	if (self.map.isDefined()) {
+		return self.members.exists(m | m.isKindOf(JSL!TransferUpdateDeclaration) and m.isEventInstead());
+	}
+	return false;
+}
+
+@cached
+operation JSL!TransferDeclaration isDefinedAsInputParameter(): Boolean {
+	return JSL!TransferActionDeclaration.all().collect(a | a.getParameterType()).contains(self);
+}
+
+@cached
+operation JSL!TransferDeclaration isGetTemplateSupported(): Boolean {
+	if (self.isCreateSupported()) {
+		return true;
+	}
+	if (self.map.isUndefined()) {
+		return self.isDefinedAsInputParameter();
+	}
+	return false;
+}
+
+@cached
+operation JSL!TransferDeclaration isRefreshSupported(): Boolean {
+    return self.map.isDefined();
 }

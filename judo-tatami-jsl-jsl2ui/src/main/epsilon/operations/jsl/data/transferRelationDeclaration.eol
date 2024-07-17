@@ -9,6 +9,167 @@ operation JSL!TransferRelationDeclaration getFqName(): String {
 }
 
 @cached
+operation JSL!TransferRelationDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    var container = self.getTransferContainer();
+    if (container.isDefined() and container.isTypeOf(JSL!ActorDeclaration)) {
+        return container;
+    } else if (container.isDefined() and container.isKindOf(JSL!TransferDeclaration)) {
+        return container.getActorDeclaration();
+    }
+    return null;
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isEager(): Boolean {
+    return jslUtils.isEager(self);
+}
+
+@cached
 operation JSL!TransferRelationDeclaration getDetail(): JSL!DetailModifier {
     return self.modifiers.selectOne(m | m.isTypeOf(JSL!DetailModifier));
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isAggregation(): Boolean {
+    return jslUtils.isAggregation(self);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isRequired(): Boolean {
+    return jslUtils.isRequired(self);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration maps(): Boolean {
+    return jslUtils.isMaps(self);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration reads(): Boolean {
+    return jslUtils.isReads(self);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isTransient(): Boolean {
+    return not self.maps() and not self.reads();
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isListAllowed(): Boolean {
+	return self.maps() or self.reads();
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isCreateAllowed(): Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!CreateModifier) and m.`true`);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isUpdateAllowed(): Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and m.`true`);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isDeleteAllowed(): Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!DeleteModifier) and m.`true`);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isChoiceDefined(): Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!ChoiceModifier));
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isAddReferenceAllowed(): Boolean {
+    var lower = self.isRequired() and not self.isMany ? 1 : 0;
+    var upper = self.isMany ? -1 : 1;
+	return self.maps() and self.eContainer.isUpdateSupported()
+		and upper != 1 and (lower < upper or upper == -1);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isRemoveReferenceAllowed(): Boolean {
+    var lower = self.isRequired() and not self.isMany ? 1 : 0;
+    var upper = self.isMany ? -1 : 1;
+	return self.maps() and self.eContainer.isUpdateSupported()
+		and upper != 1 and (lower < upper or upper == -1);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isSetReferenceAllowed(): Boolean {
+	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isUnsetReferenceAllowed(): Boolean {
+	return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isGetRangeAllowed(): Boolean {
+	return self.modifiers.exists(m | m.isTypeOf(JSL!ChoiceModifier));
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isValidateCreateAllowed(): Boolean {
+	return (self.maps() or self.reads()) and self.referenceType.isCreateSupported();
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isValidateUpdateAllowed(): Boolean {
+	return (self.maps() or self.reads()) and self.referenceType.isUpdateSupported();
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isRefreshAllowed(): Boolean {
+    return self.maps();
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isOrderSupported(): Boolean {
+    return self.maps() and self.referenceType.getAllPrimitiveFields().exists(f | f.isSortable());
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isFilterSupported(): Boolean {
+    return self.maps() and self.referenceType.getAllPrimitiveFields().exists(f | f.isFilterable());
+}
+
+@cached
+operation JSL!TransferRelationDeclaration getMappedTransferRelationEquivalent(): UI!ui::data::RelationType {
+    var ret = null;
+    if (self.reads()) {
+        ret = self.equivalent("CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
+    } else if (self.maps()) {
+        ret = self.equivalent("CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
+    } else {
+        ret = self.equivalent("CreateTransientTransferObjectRelationForTransferRelationDeclaration");
+    }
+    if (ret.isUndefined) {
+        throw "Could not get relation";
+    }
+    return ret;
+}
+
+@cached
+operation JSL!TransferRelationDeclaration getTransferContainer(): JSL!TransferDeclaration {
+    if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
+        return self.eContainer;
+    } else if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration)) {
+         return self.eContainer.getActorDeclaration();
+    } else if (self.eContainer.isKindOf(JSL!ViewGroupDeclaration) or self.eContainer.isKindOf(JSL!ViewTabsDeclaration)) {
+        return self.eContainer.getTransferContainer();
+    }
+    return null;
+}
+
+@cached
+operation JSL!TransferRelationDeclaration getContainerEquivalentClassType(): UI!ui::data::ClassType {
+    var container = self.getTransferContainer();
+    if (container.isDefined() and container.isTypeOf(JSL!ActorDeclaration)) {
+        return self.getTransferContainer().equivalent("Actor");
+    } else if (container.isDefined() and container.isKindOf(JSL!TransferDeclaration)) {
+        return self.getTransferContainer().equivalent("ClassType");
+    }
+    return null;
 }
