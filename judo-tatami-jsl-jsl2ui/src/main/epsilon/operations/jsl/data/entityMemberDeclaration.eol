@@ -1,0 +1,14 @@
+@cached
+operation JSL!EntityMemberDeclaration isEager() : Boolean {
+    return jslUtils.isEager(self);
+}
+
+@cached
+operation JSL!EntityMemberDeclaration isCalculated(): Boolean {
+    return jslUtils.isCalculated(self);
+}
+
+@cached
+operation JSL!EntityMemberDeclaration isRequired(): Boolean {
+    return jslUtils.isRequired(self);
+}

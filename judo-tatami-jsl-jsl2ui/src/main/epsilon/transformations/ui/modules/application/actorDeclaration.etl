@@ -1,9 +1,9 @@
 rule Application
     transform s: JSL!ActorDeclaration
     to t: UI!ui::Application {
-	      guard: s = actorDeclaration
+          guard: s = actorDeclaration
 
-	      t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Application");
+          t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Application");
 
         log.debug("Application: " + s.name);
 
@@ -23,11 +23,11 @@ rule Application
         }
 
         //if (s.defaultLanguage.isDefined()) {
-        	t.defaultLanguage = "en-US";
+            t.defaultLanguage = "en-US";
         //}
 
         //if (s.applicationLogo.isDefined()) {
-        	t.logo = "judo-color-logo.png";
+            t.logo = "judo-color-logo.png";
         //}
 
         t.navigationController = s.equivalent("NavigationController");
@@ -36,8 +36,8 @@ rule Application
 rule Theme
     transform s: JSL!ActorDeclaration
     to t: UI!ui::Theme {
-	      t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Theme");
-	      /*
+          t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Theme");
+          /*
         if (s.textPrimaryColor.isDefined()) {
             t.textPrimaryColor = s.textPrimaryColor;
         }

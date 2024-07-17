@@ -10,6 +10,8 @@ rule AccessPageDefinition
 
         actorDeclaration.equivalent("Application").pages.add(t);
 
+        t.dataElement = s.equivalent("RelationType");
+
         log.debug("Create AccessPageDefinition: " + t.name);
     }
 
