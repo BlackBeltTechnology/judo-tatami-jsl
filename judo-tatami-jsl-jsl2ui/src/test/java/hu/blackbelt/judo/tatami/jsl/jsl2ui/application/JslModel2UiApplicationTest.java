@@ -432,5 +432,11 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals("UserTransfer", principal.getSimpleName());
         assertTrue(principal.isIsPrincipal());
 
+        // Claim
+
+        assertEquals(1, authentication.getClaims().size());
+        assertEquals("UNDEFINED", authentication.getClaims().get(0).getType().getName());
+        assertEquals(principal.getAttributes().stream().filter(a -> a.getName().equals("email")).findFirst().orElse(null), authentication.getClaims().get(0).getAttributeType());
+
     }
 }

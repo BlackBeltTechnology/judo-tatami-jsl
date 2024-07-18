@@ -1,7 +1,10 @@
 @cached
 operation JSL!TransferFieldDeclaration getActorDeclaration(): JSL!ActorDeclaration {
-    if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
-        return self.eContainer.getActorDeclaration();
+    var container = self.getTransferContainer();
+    if (container.isDefined() and container.isTypeOf(JSL!ActorDeclaration)) {
+        return container;
+    } else if (container.isDefined() and container.isKindOf(JSL!TransferDeclaration)) {
+        return container.getActorDeclaration();
     }
     return null;
 }
@@ -32,13 +35,18 @@ operation JSL!TransferFieldDeclaration reads(): Boolean {
 }
 
 @cached
+operation JSL!TransferFieldDeclaration isTransient(): Boolean {
+    return not self.maps() and not self.reads();
+}
+
+@cached
 operation JSL!TransferFieldDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "#" + self.name;
 }
 
 @cached
-operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent() : UI!ui::data::AttributeType {
-    if (not self.maps() and not self.reads()) {
+operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
+    if (self.isTransient()) {
         return self.equivalent("CreateTransientTransferAttribute");
     }
     if (self.reads()) {
@@ -51,7 +59,28 @@ operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent() :
 }
 
 @cached
-operation JSL!TransferFieldDeclaration isSortable() : Boolean {
+operation JSL!TransferFieldDeclaration getTransferContainer(): JSL!TransferDeclaration {
+    if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
+        return self.eContainer;
+    } else if (self.eContainer.isKindOf(JSL!ViewPanelDeclaration)) {
+        return self.eContainer.getTransferContainer();
+    }
+    return null;
+}
+
+@cached
+operation JSL!TransferFieldDeclaration getContainerEquivalentClassType(): UI!ui::data::ClassType {
+    var container = self.getTransferContainer();
+    if (container.isDefined() and container.isTypeOf(JSL!ActorDeclaration)) {
+        return self.getTransferContainer().equivalent("Actor");
+    } else if (container.isDefined() and container.isKindOf(JSL!TransferDeclaration)) {
+        return self.getTransferContainer().equivalent("ClassType");
+    }
+    return null;
+}
+
+@cached
+operation JSL!TransferFieldDeclaration isSortable(): Boolean {
     if (self.referenceType.`primitive`.isUndefined()) {
         return false;
     }
@@ -66,7 +95,7 @@ operation JSL!TransferFieldDeclaration isSortable() : Boolean {
 }
 
 @cached
-operation JSL!TransferFieldDeclaration isFilterable() : Boolean {
+operation JSL!TransferFieldDeclaration isFilterable(): Boolean {
     if (self.referenceType.`primitive`.isUndefined()) {
         return false;
     }
