@@ -447,8 +447,8 @@ public class JslModel2UiDataTest extends AbstractTest {
                 link UnmappedRelated unmappedLazyRequired required;
                 table UnmappedRelatedRow[] unmappedLazyCollection;
 
-                link MappedRelated lazyAssociation <= u.association create:true;
-                link MappedRelated lazyAssociationOpposite <= u.userRelatedOpposite create:true;
+                link MappedRelated lazyAssociation <= u.association create:true update:true delete:true;
+                link MappedRelated lazyAssociationOpposite <= u.userRelatedOpposite create:true update:true delete:true;
 
                 link MappedRelated derivedLazyContainment <= u.containment;
                 table MappedRelatedRow[] derivedLazyContainmentCollection <= u.containmentCollection;
@@ -491,6 +491,8 @@ public class JslModel2UiDataTest extends AbstractTest {
             view MappedRelated(EntityRelated e) {
                 field String mappedAttribute <= e.hello;
                 event create onCreate;
+                event update onUpdate;
+                event delete onDelete;
             }
 
             row MappedRelatedRow(EntityRelated e) {
@@ -543,6 +545,9 @@ public class JslModel2UiDataTest extends AbstractTest {
         assertRelationType(lazyAssociation, mappedRelated, RelationKind.ASSOCIATION, MemberType.STORED, false, true, true, true, Set.of(
                 RelationBehaviourType.VALIDATE_CREATE,
                 RelationBehaviourType.CREATE,
+                RelationBehaviourType.VALIDATE_UPDATE,
+                RelationBehaviourType.UPDATE,
+                RelationBehaviourType.DELETE,
                 RelationBehaviourType.REFRESH,
                 RelationBehaviourType.LIST
         ));
@@ -551,6 +556,9 @@ public class JslModel2UiDataTest extends AbstractTest {
         assertRelationType(lazyAssociationOpposite, mappedRelated, RelationKind.ASSOCIATION, MemberType.STORED, false, true, true, true, Set.of(
                 RelationBehaviourType.VALIDATE_CREATE,
                 RelationBehaviourType.CREATE,
+                RelationBehaviourType.VALIDATE_UPDATE,
+                RelationBehaviourType.UPDATE,
+                RelationBehaviourType.DELETE,
                 RelationBehaviourType.REFRESH,
                 RelationBehaviourType.LIST
         ));
