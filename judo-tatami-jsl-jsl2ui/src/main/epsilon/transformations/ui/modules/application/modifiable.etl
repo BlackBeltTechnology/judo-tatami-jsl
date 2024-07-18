@@ -6,3 +6,15 @@ rule IconModifierIcon
         t.name = s.getId() + "/Icon";
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/IconModifierIcon");
 }
+
+rule ClaimModifier
+    transform s: JSL!ClaimModifier
+    to t: UI!ui::Claim {
+        guard: s.eContainer == actorDeclaration and s.eContainer.getIdentity().isDefined()
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ClaimModifier");
+        t.attributeType = s.eContainer.getIdentity().field.getTransferFieldDeclarationEquivalent();
+        t.type = UI!ui::ClaimType#UNDEFINED; // UI is not relying on this info, at least we think it doesn't
+
+        s.eContainer.equivalent("Authentication").claims.add(t);
+}

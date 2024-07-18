@@ -75,8 +75,8 @@ rule CreateEnumerationMember
 
 @greedy   
 rule CreateBooleanType 
-	transform s : JSL!DataTypeDeclaration
-	to t : UI!ui::data::BooleanType {
+    transform s : JSL!DataTypeDeclaration
+    to t : UI!ui::data::BooleanType {
         guard: s.`primitive` == "boolean" and ((s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration) or s.eContainer.name == "judo::types")
 
         t.setId("(jsl/" + s.getId() + ")/CreateBooleanType");
@@ -87,8 +87,8 @@ rule CreateBooleanType
 
 @greedy
 rule CreateStringType 
-	transform s : JSL!DataTypeDeclaration
-	to t : UI!ui::data::StringType {
+    transform s : JSL!DataTypeDeclaration
+    to t : UI!ui::data::StringType {
         guard: s.`primitive` == "string" and ((s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration) or s.eContainer.name == "judo::types")
 
         t.setId("(jsl/" + s.getId() + ")/CreateStringType");
@@ -107,13 +107,13 @@ rule CreateStringType
 rule MimeType
     transform s: String
     to t: UI!ui::data::MimeType {
-	    t.setId("(jsl/" + s + ")/MimeType");
-	    var split = s.split("/");
-	    t.type = split[0];
-	    t.subType = split[1];
+        t.setId("(jsl/" + s + ")/MimeType");
+        var split = s.split("/");
+        t.type = split[0];
+        t.subType = split[1];
 
-	    actorDeclaration.equivalent("Application").mimeTypes.add(t);
-	    log.debug("Created MimeType: " + s);
+        actorDeclaration.equivalent("Application").mimeTypes.add(t);
+        log.debug("Created MimeType: " + s);
 }
 
 @greedy
