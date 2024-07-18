@@ -531,7 +531,7 @@ public class JslModel2UiDataTest extends AbstractTest {
 
         assertEquals(25, userViewRelations.size());
 
-        // not sure why does JSLUtils produce aggregation == true for transients
+        // According to JSLUtils, transients are always aggregation regardless of what we model.
         RelationType unmappedLazy = userViewRelations.stream().filter(r -> r.getName().equals("unmappedLazy")).findFirst().orElseThrow();
         assertRelationType(unmappedLazy, unmappedRelated, RelationKind.AGGREGATION, MemberType.TRANSIENT, false, true, false, false, Set.of());
 
@@ -667,7 +667,7 @@ public class JslModel2UiDataTest extends AbstractTest {
                 RelationBehaviourType.RANGE
         ));
 
-        // not sure why does JSLUtils produce aggregation == true for transients
+        // According to JSLUtils, transients are always aggregation regardless of what we model.
         RelationType lazyTransientWithDefault = userViewRelations.stream().filter(r -> r.getName().equals("lazyTransientWithDefault")).findFirst().orElseThrow();
         assertRelationType(lazyTransientWithDefault, mappedRelated, RelationKind.AGGREGATION, MemberType.TRANSIENT, false, true, false, false, Set.of(
                 RelationBehaviourType.TEMPLATE

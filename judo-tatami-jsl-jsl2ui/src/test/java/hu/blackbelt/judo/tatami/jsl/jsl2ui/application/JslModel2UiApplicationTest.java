@@ -4,6 +4,7 @@ import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.meta.ui.data.DataType;
+import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -182,68 +183,69 @@ public class JslModel2UiApplicationTest extends AbstractTest {
     void testMultipleActors() throws Exception {
         jslModel = JslParser.getModelFromStrings("MultipleActorsTestModel", List.of("""
             model MultipleActorsTestModel;
-            
+
             import judo::types;
-            
+
             entity User {
                 identifier String userName required;
             }
-            
+
             entity User2 {
-                identifier String userName required;
+                identifier String userName2 required;
             }
-            
+
             entity Product {
                 identifier String name required;
                 field Integer price required;
             }
-            
+
             entity Product2 {
                 identifier String name2 required;
                 field Integer price2 required;
             }
-            
+
             view ProductListView {
-                table ProductRow[] products <= Product.all();
+                table ProductRow[] productsOnList <= Product.all();
             }
-            
+
             view ProductListView2 {
-                table ProductRow2[] products2 <= Product2.all();
+                table ProductRow2[] products2OnList <= Product2.all();
             }
-            
+
             view ProductDetailView(Product product) {
                 field String name <= product.name;
                 field Integer priceNumber <= product.price;
                 field String price <= product.price.asString() + " HUF";
             }
-            
+
             view ProductDetailView2(Product2 product2) {
                 field String name2 <= product2.name2;
+                field Integer priceNumber2 <= product2.price2;
                 field String price2 <= product2.price2.asString() + " HUF";
             }
-            
+
             row ProductRow(Product product) {
                 link ProductDetailView detail <= product eager detail;
                 field String name <= product.name;
                 field String price <= product.price.asString() + " HUF";
             }
-            
+
             row ProductRow2(Product2 product2) {
-                link ProductDetailView2 detail <= product2 eager detail;
-                field String name <= product2.name2;
-                field String price <= product2.price2.asString() + " HUF";
+                link ProductDetailView2 detail2 <= product2 eager detail;
+                field String name2 <= product2.name2;
+                field String price2 <= product2.price2.asString() + " HUF";
             }
-            
+
             actor Actor1 human {
                 group first label:"Group1" {
-                    link ProductListView products2 label:"Products11";
+                    link ProductListView products1 label:"Products1";
                 }
                 link ProductListView allProducts label:"All Products" icon:"tools";
             }
-            
+
             actor Actor2 human {
                 group first label:"Group2" {
-                    link ProductListView2 products22 label:"Products21";
+                    link ProductListView2 products2 label:"Products2";
                 }
                 link ProductListView2 allProducts2 label:"All Products 2" icon:"tools";
             }
@@ -322,41 +324,61 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         // Data Elements
 
         List<ClassType> classTypes = app1.getClassTypes();
+        List<RelationType> relationTypes = app1.getRelationTypes();
 
         assertEquals(4, classTypes.size());
+        assertEquals(4, relationTypes.size());
 
         Set<String> class1Names = classTypes.stream().map(c -> c.getName()).collect(Collectors.toSet());
+        Set<String> relations1Names = relationTypes.stream().map(c -> c.getFQName()).collect(Collectors.toSet());
 
-        assertTrue(Set.of(
+        assertEquals(Set.of(
                 "MultipleActorsTestModel::Actor1::ClassType",
                 "MultipleActorsTestModel::ProductDetailView::ClassType",
                 "MultipleActorsTestModel::ProductListView::ClassType",
                 "MultipleActorsTestModel::ProductRow::ClassType"
-        ).containsAll(class1Names));
+        ), class1Names);
+
+        assertEquals(Set.of(
+                "Actor1::Application::MultipleActorsTestModel::Actor1::ClassType::products1",
+                "Actor1::Application::MultipleActorsTestModel::Actor1::ClassType::allProducts",
+                "Actor1::Application::MultipleActorsTestModel::ProductListView::ClassType::productsOnList",
+                "Actor1::Application::MultipleActorsTestModel::ProductRow::ClassType::detail"
+        ), relations1Names);
 
         List<DataType> dataTypes1 = app1.getDataTypes();
 
         Set<String> dataTypes1Names = dataTypes1.stream().map(c -> c.getName()).collect(Collectors.toSet());
 
-        assertTrue(Set.of(
+        assertEquals(Set.of(
                 "Integer",
                 "String"
-        ).containsAll(dataTypes1Names));
+        ), dataTypes1Names);
         assertTrue(getXMIID(dataTypes1.get(0)).contains("judo::types"));
         assertTrue(getXMIID(dataTypes1.get(1)).contains("judo::types"));
 
         List<ClassType> classTypes2 = app2.getClassTypes();
+        List<RelationType> relationsTypes2 = app2.getRelationTypes();
 
         assertEquals(4, classTypes2.size());
+        assertEquals(4, relationsTypes2.size());
 
         Set<String> class2Names = classTypes2.stream().map(c -> c.getName()).collect(Collectors.toSet());
+        Set<String> relations2Names = relationsTypes2.stream().map(c -> c.getFQName()).collect(Collectors.toSet());
 
-        assertTrue(Set.of(
+        assertEquals(Set.of(
                 "MultipleActorsTestModel::Actor2::ClassType",
                 "MultipleActorsTestModel::ProductDetailView2::ClassType",
                 "MultipleActorsTestModel::ProductListView2::ClassType",
                 "MultipleActorsTestModel::ProductRow2::ClassType"
-        ).containsAll(class2Names));
+        ), class2Names);
+
+        assertEquals(Set.of(
+                "Actor2::Application::MultipleActorsTestModel::Actor2::ClassType::products2",
+                "Actor2::Application::MultipleActorsTestModel::Actor2::ClassType::allProducts2",
+                "Actor2::Application::MultipleActorsTestModel::ProductListView2::ClassType::products2OnList",
+                "Actor2::Application::MultipleActorsTestModel::ProductRow2::ClassType::detail2"
+        ), relations2Names);
 
         // Pages
 
@@ -367,7 +389,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         PageDefinition page = pages.get(0);
         PageDefinition page2 = pages.get(1);
 
-        assertEquals("MultipleActorsTestModel::Actor1::MenuItemGroup::first::products2::PageDefinition", page.getName());
+        assertEquals("MultipleActorsTestModel::Actor1::MenuItemGroup::first::products1::PageDefinition", page.getName());
         assertEquals("MultipleActorsTestModel::Actor1::allProducts::PageDefinition", page2.getName());
 
         List<PageDefinition> pages2 = app2.getPages();
@@ -377,7 +399,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         PageDefinition page21 = pages2.get(0);
         PageDefinition page22 = pages2.get(1);
 
-        assertEquals("MultipleActorsTestModel::Actor2::MenuItemGroup::first::products22::PageDefinition", page21.getName());
+        assertEquals("MultipleActorsTestModel::Actor2::MenuItemGroup::first::products2::PageDefinition", page21.getName());
         assertEquals("MultipleActorsTestModel::Actor2::allProducts2::PageDefinition", page22.getName());
     }
 

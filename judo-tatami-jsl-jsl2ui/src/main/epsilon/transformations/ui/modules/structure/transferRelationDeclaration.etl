@@ -2,9 +2,7 @@
 rule AbstractRelationType
     transform s: JSL!TransferRelationDeclaration
     to t: UI!ui::data::RelationType {
-        guard: s.getActorDeclaration().isDefined()
-            and s.getActorDeclaration() == actorDeclaration
-            and actorDeclaration.getExposedRelations().includes(s)
+        guard: actorDeclaration.getExposedRelations().includes(s)
 
         t.name = s.name;
         t.target = s.referenceType.equivalent("ClassType");

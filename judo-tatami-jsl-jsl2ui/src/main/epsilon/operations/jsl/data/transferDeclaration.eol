@@ -9,16 +9,6 @@ operation JSL!TransferDeclaration getFqName(): String {
 }
 
 @cached
-operation JSL!TransferDeclaration getActorDeclaration(): JSL!ActorDeclaration {
-    if (self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
-        return self.eContainer;
-    } else if (self.eContainer.isTypeOf(JSL!ModelDeclaration)) {
-        return self.eContainer.declarations.selectOne(e | e.isTypeOf(JSL!ActorDeclaration));
-    }
-    return null;
-}
-
-@cached
 operation JSL!TransferDeclaration getExposedTransferObjects(): Set {
     var transfers = new Set();
     var relations = self.getExposedRelations();
@@ -67,6 +57,12 @@ operation JSL!TransferDeclaration getAllRelations(): Set {
     if (self.isKindOf(JSL!ActorDeclaration)) {
         var linkRelations = self.getAllMenuDeclarations();
         relations.addAll(linkRelations);
+
+        for (ref in linkRelations) {
+            if (ref.referenceType.isKindOf(JSL!TransferDeclaration)) {
+                relations.addAll(ref.referenceType.getAllRelations());
+            }
+        }
     }
 
     for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {

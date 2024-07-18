@@ -9,17 +9,6 @@ operation JSL!TransferRelationDeclaration getFqName(): String {
 }
 
 @cached
-operation JSL!TransferRelationDeclaration getActorDeclaration(): JSL!ActorDeclaration {
-    var container = self.getTransferContainer();
-    if (container.isDefined() and container.isTypeOf(JSL!ActorDeclaration)) {
-        return container;
-    } else if (container.isDefined() and container.isKindOf(JSL!TransferDeclaration)) {
-        return container.getActorDeclaration();
-    }
-    return null;
-}
-
-@cached
 operation JSL!TransferRelationDeclaration isEager(): Boolean {
     return jslUtils.isEager(self);
 }
