@@ -1,0 +1,118 @@
+@abstract
+rule AbstractRelationType
+    transform s: JSL!TransferRelationDeclaration
+    to t: UI!ui::data::RelationType {
+        guard: actorDeclaration.getExposedRelations().includes(s)
+
+        t.name = s.name;
+        t.target = s.referenceType.equivalent("ClassType");
+        t.isOptional = not s.isRequired() or s.isMany;
+        t.isCollection = s.isMany;
+        t.isReadOnly = s.reads();
+
+        t.memberType = UI!ui::data::MemberType#TRANSIENT;
+
+        if (s.isAggregation()) {
+            t.relationKind = UI!ui::data::RelationKind#AGGREGATION;
+        } else {
+            t.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
+        }
+
+        if (s.reads()) {
+            t.memberType = UI!ui::data::MemberType#DERIVED;
+        } else if (s.maps()) {
+            var entityMember = s.getterExpr.features.first.member;
+
+            if (not entityMember.isTypeOf(JSL!EntityRelationOppositeInjected)) {
+                if (entityMember.isCalculated()) {
+                    t.memberType = UI!ui::data::MemberType#DERIVED;
+                } else {
+                    t.memberType = UI!ui::data::MemberType#STORED;
+                }
+            } else {
+                // TODO handle opposite add.........
+                t.memberType = UI!ui::data::MemberType#STORED;
+            }
+        } else {
+            t.memberType = UI!ui::data::MemberType#TRANSIENT;
+        }
+
+/*
+      if (s.isInlineCreateSupported()) {
+          t.isInlineCreatable = true;
+      }
+*/
+
+        if (s.isListAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
+        }
+        if (s.isTemplateAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#TEMPLATE);
+        }
+        if (s.isCreateAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
+            t.target.isForCreateOrUpdateType = true;
+        }
+        if (s.isValidateCreateAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
+            t.target.isForCreateOrUpdateType = true;
+        }
+        if (s.isSetReferenceAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#SET);
+        }
+        if (s.isUnsetReferenceAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#UNSET);
+        }
+        if (s.isAddReferenceAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#ADD);
+        }
+        if (s.isRemoveReferenceAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#REMOVE);
+        }
+        if (s.isGetRangeAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
+            t.isOptional = true;
+        }
+        if (s.isRefreshAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#REFRESH);
+        }
+        /*
+        if (s.isExportSupported()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#EXPORT);
+        }
+        */
+        if (s.isUpdateAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#UPDATE);
+            t.target.isForCreateOrUpdateType = true;
+        }
+        if (s.isValidateUpdateAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_UPDATE);
+            t.target.isForCreateOrUpdateType = true;
+        }
+        if (s.isDeleteAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#DELETE);
+        }
+
+        t.isOrderable = s.isOrderSupported();
+        t.isFilterable = s.isFilterSupported();
+}
+
+@greedy
+rule RelationType
+    transform s: JSL!TransferRelationDeclaration
+    to t: UI!ui::data::RelationType
+    extends AbstractRelationType {
+        t.setId("(jsl/" + s.getId() + ")/RelationType");
+        var containerClassType = s.getContainerEquivalentClassType();
+        containerClassType.relations.add(t);
+        log.debug("Created RelationType [" + t.name + "] into [" + containerClassType.name + "]");
+}
+
+@lazy
+@greedy
+rule CloneRelationType
+    transform s: JSL!TransferRelationDeclaration
+    to t: UI!ui::data::RelationType
+    extends AbstractRelationType {
+        log.debug("Cloned RelationType [" + t.name + "]");
+}
