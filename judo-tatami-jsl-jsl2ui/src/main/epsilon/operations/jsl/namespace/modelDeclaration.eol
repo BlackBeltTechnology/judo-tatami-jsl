@@ -9,7 +9,7 @@ operation JSL!ModelDeclaration getFqName(): String {
 }
 
 @cached
-operation String getUniqueModelName() : String {
+operation String getUniqueModelName(): String {
     if (not JSL!ModelDeclaration.all.exists(s | s == self)) {
         return self;
     } else {
