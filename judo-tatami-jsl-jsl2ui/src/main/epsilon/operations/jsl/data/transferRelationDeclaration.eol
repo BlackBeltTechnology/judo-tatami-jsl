@@ -60,12 +60,27 @@ operation JSL!TransferRelationDeclaration isListAllowed(): Boolean {
 }
 
 @cached
+operation JSL!TransferRelationDeclaration isTemplateAllowed(): Boolean {
+    return self.modifiers.exists(m | m.isTypeOf(JSL!DefaultModifier));
+}
+
+@cached
 operation JSL!TransferRelationDeclaration isCreateAllowed(): Boolean {
     return self.modifiers.exists(m | m.isTypeOf(JSL!CreateModifier) and m.`true`);
 }
 
 @cached
+operation JSL!TransferRelationDeclaration isValidateCreateAllowed(): Boolean {
+    return self.modifiers.exists(m | m.isTypeOf(JSL!CreateModifier) and m.`true`);
+}
+
+@cached
 operation JSL!TransferRelationDeclaration isUpdateAllowed(): Boolean {
+    return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and m.`true`);
+}
+
+@cached
+operation JSL!TransferRelationDeclaration isValidateUpdateAllowed(): Boolean {
     return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and m.`true`);
 }
 
@@ -111,28 +126,18 @@ operation JSL!TransferRelationDeclaration isGetRangeAllowed(): Boolean {
 }
 
 @cached
-operation JSL!TransferRelationDeclaration isValidateCreateAllowed(): Boolean {
-    return (self.maps() or self.reads()) and self.referenceType.isCreateSupported();
-}
-
-@cached
-operation JSL!TransferRelationDeclaration isValidateUpdateAllowed(): Boolean {
-    return (self.maps() or self.reads()) and self.referenceType.isUpdateSupported();
-}
-
-@cached
 operation JSL!TransferRelationDeclaration isRefreshAllowed(): Boolean {
     return self.maps();
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isOrderSupported(): Boolean {
-    return self.maps() and self.referenceType.getAllPrimitiveFields().exists(f | f.isSortable());
+    return (self.maps() or self.reads()) and self.referenceType.getAllPrimitiveFields().exists(f | f.isSortable());
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isFilterSupported(): Boolean {
-    return self.maps() and self.referenceType.getAllPrimitiveFields().exists(f | f.isFilterable());
+    return (self.maps() or self.reads()) and self.referenceType.getAllPrimitiveFields().exists(f | f.isFilterable());
 }
 
 @cached

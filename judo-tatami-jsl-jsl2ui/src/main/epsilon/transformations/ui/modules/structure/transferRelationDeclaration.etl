@@ -48,8 +48,15 @@ rule AbstractRelationType
         if (s.isListAllowed()) {
             t.behaviours.add(UI!ui::data::RelationBehaviourType#LIST);
         }
+        if (s.isTemplateAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#TEMPLATE);
+        }
         if (s.isCreateAllowed()) {
             t.behaviours.add(UI!ui::data::RelationBehaviourType#CREATE);
+            t.target.isForCreateOrUpdateType = true;
+        }
+        if (s.isValidateCreateAllowed()) {
+            t.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
             t.target.isForCreateOrUpdateType = true;
         }
         if (s.isSetReferenceAllowed()) {
@@ -67,10 +74,6 @@ rule AbstractRelationType
         if (s.isGetRangeAllowed()) {
             t.behaviours.add(UI!ui::data::RelationBehaviourType#RANGE);
             t.isOptional = true;
-        }
-        if (s.isValidateCreateAllowed()) {
-            t.behaviours.add(UI!ui::data::RelationBehaviourType#VALIDATE_CREATE);
-            t.target.isForCreateOrUpdateType = true;
         }
         if (s.isRefreshAllowed()) {
             t.behaviours.add(UI!ui::data::RelationBehaviourType#REFRESH);
