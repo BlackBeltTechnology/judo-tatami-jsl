@@ -384,23 +384,21 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         List<PageDefinition> pages = app1.getPages();
 
-        assertEquals(2, pages.size());
-
-        PageDefinition page = pages.get(0);
-        PageDefinition page2 = pages.get(1);
-
-        assertEquals("MultipleActorsTestModel::Actor1::MenuItemGroup::first::products1::PageDefinition", page.getName());
-        assertEquals("MultipleActorsTestModel::Actor1::allProducts::PageDefinition", page2.getName());
+        assertEquals(Set.of(
+                "MultipleActorsTestModel::Actor1::MenuItemGroup::first::products1::PageDefinition",
+                "MultipleActorsTestModel::Actor1::allProducts::PageDefinition",
+                "MultipleActorsTestModel::ProductListView::productsOnList::PageDefinition",
+                "MultipleActorsTestModel::Actor1::DashboardPage"
+        ), pages.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         List<PageDefinition> pages2 = app2.getPages();
 
-        assertEquals(2, pages2.size());
-
-        PageDefinition page21 = pages2.get(0);
-        PageDefinition page22 = pages2.get(1);
-
-        assertEquals("MultipleActorsTestModel::Actor2::MenuItemGroup::first::products2::PageDefinition", page21.getName());
-        assertEquals("MultipleActorsTestModel::Actor2::allProducts2::PageDefinition", page22.getName());
+        assertEquals(Set.of(
+                "MultipleActorsTestModel::Actor2::MenuItemGroup::first::products2::PageDefinition",
+                "MultipleActorsTestModel::Actor2::allProducts2::PageDefinition",
+                "MultipleActorsTestModel::ProductListView2::products2OnList::PageDefinition",
+                "MultipleActorsTestModel::Actor2::DashboardPage"
+        ), pages2.stream().map(NamedElement::getName).collect(Collectors.toSet()));
     }
 
     @Test
