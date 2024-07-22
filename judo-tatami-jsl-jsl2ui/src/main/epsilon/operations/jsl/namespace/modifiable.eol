@@ -14,6 +14,16 @@ operation JSL!Modifiable getIconModifier(): JSL!Modifier {
 }
 
 @cached
+operation JSL!Modifiable getOrientationModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!OrientationModifier));
+}
+
+@cached
+operation JSL!Modifiable getStretchModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!StretchModifier));
+}
+
+@cached
 operation JSL!Modifiable getPrecision(): JSL!Modifier {
     return (self.modifiers.selectOne(m | m.type == "precision"));
 }
@@ -75,15 +85,40 @@ operation JSL!Modifiable getBind(): JSL!Modifier {
 
 @cached
 operation JSL!Modifiable isEventInstead(): Boolean {
-    return (not self.modifiers.exists(m|m.type == "on"));
+    return (not self.modifiers.exists(m | m.type == "on"));
 }
 
 @cached
 operation JSL!Modifiable isEventBefore(): Boolean {
-    return (self.modifiers.exists(m|m.type == "on" and m.before));
+    return (self.modifiers.exists(m | m.type == "on" and m.before));
 }
 
 @cached
 operation JSL!Modifiable isEventAfter(): Boolean {
-    return (self.modifiers.exists(m|m.type == "on" and m.after));
+    return (self.modifiers.exists(m | m.type == "on" and m.after));
+}
+
+@cached
+operation JSL!Modifiable getFrame(): JSL!Modifier {
+    return (self.modifiers.selectOne(m | m.type == "frame"));
+}
+
+@cached
+operation JSL!Modifiable getWidth(): JSL!Modifier {
+    return (self.modifiers.selectOne(m | m.type == "width"));
+}
+
+@cached
+operation JSL!Modifiable getHAlign(): JSL!Modifier {
+    return (self.modifiers.selectOne(m | m.type == "h-align"));
+}
+
+@cached
+operation JSL!Modifiable getVAlign(): JSL!Modifier {
+    return (self.modifiers.selectOne(m | m.type == "v-align"));
+}
+
+@cached
+operation JSL!Modifiable getLines(): JSL!Modifier {
+    return (self.modifiers.selectOne(m | m.type == "lines"));
 }

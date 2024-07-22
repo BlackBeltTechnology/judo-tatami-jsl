@@ -43,3 +43,41 @@ rule ClassType
 
         log.debug("Create ClassType: " + t.name);
 }
+
+@greedy
+rule TransferDeclarationPageContainer
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::PageContainer {
+        guard: actorDeclaration.getExposedTransferObjects().contains(s)
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationPageContainer");
+        t.name = s.getFqName() + "::PageContainer";
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+        t.titleFrom = UI!ui::TitleFrom#LABEL;
+        t.type = UI!ui::PageContainerType#VIEW;
+        // t.onInit = s.equivalent("TransferObjectTableAddSelectorTableRangeActionDefinition");
+        actorDeclaration.equivalent("Application").pageContainers.add(t);
+        t.children.add(s.equivalent("TransferDeclarationVisualElement"));
+        // t.actionButtonGroup = s.equivalent("TransferObjectTableAddSelectorButtonGroup");
+        t.dataElement = s.equivalent("ClassType");
+
+        log.debug("TransferDeclarationPageContainer: " + t.name);
+}
+
+@greedy
+rule TransferDeclarationVisualElement
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::Flex {
+        guard: actorDeclaration.getExposedTransferObjects().contains(s)
+
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationVisualElement");
+ 		t.name = s.name;
+ 		t.~pos = 0;
+ 		t.col = 12d;
+ 		t.direction = UI!Axis#VERTICAL;
+ 		t.label = null; // we don't need labels for root visual elements
+        log.debug("TransferDeclarationVisualElement: " + t.name);
+}
