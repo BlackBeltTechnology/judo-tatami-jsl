@@ -6,7 +6,7 @@ rule TabBarVisualElement
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TabBarVisualElement");
         t.name = s.name;
         t.~pos = s.~pos;
-        t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12.asReal();
+        t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12d;
 
         if (s.getLabelModifier().isDefined()) {
             t.label = s.getLabelModifier().value.value;

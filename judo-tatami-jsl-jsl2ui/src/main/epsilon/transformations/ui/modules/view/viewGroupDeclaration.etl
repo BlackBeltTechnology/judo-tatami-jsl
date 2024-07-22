@@ -20,7 +20,7 @@ rule AbstractViewGroupDeclaration
             t.stretch = UI!ui::Stretch#BOTH;
         }
 
-        t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12.asReal();
+        t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12d;
 
 
         if (t.~pos.isUndefined()) {
