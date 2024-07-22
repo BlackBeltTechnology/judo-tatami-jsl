@@ -1,0 +1,105 @@
+@abstract
+rule AbstractViewGroupDeclaration
+    transform s: JSL!ViewGroupDeclaration
+    to t: UI!ui::Flex {
+
+        t.name = s.name;
+
+        if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
+        if (s.getIconModifier().isDefined()) {
+            t.icon = s.equivalent("GroupIcon");
+        }
+
+        if (s.getFrame().isDefined() and s.getFrame().isTrue()) {
+            t.frame = s.equivalent("GroupFrame");
+        }
+
+        if (s.getStretchModifier().isDefined() and s.getStretchModifier().isTrue()) {
+            t.stretch = UI!ui::Stretch#BOTH;
+        }
+
+        t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12.asReal();
+
+
+        if (t.~pos.isUndefined()) {
+            t.~pos = 0;
+        }
+
+        if (s.getOrientationModifier().isDefined()) {
+            t.direction = s.getOrientationModifier().isVertical() ? UI!Axis#VERTICAL : UI!Axis#HORIZONTAL;
+        } else {
+            t.direction = UI!Axis#VERTICAL;
+        }
+
+        if (t.direction == UI!Axis#VERTICAL) {
+            if (s.getVAlign().isDefined() and s.getVAlign().isCenter()) {
+                t.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
+            } else if (s.getVAlign().isDefined() and s.getVAlign().isBottom()) {
+                t.mainAxisAlignment = UI!ui::MainAxisAlignment#END;
+            } else {
+                t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+            }
+            if (s.getHAlign().isDefined() and s.getHAlign().isCenter()) {
+                t.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
+            } else if (s.getHAlign().isDefined() and s.getHAlign().isRight()) {
+                t.crossAxisAlignment = UI!ui::CrossAxisAlignment#END;
+            } else {
+                t.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+            }
+        } else {
+            if (s.getHAlign().isDefined() and s.getHAlign().isCenter()) {
+                t.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
+            } else if (s.getHAlign().isDefined() and s.getHAlign().isRight()) {
+                t.mainAxisAlignment = UI!ui::MainAxisAlignment#END;
+            } else {
+                t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+            }
+            if (s.getVAlign().isDefined() and s.getVAlign().isCenter()) {
+                t.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
+            } else if (s.getVAlign().isDefined() and s.getVAlign().isBottom()) {
+                t.crossAxisAlignment = UI!ui::CrossAxisAlignment#END;
+            } else {
+                t.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+            }
+        }
+}
+
+rule GroupVisualElement
+    transform s: JSL!ViewGroupDeclaration
+    to t: UI!ui::Flex
+    extends AbstractViewGroupDeclaration {
+        guard: s.getTransferObjectType().isGenerated()
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/GroupVisualElement");
+
+        if (not s.eContainer.isKindOf(JSL!ViewTabsDeclaration)) {
+            var holder = t;
+            if (s.isFrame()) {
+                holder.frame = s.equivalent("GroupFrame");
+
+            }
+            s.eContainer.uiContainer().children.add(holder);
+        }
+
+        log.debug("Flex: " + t.name);
+}
+
+@lazy
+@greedy
+rule GroupFrame
+    transform s: JSL!ViewGroupDeclaration
+    to t: UI!ui::Frame {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/GroupFrame");
+}
+
+@lazy
+@greedy
+rule GroupIcon
+    transform s: JSL!ViewGroupDeclaration
+    to t: UI!ui::Icon {
+    	t.iconName = s.getIconModifier().value.value;
+    	t.name = s.name + "Icon";
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/GroupIcon");
+}

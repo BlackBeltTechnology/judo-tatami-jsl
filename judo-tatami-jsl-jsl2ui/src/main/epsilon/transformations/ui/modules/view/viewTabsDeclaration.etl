@@ -1,0 +1,51 @@
+rule TabBarVisualElement
+    transform s: JSL!ViewTabsDeclaration
+    to t: UI!ui::TabController {
+        guard: s.getTransferObjectType().isGenerated()
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TabBarVisualElement");
+        t.name = s.name;
+        t.~pos = s.~pos;
+        t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12.asReal();
+
+        if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
+        if (s.getLabelModifier().isDefined()) {
+            t.icon = s.equivalent("TabsIcon");
+        }
+        if (s.getOrientationModifier().isDefined()) {
+            if (s.getOrientationModifier().isVertical()) {
+                t.orientation = UI!ui::TabOrientation#VERTICAL;
+            } else {
+                t.orientation = UI!ui::TabOrientation#HORIZONTAL;
+            }
+        }
+
+        s.eContainer.uiContainer().children.add(t);
+
+        log.debug("TabBarVisualElement: " + t.name);
+}
+
+rule GroupTab
+    transform s: JSL!ViewGroupDeclaration
+    to t: UI!ui::Tab {
+        guard: s.eContainer.isKindOf(JSL!ViewTabsDeclaration) and s.getTransferObjectType().isGenerated()
+
+    	s.eContainer.equivalent("TabBarVisualElement").tabs.add(t);
+        t.element = s.equivalent("GroupVisualElement");
+        t.name = t.element.name;
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/GroupTab");
+
+        log.debug("GroupTab: " + t.name);
+}
+
+@lazy
+@greedy
+rule TabsIcon
+    transform s: JSL!ViewTabsDeclaration
+    to t: UI!ui::Icon {
+    	t.iconName = s.getIconModifier().value.value;
+    	t.name = s.name + "Icon";
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TabsIcon");
+}
