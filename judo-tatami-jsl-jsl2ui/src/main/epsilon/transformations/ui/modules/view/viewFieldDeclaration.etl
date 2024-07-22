@@ -172,7 +172,7 @@ rule StringTypeTextInput
             and (not s.getLines().isDefined() or s.getLines().value == 1)
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericTypeVisualInput");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringTypeTextInput");
         // if (s.isTypeAheadField.isDefined() and s.isTypeAheadField == true) {
         //     t.isTypeAheadField = true;
         // }
