@@ -1,4 +1,9 @@
 @cached
+operation JSL!EnumLiteral getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
 operation JSL!EnumLiteral getActorDeclaration(): JSL!ActorDeclaration {
     if (self.eContainer.isTypeOf(JSL!EnumDeclaration)) {
         return self.eContainer.getActorDeclaration();

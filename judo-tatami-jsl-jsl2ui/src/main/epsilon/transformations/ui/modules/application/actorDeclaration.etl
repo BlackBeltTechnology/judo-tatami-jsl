@@ -90,7 +90,7 @@ rule NavigationController
         t.name = s.getFqName() + "::NavigationController";
 
         log.debug("Create NavigationController: " + t.name);
-    }
+}
 
 rule Authentication
     transform s: JSL!ActorDeclaration
@@ -105,7 +105,37 @@ rule Authentication
 
         s.equivalent("Application").authentication = t;
 
-        // TODO map claims
-
         log.debug("Create Authentication: " + t.realm);
-    }
+}
+
+rule EmptyDashboardPageDefinition
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: s = actorDeclaration
+
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageDefinition");
+	    t.name = s.getFqName() + "::DashboardPage";
+		t.dashboard = true;
+		t.dataElement = s.equivalent("Actor");
+
+        t.container = s.equivalent("EmptyDashboardPageContainer");
+        actorDeclaration.equivalent("Application").pages.add(t);
+
+        log.debug("EmptyDashboardPageDefinition [" + t.name + "]");
+}
+
+rule EmptyDashboardPageContainer
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::PageContainer {
+        guard: s = actorDeclaration
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageContainer");
+    	t.name = s.getFqName() + "::Dashboard";
+    	t.label = "Dashboard";
+    	t.type = UI!ui::PageContainerType#TABLE;
+		t.dataElement = s.equivalent("Actor");
+
+		actorDeclaration.equivalent("Application").pageContainers.add(t);
+
+	    log.debug("EmptyDashboardPageContainer [" + t.name + "]");
+}
