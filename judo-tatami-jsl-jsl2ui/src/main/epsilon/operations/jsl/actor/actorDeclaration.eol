@@ -89,3 +89,10 @@ operation JSL!ActorDeclaration getExposedTransferObjects() : Set {
 
     return collected;
 }
+
+@cached
+operation JSL!ActorDeclaration getExposedVisibleDeclarations() : Set {
+    var transfers = self.getExposedTransferObjects();
+
+    return transfers.select(t | t.isTypeOf(JSL!ViewDeclaration) or t.isTypeOf(JSL!RowDeclaration)).asSet();
+}
