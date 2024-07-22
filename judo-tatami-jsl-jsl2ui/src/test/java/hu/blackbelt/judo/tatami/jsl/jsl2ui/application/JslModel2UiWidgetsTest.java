@@ -190,6 +190,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("numbers", tab1Element.getIcon().getIconName());
         assertEquals(Axis.VERTICAL, tab1Element.getDirection());
         assertEquals(CrossAxisAlignment.START, tab1Element.getCrossAxisAlignment());
+        assertEquals(0, tab1Element.getChildren().size());
 
         // tab2
 
@@ -202,5 +203,6 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("numbers", tab2Element.getIcon().getIconName());
         assertEquals(Axis.VERTICAL, tab2Element.getDirection());
         assertEquals(CrossAxisAlignment.END, tab2Element.getCrossAxisAlignment());
+        assertEquals(0, tab2Element.getChildren().size());
     }
 }
