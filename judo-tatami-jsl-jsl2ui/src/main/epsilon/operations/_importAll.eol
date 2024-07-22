@@ -1,4 +1,6 @@
 import "id.eol";
 import "equivalentDiscriminated.eol";
 
+import "ui/namedElement.eol";
+
 import "jsl/_importAll.eol";

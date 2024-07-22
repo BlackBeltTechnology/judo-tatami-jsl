@@ -1,39 +1,10 @@
-rule AccessPageDefinition
-    transform s: JSL!ActorLinkDeclaration
-    to t: UI!ui::PageDefinition {
-        guard: s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
-
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/AccessPageDefinition");
-
-        t.name = s.getFqName() + "::PageDefinition";
-        t.container = s.equivalent("AccessPageContainer");
-
-        actorDeclaration.equivalent("Application").pages.add(t);
-
-        t.dataElement = s.equivalent("RelationType");
-
-        log.debug("Create AccessPageDefinition: " + t.name);
-    }
-
 @lazy
-rule AccessPageContainer
-    transform s: JSL!ActorLinkDeclaration
-    to t: UI!ui::PageContainer {
-        guard: s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
-
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/AccessPageContainer");
-        t.name = s.getFqName() + "::PageContainer";
-        var label = s.getLabelModifier();
-        if (label.isDefined()) {
-            t.label = label.value.value;
-        }
-        t.titleFrom = UI!ui::TitleFrom#LABEL;
-        // t.type = UI!ui::PageContainerType#TABLE; // TODO figure out how to determine type
-        // t.onInit = s.equivalent("TransferObjectTableAddSelectorTableRangeActionDefinition");
-        actorDeclaration.equivalent("Application").pageContainers.add(t);
-        // t.children.add(s.equivalent("TransferObjectTableAddSelectorVisualElement"));
-        // t.actionButtonGroup = s.equivalent("TransferObjectTableAddSelectorButtonGroup");
-        // t.dataElement = s.eContainer.equivalent("ClassType");
-
-        log.debug("AccessPageContainer: " + t.name);
-    }
+rule ViewDeclarationVisualElement
+    transform s: JSL!ViewDeclaration
+    to t: UI!ui::Flex {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewDeclarationVisualElement");
+ 		t.name = s.name;
+ 		t.~pos = 0;
+ 		t.label = null; // we don't need labels for root visual elements
+        log.debug("ViewDeclarationVisualElement: " + t.name);
+}
