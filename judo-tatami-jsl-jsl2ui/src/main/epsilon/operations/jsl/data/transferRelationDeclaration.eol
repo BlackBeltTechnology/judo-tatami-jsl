@@ -167,3 +167,7 @@ operation JSL!TransferRelationDeclaration getContainerEquivalentClassType(): UI!
     }
     return null;
 }
+
+operation JSL!TransferRelationDeclaration uiContainer() : UI!ui::VisualElement {
+    return self.referenceType.equivalent("TransferDeclarationVisualElement");
+}

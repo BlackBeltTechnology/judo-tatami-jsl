@@ -387,6 +387,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals(Set.of(
                 "MultipleActorsTestModel::Actor1::MenuItemGroup::first::products1::PageDefinition",
                 "MultipleActorsTestModel::Actor1::allProducts::PageDefinition",
+                "MultipleActorsTestModel::ProductListView::productsOnList::PageDefinition",
                 "MultipleActorsTestModel::Actor1::DashboardPage"
         ), pages.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
@@ -395,6 +396,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals(Set.of(
                 "MultipleActorsTestModel::Actor2::MenuItemGroup::first::products2::PageDefinition",
                 "MultipleActorsTestModel::Actor2::allProducts2::PageDefinition",
+                "MultipleActorsTestModel::ProductListView2::products2OnList::PageDefinition",
                 "MultipleActorsTestModel::Actor2::DashboardPage"
         ), pages2.stream().map(NamedElement::getName).collect(Collectors.toSet()));
     }

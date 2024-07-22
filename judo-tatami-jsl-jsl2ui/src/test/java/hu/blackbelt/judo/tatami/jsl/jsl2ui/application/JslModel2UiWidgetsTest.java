@@ -117,7 +117,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals(2, pageContainers.size());
 
         PageContainer dashboard = pageContainers.stream().filter(c -> c.getName().equals("BasicWidgetsTestModel::WidgetsActor::Dashboard")).findFirst().orElseThrow();
-        PageContainer user = pageContainers.stream().filter(c -> c.getName().equals("BasicWidgetsTestModel::WidgetsActor::user::PageContainer")).findFirst().orElseThrow();
+        PageContainer user = pageContainers.stream().filter(c -> c.getName().equals("BasicWidgetsTestModel::UserView::PageContainer")).findFirst().orElseThrow();
 
         // Dashboard
         assertEquals(0, dashboard.getChildren().size());
@@ -157,7 +157,30 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals(Axis.VERTICAL, level2.getDirection());
         assertNotNull(level2.getFrame());
         assertNotNull(level2.getStretch());
-        assertEquals(0, level2.getChildren().size());
+        assertEquals(3, level2.getChildren().size());
+
+        // level2 -> children
+
+        TextInput email = (TextInput) level2.getChildren().stream().filter(c -> c.getName().equals("email")).findFirst().orElseThrow();
+
+        assertEquals("email", email.getName());
+        assertEquals("String", email.getAttributeType().getDataType().getName());
+        assertTrue(email.getAttributeType().isIsRequired());
+        assertFalse(email.getAttributeType().isIsReadOnly());
+
+        BinaryTypeInput binaryDerived = (BinaryTypeInput) level2.getChildren().stream().filter(c -> c.getName().equals("binaryDerived")).findFirst().orElseThrow();
+
+        assertEquals("binaryDerived", binaryDerived.getName());
+        assertEquals("Binary", binaryDerived.getAttributeType().getDataType().getName());
+        assertFalse(binaryDerived.getAttributeType().isIsRequired());
+        assertTrue(binaryDerived.getAttributeType().isIsReadOnly());
+
+        TextInput stringDerived = (TextInput) level2.getChildren().stream().filter(c -> c.getName().equals("stringDerived")).findFirst().orElseThrow();
+
+        assertEquals("stringDerived", stringDerived.getName());
+        assertEquals("String", stringDerived.getAttributeType().getDataType().getName());
+        assertFalse(stringDerived.getAttributeType().isIsRequired());
+        assertTrue(stringDerived.getAttributeType().isIsReadOnly());
 
         // level2 - 2
 
@@ -168,7 +191,30 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("dog", level22.getIcon().getIconName());
         assertEquals(6, level22.getCol());
         assertEquals(Axis.HORIZONTAL, level22.getDirection());
-        assertEquals(0, level22.getChildren().size());
+        assertEquals(3, level22.getChildren().size());
+
+        // level2 - 2 -> children
+
+        TrinaryLogicCombo booleanDerived = (TrinaryLogicCombo) level22.getChildren().stream().filter(c -> c.getName().equals("booleanDerived")).findFirst().orElseThrow();
+
+        assertEquals("booleanDerived", booleanDerived.getName());
+        assertEquals("Boolean", booleanDerived.getAttributeType().getDataType().getName());
+        assertFalse(booleanDerived.getAttributeType().isIsRequired());
+        assertTrue(booleanDerived.getAttributeType().isIsReadOnly());
+
+        DateInput dateDerived = (DateInput) level22.getChildren().stream().filter(c -> c.getName().equals("dateDerived")).findFirst().orElseThrow();
+
+        assertEquals("dateDerived", dateDerived.getName());
+        assertEquals("Date", dateDerived.getAttributeType().getDataType().getName());
+        assertFalse(dateDerived.getAttributeType().isIsRequired());
+        assertTrue(dateDerived.getAttributeType().isIsReadOnly());
+
+        NumericInput numericDerived = (NumericInput) level22.getChildren().stream().filter(c -> c.getName().equals("numericDerived")).findFirst().orElseThrow();
+
+        assertEquals("numericDerived", numericDerived.getName());
+        assertEquals("Numeric", numericDerived.getAttributeType().getDataType().getName());
+        assertFalse(numericDerived.getAttributeType().isIsRequired());
+        assertTrue(numericDerived.getAttributeType().isIsReadOnly());
 
         // tabs 0
 
@@ -190,7 +236,16 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("numbers", tab1Element.getIcon().getIconName());
         assertEquals(Axis.VERTICAL, tab1Element.getDirection());
         assertEquals(CrossAxisAlignment.START, tab1Element.getCrossAxisAlignment());
-        assertEquals(0, tab1Element.getChildren().size());
+        assertEquals(1, tab1Element.getChildren().size());
+
+        // tab1 -> children
+
+        TimeInput timeDerived = (TimeInput) tab1Element.getChildren().stream().filter(c -> c.getName().equals("timeDerived")).findFirst().orElseThrow();
+
+        assertEquals("timeDerived", timeDerived.getName());
+        assertEquals("Time", timeDerived.getAttributeType().getDataType().getName());
+        assertFalse(timeDerived.getAttributeType().isIsRequired());
+        assertTrue(timeDerived.getAttributeType().isIsReadOnly());
 
         // tab2
 
@@ -203,6 +258,22 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("numbers", tab2Element.getIcon().getIconName());
         assertEquals(Axis.VERTICAL, tab2Element.getDirection());
         assertEquals(CrossAxisAlignment.END, tab2Element.getCrossAxisAlignment());
-        assertEquals(0, tab2Element.getChildren().size());
+        assertEquals(2, tab2Element.getChildren().size());
+
+        // tab2 -> children
+
+        DateTimeInput timestampDerived = (DateTimeInput) tab2Element.getChildren().stream().filter(c -> c.getName().equals("timestampDerived")).findFirst().orElseThrow();
+
+        assertEquals("timestampDerived", timestampDerived.getName());
+        assertEquals("Timestamp", timestampDerived.getAttributeType().getDataType().getName());
+        assertFalse(timestampDerived.getAttributeType().isIsRequired());
+        assertTrue(timestampDerived.getAttributeType().isIsReadOnly());
+
+        EnumerationCombo mappedEnum = (EnumerationCombo) tab2Element.getChildren().stream().filter(c -> c.getName().equals("mappedEnum")).findFirst().orElseThrow();
+
+        assertEquals("mappedEnum", mappedEnum.getName());
+        assertEquals("MyEnum", mappedEnum.getAttributeType().getDataType().getName());
+        assertFalse(mappedEnum.getAttributeType().isIsRequired());
+        assertFalse(mappedEnum.getAttributeType().isIsReadOnly());
     }
 }

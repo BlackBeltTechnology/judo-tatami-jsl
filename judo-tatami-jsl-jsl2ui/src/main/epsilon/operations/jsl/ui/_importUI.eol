@@ -1,4 +1,5 @@
 import "viewDeclaration.eol";
+import "viewFieldDeclaration.eol";
 import "viewGroupDeclaration.eol";
 import "viewPanelDeclaration.eol";
 import "viewTabsDeclaration.eol";

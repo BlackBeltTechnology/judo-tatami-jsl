@@ -134,6 +134,7 @@ operation JSL!TransferDeclaration isGenerated() : Boolean {
 	return actorDeclaration.getExposedTransferObjects().includes(self);
 }
 
+
 operation JSL!TransferDeclaration uiContainer() : UI!ui::VisualElement {
-    return self.equivalent("ViewDeclarationVisualElement");
+    return self.equivalent("TransferDeclarationVisualElement");
 }

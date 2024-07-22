@@ -117,3 +117,8 @@ operation JSL!Modifiable getHAlign(): JSL!Modifier {
 operation JSL!Modifiable getVAlign(): JSL!Modifier {
     return (self.modifiers.selectOne(m | m.type == "v-align"));
 }
+
+@cached
+operation JSL!Modifiable getLines(): JSL!Modifier {
+    return (self.modifiers.selectOne(m | m.type == "lines"));
+}

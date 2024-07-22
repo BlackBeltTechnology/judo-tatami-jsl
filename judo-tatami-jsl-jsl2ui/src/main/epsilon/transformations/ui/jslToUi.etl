@@ -11,8 +11,11 @@ import "modules/structure/transferRelationDeclaration.etl";
 
 import "modules/type/type.etl";
 
-import "modules/view/viewDeclaration.etl";
+import "modules/view/enumLiteral.etl";
+import "modules/view/viewFieldDeclaration.etl";
 import "modules/view/viewGroupDeclaration.etl";
+import "modules/view/viewLinkDeclaration.etl";
+import "modules/view/viewTableDeclaration.etl";
 import "modules/view/viewTabsDeclaration.etl";
 
 pre {
@@ -45,7 +48,7 @@ post {
         group.items = group.items.sortBy(e | e.~pos);
     }
 
-    for (container : UI!ui::Container in UI!ui::Container.all().select(a | a.getRootApplication() == application)) {
+    /*for (container : UI!ui::Container in UI!ui::Container.all().select(a | a.getRootApplication() == application)) {
         var missingPos = false;
         for (child in container.children) {
             if (child.~pos.isUndefined()) {
@@ -57,5 +60,5 @@ post {
             throw "Missing position parameter(s) under Container: " + container;
         }
         container.children = container.children.sortBy(e | e.~pos);
-    }
+    }*/
 }
