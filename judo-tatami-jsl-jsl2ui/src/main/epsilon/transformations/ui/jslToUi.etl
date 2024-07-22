@@ -11,7 +11,12 @@ import "modules/structure/transferRelationDeclaration.etl";
 
 import "modules/type/type.etl";
 
-import "modules/view/viewDeclaration.etl";
+import "modules/view/enumLiteral.etl";
+import "modules/view/viewFieldDeclaration.etl";
+import "modules/view/viewGroupDeclaration.etl";
+import "modules/view/viewLinkDeclaration.etl";
+import "modules/view/viewTableDeclaration.etl";
+import "modules/view/viewTabsDeclaration.etl";
 
 pre {
     var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");
@@ -19,15 +24,48 @@ pre {
     var __originalMap = new ConcurrentMap();
     var System = Native("java.lang.System");
 
-    //UI.target.resource.contents.add(defaultModelName.equivalent("CreateRootApplication"));
+    for (container : JSL!ViewPanelDeclaration in JSL!ViewPanelDeclaration.all()) {
+        if (container.isTypeOf(JSL!ViewGroupDeclaration)) {
+            for (member in container.members) {
+                member.~pos = container.members.indexOf(member) + 1;
+            }
+        } else if (container.isTypeOf(JSL!ViewTabsDeclaration)) {
+           for (group in container.groups) {
+               group.~pos = container.groups.indexOf(group) + 1;
+           }
+       }
+	}
+	for (visible : JSL!VisibleDeclaration in JSL!VisibleDeclaration.all()) {
+        if (visible.isTypeOf(JSL!ViewDeclaration) or visible.isTypeOf(JSL!RowDeclaration)) {
+            for (member in visible.members) {
+                member.~pos = visible.members.indexOf(member) + 1;
+            }
+        }
+	}
 }
 
 post {
+    var application = actorDeclaration.equivalent("Application");
+
     for (navigationController : UI!ui::NavigationController in UI!ui::NavigationController.all()) {
         navigationController.items = navigationController.items.sortBy(e | e.~pos);
     }
 
     for (group : UI!ui::NavigationItem in UI!ui::NavigationItem.all()) {
         group.items = group.items.sortBy(e | e.~pos);
+    }
+
+    for (container : UI!ui::Container in UI!ui::Container.all().select(a | a.getRootApplication() == application)) {
+        var missingPos = false;
+        for (child in container.children) {
+            if (child.~pos.isUndefined()) {
+                missingPos = true;
+                log.error("Position is not defined: " + child.getId());
+            }
+        }
+        if (missingPos) {
+            throw "Missing position parameter(s) under Container: " + container.name;
+        }
+        container.children = container.children.sortBy(e | e.~pos);
     }
 }
