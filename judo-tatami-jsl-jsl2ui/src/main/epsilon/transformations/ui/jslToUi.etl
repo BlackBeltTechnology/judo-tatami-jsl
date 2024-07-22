@@ -35,6 +35,13 @@ pre {
            }
        }
 	}
+	for (visible : JSL!VisibleDeclaration in JSL!VisibleDeclaration.all()) {
+        if (visible.isTypeOf(JSL!ViewDeclaration) or visible.isTypeOf(JSL!RowDeclaration)) {
+            for (member in visible.members) {
+                member.~pos = visible.members.indexOf(member) + 1;
+            }
+        }
+	}
 }
 
 post {
@@ -48,7 +55,7 @@ post {
         group.items = group.items.sortBy(e | e.~pos);
     }
 
-    /*for (container : UI!ui::Container in UI!ui::Container.all().select(a | a.getRootApplication() == application)) {
+    for (container : UI!ui::Container in UI!ui::Container.all().select(a | a.getRootApplication() == application)) {
         var missingPos = false;
         for (child in container.children) {
             if (child.~pos.isUndefined()) {
@@ -57,8 +64,8 @@ post {
             }
         }
         if (missingPos) {
-            throw "Missing position parameter(s) under Container: " + container;
+            throw "Missing position parameter(s) under Container: " + container.name;
         }
         container.children = container.children.sortBy(e | e.~pos);
-    }*/
+    }
 }

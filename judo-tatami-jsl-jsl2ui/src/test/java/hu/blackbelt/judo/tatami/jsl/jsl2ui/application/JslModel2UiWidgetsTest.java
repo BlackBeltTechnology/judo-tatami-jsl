@@ -75,25 +75,25 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             view UserView(User u) {
                 group level1 label:"Yo" icon:"text" {
                     group level2 width:12 frame:true icon:"unicorn" label:"Level 2" stretch:true {
-                        field String email <= u.email bind required;
-                        field Binary binaryDerived <= u.binary;
-                        field String stringDerived <= u.string;
+                        field String email <= u.email bind required icon:"text" label: "My Email";
+                        field Binary binaryDerived <= u.binary icon:"binary" label:"Binary Derived";
+                        field String stringDerived <= u.string icon:"string" label:"String Derived";
                     }
 
                     group level22 width:6 frame:true icon:"dog" label:"Level 2 - 2" orientation:horizontal {
-                        field Boolean booleanDerived <= u.boolean;
-                        field Date dateDerived <= u.date;
-                        field Numeric numericDerived <= u.numeric;
+                        field Boolean booleanDerived <= u.boolean icon:"boolean" label:"Boolean Derived";
+                        field Date dateDerived <= u.date icon:"date" label:"Date Derived";
+                        field Numeric numericDerived <= u.numeric icon:"numeric" label:"Numeric Derived";
                     }
 
                     tabs tabs0 orientation:horizontal width:6 {
                         group tab1 label:"Tab1" icon:"numbers" h-align:left {
-                            field Time timeDerived <= u.time;
+                            field Time timeDerived <= u.time icon:"time" label:"Time Derived";
                         }
 
                         group tab2 label:"Tab2" icon:"numbers" h-align:right {
-                            field Timestamp timestampDerived <= u.timestamp;
-                            field MyEnum mappedEnum <= u.`enum` bind default:MyEnum#Crazy;
+                            field Timestamp timestampDerived <= u.timestamp icon:"timestamp" label:"Timestamp Derived";
+                            field MyEnum mappedEnum <= u.`enum` bind default:MyEnum#Crazy icon:"enum" label:"Mapped Enum";
                         }
                     }
                 }
@@ -164,6 +164,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         TextInput email = (TextInput) level2.getChildren().stream().filter(c -> c.getName().equals("email")).findFirst().orElseThrow();
 
         assertEquals("email", email.getName());
+        assertEquals("My Email", email.getLabel());
+        assertEquals("text", email.getIcon().getIconName());
         assertEquals("String", email.getAttributeType().getDataType().getName());
         assertTrue(email.getAttributeType().isIsRequired());
         assertFalse(email.getAttributeType().isIsReadOnly());
@@ -171,6 +173,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         BinaryTypeInput binaryDerived = (BinaryTypeInput) level2.getChildren().stream().filter(c -> c.getName().equals("binaryDerived")).findFirst().orElseThrow();
 
         assertEquals("binaryDerived", binaryDerived.getName());
+        assertEquals("Binary Derived", binaryDerived.getLabel());
+        assertEquals("binary", binaryDerived.getIcon().getIconName());
         assertEquals("Binary", binaryDerived.getAttributeType().getDataType().getName());
         assertFalse(binaryDerived.getAttributeType().isIsRequired());
         assertTrue(binaryDerived.getAttributeType().isIsReadOnly());
@@ -178,6 +182,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         TextInput stringDerived = (TextInput) level2.getChildren().stream().filter(c -> c.getName().equals("stringDerived")).findFirst().orElseThrow();
 
         assertEquals("stringDerived", stringDerived.getName());
+        assertEquals("String Derived", stringDerived.getLabel());
+        assertEquals("string", stringDerived.getIcon().getIconName());
         assertEquals("String", stringDerived.getAttributeType().getDataType().getName());
         assertFalse(stringDerived.getAttributeType().isIsRequired());
         assertTrue(stringDerived.getAttributeType().isIsReadOnly());
@@ -198,6 +204,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         TrinaryLogicCombo booleanDerived = (TrinaryLogicCombo) level22.getChildren().stream().filter(c -> c.getName().equals("booleanDerived")).findFirst().orElseThrow();
 
         assertEquals("booleanDerived", booleanDerived.getName());
+        assertEquals("Boolean Derived", booleanDerived.getLabel());
+        assertEquals("boolean", booleanDerived.getIcon().getIconName());
         assertEquals("Boolean", booleanDerived.getAttributeType().getDataType().getName());
         assertFalse(booleanDerived.getAttributeType().isIsRequired());
         assertTrue(booleanDerived.getAttributeType().isIsReadOnly());
@@ -205,6 +213,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         DateInput dateDerived = (DateInput) level22.getChildren().stream().filter(c -> c.getName().equals("dateDerived")).findFirst().orElseThrow();
 
         assertEquals("dateDerived", dateDerived.getName());
+        assertEquals("Date Derived", dateDerived.getLabel());
+        assertEquals("date", dateDerived.getIcon().getIconName());
         assertEquals("Date", dateDerived.getAttributeType().getDataType().getName());
         assertFalse(dateDerived.getAttributeType().isIsRequired());
         assertTrue(dateDerived.getAttributeType().isIsReadOnly());
@@ -212,6 +222,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         NumericInput numericDerived = (NumericInput) level22.getChildren().stream().filter(c -> c.getName().equals("numericDerived")).findFirst().orElseThrow();
 
         assertEquals("numericDerived", numericDerived.getName());
+        assertEquals("Numeric Derived", numericDerived.getLabel());
+        assertEquals("numeric", numericDerived.getIcon().getIconName());
         assertEquals("Numeric", numericDerived.getAttributeType().getDataType().getName());
         assertFalse(numericDerived.getAttributeType().isIsRequired());
         assertTrue(numericDerived.getAttributeType().isIsReadOnly());
@@ -243,6 +255,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         TimeInput timeDerived = (TimeInput) tab1Element.getChildren().stream().filter(c -> c.getName().equals("timeDerived")).findFirst().orElseThrow();
 
         assertEquals("timeDerived", timeDerived.getName());
+        assertEquals("Time Derived", timeDerived.getLabel());
+        assertEquals("time", timeDerived.getIcon().getIconName());
         assertEquals("Time", timeDerived.getAttributeType().getDataType().getName());
         assertFalse(timeDerived.getAttributeType().isIsRequired());
         assertTrue(timeDerived.getAttributeType().isIsReadOnly());
@@ -265,6 +279,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         DateTimeInput timestampDerived = (DateTimeInput) tab2Element.getChildren().stream().filter(c -> c.getName().equals("timestampDerived")).findFirst().orElseThrow();
 
         assertEquals("timestampDerived", timestampDerived.getName());
+        assertEquals("Timestamp Derived", timestampDerived.getLabel());
+        assertEquals("timestamp", timestampDerived.getIcon().getIconName());
         assertEquals("Timestamp", timestampDerived.getAttributeType().getDataType().getName());
         assertFalse(timestampDerived.getAttributeType().isIsRequired());
         assertTrue(timestampDerived.getAttributeType().isIsReadOnly());
@@ -272,6 +288,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         EnumerationCombo mappedEnum = (EnumerationCombo) tab2Element.getChildren().stream().filter(c -> c.getName().equals("mappedEnum")).findFirst().orElseThrow();
 
         assertEquals("mappedEnum", mappedEnum.getName());
+        assertEquals("Mapped Enum", mappedEnum.getLabel());
+        assertEquals("enum", mappedEnum.getIcon().getIconName());
         assertEquals("MyEnum", mappedEnum.getAttributeType().getDataType().getName());
         assertFalse(mappedEnum.getAttributeType().isIsRequired());
         assertFalse(mappedEnum.getAttributeType().isIsReadOnly());
