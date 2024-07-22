@@ -63,7 +63,7 @@ rule BooleanTypeCheckbox
             // and (s.booleanWidget.isUndefined() or s.booleanWidget <> ESM!esm::ui::BooleanWidget#COMBO)
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/BooleanTypeTrinaryLogicCombo");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/BooleanTypeCheckbox");
         t.valueLabelPlacement = UI!ui::Placement#START; // todo add modifier to jsl and transform afterwards
         log.debug("BooleanTypeCheckbox: " + t.name);
 }
