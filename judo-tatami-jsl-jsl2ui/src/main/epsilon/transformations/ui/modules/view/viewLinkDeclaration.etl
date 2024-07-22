@@ -1,0 +1,16 @@
+rule ViewLinkPageDefinition
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: actorDeclaration.getAllRelations().contains(s)
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinition");
+
+        t.name = s.getFqName() + "::PageDefinition";
+        t.container = s.referenceType.equivalent("TransferDeclarationPageContainer");
+
+        actorDeclaration.equivalent("Application").pages.add(t);
+
+        t.dataElement = s.equivalent("RelationType");
+
+        log.debug("Create ViewLinkPageDefinition: " + t.name);
+}

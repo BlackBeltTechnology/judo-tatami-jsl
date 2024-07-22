@@ -1,0 +1,10 @@
+@lazy
+@greedy
+rule EnumerationMemberOption
+    transform s: JSL!EnumLiteral
+    to t: UI!ui::Option {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EnumerationMemberOption");
+        t.selected = false;
+	    t.name = s.name;
+	    t.enumerationMember = s.equivalent("CreateEnumerationMember");
+}

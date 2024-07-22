@@ -29,3 +29,20 @@ rule ActorNavigationItem
 
         log.debug("ActorNavigationItem: " + s.name);
     }
+
+rule AccessPageDefinition
+    transform s: JSL!ActorLinkDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/AccessPageDefinition");
+
+        t.name = s.getFqName() + "::PageDefinition";
+        t.container = s.referenceType.equivalent("TransferDeclarationPageContainer");
+
+        actorDeclaration.equivalent("Application").pages.add(t);
+
+        t.dataElement = s.equivalent("RelationType");
+
+        log.debug("Create AccessPageDefinition: " + t.name);
+}
