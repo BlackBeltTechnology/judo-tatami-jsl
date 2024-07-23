@@ -100,7 +100,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             }
 
             actor WidgetsActor human {
-                link UserView user label:"User" icon:"tools";
+                link UserView user <= User.any() label:"User" icon:"tools";
             }
         """));
 
