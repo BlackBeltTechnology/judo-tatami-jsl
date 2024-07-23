@@ -294,4 +294,80 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertFalse(mappedEnum.getAttributeType().isIsRequired());
         assertFalse(mappedEnum.getAttributeType().isIsReadOnly());
     }
+
+    @Test
+    void testRelationWidgets() throws Exception {
+        jslModel = JslParser.getModelFromStrings("RelationWidgetsTestModel", List.of("""
+            model RelationWidgetsTestModel;
+
+            type numeric Numeric scale: 0 precision: 9;
+            type string String min-size: 0 max-size: 255;
+
+            entity User {
+                identifier String email required;
+                field Numeric numeric;
+
+                field Related related;
+                relation Related relatedAssociation;
+                relation Related[] relatedCollection;
+            }
+
+            entity Related {
+                field String first;
+                field Numeric second;
+            }
+
+            view UserView(User u) {
+                group level1 label:"Yo" icon:"text" {
+                    group level2 width:12 frame:true icon:"unicorn" label:"Level 2" stretch:true {
+                        link RelatedView related <= u.related icon:"related" label:"Related" width:6 create:true update:true delete:true;
+                        link RelatedView relatedAssociation <= u.relatedAssociation icon:"related-association" label:"Related Association" width:6 choices:Related.all() selector:RelatedRow create:true update:true delete:true;
+                    }
+
+                    tabs tabs0 orientation:horizontal width:6 {
+                        group tab1 label:"Tab1" icon:"numbers" h-align:left {
+                            field String email <= u.email icon:"text" label:"My Email";
+                        }
+
+                        group tab2 label:"Tab2" icon:"numbers" h-align:right {
+                            table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" width:6 rows:25 choices:Related.all() selector:RelatedRow create:true update:true delete:true;
+                        }
+                    }
+                }
+
+                event create onCreate;
+                event update onUpdate;
+                event delete onDelete;
+            }
+
+            row RelatedRow(Related r) {
+                field String first <= r.first label: "First";
+                field Numeric second <= r.second label: "Second";
+                link RelatedView detail <= r detail:true;
+
+                event create onCreate;
+                event update onUpdate;
+                event delete onDelete;
+            }
+
+            view RelatedView(Related r) {
+                field String first <= r.first label: "First";
+                field Numeric second <= r.second label: "Second";
+
+                event create onCreate;
+                event update onUpdate;
+                event delete onDelete;
+            }
+
+            actor RelationWidgetsActor human {
+                link UserView user <= User.any() label:"User" icon:"tools";
+            }
+        """));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        assertEquals(1, apps.size());
+    }
 }

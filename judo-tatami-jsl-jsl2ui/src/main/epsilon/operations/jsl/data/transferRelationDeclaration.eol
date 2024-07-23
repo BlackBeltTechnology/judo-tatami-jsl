@@ -87,7 +87,7 @@ operation JSL!TransferRelationDeclaration isChoiceDefined(): Boolean {
 operation JSL!TransferRelationDeclaration isAddReferenceAllowed(): Boolean {
     var lower = self.isRequired() and not self.isMany ? 1 : 0;
     var upper = self.isMany ? -1 : 1;
-    return self.maps() and self.eContainer.isUpdateSupported()
+    return self.maps() and self.getTransferContainer().isUpdateSupported()
         and upper != 1 and (lower < upper or upper == -1);
 }
 
@@ -95,18 +95,18 @@ operation JSL!TransferRelationDeclaration isAddReferenceAllowed(): Boolean {
 operation JSL!TransferRelationDeclaration isRemoveReferenceAllowed(): Boolean {
     var lower = self.isRequired() and not self.isMany ? 1 : 0;
     var upper = self.isMany ? -1 : 1;
-    return self.maps() and self.eContainer.isUpdateSupported()
+    return self.maps() and self.getTransferContainer().isUpdateSupported()
         and upper != 1 and (lower < upper or upper == -1);
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isSetReferenceAllowed(): Boolean {
-    return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
+    return self.maps() and self.getTransferContainer().isUpdateSupported() and not self.isRequired();
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isUnsetReferenceAllowed(): Boolean {
-    return self.maps() and self.eContainer.isUpdateSupported() and not self.isRequired();
+    return self.maps() and self.getTransferContainer().isUpdateSupported() and not self.isRequired();
 }
 
 @cached
