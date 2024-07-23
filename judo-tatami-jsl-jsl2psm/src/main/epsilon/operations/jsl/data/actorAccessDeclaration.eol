@@ -3,6 +3,21 @@ operation JSL!ActorAccessDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
 
+@cached
+operation JSL!ActorAccessDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration)) {
+        return self.eContainer.getActorDeclaration();
+    } else if (self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
+        return self.eContainer;
+    }
+    return null;
+}
+
+@cached
+operation JSL!ActorAccessDeclaration getTransferContainer(): JSL!TransferDeclaration {
+	return self.eContainer;
+}
+
 /*
 
 @cached

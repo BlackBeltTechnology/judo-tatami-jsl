@@ -1,0 +1,61 @@
+model BasicWidgetsTestModel;
+
+type binary Binary max-file-size: 1MB  mime-type: ["image/*"];
+type boolean Boolean;
+type date Date;
+type numeric Numeric scale: 0 precision: 9;
+type string String min-size: 0 max-size: 255;
+type time Time;
+type timestamp Timestamp;
+
+enum MyEnum {
+    Atomic = 0;
+    Bombastic = 1;
+    Crazy = 2;
+}
+
+entity User {
+    identifier String email required;
+    field Binary binary;
+    field String string;
+    field Boolean boolean;
+    field Date date;
+    field Numeric numeric;
+    field Time time;
+    field Timestamp timestamp;
+    field MyEnum `enum` default:MyEnum#Bombastic;
+    field Boolean isActive;    
+}
+
+view UserView(User u) {
+    group level1 label:"Yo" icon:"text" {
+        group level2 width:12 frame:true icon:"unicorn" label:"Level 2" stretch:true {
+            field String email <= u.email bind required icon:"text" label: "My Email";
+            field Binary binaryDerived <= u.binary icon:"binary" label:"Binary Derived";
+            field String stringDerived <= u.string icon:"string" label:"String Derived";
+        }
+
+        group level22 width:6 frame:true icon:"dog" label:"Level 2 - 2" orientation:horizontal {
+            field Boolean booleanDerived <= u.boolean icon:"boolean" label:"Boolean Derived";
+            field Date dateDerived <= u.date icon:"date" label:"Date Derived";
+            field Numeric numericDerived <= u.numeric icon:"numeric" label:"Numeric Derived";
+        }
+
+        tabs tabs0 orientation:horizontal width:6 {
+            group tab1 label:"Tab1" icon:"numbers" h-align:left {
+                field Time timeDerived <= u.time icon:"time" label:"Time Derived";
+            }
+
+            group tab2 label:"Tab2" icon:"numbers" h-align:right {
+                field Timestamp timestampDerived <= u.timestamp icon:"timestamp" label:"Timestamp Derived";
+                field MyEnum mappedEnum <= u.`enum` bind default:MyEnum#Crazy icon:"enum" label:"Mapped Enum";
+            }
+        }
+    }
+}
+
+actor WidgetsActor 
+	human 
+{
+    link UserView user <= User.any() label:"User" icon:"tools";
+}
