@@ -46,6 +46,7 @@ rule CreateActorTypeWithoutPrincipal
       guard: s.getPrincipal().isUndefined()
 
       t.setId("(jsl/" + s.getId() + ")/CreateActorTypeWithoutPrincipal");
+      t.name = s.name;
 
 	  if (s.getGuard().isDefined()) {
 	  	t.filter = s.equivalent("CreateFilterExpressionForMappedActorType");

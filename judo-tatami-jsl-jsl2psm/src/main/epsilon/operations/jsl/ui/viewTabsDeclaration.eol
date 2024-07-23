@@ -1,0 +1,18 @@
+@cached
+operation JSL!ViewTabsDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!ViewTabsDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}
+
+@cached
+operation JSL!ViewTabsDeclaration getTransferContainer(): JSL!TransferDeclaration {
+    var to = self.eContainer;
+    while (to.isDefined() and not to.isKindOf(JSL!TransferDeclaration)) {
+        to = to.eContainer;
+    }
+    return to;
+}
