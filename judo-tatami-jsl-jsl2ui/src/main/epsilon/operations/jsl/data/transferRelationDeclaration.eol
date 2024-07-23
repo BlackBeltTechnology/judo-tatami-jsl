@@ -171,3 +171,8 @@ operation JSL!TransferRelationDeclaration getContainerEquivalentClassType(): UI!
 operation JSL!TransferRelationDeclaration uiContainer() : UI!ui::VisualElement {
     return self.referenceType.equivalent("TransferDeclarationVisualElement");
 }
+
+@cached
+operation JSL!TransferRelationDeclaration getTransferObjectType(): JSL!TransferDeclaration {
+    return self.referenceType;
+}
