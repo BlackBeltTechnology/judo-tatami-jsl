@@ -114,6 +114,12 @@ operation JSL!TransferRelationDeclaration getMappedTransferRelationEquivalent() 
 
 @cached
 operation JSL!TransferRelationDeclaration isActorRelated(): Boolean {
-    return self.isKindOf(JSL!ActorAccessDeclaration);
+    return self.isKindOf(JSL!ActorAccessDeclaration) or self.isKindOf(JSL!ActorLinkDeclaration);
 }
+
+@cached
+operation JSL!TransferRelationDeclaration getTransferContainer(): JSL!TransferDeclaration {
+    return self.eContainer;
+}
+
 

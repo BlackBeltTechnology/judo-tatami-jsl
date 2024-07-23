@@ -1,0 +1,15 @@
+@cached
+operation JSL!ViewPanelDeclaration getModelRoot(): JUDOPSM!Package {
+    return self.eContainer().getModelRoot();
+}
+
+@cached
+operation JSL!ViewPanelDeclaration getTransferContainer(): JSL!TransferDeclaration {
+    if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
+        return self.eContainer;
+    } else if (self.eContainer.isKindOf(JSL!ViewPanelDeclaration)) {
+         return self.eContainer.getTransferContainer();
+    }
+
+    return null;
+}

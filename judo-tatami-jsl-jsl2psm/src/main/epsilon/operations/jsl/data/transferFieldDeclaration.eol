@@ -92,3 +92,8 @@ operation JSL!TransferFieldDeclaration isFilterable() : Boolean {
            );
 }
 
+@cached
+operation JSL!TransferFieldDeclaration getTransferContainer(): JSL!TransferDeclaration {
+    return self.eContainer;
+}
+
