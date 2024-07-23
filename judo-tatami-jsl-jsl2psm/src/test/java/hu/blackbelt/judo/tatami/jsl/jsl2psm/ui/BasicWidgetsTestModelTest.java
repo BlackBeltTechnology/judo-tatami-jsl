@@ -22,7 +22,6 @@ import hu.blackbelt.judo.meta.psm.derived.StaticData;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
-import hu.blackbelt.judo.tatami.jsl.jsl2psm.BufferedSlf4jLogger;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.ui.BasicWidgetsTestModelTest;
 import lombok.extern.slf4j.Slf4j;
 
