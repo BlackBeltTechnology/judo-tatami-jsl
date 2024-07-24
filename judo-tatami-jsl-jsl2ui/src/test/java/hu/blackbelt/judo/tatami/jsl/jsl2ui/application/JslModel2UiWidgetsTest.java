@@ -2,8 +2,12 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.*;
+import hu.blackbelt.judo.meta.ui.data.AttributeType;
+import hu.blackbelt.judo.meta.ui.data.ClassType;
+import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.util.EList;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -320,7 +324,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             view UserView(User u) {
                 group level1 label:"Yo" icon:"text" {
                     group level2 width:12 frame:true icon:"unicorn" label:"Level 2" stretch:true {
-                        link RelatedView related <= u.related icon:"related" label:"Related" width:6 create:true update:true delete:true;
+                        link RelatedView related <= u.related eager:true icon:"related" label:"Related" width:6 create:true update:true delete:true;
                         link RelatedView relatedAssociation <= u.relatedAssociation icon:"related-association" label:"Related Association" width:6 choices:Related.all() selector:RelatedRow create:true update:true delete:true;
                     }
 
@@ -341,8 +345,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             }
 
             row RelatedRow(Related r) {
-                field String first <= r.first label: "First";
-                field Numeric second <= r.second label: "Second";
+                field String first <= r.first label:"First";
+                field Numeric second <= r.second label:"Second";
                 link RelatedView detail <= r detail:true;
 
                 event create onCreate;
@@ -369,5 +373,35 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
         assertEquals(1, apps.size());
+
+        Application application = apps.get(0);
+
+        List<ClassType> classTypes = application.getClassTypes();
+        List<Link> links = application.getLinks();
+
+        assertEquals(2 , links.size());
+
+        ClassType relatedView = classTypes.stream().filter(c -> c.getName().equals("RelationWidgetsTestModel::RelatedView::ClassType")).findFirst().orElseThrow();
+
+        Link related = links.stream().filter(l -> l.getName().equals("related")).findFirst().orElseThrow();
+        RelationType relatedAttribute = (RelationType) related.getDataElement();
+
+        assertEquals("Related", related.getLabel());
+        assertEquals("related", related.getIcon().getIconName());
+        assertEquals("related", related.getRelationName());
+        assertTrue(related.isIsEager());
+        assertEquals("related", relatedAttribute.getName());
+        assertEquals(relatedView, relatedAttribute.getTarget());
+
+        Link relatedAssociation = links.stream().filter(l -> l.getName().equals("relatedAssociation")).findFirst().orElseThrow();
+        RelationType relatedAssociationAttribute = (RelationType) relatedAssociation.getDataElement();
+
+        assertEquals("Related Association", relatedAssociation.getLabel());
+        assertEquals("related-association", relatedAssociation.getIcon().getIconName());
+        assertEquals("relatedAssociation", relatedAssociation.getRelationName());
+        assertFalse(relatedAssociation.isIsEager());
+        assertEquals("relatedAssociation", relatedAssociationAttribute.getName());
+        assertEquals(relatedView, relatedAssociationAttribute.getTarget());
+
     }
 }

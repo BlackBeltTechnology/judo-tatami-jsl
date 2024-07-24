@@ -24,6 +24,11 @@ operation JSL!Modifiable getStretchModifier(): JSL!Modifier {
 }
 
 @cached
+operation JSL!Modifiable getWidth(): JSL!Modifier {
+    return (self.modifiers.selectOne(m | m.type == "width"));
+}
+
+@cached
 operation JSL!Modifiable getPrecision(): JSL!Modifier {
     return (self.modifiers.selectOne(m | m.type == "precision"));
 }

@@ -18,7 +18,7 @@ rule ViewLinkPageDefinition
 @abstract
 rule AbstractViewLinkDeclaration
     transform s: JSL!ViewLinkDeclaration
-    to t:  UI!ui::Link {
+    to t: UI!ui::Link {
         guard: actorDeclaration.getAllRelations().contains(s)
 
     	t.name = s.name;
@@ -32,6 +32,7 @@ rule AbstractViewLinkDeclaration
         t.row = 1d;
         t.col = s.width.isDefined() ? s.width.asReal() : 12d;
         t.~pos = s.~pos;
+        t.isEager = s.isEager();
         if (t.~pos.isUndefined()) {
             t.~pos = 0;
         }
@@ -45,8 +46,6 @@ rule AbstractViewLinkDeclaration
             }
             */
         }
-
-
 }
 
 @lazy
@@ -67,8 +66,7 @@ rule InlineViewLink
 
         var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewLink";
         t.setId(id);
-        t.dataElement = s.referenceType.equivalent("RelationType");
-        t.isEager = s.isEager();
+        t.dataElement = s.equivalent("RelationType");
 
         s.eContainer.uiContainer().children.add(t);
 

@@ -14,3 +14,154 @@ rule ViewTablePageDefinition
 
         log.debug("Create ViewTablePageDefinition: " + t.name);
 }
+
+@abstract
+rule AbstractViewTableDeclaration
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Table {
+        guard: actorDeclaration.getAllRelations().contains(s)
+
+        t.name = s.name;
+    	t.relationName = s.name;
+    	if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
+        if (s.getIconModifier().isDefined()) {
+            t.icon = s.equivalent("TableIcon");
+        }
+        t.row = 1d;
+        t.col = s.width.isDefined() ? s.width.asReal() : 12d;
+        t.~pos = s.~pos;
+        if (t.~pos.isUndefined()) {
+            t.~pos = 0;
+        }
+}
+
+@lazy
+@greedy
+rule TableIcon
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TableIcon");
+    	t.name = s.name + "Icon";
+    	t.iconName = s.getIconModifier().value.value;
+}
+
+rule InlineViewTable
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Table
+    extends AbstractViewTableDeclaration {
+        guard: s.getTransferObjectType().isGenerated()
+
+        var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewTable";
+        t.setId(id);
+        t.dataElement = s.equivalent("RelationType");
+
+        s.eContainer.uiContainer().children.add(t);
+
+        var primitiveFields = s.referenceType.members.select(m | m.isTypeOf(JSL!RowFieldDeclaration) and m.referenceType.`primitive`.isDefined());
+
+        for (field in primitiveFields) {
+            var col = field.equivalentDiscriminated("TableColumn", id);
+            t.columns.add(col);
+            if (col.attributeType.isFilterable) {
+               t.filters.add(field.equivalentDiscriminated("TableColumnFilter", id));
+            }
+        }
+
+        t.tableActionButtonGroup = s.equivalent("InlineViewTableButtonGroup");
+        t.rowActionButtonGroup = s.equivalent("InlineViewTableRowButtonGroup");
+
+        // TODO transform selector row per page
+        t.selectorRowsPerPage = 10;
+
+        log.debug("InlineViewTable: " + t.name);
+}
+
+@lazy
+@greedy
+rule TableColumn
+    transform s: JSL!TransferFieldDeclaration
+    to t: UI!ui::Column {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TableColumn");
+        t.name = s.name;
+        t.format = "%s";
+        if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
+        if (s.getIconModifier().isDefined()) {
+            t.icon = s.equivalent("ColumnIcon");
+        }
+        t.width = s.getWidth().isDefined() ? s.getWidth().value : "120";
+
+        /*
+        if (s.customImplementation.isDefined()) {
+            t.customImplementation = s.customImplementation;
+        }
+        if (s.sort.isDefined()) {
+            t.sort = s.getUiSort();
+        }
+        if (s.sortPrecedence.isDefined()) {
+            t.sortPrecedence = s.sortPrecedence;
+        }
+        if (s.formatValue.isDefined()) {
+            t.formatValue = s.formatValue;
+        }
+        */
+        t.attributeType = s.getTransferFieldDeclarationEquivalent();
+
+        log.debug("TableColumn: " + t.name);
+}
+
+@lazy
+@greedy
+rule ColumnIcon
+    transform s: JSL!TransferFieldDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
+    	t.iconName = s.getIconModifier().value.value;
+    	t.name = s.name + "Icon";
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
+
+    	log.debug("ColumnIcon: " + t.name);
+}
+
+@lazy
+@greedy
+rule TableColumnFilter
+    transform s: JSL!TransferFieldDeclaration
+    to t: UI!ui::Filter {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TableColumnFilter");
+        t.name = s.name + "Filter";
+        t.attributeType = s.getTransferFieldDeclarationEquivalent();
+        if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
+        log.debug("TableColumnFilter: " + t.name);
+}
+
+@lazy
+rule InlineViewTableButtonGroup
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::ButtonGroup {
+		t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TableButtonGroup");
+ 		t.name = s.name + "InlineViewTableButtonGroup";
+ 		t.label = "Actions";
+
+        // TODO add buttons
+
+        log.debug("InlineViewTableButtonGroup: " + t.name);
+}
+
+@lazy
+rule InlineViewTableRowButtonGroup
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::ButtonGroup {
+   		t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewTableRowButtonGroup");
+ 		t.name = s.name + "InlineViewTableRowButtonGroup";
+ 		t.label = "Actions";
+
+    	// TODO add buttons
+
+        log.debug("TabularReferenceTableRowButtonGroup: " + t.name);
+}
