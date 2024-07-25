@@ -14,11 +14,6 @@ operation JSL!TransferRelationDeclaration isEager(): Boolean {
 }
 
 @cached
-operation JSL!TransferRelationDeclaration getDetail(): JSL!DetailModifier {
-    return self.modifiers.selectOne(m | m.isTypeOf(JSL!DetailModifier));
-}
-
-@cached
 operation JSL!TransferRelationDeclaration isAggregation(): Boolean {
     return jslUtils.isAggregation(self);
 }

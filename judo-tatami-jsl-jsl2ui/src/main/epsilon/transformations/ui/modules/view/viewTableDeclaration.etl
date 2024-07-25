@@ -60,13 +60,27 @@ rule InlineViewTable
         s.eContainer.uiContainer().children.add(t);
 
         var primitiveFields = s.referenceType.members.select(m | m.isTypeOf(JSL!RowFieldDeclaration) and m.referenceType.`primitive`.isDefined());
+        var links = s.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
 
         for (field in primitiveFields) {
-            var col = field.equivalentDiscriminated("TableColumn", id);
+            var col = field.equivalentDiscriminated("TablePrimitiveColumn", id);
             t.columns.add(col);
             if (col.attributeType.isFilterable) {
-               t.filters.add(field.equivalentDiscriminated("TableColumnFilter", id));
+               t.filters.add(field.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
             }
+        }
+
+        for (link in links) {
+            if (link.getDetail().isUndefined()) {
+                var col = link.equivalentDiscriminated("RowLinkDerivedColumn", id);
+                t.columns.add(col);
+                if (col.attributeType.isFilterable) {
+                   t.filters.add(link.equivalentDiscriminated("RowLinkDerivedColumnFilter", id));
+                }
+            } else {
+                // TODO generate open action from link with detail modifier
+            }
+
         }
 
         t.tableActionButtonGroup = s.equivalent("InlineViewTableButtonGroup");
@@ -80,10 +94,10 @@ rule InlineViewTable
 
 @lazy
 @greedy
-rule TableColumn
+rule TablePrimitiveColumn
     transform s: JSL!TransferFieldDeclaration
     to t: UI!ui::Column {
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TableColumn");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumn");
         t.name = s.name;
         t.format = "%s";
         if (s.getLabelModifier().isDefined()) {
@@ -110,7 +124,7 @@ rule TableColumn
         */
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
 
-        log.debug("TableColumn: " + t.name);
+        log.debug("TablePrimitiveColumn: " + t.name);
 }
 
 @lazy
@@ -128,16 +142,98 @@ rule ColumnIcon
 
 @lazy
 @greedy
-rule TableColumnFilter
+rule TablePrimitiveColumnFilter
     transform s: JSL!TransferFieldDeclaration
     to t: UI!ui::Filter {
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TableColumnFilter");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumnFilter");
         t.name = s.name + "Filter";
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
         if (s.getLabelModifier().isDefined()) {
             t.label = s.getLabelModifier().value.value;
         }
-        log.debug("TableColumnFilter: " + t.name);
+        log.debug("TablePrimitiveColumnFilter: " + t.name);
+}
+
+@lazy
+@greedy
+rule RowLinkDerivedColumn
+    transform s: JSL!RowLinkDeclaration
+    to t: UI!ui::Column {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumn");
+        // we keep the name of the link it self because the relation won't be present in the visual elements only in the data model
+        t.name = s.name;
+        t.format = "%s";
+        if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
+        if (s.getIconModifier().isDefined()) {
+            t.icon = s.equivalent("RowLinkDerivedColumnIcon");
+        }
+        t.width = s.getWidth().isDefined() ? s.getWidth().value : "120";
+
+        /*
+        if (s.customImplementation.isDefined()) {
+            t.customImplementation = s.customImplementation;
+        }
+        if (s.sort.isDefined()) {
+            t.sort = s.getUiSort();
+        }
+        if (s.sortPrecedence.isDefined()) {
+            t.sortPrecedence = s.sortPrecedence;
+        }
+        if (s.formatValue.isDefined()) {
+            t.formatValue = s.formatValue;
+        }
+        */
+        t.attributeType = s.equivalent("RowLinkDerivedAttributeType");
+        t.representsRelation = s.equivalent("RelationType");
+
+        log.debug("RowLinkDerivedColumn: " + t.name);
+}
+
+@lazy
+@greedy
+rule RowLinkDerivedColumnIcon
+    transform s: JSL!RowLinkDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumnIcon");
+    	t.iconName = s.getIconModifier().value.value;
+    	t.name = s.name + "Icon";
+
+    	log.debug("RowLinkDerivedColumnIcon: " + t.name);
+}
+
+@lazy
+@greedy
+rule RowLinkDerivedColumnFilter
+    transform s: JSL!RowLinkDeclaration
+    to t: UI!ui::Filter {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumnFilter");
+        t.name = s.name + "Filter";
+        t.attributeType = s.equivalent("RowLinkDerivedAttributeType");
+        if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
+        log.debug("RowLinkDerivedColumnFilter: " + t.name);
+}
+
+@lazy
+@greedy
+rule RowLinkDerivedAttributeType
+    transform s: JSL!RowLinkDeclaration
+    to t: UI!ui::data::AttributeType {
+        t.setId("(jsl/" + s.getId() + ")/RowLinkDerivedAttributeType");
+        t.memberType = UI!ui::data::MemberType#DERIVED;
+        t.isReadOnly = true;
+        t.name = "_text_" + s.name;
+        t.isRequired = false;
+        t.isFilterable = true;
+
+        // TODO investigate if it really does not matter which string type we pick
+        t.dataType = actorDeclaration.equivalent("Application").dataTypes.selectOne(d | d.isTypeOf(UI!ui::data::StringType));
+
+        s.getContainerEquivalentClassType().attributes.add(t);
+        log.debug("Created RowLinkDerivedAttributeType for ViewLinkDeclaration: [" + t.name + "] for [" + s.name + "]");
 }
 
 @lazy
