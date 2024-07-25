@@ -44,5 +44,27 @@ rule AccessPageDefinition
 
         t.dataElement = s.equivalent("RelationType");
 
+        var relations = s.referenceType.getDirectRelations();
+
+        /*
+        log.info("===================");
+        log.info(t.name + ":");
+        log.info(relations.collect(r | r.name).concat(", "));
+        log.info("===================");
+        */
+
+        for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
+            t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
+        }
+
+        for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
+            var detailLink = table.getDetailLink();
+
+            if (detailLink.isDefined()) {
+                log.info(" - detail: true");
+                t.actions.add(table.equivalent("ViewTableDeclarationOpenPageAction"));
+            }
+        }
+
         log.debug("Create AccessPageDefinition: " + t.name);
 }

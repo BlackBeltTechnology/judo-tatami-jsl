@@ -52,7 +52,8 @@ operation JSL!TransferDeclaration collectExposedRelations(collected: Set): Set {
 @cached
 operation JSL!TransferDeclaration getAllRelations(): Set {
     var relations = new Set();
-    relations.addAll(self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration)));
+    var ownRelations = self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration));
+    relations.addAll(ownRelations);
 
     if (self.isKindOf(JSL!ActorDeclaration)) {
         var linkRelations = self.getAllMenuDeclarations();
@@ -63,6 +64,28 @@ operation JSL!TransferDeclaration getAllRelations(): Set {
                 relations.addAll(ref.referenceType.getAllRelations());
             }
         }
+    }
+
+    for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
+        relations.addAll(member.getAllRelations());
+    }
+
+    // also add relations of relations to complete the trees
+    for (member in ownRelations) {
+        relations.addAll(member.referenceType.getAllRelations());
+    }
+
+    return relations;
+}
+
+@cached
+operation JSL!TransferDeclaration getDirectRelations(): Set {
+    var relations = new Set();
+    relations.addAll(self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration)));
+
+    if (self.isKindOf(JSL!ActorDeclaration)) {
+        var linkRelations = self.getAllMenuDeclarations();
+        relations.addAll(linkRelations);
     }
 
     for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
