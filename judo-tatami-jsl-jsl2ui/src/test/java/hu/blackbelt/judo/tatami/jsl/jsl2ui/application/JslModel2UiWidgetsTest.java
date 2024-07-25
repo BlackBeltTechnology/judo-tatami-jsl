@@ -7,7 +7,6 @@ import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.EList;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -388,14 +387,14 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         ClassType relatedViewClassType = classTypes.stream().filter(c -> c.getName().equals("RelationWidgetsTestModel::RelatedView::ClassType")).findFirst().orElseThrow();
 
         Link related = links.stream().filter(l -> l.getName().equals("related")).findFirst().orElseThrow();
-        RelationType relatedAttribute = (RelationType) related.getDataElement();
+        RelationType relatedRelation = (RelationType) related.getDataElement();
 
         assertEquals("Related", related.getLabel());
         assertEquals("related", related.getIcon().getIconName());
         assertEquals("related", related.getRelationName());
         assertTrue(related.isIsEager());
-        assertEquals("related", relatedAttribute.getName());
-        assertEquals(relatedViewClassType, relatedAttribute.getTarget());
+        assertEquals("related", relatedRelation.getName());
+        assertEquals(relatedViewClassType, relatedRelation.getTarget());
 
         Link relatedAssociation = links.stream().filter(l -> l.getName().equals("relatedAssociation")).findFirst().orElseThrow();
         RelationType relatedAssociationAttribute = (RelationType) relatedAssociation.getDataElement();
