@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -113,6 +115,7 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         Application application = apps.get(0);
 
         List<ClassType> classTypes = application.getClassTypes();
+        List<RelationType> relationTypes = application.getRelationTypes();
         List<Link> links = application.getLinks();
         List<Table> tables = application.getTables();
         List<PageDefinition> pages = application.getPages();
@@ -121,6 +124,7 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         assertEquals(2, links.size());
         assertEquals(2, tables.size());
         assertEquals(6, pages.size());
+        assertEquals(7, relationTypes.size());
 
         ClassType relatedRowClassType = classTypes.stream().filter(c -> c.getName().equals("NavigationTestModel::RelatedRow::ClassType")).findFirst().orElseThrow();
         ClassType relatedViewClassType = classTypes.stream().filter(c -> c.getName().equals("NavigationTestModel::RelatedView::ClassType")).findFirst().orElseThrow();
@@ -129,6 +133,18 @@ public class JslModel2UiNavigationTest extends AbstractTest {
 
         RelationType detailRelation = (RelationType) application.getRelationTypes().stream().filter(r -> ((RelationType) r).getName().equals("detail")).findFirst().orElseThrow();
         RelationType jumperRowDetailRelation = (RelationType) application.getRelationTypes().stream().filter(r -> ((RelationType) r).getName().equals("jumperRowDetail")).findFirst().orElseThrow();
+
+        // Relations
+
+        assertEquals(Set.of(
+                "NavigationActor::Application::NavigationTestModel::JumperRow::ClassType::jumperRowDetail",
+                "NavigationActor::Application::NavigationTestModel::NavigationActor::ClassType::user",
+                "NavigationActor::Application::NavigationTestModel::RelatedRow::ClassType::detail",
+                "NavigationActor::Application::NavigationTestModel::RelatedView::ClassType::myJumper",
+                "NavigationActor::Application::NavigationTestModel::RelatedView::ClassType::myJumpers",
+                "NavigationActor::Application::NavigationTestModel::UserView::ClassType::related",
+                "NavigationActor::Application::NavigationTestModel::UserView::ClassType::relatedCollection"
+        ), relationTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         // Tables
 
