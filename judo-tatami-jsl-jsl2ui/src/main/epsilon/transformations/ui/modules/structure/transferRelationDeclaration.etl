@@ -102,7 +102,7 @@ rule RelationType
     transform s: JSL!TransferRelationDeclaration
     to t: UI!ui::data::RelationType
     extends AbstractRelationType {
-        t.setId("(jsl/" + s.getId() + ")/RelationType");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RelationType");
         var containerClassType = s.getContainerEquivalentClassType();
         containerClassType.relations.add(t);
         log.debug("Created RelationType [" + t.name + "] into [" + containerClassType.name + "]");

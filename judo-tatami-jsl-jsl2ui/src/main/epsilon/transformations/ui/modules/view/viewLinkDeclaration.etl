@@ -77,7 +77,7 @@ rule InlineViewLink
         t.selectorRowsPerPage = 10;
         t.autoCompleteRows = 10;
 
-        t.actionButtonGroup = s.equivalent("TabularReferenceFieldLinkButtonGroup");
+        t.actionButtonGroup = s.equivalent("InlineViewLinkButtonGroup");
 
         /*
         t.autocompleteRangeActionDefinition = s.equivalent("TabularReferenceFieldLinkAutocompleteRangeActionDefinition");
@@ -100,6 +100,8 @@ rule InlineViewLinkButtonGroup
         t.label = "Actions";
 
         // TODO add action buttons
+
+        t.buttons.add(s.equivalent("ViewLinkDeclarationOpenPageButton"));
 
         log.debug("InlineViewLinkButtonGroup: " + t.name);
 }
@@ -125,4 +127,41 @@ rule ViewLinkDeclarationRepresentationColumn
         t.sort = UI!ui::Sort#ASC;
 
         log.debug("ViewLinkDeclarationRepresentationColumn: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationOpenPageButton
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Button {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButton");
+ 		t.name = s.name + "::View";
+    	t.buttonStyle = "contained";
+    	t.label = "View";
+    	t.icon = s.equivalent("ViewLinkDeclarationOpenPageButtonIcon");
+    	t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenPageActionDefinition");
+
+        log.debug("ViewLinkDeclarationOpenPageButton: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationOpenPageButtonIcon
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Icon {
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButtonIcon");
+    	t.iconName = "eye";
+    	t.name = s.name + "Icon";
+
+    	log.debug("ViewLinkDeclarationOpenPageButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationOpenPageActionDefinition
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::OpenPageActionDefinition {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageActionDefinition");
+ 		t.name = s.name + "::View";
+ 		t.isContainedRelationAction = true;
+ 		t.targetType = s.referenceType.equivalent("ClassType");
+
+        log.debug("ViewLinkDeclarationOpenPageActionDefinition: " + t.name);
 }

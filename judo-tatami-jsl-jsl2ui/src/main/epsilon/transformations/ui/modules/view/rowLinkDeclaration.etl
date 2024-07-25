@@ -1,0 +1,16 @@
+rule RowLinkPageDefinition
+    transform s: JSL!RowLinkDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: actorDeclaration.getAllRelations().contains(s)
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkPageDefinition");
+
+        t.name = s.getFqName() + "::PageDefinition";
+        t.container = s.referenceType.equivalent("TransferDeclarationPageContainer");
+
+        actorDeclaration.equivalent("Application").pages.add(t);
+
+        t.dataElement = s.equivalent("RelationType");
+
+        log.debug("Create RowLinkPageDefinition: " + t.name);
+}

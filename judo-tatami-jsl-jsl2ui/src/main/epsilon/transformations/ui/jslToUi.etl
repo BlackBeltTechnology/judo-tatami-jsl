@@ -12,6 +12,7 @@ import "modules/structure/transferRelationDeclaration.etl";
 import "modules/type/type.etl";
 
 import "modules/view/enumLiteral.etl";
+import "modules/view/rowLinkDeclaration.etl";
 import "modules/view/viewFieldDeclaration.etl";
 import "modules/view/viewGroupDeclaration.etl";
 import "modules/view/viewLinkDeclaration.etl";

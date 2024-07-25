@@ -69,6 +69,11 @@ operation JSL!TransferDeclaration getAllRelations(): Set {
         relations.addAll(member.getAllRelations());
     }
 
+    // also add relations of relations to complete the trees
+    for (member in self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration))) {
+        relations.addAll(member.referenceType.getAllRelations());
+    }
+
     return relations;
 }
 
