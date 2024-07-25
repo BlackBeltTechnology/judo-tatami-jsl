@@ -62,6 +62,12 @@ public class JslModel2UiNavigationTest extends AbstractTest {
             entity Related {
                 field String first;
                 field Integer second;
+                field Jumper theJumper;
+                relation Jumper[] theJumpersCollection;
+            }
+
+            entity Jumper {
+                field String first;
             }
 
             view UserView(User u) {
@@ -80,6 +86,17 @@ public class JslModel2UiNavigationTest extends AbstractTest {
             view RelatedView(Related r) {
                 field String first <= r.first label: "First";
                 field Integer second <= r.second label: "Second";
+                link JumperView myJumper <= r.theJumper eager:false icon:"jumping" label:"My Jumper" width:6;
+                table JumperRow[] myJumpers <= r.theJumpersCollection eager:false icon:"jumping-all" label:"My Jumpers" width:6;
+            }
+
+            view JumperView(Jumper j) {
+                field String first <= j.first label: "First";
+            }
+
+            row JumperRow(Jumper j) {
+                field String first <= j.first label: "First";
+                link JumperView jumperRowDetail <= j detail:true;
             }
 
             actor NavigationActor human {
@@ -100,12 +117,22 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         List<Table> tables = application.getTables();
         List<PageDefinition> pages = application.getPages();
 
+        assertEquals(6, classTypes.size());
+        assertEquals(2, links.size());
+        assertEquals(2, tables.size());
+        assertEquals(6, pages.size());
+
         ClassType relatedRowClassType = classTypes.stream().filter(c -> c.getName().equals("NavigationTestModel::RelatedRow::ClassType")).findFirst().orElseThrow();
         ClassType relatedViewClassType = classTypes.stream().filter(c -> c.getName().equals("NavigationTestModel::RelatedView::ClassType")).findFirst().orElseThrow();
+        ClassType jumperRowClassType = classTypes.stream().filter(c -> c.getName().equals("NavigationTestModel::JumperRow::ClassType")).findFirst().orElseThrow();
+        ClassType jumperViewClassType = classTypes.stream().filter(c -> c.getName().equals("NavigationTestModel::JumperView::ClassType")).findFirst().orElseThrow();
 
         RelationType detailRelation = (RelationType) application.getRelationTypes().stream().filter(r -> ((RelationType) r).getName().equals("detail")).findFirst().orElseThrow();
+        RelationType jumperRowDetailRelation = (RelationType) application.getRelationTypes().stream().filter(r -> ((RelationType) r).getName().equals("jumperRowDetail")).findFirst().orElseThrow();
 
         // Tables
+
+        // - relatedCollection
 
         Table relatedCollectionTable =  tables.stream().filter(t -> t.getName().equals("relatedCollection")).findFirst().orElseThrow();
 
@@ -123,8 +150,27 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         assertEquals(relatedRowClassType, rowOpenPageActionDefinition.getTargetType());
         assertEquals(detailRelation, rowOpenPageActionDefinition.getLinkRelation());
 
+        // - myJumpers
+
+        Table myJumpersTable =  tables.stream().filter(t -> t.getName().equals("myJumpers")).findFirst().orElseThrow();
+
+        List<Button> myJumpersRowButtons =  myJumpersTable.getRowActionButtonGroup().getButtons();
+
+        assertEquals(1, myJumpersRowButtons.size());
+
+        Button myJumpersRowOpenButton = myJumpersRowButtons.stream().filter(b -> b.getActionDefinition().getIsRowOpenPageAction()).findFirst().orElseThrow();
+        RowOpenPageActionDefinition myJumpersRowOpenPageActionDefinition = (RowOpenPageActionDefinition) myJumpersRowOpenButton.getActionDefinition();
+
+        assertEquals("contained", myJumpersRowOpenButton.getButtonStyle());
+        assertEquals("View", myJumpersRowOpenButton.getLabel());
+        assertEquals("visibility", myJumpersRowOpenButton.getIcon().getIconName());
+
+        assertEquals(jumperRowClassType, myJumpersRowOpenPageActionDefinition.getTargetType());
+        assertEquals(jumperRowDetailRelation, myJumpersRowOpenPageActionDefinition.getLinkRelation());
 
         // Links
+
+        // - related
 
         Link relatedLink = links.stream().filter(l -> l.getName().equals("related")).findFirst().orElseThrow();
 
@@ -141,7 +187,26 @@ public class JslModel2UiNavigationTest extends AbstractTest {
 
         assertEquals(relatedViewClassType, openPageActionDefinition.getTargetType());
 
+        // - myJumper
+
+        Link myJumperLink = links.stream().filter(l -> l.getName().equals("myJumper")).findFirst().orElseThrow();
+
+        List<Button> myJumperLinkButtons =  myJumperLink.getActionButtonGroup().getButtons();
+
+        assertEquals(1, myJumperLinkButtons.size());
+
+        Button myJumperOpenButton = myJumperLinkButtons.stream().filter(b -> b.getActionDefinition().getIsOpenPageAction()).findFirst().orElseThrow();
+        OpenPageActionDefinition myJumperOpenPageActionDefinition = (OpenPageActionDefinition) myJumperOpenButton.getActionDefinition();
+
+        assertEquals("contained", myJumperOpenButton.getButtonStyle());
+        assertEquals("View", myJumperOpenButton.getLabel());
+        assertEquals("eye", myJumperOpenButton.getIcon().getIconName());
+
+        assertEquals(jumperViewClassType, myJumperOpenPageActionDefinition.getTargetType());
+
         // Actions
+
+        // - User access
 
         PageDefinition userAccessPage = pages.stream().filter(p -> p.getName().equals("NavigationTestModel::NavigationActor::user::PageDefinition")).findFirst().orElseThrow();
         List<Action> userAccessPageActions = userAccessPage.getActions();
@@ -155,5 +220,20 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         Action relatedCollectionOpenPageAction = userAccessPageActions.stream().filter(a -> a.getName().equals("relatedCollection::ViewTableDeclarationOpenPageAction")).findFirst().orElseThrow();
         assertTrue(relatedCollectionOpenPageAction.getIsRowOpenPageAction());
         assertEquals(pages.stream().filter(p -> p.getName().equals("NavigationTestModel::RelatedRow::detail::PageDefinition")).findFirst().orElse(null), relatedCollectionOpenPageAction.getTargetPageDefinition());
+
+        // - RelatedView relation view
+
+        PageDefinition relatedViewPage = pages.stream().filter(p -> p.getName().equals("NavigationTestModel::RelatedRow::detail::PageDefinition")).findFirst().orElseThrow();
+        List<Action> relatedViewPageActions = relatedViewPage.getActions();
+
+        assertEquals(2, relatedViewPageActions.size());
+
+        Action myJumperOpenPageAction = relatedViewPageActions.stream().filter(a -> a.getName().equals("myJumper::ViewLinkDeclarationOpenPageAction")).findFirst().orElseThrow();
+        assertTrue(myJumperOpenPageAction.getIsOpenPageAction());
+        assertEquals(pages.stream().filter(p -> p.getName().equals("NavigationTestModel::RelatedView::myJumper::PageDefinition")).findFirst().orElse(null), myJumperOpenPageAction.getTargetPageDefinition());
+
+        Action myJumpersCollectionOpenPageAction = relatedViewPageActions.stream().filter(a -> a.getName().equals("myJumpers::ViewTableDeclarationOpenPageAction")).findFirst().orElseThrow();
+        assertTrue(myJumpersCollectionOpenPageAction.getIsRowOpenPageAction());
+        assertEquals(pages.stream().filter(p -> p.getName().equals("NavigationTestModel::JumperRow::jumperRowDetail::PageDefinition")).findFirst().orElse(null), myJumpersCollectionOpenPageAction.getTargetPageDefinition());
     }
 }
