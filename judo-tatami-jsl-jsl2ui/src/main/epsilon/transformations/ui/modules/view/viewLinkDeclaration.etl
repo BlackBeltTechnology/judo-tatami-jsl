@@ -14,3 +14,115 @@ rule ViewLinkPageDefinition
 
         log.debug("Create ViewLinkPageDefinition: " + t.name);
 }
+
+@abstract
+rule AbstractViewLinkDeclaration
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Link {
+        guard: actorDeclaration.getAllRelations().contains(s)
+
+    	t.name = s.name;
+    	t.relationName = s.name;
+    	if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
+        if (s.getIconModifier().isDefined()) {
+            t.icon = s.equivalent("LinkIcon");
+        }
+        t.row = 1d;
+        t.col = s.width.isDefined() ? s.width.asReal() : 12d;
+        t.~pos = s.~pos;
+        t.isEager = s.isEager();
+        if (t.~pos.isUndefined()) {
+            t.~pos = 0;
+        }
+
+        if (s.isEager()) {
+            // TODO finish additional mas attributes
+            /*
+            for (dataFeature in s.additionalMaskFeatures) {
+                var attributeType = dataFeature.getMember().mapAttributeType(s.getRoot().getTransferObjectType().equivalent("ClassType"));
+                t.additionalMaskAttributes.add(attributeType);
+            }
+            */
+        }
+}
+
+@lazy
+@greedy
+rule LinkIcon
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Icon {
+    	t.iconName = s.getIconModifier().value.value;
+    	t.name = s.name + "Icon";
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/LinkIcon");
+}
+
+rule InlineViewLink
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Link
+    extends AbstractViewLinkDeclaration {
+        guard: s.getTransferObjectType().isGenerated()
+
+        var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewLink";
+        t.setId(id);
+        t.dataElement = s.equivalent("RelationType");
+
+        s.eContainer.uiContainer().children.add(t);
+
+        var col = s.equivalentDiscriminated("ViewLinkDeclarationRepresentationColumn", id);
+        t.parts.add(col);
+
+        // TODO transform selector row per page
+        t.selectorRowsPerPage = 10;
+        t.autoCompleteRows = 10;
+
+        t.actionButtonGroup = s.equivalent("TabularReferenceFieldLinkButtonGroup");
+
+        /*
+        t.autocompleteRangeActionDefinition = s.equivalent("TabularReferenceFieldLinkAutocompleteRangeActionDefinition");
+        t.autocompleteSetActionDefinition = s.equivalent("TabularReferenceFieldLinkAutocompleteSetActionDefinition");
+
+        if (relation.isRefreshSupported() and relation.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) {
+            t.refreshActionDefinition = s.equivalent("TabularReferenceFieldLinkRefreshActionDefinition");
+        }
+        */
+
+        log.debug("InlineViewLink: " + t.name);
+}
+
+@lazy
+rule InlineViewLinkButtonGroup
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::ButtonGroup {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewLinkButtonGroup");
+        t.name = s.name + "::Actions";
+        t.label = "Actions";
+
+        // TODO add action buttons
+
+        log.debug("InlineViewLinkButtonGroup: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationRepresentationColumn
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Column {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRepresentationColumn");
+
+        var firstStringFromTarget = s.referenceType.getAllPrimitiveFields().selectOne(f | f.referenceType.isDefined() and f.referenceType.`primitive` == "string");
+
+        if (firstStringFromTarget.isUndefined()) {
+            throw "Could not get string type field from relation target to use for representation: " + s.referenceType.name;
+        }
+
+        t.attributeType = firstStringFromTarget.getTransferFieldDeclarationEquivalent();
+        t.name = t.attributeType.name;
+        t.label = "";
+        t.col = 12d;
+        t.row = 1d;
+        t.format = "%s";
+        t.sort = UI!ui::Sort#ASC;
+
+        log.debug("ViewLinkDeclarationRepresentationColumn: " + t.name);
+}

@@ -104,7 +104,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             }
             
             row UserRow(User user) {
-                field String userName <= user.userName;
+                field String userName <= user.userName label:"Username";
             }
             
             entity Product {
@@ -117,8 +117,8 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             }
             
             row ProductRow(Product product) {
-                field String name <= product.name;
-                field String price <= product.price.asString() + " HUF";
+                field String name <= product.name label:"Name";
+                field String price <= product.price.asString() + " HUF" label:"Price";
             }
             
             actor MenuActor human {
@@ -226,14 +226,14 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
             row ProductRow(Product product) {
                 link ProductDetailView detail <= product eager detail;
-                field String name <= product.name;
-                field String price <= product.price.asString() + " HUF";
+                field String name <= product.name label:"Name";
+                field String price <= product.price.asString() + " HUF" label:"Price";
             }
 
             row ProductRow2(Product2 product2) {
                 link ProductDetailView2 detail2 <= product2 eager detail;
-                field String name2 <= product2.name2;
-                field String price2 <= product2.price2.asString() + " HUF";
+                field String name2 <= product2.name2 label:"Name 2";
+                field String price2 <= product2.price2.asString() + " HUF" label:"Price 2";
             }
 
             actor Actor1 human {
