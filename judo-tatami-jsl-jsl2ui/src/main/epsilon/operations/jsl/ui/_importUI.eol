@@ -1,3 +1,4 @@
+import "rowLinkDeclaration.eol";
 import "viewDeclaration.eol";
 import "viewFieldDeclaration.eol";
 import "viewGroupDeclaration.eol";

@@ -1,20 +1,3 @@
-rule ViewTablePageDefinition
-    transform s: JSL!ViewTableDeclaration
-    to t: UI!ui::PageDefinition {
-        guard: actorDeclaration.getAllRelations().contains(s)
-
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTablePageDefinition");
-
-        t.name = s.getFqName() + "::PageDefinition";
-        t.container = s.referenceType.equivalent("TransferDeclarationPageContainer");
-
-        actorDeclaration.equivalent("Application").pages.add(t);
-
-        t.dataElement = s.equivalent("RelationType");
-
-        log.debug("Create ViewTablePageDefinition: " + t.name);
-}
-
 @abstract
 rule AbstractViewTableDeclaration
     transform s: JSL!ViewTableDeclaration
