@@ -262,12 +262,12 @@ public class JslModel2UiDataTest extends AbstractTest {
             }
 
             row Transfer1Row(Entity1 e1) {
-                field String string <= e1.string;
-                field Boolean boolean <= e1.boolean;
+                field String string <= e1.string label:"String";
+                field Boolean boolean <= e1.boolean label:"Boolean";
             }
 
             row Transfer2Row(Entity2 e2) {
-                field Integer integer <= e2.integer;
+                field Integer integer <= e2.integer label:"Integer";
             }
 
             view Transfer1ListView {
@@ -327,8 +327,8 @@ public class JslModel2UiDataTest extends AbstractTest {
             }
 
             row Transfer1Row(Entity1 e1) {
-                field String stringOnRow <= e1.string;
-                field Boolean booleanOnRow <= e1.boolean;
+                field String stringOnRow <= e1.string label:"String On Row";
+                field Boolean booleanOnRow <= e1.boolean label:"Boolean On Row";
             }
 
             view Transfer1View(Entity1 e1) {
@@ -485,7 +485,7 @@ public class JslModel2UiDataTest extends AbstractTest {
             }
 
             row UnmappedRelatedRow {
-                field String transient;
+                field String transient label:"Transient";
             }
 
             view MappedRelated(EntityRelated e) {
@@ -496,7 +496,7 @@ public class JslModel2UiDataTest extends AbstractTest {
             }
 
             row MappedRelatedRow(EntityRelated e) {
-                field String mappedAttribute <= e.hello;
+                field String mappedAttribute <= e.hello label:"Mapped Attribute";
                 event create onCreate;
             }
         
