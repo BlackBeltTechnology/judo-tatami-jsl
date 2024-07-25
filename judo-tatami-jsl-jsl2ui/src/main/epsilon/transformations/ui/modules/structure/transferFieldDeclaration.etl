@@ -19,7 +19,7 @@ rule CreateTransientTransferAttribute
     extends AbstractCreateTransferAttribute {
         guard: not s.maps() and not s.reads()
 
-        t.setId("(jsl/" + s.getId() + ")/CreateTransientTransferAttribute");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateTransientTransferAttribute");
         t.memberType = UI!ui::data::MemberType#TRANSIENT;
         t.isReadOnly = false;
 
@@ -34,7 +34,7 @@ rule CreateDerivedTransferAttribute
     extends AbstractCreateTransferAttribute {
         guard: s.reads()
 
-        t.setId("(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateDerivedTransferAttribute");
         t.memberType = UI!ui::data::MemberType#DERIVED;
         t.isReadOnly = true;
 
@@ -49,7 +49,7 @@ rule CreateMappedTransferAttribute
     extends AbstractCreateTransferAttribute {
         guard: s.maps()
 
-        t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferAttribute");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateMappedTransferAttribute");
         t.memberType = UI!ui::data::MemberType#MAPPED;
         t.isReadOnly = false;
 
