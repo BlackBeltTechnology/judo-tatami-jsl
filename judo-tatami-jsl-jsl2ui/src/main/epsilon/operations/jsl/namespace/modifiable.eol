@@ -24,6 +24,11 @@ operation JSL!Modifiable getStretchModifier(): JSL!Modifier {
 }
 
 @cached
+operation JSL!Modifiable getWidth(): JSL!Modifier {
+    return (self.modifiers.selectOne(m | m.type == "width"));
+}
+
+@cached
 operation JSL!Modifiable getPrecision(): JSL!Modifier {
     return (self.modifiers.selectOne(m | m.type == "precision"));
 }
@@ -61,6 +66,11 @@ operation JSL!Modifiable getMinSize(): JSL!Modifier {
 @cached
 operation JSL!Modifiable getMimeType(): JSL!Modifier {
     return (self.modifiers.selectOne(m | m.type == "mime-type"));
+}
+
+@cached
+operation JSL!Modifiable getDetail(): JSL!DetailModifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!DetailModifier));
 }
 
 @cached
