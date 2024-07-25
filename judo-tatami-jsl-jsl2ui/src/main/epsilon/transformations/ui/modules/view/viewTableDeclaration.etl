@@ -289,3 +289,19 @@ rule ViewTableDeclarationRowOpenPageActionDefinition
 
         log.debug("ViewTableDeclarationRowOpenPageActionDefinition: " + t.name);
 }
+
+@lazy
+rule ViewTableDeclarationOpenPageAction
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Action {
+        var row = s.referenceType;
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageAction");
+
+ 		t.name = s.name + "::ViewTableDeclarationOpenPageAction";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationRowOpenPageActionDefinition");
+
+        t.targetPageDefinition = s.getDetailLink().equivalent("RowLinkPageDefinition");
+
+        log.debug("ViewTableDeclarationOpenPageAction: " + t.name);
+}

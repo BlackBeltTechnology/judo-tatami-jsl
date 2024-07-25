@@ -1,10 +1,10 @@
 @cached
-operation JSL!RowLinkDeclaration getId(): String {
+operation JSL!ViewLinkDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
 
 @cached
-operation JSL!RowLinkDeclaration getFqName(): String {
+operation JSL!ViewLinkDeclaration getFqName(): String {
     if (self.getTransferContainer().isDefined()) {
         return self.getTransferContainer().getFqName() + "::" + self.name;
     }

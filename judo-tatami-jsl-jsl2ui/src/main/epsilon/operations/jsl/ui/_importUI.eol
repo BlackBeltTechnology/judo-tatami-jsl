@@ -2,6 +2,8 @@ import "rowLinkDeclaration.eol";
 import "viewDeclaration.eol";
 import "viewFieldDeclaration.eol";
 import "viewGroupDeclaration.eol";
+import "viewLinkDeclaration.eol";
 import "viewPanelDeclaration.eol";
+import "viewTableDeclaration.eol";
 import "viewTabsDeclaration.eol";
 import "visibleDeclaration.eol";

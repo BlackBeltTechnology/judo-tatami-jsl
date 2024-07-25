@@ -1,7 +1,7 @@
 @cached
 operation JSL!ActorLinkDeclaration getFqName(): String {
-    if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration) or self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
-        return self.eContainer.getFqName() + "::" + self.name;
+    if (self.getTransferContainer().isDefined()) {
+        return self.getTransferContainer().getFqName() + "::" + self.name;
     }
     return self.name;
 }

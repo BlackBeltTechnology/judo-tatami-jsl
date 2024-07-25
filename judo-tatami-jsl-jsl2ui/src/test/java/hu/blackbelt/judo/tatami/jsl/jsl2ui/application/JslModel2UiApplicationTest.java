@@ -92,35 +92,35 @@ public class JslModel2UiApplicationTest extends AbstractTest {
     void testMenu() throws Exception {
         jslModel = JslParser.getModelFromStrings("MenuTestModel", List.of("""
             model MenuTestModel;
-            
+
             import judo::types;
-            
+
             entity User {
                 identifier String userName required;
             }
-            
+
             view UserListView {
                 table UserRow[] users <= User.all();
             }
-            
+
             row UserRow(User user) {
                 field String userName <= user.userName label:"Username";
             }
-            
+
             entity Product {
                 identifier String name required;
                 field Integer price required;
             }
-            
+
             view ProductListView {
                 table ProductRow[] products <= Product.all();
             }
-            
+
             row ProductRow(Product product) {
                 field String name <= product.name label:"Name";
                 field String price <= product.price.asString() + " HUF" label:"Price";
             }
-            
+
             actor MenuActor human {
                 group first label:"Group1" {
                     group second label:"Group2" {
@@ -165,7 +165,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         assertEquals("MenuTestModel::MenuActor::MenuItemGroup::first::MenuItemGroup::second", second1.getName());
         assertEquals("Group2", second1.getLabel());
-        assertEquals("MenuTestModel::MenuActor::MenuItemGroup::first::products2", second2.getName());
+        assertEquals("MenuTestModel::MenuActor::products2", second2.getName());
         assertEquals("Products2", second2.getLabel());
 
         List<NavigationItem> thirdLevelMenus = second1.getItems();
@@ -174,7 +174,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         NavigationItem third1 = thirdLevelMenus.get(0);
 
-        assertEquals("MenuTestModel::MenuActor::MenuItemGroup::first::MenuItemGroup::second::products", third1.getName());
+        assertEquals("MenuTestModel::MenuActor::products", third1.getName());
         assertEquals("Products", third1.getLabel());
         assertEquals("close", third1.getIcon().getIconName());
     }
@@ -385,7 +385,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         List<PageDefinition> pages = app1.getPages();
 
         assertEquals(Set.of(
-                "MultipleActorsTestModel::Actor1::MenuItemGroup::first::products1::PageDefinition",
+                "MultipleActorsTestModel::Actor1::products1::PageDefinition",
                 "MultipleActorsTestModel::Actor1::allProducts::PageDefinition",
                 "MultipleActorsTestModel::ProductRow::detail::PageDefinition",
                 "MultipleActorsTestModel::Actor1::DashboardPage"
@@ -394,7 +394,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         List<PageDefinition> pages2 = app2.getPages();
 
         assertEquals(Set.of(
-                "MultipleActorsTestModel::Actor2::MenuItemGroup::first::products2::PageDefinition",
+                "MultipleActorsTestModel::Actor2::products2::PageDefinition",
                 "MultipleActorsTestModel::Actor2::allProducts2::PageDefinition",
                 "MultipleActorsTestModel::ProductRow2::detail2::PageDefinition",
                 "MultipleActorsTestModel::Actor2::DashboardPage"

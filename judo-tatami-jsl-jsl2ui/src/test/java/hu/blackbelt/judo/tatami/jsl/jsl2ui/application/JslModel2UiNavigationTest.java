@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class JslModel2UiNavigationTest extends AbstractTest {
@@ -97,6 +98,7 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         List<ClassType> classTypes = application.getClassTypes();
         List<Link> links = application.getLinks();
         List<Table> tables = application.getTables();
+        List<PageDefinition> pages = application.getPages();
 
         ClassType relatedRowClassType = classTypes.stream().filter(c -> c.getName().equals("NavigationTestModel::RelatedRow::ClassType")).findFirst().orElseThrow();
         ClassType relatedViewClassType = classTypes.stream().filter(c -> c.getName().equals("NavigationTestModel::RelatedView::ClassType")).findFirst().orElseThrow();
@@ -138,5 +140,20 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         assertEquals("eye", openButton.getIcon().getIconName());
 
         assertEquals(relatedViewClassType, openPageActionDefinition.getTargetType());
+
+        // Actions
+
+        PageDefinition userAccessPage = pages.stream().filter(p -> p.getName().equals("NavigationTestModel::NavigationActor::user::PageDefinition")).findFirst().orElseThrow();
+        List<Action> userAccessPageActions = userAccessPage.getActions();
+
+        assertEquals(2, userAccessPageActions.size());
+
+        Action relatedOpenPageAction = userAccessPageActions.stream().filter(a -> a.getName().equals("related::ViewLinkDeclarationOpenPageAction")).findFirst().orElseThrow();
+        assertTrue(relatedOpenPageAction.getIsOpenPageAction());
+        assertEquals(pages.stream().filter(p -> p.getName().equals("NavigationTestModel::UserView::related::PageDefinition")).findFirst().orElse(null), relatedOpenPageAction.getTargetPageDefinition());
+
+        Action relatedCollectionOpenPageAction = userAccessPageActions.stream().filter(a -> a.getName().equals("relatedCollection::ViewTableDeclarationOpenPageAction")).findFirst().orElseThrow();
+        assertTrue(relatedCollectionOpenPageAction.getIsRowOpenPageAction());
+        assertEquals(pages.stream().filter(p -> p.getName().equals("NavigationTestModel::RelatedRow::detail::PageDefinition")).findFirst().orElse(null), relatedCollectionOpenPageAction.getTargetPageDefinition());
     }
 }
