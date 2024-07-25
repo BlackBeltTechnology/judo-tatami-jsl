@@ -95,8 +95,7 @@ rule InlineViewLink
 rule InlineViewLinkButtonGroup
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::ButtonGroup {
-
-        t.sedId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewLinkButtonGroup");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewLinkButtonGroup");
         t.name = s.name + "::Actions";
         t.label = "Actions";
 
@@ -109,6 +108,8 @@ rule InlineViewLinkButtonGroup
 rule ViewLinkDeclarationRepresentationColumn
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::Column {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRepresentationColumn");
+
         var firstStringFromTarget = s.referenceType.getAllPrimitiveFields().selectOne(f | f.referenceType.isDefined() and f.referenceType.`primitive` == "string");
 
         if (firstStringFromTarget.isUndefined()) {

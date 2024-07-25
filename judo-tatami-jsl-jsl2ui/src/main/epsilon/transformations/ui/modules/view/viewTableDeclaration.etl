@@ -240,7 +240,7 @@ rule RowLinkDerivedAttributeType
 rule InlineViewTableButtonGroup
     transform s: JSL!ViewTableDeclaration
     to t: UI!ui::ButtonGroup {
-		t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TableButtonGroup");
+		t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewTableButtonGroup");
  		t.name = s.name + "InlineViewTableButtonGroup";
  		t.label = "Actions";
 
