@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class JslModel2UiNavigationTest extends AbstractTest {
-    private static final String TARGET_TEST_CLASSES = "target/test-classes/widgets";
+    private static final String TARGET_TEST_CLASSES = "target/test-classes/navigation";
 
     @Override
     protected String getTargetTestClasses() {

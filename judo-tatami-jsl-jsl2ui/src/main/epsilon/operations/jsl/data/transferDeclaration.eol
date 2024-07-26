@@ -89,7 +89,7 @@ operation JSL!TransferDeclaration getDirectRelations(): Set {
     }
 
     for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
-        relations.addAll(member.getAllRelations());
+        relations.addAll(member.getDirectRelations());
     }
 
     return relations;
