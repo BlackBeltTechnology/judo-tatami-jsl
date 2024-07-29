@@ -65,6 +65,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
             entity Jumper {
                 field String first;
+                field String second;
             }
 
             view UserView(User u) {
@@ -88,7 +89,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 field String first <= r.first label: "First";
                 field Integer second <= r.second label: "Second";
                 link JumperView myJumper <= r.theJumper eager:false icon:"jumping" label:"My Jumper" width:6 create:true update: true delete:true;
-                table JumperRow[] myJumpers <= r.theJumpersCollection eager:false icon:"jumping-all" label:"My Jumpers" width:6;
+                table JumperRow[] myJumpers <= r.theJumpersCollection eager:false icon:"jumping-all" label:"My Jumpers" width:6 create:true update: true delete:true;
 
                 event create onCreate(RelatedForm form);
                 event update onUpdate;
@@ -112,8 +113,20 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             }
 
             row JumperRow(Jumper j) {
-                field String first <= j.first label: "First";
+                field String second <= j.second label: "Second";
                 link JumperView jumperRowDetail <= j detail:true;
+
+                event create onCreate(JumperForm form);
+                event update onUpdate;
+                event delete onDelete;
+            }
+
+            view JumperForm(Jumper j) {
+                group one label:"Group 1" {
+                    field String firstOnForm <= j.first label: "First on form";
+                }
+
+                action void doSubmit();
             }
 
             actor NavigationActor human {
