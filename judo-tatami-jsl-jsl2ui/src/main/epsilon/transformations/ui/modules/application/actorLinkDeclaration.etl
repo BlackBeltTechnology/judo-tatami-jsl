@@ -37,7 +37,7 @@ rule AccessPageDefinition
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/AccessPageDefinition");
 
-        t.name = s.getFqName() + "::PageDefinition";
+        t.name = s.getFqName() + "::View::PageDefinition";
         t.container = s.referenceType.equivalent("TransferDeclarationPageContainer");
 
         actorDeclaration.equivalent("Application").pages.add(t);
@@ -55,6 +55,9 @@ rule AccessPageDefinition
 
         for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
             t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
+            if (link.isCreateAllowed()) {
+                t.actions.add(link.equivalent("ViewLinkDeclarationOpenFormAction"));
+            }
         }
 
         for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {

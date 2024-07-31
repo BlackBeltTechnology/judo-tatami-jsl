@@ -57,7 +57,7 @@ rule TransferDeclarationPageContainer
             t.label = label.value.value;
         }
         t.titleFrom = UI!ui::TitleFrom#LABEL;
-        t.type = UI!ui::PageContainerType#VIEW;
+        t.type = s.isCreateEventParameter() ? UI!ui::PageContainerType#FORM : UI!ui::PageContainerType#VIEW;
         // t.onInit = s.equivalent("TransferObjectTableAddSelectorTableRangeActionDefinition");
         actorDeclaration.equivalent("Application").pageContainers.add(t);
         t.children.add(s.equivalent("TransferDeclarationVisualElement"));
