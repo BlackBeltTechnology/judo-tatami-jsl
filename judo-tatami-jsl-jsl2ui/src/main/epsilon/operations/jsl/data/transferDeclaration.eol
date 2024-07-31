@@ -27,8 +27,13 @@ operation JSL!TransferDeclaration getExposedTransferObjects(): Set {
 }
 
 @cached
+operation JSL!TransferDeclaration getReferencingCreateEvent(): JSL!TransferCreateDeclaration {
+    return JSL!TransferCreateDeclaration.all.selectOne(s | s.parameterType == self);
+}
+
+@cached
 operation JSL!TransferDeclaration isCreateEventParameter(): Boolean {
-    return JSL!TransferCreateDeclaration.all.exists(s | s.parameterType == self);
+    return self.getReferencingCreateEvent().isDefined();
 }
 
 @cached

@@ -1,0 +1,37 @@
+@lazy
+rule ViewActionDeclarationCreateButton
+    transform s: JSL!ViewActionDeclaration
+    to t: UI!ui::Button {
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationCreateButton");
+        t.name = s.getFqName() + "::Create::Submit";
+        t.buttonStyle = "contained";
+        t.actionDefinition = s.equivalent("ViewActionDeclarationCreateActionDefinition");
+
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+
+        var icon = s.getIconModifier();
+        if (icon.isDefined()) {
+            t.icon = icon.equivalent("IconModifierIcon");
+        }
+
+        log.debug("ViewActionDeclarationCreateButton: " + t.name);
+}
+
+@lazy
+rule ViewActionDeclarationCreateActionDefinition
+    transform s: JSL!ViewActionDeclaration
+    to t: UI!ui::CreateActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationCreateActionDefinition");
+        t.name = s.getFqName() + "::Create";
+
+        /*
+        if (s.autoOpenAfterCreate.isDefined()) {
+            t.autoOpenAfterCreate = s.autoOpenAfterCreate;
+        }
+        */
+
+        log.debug("TransferObjectFormCreateActionDefinition: " + t.name);
+}

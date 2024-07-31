@@ -61,10 +61,29 @@ rule TransferDeclarationPageContainer
         // t.onInit = s.equivalent("TransferObjectTableAddSelectorTableRangeActionDefinition");
         actorDeclaration.equivalent("Application").pageContainers.add(t);
         t.children.add(s.equivalent("TransferDeclarationVisualElement"));
-        // t.actionButtonGroup = s.equivalent("TransferObjectTableAddSelectorButtonGroup");
+        t.actionButtonGroup = s.equivalent("TransferDeclarationActionButtonGroup");
         t.dataElement = s.equivalent("ClassType");
 
+        if (s.isCreateEventParameter()) {
+            var submitAction = s.members.selectOne(m | m.isKindOf(JSL!ViewActionDeclaration) and m.name == "doSubmit");
+            if (submitAction.isDefined()) {
+                t.actionButtonGroup.buttons.add(submitAction.equivalent("ViewActionDeclarationCreateButton"));
+            }
+        }
+
         log.debug("TransferDeclarationPageContainer: " + t.name);
+}
+
+@greedy
+@lazy
+rule TransferDeclarationActionButtonGroup
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::ButtonGroup {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationActionButtonGroup");
+        t.name = s.getFqName() + "::PageActions";
+        t.label = "Actions";
+
+        log.debug("TransferDeclarationActionButtonGroup: " + t.name);
 }
 
 @greedy
