@@ -180,20 +180,20 @@ operation JSL!TransferDeclaration uiContainer() : UI!ui::VisualElement {
 
 @cached
 operation JSL!TransferDeclaration getCreateEventDeclaration() : JSL!TransferCreateDeclaration {
-	return self.members.selectOne(m | m.isTypeOf(JSL!TransferCreateDeclaration));
+	return self.members.selectOne(m | m.isKindOf(JSL!TransferCreateDeclaration));
 }
 
 @cached
 operation JSL!TransferDeclaration getFetchEventDeclaration() : JSL!TransferFetchDeclaration {
-	return self.members.selectOne(m | m.isTypeOf(JSL!TransferFetchDeclaration));
+	return self.members.selectOne(m | m.isKindOf(JSL!TransferFetchDeclaration));
 }
 
 @cached
 operation JSL!TransferDeclaration getUpdateEventDeclaration() : JSL!TransferUpdateDeclaration {
-	return self.members.selectOne(m | m.isTypeOf(JSL!TransferUpdateDeclaration));
+	return self.members.selectOne(m | m.isKindOf(JSL!TransferUpdateDeclaration));
 }
 
 @cached
 operation JSL!TransferDeclaration getDeleteEventDeclaration() : JSL!TransferDeleteDeclaration {
-	return self.members.selectOne(m | m.isTypeOf(JSL!TransferDeleteDeclaration));
+	return self.members.selectOne(m | m.isKindOf(JSL!TransferDeleteDeclaration));
 }

@@ -65,10 +65,8 @@ rule TransferDeclarationPageContainer
         t.dataElement = s.equivalent("ClassType");
 
         if (s.isCreateEventParameter()) {
-            var submitAction = s.members.selectOne(m | m.isKindOf(JSL!ViewActionDeclaration) and m.name == "doSubmit");
-            if (submitAction.isDefined()) {
-                t.actionButtonGroup.buttons.add(submitAction.equivalent("ViewActionDeclarationCreateButton"));
-            }
+            t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationBackButton"));
+            t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationCreateButton"));
         }
 
         log.debug("TransferDeclarationPageContainer: " + t.name);
@@ -99,4 +97,70 @@ rule TransferDeclarationVisualElement
  		t.direction = UI!Axis#VERTICAL;
  		t.label = null; // we don't need labels for root visual elements
         log.debug("TransferDeclarationVisualElement: " + t.name);
+}
+
+@lazy
+@greedy
+rule TransferDeclarationCreateButton
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::Button {
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationCreateButton");
+        t.name = s.getFqName() + "::Create::Submit";
+        t.buttonStyle = "contained";
+        t.actionDefinition = s.equivalent("TransferDeclarationCreateActionDefinition");
+
+        t.label = "Create";
+        t.icon = "content-save".createSyntheticIcon(s.getId(), s.getFqName());
+
+        log.debug("TransferDeclarationCreateButton: " + t.name);
+}
+
+@lazy
+@greedy
+rule TransferDeclarationCreateActionDefinition
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::CreateActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationCreateActionDefinition");
+        t.name = s.getFqName() + "::Create";
+
+        /*
+        if (s.autoOpenAfterCreate.isDefined()) {
+            t.autoOpenAfterCreate = s.autoOpenAfterCreate;
+        }
+        */
+
+        log.debug("TransferDeclarationCreateActionDefinition: " + t.name);
+}
+
+@lazy
+@greedy
+rule TransferDeclarationBackButton
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::Button {
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationBackButton");
+        t.name = s.getFqName() + "::Create::Back";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("TransferDeclarationBackActionDefinition");
+
+        t.label = "Back";
+        t.icon = "arrow-left".createSyntheticIcon(s.getId(), s.getFqName());
+
+        log.debug("TransferDeclarationBackButton: " + t.name);
+}
+
+@lazy
+@greedy
+rule TransferDeclarationBackActionDefinition
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::CreateActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationBackActionDefinition");
+        t.name = s.getFqName() + "::Back";
+
+        /*
+        if (s.autoOpenAfterCreate.isDefined()) {
+            t.autoOpenAfterCreate = s.autoOpenAfterCreate;
+        }
+        */
+
+        log.debug("TransferDeclarationBackActionDefinition: " + t.name);
 }

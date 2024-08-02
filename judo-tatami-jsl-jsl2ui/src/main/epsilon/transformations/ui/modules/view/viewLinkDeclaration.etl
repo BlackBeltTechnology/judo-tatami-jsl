@@ -40,20 +40,23 @@ rule ViewLinkPageDefinition
 rule ViewLinkCreateFormPageDefinition
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::PageDefinition {
-        guard: actorDeclaration.getAllRelations().contains(s) and s.hasCreateFormParameter()
+        guard: actorDeclaration.getAllRelations().contains(s)
+            and s.referenceType.getCreateEventDeclaration().isDefined()
+            and s.referenceType.getCreateEventDeclaration().parameterType.isDefined()
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormPageDefinition");
 
         t.name = s.getFqName() + "::Create::PageDefinition";
 
         var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
-        t.container = targetCreateEvent.parameterType.equivalent("TransferDeclarationPageContainer");
+        var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
+        t.container = targetContainer.equivalent("TransferDeclarationPageContainer");
 
         actorDeclaration.equivalent("Application").pages.add(t);
 
         t.dataElement = s.equivalent("RelationType");
 
-        var relations = s.referenceType.getDirectRelations();
+        // var relations = s.referenceType.getDirectRelations();
 
         /*
         log.info("===================");
@@ -61,7 +64,7 @@ rule ViewLinkCreateFormPageDefinition
         log.info(relations.collect(r | r.name).concat(", "));
         log.info("===================");
         */
-
+        /*
         for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
             t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
         }
@@ -73,8 +76,44 @@ rule ViewLinkCreateFormPageDefinition
                 t.actions.add(table.equivalent("ViewTableDeclarationOpenPageAction"));
             }
         }
+        */
+
+        t.actions.add(s.equivalent("ViewLinkCreateFormBackAction"));
+        t.actions.add(s.equivalent("ViewLinkCreateFormCreateAction"));
 
         log.debug("Create ViewLinkCreateFormPageDefinition: " + t.name);
+}
+
+@greedy
+@lazy
+rule ViewLinkCreateFormCreateAction
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormCreateAction");
+
+        var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
+        var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
+
+ 		t.name = s.name + "::ViewLinkCreateFormCreateAction";
+        t.actionDefinition = targetContainer.equivalent("TransferDeclarationCreateActionDefinition");
+
+        log.debug("ViewLinkCreateFormCreateAction: " + t.name);
+}
+
+@greedy
+@lazy
+rule ViewLinkCreateFormBackAction
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormBackAction");
+
+        var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
+        var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
+
+ 		t.name = s.name + "::ViewLinkCreateFormBackAction";
+        t.actionDefinition = targetContainer.equivalent("TransferDeclarationBackActionDefinition");
+
+        log.debug("ViewLinkCreateFormBackAction: " + t.name);
 }
 
 @abstract

@@ -1,3 +1,4 @@
+import "icon.eol";
 import "rowLinkDeclaration.eol";
 import "viewActionDeclaration.eol";
 import "viewDeclaration.eol";

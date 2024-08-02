@@ -100,8 +100,6 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 group one label:"Group 1" {
                     field String first <= r.first label: "First";
                 }
-
-                action void doSubmit() label:"Submit Related" icon:"content-save";
             }
 
             view JumperView(Jumper j) {
@@ -125,8 +123,6 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 group one label:"Group 1" {
                     field String firstOnForm <= j.first label: "First on form";
                 }
-
-                action void doSubmit() label:"Submit Jumper" icon:"content-save";
             }
 
             actor NavigationActor human {
