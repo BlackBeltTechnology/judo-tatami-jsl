@@ -23,6 +23,13 @@ rule ViewLinkPageDefinition
 
         for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
             t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
+
+            if (link.isCreateAllowed()) {
+                t.actions.add(link.equivalent("ViewLinkDeclarationOpenFormAction"));
+            }
+            if (link.isDeleteAllowed()) {
+                t.actions.add(link.equivalent("ViewLinkDeclarationRowDeleteAction"));
+            }
         }
 
         for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
@@ -33,7 +40,55 @@ rule ViewLinkPageDefinition
             }
         }
 
+        t.actions.add(s.equivalent("ViewLinkPageDefinitionBackAction"));
+        if (s.isUpdateAllowed()) {
+            t.actions.add(s.equivalent("ViewLinkPageDefinitionUpdateAction"));
+        }
+        if (s.isDeleteAllowed()) {
+            t.actions.add(s.equivalent("ViewLinkPageDefinitionDeleteAction"));
+        }
+
         log.debug("Create ViewLinkPageDefinition: " + t.name);
+}
+
+@lazy
+@greedy
+rule ViewLinkPageDefinitionBackAction
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+        guard: actorDeclaration.getAllRelations().contains(s)
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionBackAction");
+ 		t.name = s.name + "::ViewLinkPageDefinitionBackAction";
+        t.actionDefinition = s.referenceType.equivalent("TransferDeclarationBackActionDefinition");
+
+        log.debug("ViewLinkPageDefinitionBackAction: " + t.name);
+}
+
+@lazy
+@greedy
+rule ViewLinkPageDefinitionUpdateAction
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionUpdateAction");
+
+ 		t.name = s.name + "::ViewLinkPageDefinitionUpdateAction";
+        t.actionDefinition = s.referenceType.equivalent("TransferDeclarationUpdateActionDefinition");
+
+        log.debug("ViewLinkPageDefinitionUpdateAction: " + t.name);
+}
+
+@lazy
+@greedy
+rule ViewLinkPageDefinitionDeleteAction
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionDeleteAction");
+
+ 		t.name = s.name + "::ViewLinkPageDefinitionDeleteAction";
+        t.actionDefinition = s.referenceType.equivalent("TransferDeclarationDeleteActionDefinition");
+
+        log.debug("ViewLinkPageDefinitionDeleteAction: " + t.name);
 }
 
 @greedy
@@ -207,6 +262,9 @@ rule InlineViewLinkButtonGroup
         if (s.isCreateAllowed()) {
             t.buttons.add(s.equivalent("ViewLinkDeclarationOpenFormButton"));
         }
+        if (s.isDeleteAllowed()) {
+            t.buttons.add(s.equivalent("ViewLinkDeclarationDeleteButton"));
+        }
 
         log.debug("InlineViewLinkButtonGroup: " + t.name);
 }
@@ -331,6 +389,7 @@ rule ViewLinkDeclarationOpenFormActionDefinition
         log.debug("ViewLinkDeclarationOpenFormActionDefinition: " + t.name);
 }
 
+
 @greedy
 @lazy
 rule ViewLinkDeclarationOpenFormAction
@@ -344,4 +403,54 @@ rule ViewLinkDeclarationOpenFormAction
         t.targetPageDefinition = s.equivalent("ViewLinkCreateFormPageDefinition");
 
         log.debug("ViewLinkDeclarationOpenFormAction: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationDeleteButton
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Button {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButton");
+ 		t.name = s.name + "::Delete";
+    	t.buttonStyle = "contained";
+    	t.label = "Delete";
+    	t.icon = s.equivalent("ViewLinkDeclarationDeleteButtonIcon");
+    	t.actionDefinition = s.equivalent("ViewLinkDeclarationRowDeleteActionDefinition");
+
+        log.debug("ViewLinkDeclarationDeleteButton: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationDeleteButtonIcon
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Icon {
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButtonIcon");
+    	t.iconName = "delete_forever";
+    	t.name = s.name + "Icon";
+
+    	log.debug("ViewLinkDeclarationDeleteButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationRowDeleteActionDefinition
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::RowDeleteActionDefinition {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteActionDefinition");
+ 		t.name = s.name + "::Delete";
+ 		t.isContainedRelationAction = true;
+        t.targetType = s.referenceType.equivalent("ClassType");
+
+        log.debug("ViewLinkDeclarationRowDeleteActionDefinition: " + t.name);
+}
+
+@greedy
+@lazy
+rule ViewLinkDeclarationRowDeleteAction
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteAction");
+
+ 		t.name = s.name + "::ViewLinkDeclarationRowDeleteAction";
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationRowDeleteActionDefinition");
+
+        log.debug("ViewLinkDeclarationRowDeleteAction: " + t.name);
 }

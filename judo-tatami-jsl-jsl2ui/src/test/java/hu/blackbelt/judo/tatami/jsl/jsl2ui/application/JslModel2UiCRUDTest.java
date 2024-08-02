@@ -88,6 +88,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             view RelatedView(Related r) {
                 field String first <= r.first label: "First";
                 field Integer second <= r.second label: "Second";
+                link JumperView readOnlyJumper <= r.theJumper eager:false icon:"jumping" label:"Read only Jumper";
                 link JumperView myJumper <= r.theJumper eager:false icon:"jumping" label:"My Jumper" width:6 create:true update: true delete:true;
                 table JumperRow[] myJumpers <= r.theJumpersCollection eager:false icon:"jumping-all" label:"My Jumpers" width:6 create:true update: true delete:true;
 

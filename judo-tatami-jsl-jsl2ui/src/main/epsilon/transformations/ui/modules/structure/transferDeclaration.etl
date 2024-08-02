@@ -64,9 +64,16 @@ rule TransferDeclarationPageContainer
         t.actionButtonGroup = s.equivalent("TransferDeclarationActionButtonGroup");
         t.dataElement = s.equivalent("ClassType");
 
+        t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationBackButton"));
+
         if (s.isCreateEventParameter()) {
-            t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationBackButton"));
             t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationCreateButton"));
+        }
+        if (s.isUpdateSupported()) {
+            t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationUpdateButton"));
+        }
+        if (s.isDeleteSupported()) {
+            t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationDeleteButton"));
         }
 
         log.debug("TransferDeclarationPageContainer: " + t.name);
@@ -134,9 +141,64 @@ rule TransferDeclarationCreateActionDefinition
 
 @lazy
 @greedy
+rule TransferDeclarationUpdateButton
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::Button {
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationUpdateButton");
+        t.name = s.getFqName() + "::Update";
+        t.buttonStyle = "contained";
+        t.actionDefinition = s.equivalent("TransferDeclarationUpdateActionDefinition");
+
+        t.label = "Update";
+        t.icon = "content-save".createSyntheticIcon(s.getId(), s.getFqName());
+
+        log.debug("TransferDeclarationUpdateButton: " + t.name);
+}
+
+@lazy
+@greedy
+rule TransferDeclarationUpdateActionDefinition
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::UpdateActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationUpdateActionDefinition");
+        t.name = s.getFqName() + "::Update";
+
+        log.debug("TransferDeclarationUpdateActionDefinition: " + t.name);
+}
+
+@lazy
+@greedy
+rule TransferDeclarationDeleteButton
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::Button {
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationDeleteButton");
+        t.name = s.getFqName() + "::Delete";
+        t.buttonStyle = "contained";
+        t.actionDefinition = s.equivalent("TransferDeclarationDeleteActionDefinition");
+
+        t.label = "Delete";
+        t.icon = "delete_forever".createSyntheticIcon(s.getId(), s.getFqName());
+
+        log.debug("TransferDeclarationDeleteButton: " + t.name);
+}
+
+@lazy
+@greedy
+rule TransferDeclarationDeleteActionDefinition
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::DeleteActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationDeleteActionDefinition");
+        t.name = s.getFqName() + "::Delete";
+
+        log.debug("TransferDeclarationDeleteActionDefinition: " + t.name);
+}
+
+@greedy
 rule TransferDeclarationBackButton
     transform s: JSL!TransferDeclaration
     to t: UI!ui::Button {
+        guard: actorDeclaration.getExposedTransferObjects().contains(s)
+
     	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationBackButton");
         t.name = s.getFqName() + "::Create::Back";
         t.buttonStyle = "text";
@@ -148,19 +210,14 @@ rule TransferDeclarationBackButton
         log.debug("TransferDeclarationBackButton: " + t.name);
 }
 
-@lazy
 @greedy
 rule TransferDeclarationBackActionDefinition
     transform s: JSL!TransferDeclaration
-    to t: UI!ui::CreateActionDefinition {
+    to t: UI!ui::BackActionDefinition {
+        guard: actorDeclaration.getExposedTransferObjects().contains(s)
+
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationBackActionDefinition");
         t.name = s.getFqName() + "::Back";
-
-        /*
-        if (s.autoOpenAfterCreate.isDefined()) {
-            t.autoOpenAfterCreate = s.autoOpenAfterCreate;
-        }
-        */
 
         log.debug("TransferDeclarationBackActionDefinition: " + t.name);
 }
