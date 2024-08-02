@@ -26,7 +26,7 @@ rule TableIcon
     transform s: JSL!ViewTableDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TableIcon");
-    	t.name = s.name + "Icon";
+    	t.name = s.name + "TableIcon";
     	t.iconName = s.getIconModifier().value.value;
 }
 
@@ -117,7 +117,7 @@ rule ColumnIcon
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
     	t.iconName = s.getIconModifier().value.value;
-    	t.name = s.name + "Icon";
+    	t.name = s.name + "FieldIcon";
     	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
 
     	log.debug("ColumnIcon: " + t.name);
@@ -181,7 +181,7 @@ rule RowLinkDerivedColumnIcon
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumnIcon");
     	t.iconName = s.getIconModifier().value.value;
-    	t.name = s.name + "Icon";
+    	t.name = s.name + "DerivedColumnIcon";
 
     	log.debug("RowLinkDerivedColumnIcon: " + t.name);
 }
@@ -229,6 +229,13 @@ rule InlineViewTableButtonGroup
 
         // TODO add buttons
 
+        if (s.isFilterSupported()) {
+            t.buttons.add(s.equivalent("ViewTableDeclarationFilterButton"));
+        }
+        if (s.isRefreshAllowed()) {
+            t.buttons.add(s.equivalent("ViewTableDeclarationRefreshButton"));
+        }
+
         log.debug("InlineViewTableButtonGroup: " + t.name);
 }
 
@@ -246,8 +253,83 @@ rule InlineViewTableRowButtonGroup
     	if (rowLinks.selectOne(l | l.getDetail().isDefined()).isDefined()) {
     	    t.buttons.add(s.equivalent("ViewTableDeclarationRowOpenPageButton"));
     	}
+        if (s.isDeleteAllowed()) {
+            t.buttons.add(s.equivalent("ViewTableDeclarationRowDeleteButton"));
+        }
 
         log.debug("TabularReferenceTableRowButtonGroup: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationFilterButton
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Button {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterButton");
+ 		t.name = s.name + "::Filter";
+ 		t.icon = s.equivalent("ViewTableDeclarationFilterButtonIcon");
+    	t.label = "Filter";
+    	t.buttonStyle = "text";
+    	t.actionDefinition = s.equivalent("ViewTableDeclarationFilterActionDefinition");
+
+        log.debug("ViewTableDeclarationFilterButton: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationFilterButtonIcon
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterButtonIcon");
+    	t.name = s.name + "FilterIcon";
+    	t.iconName = "filter";
+
+    	log.debug("ViewTableDeclarationFilterButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationFilterActionDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::FilterActionDefinition {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterActionDefinition");
+ 		t.name = s.name + "::Filter";
+ 		t.targetType = s.referenceType.equivalent("ClassType");
+
+        log.debug("ViewTableDeclarationFilterActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationRefreshButton
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Button {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshButton");
+ 		t.name = s.name + "::Refresh";
+ 		t.icon = s.equivalent("ViewTableDeclarationRefreshButtonIcon");
+    	t.label = "Refresh";
+    	t.buttonStyle = "text";
+    	t.actionDefinition = s.equivalent("ViewTableDeclarationRefreshActionDefinition");
+
+        log.debug("ViewTableDeclarationRefreshButton: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationRefreshButtonIcon
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshButtonIcon");
+    	t.name = s.name + "RefreshIcon";
+    	t.iconName = "refresh";
+
+    	log.debug("ViewTableDeclarationRefreshButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationRefreshActionDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::RefreshActionDefinition {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshActionDefinition");
+ 		t.name = s.name + "::Refresh";
+ 		t.targetType = s.referenceType.equivalent("ClassType");
+
+        log.debug("ViewTableDeclarationRefreshActionDefinition: " + t.name);
 }
 
 @lazy
@@ -269,7 +351,7 @@ rule ViewTableDeclarationRowOpenPageButtonIcon
     transform s: JSL!ViewTableDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowOpenPageButtonIcon");
-    	t.name = s.name + "Icon";
+    	t.name = s.name + "RowOpenIcon";
     	t.iconName = "visibility";
 
     	log.debug("ViewTableDeclarationRowOpenPageButtonIcon: " + t.name);
@@ -304,4 +386,40 @@ rule ViewTableDeclarationOpenPageAction
         t.targetPageDefinition = s.getDetailLink().equivalent("RowLinkPageDefinition");
 
         log.debug("ViewTableDeclarationOpenPageAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationRowDeleteButton
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Button {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteButton");
+ 		t.name = s.name + "::RowDelete";
+ 		t.icon = s.equivalent("ViewTableDeclarationRowDeleteButtonIcon");
+    	t.label = "Delete";
+    	t.buttonStyle = "contained";
+    	t.actionDefinition = s.equivalent("ViewTableDeclarationRowDeleteActionDefinition");
+
+        log.debug("ViewTableDeclarationRowDeleteButton: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationRowDeleteButtonIcon
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteButtonIcon");
+    	t.name = s.name + "RowDeleteIcon";
+    	t.iconName = "delete_forever";
+
+    	log.debug("ViewTableDeclarationRowDeleteButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationRowDeleteActionDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::RowDeleteActionDefinition {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteActionDefinition");
+ 		t.name = s.name + "::RowDelete";
+ 		t.targetType = s.referenceType.equivalent("ClassType");
+
+        log.debug("ViewTableDeclarationRowDeleteActionDefinition: " + t.name);
 }
