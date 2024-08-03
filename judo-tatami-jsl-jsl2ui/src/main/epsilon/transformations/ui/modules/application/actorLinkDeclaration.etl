@@ -58,6 +58,9 @@ rule AccessPageDefinition
             if (link.isCreateAllowed()) {
                 t.actions.add(link.equivalent("ViewLinkDeclarationOpenFormAction"));
             }
+            if (link.isDeleteAllowed()) {
+                t.actions.add(link.equivalent("ViewLinkDeclarationRowDeleteAction"));
+            }
         }
 
         for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
@@ -67,6 +70,14 @@ rule AccessPageDefinition
                 log.info(" - detail: true");
                 t.actions.add(table.equivalent("ViewTableDeclarationOpenPageAction"));
             }
+        }
+
+        t.actions.add(s.equivalent("ViewLinkPageDefinitionBackAction"));
+        if (s.isUpdateAllowed()) {
+            t.actions.add(s.equivalent("ViewLinkPageDefinitionUpdateAction"));
+        }
+        if (s.isDeleteAllowed()) {
+            t.actions.add(s.equivalent("ViewLinkPageDefinitionDeleteAction"));
         }
 
         log.debug("Create AccessPageDefinition: " + t.name);

@@ -354,7 +354,7 @@ rule ViewLinkDeclarationOpenFormButton
     	t.buttonStyle = "contained";
     	t.label = "Create";
     	t.icon = s.equivalent("ViewLinkDeclarationOpenFormButtonIcon");
-    	t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenFormActionDefinition");
+    	t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenCreateFormActionDefinition");
 
         log.debug("ViewLinkDeclarationOpenFormButton: " + t.name);
 }
@@ -371,10 +371,10 @@ rule ViewLinkDeclarationOpenFormButtonIcon
 }
 
 @lazy
-rule ViewLinkDeclarationOpenFormActionDefinition
+rule ViewLinkDeclarationOpenCreateFormActionDefinition
     transform s: JSL!ViewLinkDeclaration
-    to t: UI!ui::OpenFormActionDefinition {
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormActionDefinition");
+    to t: UI!ui::OpenCreateFormActionDefinition {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenCreateFormActionDefinition");
  		t.name = s.name + "::Create";
  		t.isContainedRelationAction = true;
 
@@ -386,7 +386,7 @@ rule ViewLinkDeclarationOpenFormActionDefinition
  		    t.targetType = s.referenceType.equivalent("ClassType");
  		}
 
-        log.debug("ViewLinkDeclarationOpenFormActionDefinition: " + t.name);
+        log.debug("ViewLinkDeclarationOpenCreateFormActionDefinition: " + t.name);
 }
 
 
@@ -398,7 +398,7 @@ rule ViewLinkDeclarationOpenFormAction
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormAction");
 
  		t.name = s.name + "::ViewLinkDeclarationOpenFormAction";
-        t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenFormActionDefinition");
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenCreateFormActionDefinition");
 
         t.targetPageDefinition = s.equivalent("ViewLinkCreateFormPageDefinition");
 
