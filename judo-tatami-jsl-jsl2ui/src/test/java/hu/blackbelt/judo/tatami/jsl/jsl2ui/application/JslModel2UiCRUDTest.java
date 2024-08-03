@@ -1,7 +1,9 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
-import hu.blackbelt.judo.meta.ui.Application;
+import hu.blackbelt.judo.meta.ui.*;
+import hu.blackbelt.judo.meta.ui.data.ClassType;
+import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,8 +14,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class JslModel2UiCRUDTest extends AbstractTest {
@@ -138,5 +142,83 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(1, apps.size());
 
         Application application = apps.get(0);
+
+        List<RelationType> relationTypes = application.getRelationTypes();
+        List<ClassType> classTypes = application.getClassTypes();
+        List<PageContainer> pageContainers = application.getPageContainers();
+        List<PageDefinition> pages = application.getPages();
+        List<Link> links = application.getLinks();
+        List<Table> tables = application.getTables();
+
+        assertEquals(8, relationTypes.size());
+        assertEquals(8, classTypes.size());
+        assertEquals(8, pageContainers.size());
+        assertEquals(8, pages.size());
+        assertEquals(3, links.size());
+        assertEquals(2, tables.size());
+
+
+        assertEquals(Set.of(
+                "NavigationActor::Application::CRUDTestModel::JumperRow::ClassType::jumperRowDetail",
+                "NavigationActor::Application::CRUDTestModel::NavigationActor::ClassType::user",
+                "NavigationActor::Application::CRUDTestModel::RelatedView::ClassType::myJumpers",
+                "NavigationActor::Application::CRUDTestModel::UserView::ClassType::related",
+                "NavigationActor::Application::CRUDTestModel::RelatedView::ClassType::myJumper",
+                "NavigationActor::Application::CRUDTestModel::RelatedView::ClassType::readOnlyJumper",
+                "NavigationActor::Application::CRUDTestModel::RelatedRow::ClassType::detail",
+                "NavigationActor::Application::CRUDTestModel::UserView::ClassType::relatedCollection"
+        ), relationTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        assertEquals(Set.of(
+                "NavigationActor::Application::CRUDTestModel::NavigationActor::ClassType",
+                "NavigationActor::Application::CRUDTestModel::JumperRow::ClassType",
+                "NavigationActor::Application::CRUDTestModel::RelatedForm::ClassType",
+                "NavigationActor::Application::CRUDTestModel::RelatedRow::ClassType",
+                "NavigationActor::Application::CRUDTestModel::UserView::ClassType",
+                "NavigationActor::Application::CRUDTestModel::JumperView::ClassType",
+                "NavigationActor::Application::CRUDTestModel::RelatedView::ClassType",
+                "NavigationActor::Application::CRUDTestModel::JumperForm::ClassType"
+        ), classTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        assertEquals(Set.of(
+                "NavigationActor::Application::CRUDTestModel::NavigationActor::Dashboard",
+                "NavigationActor::Application::CRUDTestModel::UserView::PageContainer",
+                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer",
+                "NavigationActor::Application::CRUDTestModel::JumperView::PageContainer",
+                "NavigationActor::Application::CRUDTestModel::RelatedForm::PageContainer",
+                "NavigationActor::Application::CRUDTestModel::RelatedRow::PageContainer",
+                "NavigationActor::Application::CRUDTestModel::JumperRow::PageContainer",
+                "NavigationActor::Application::CRUDTestModel::JumperForm::PageContainer"
+        ), pageContainers.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        assertEquals(Set.of(
+                "NavigationActor::Application::CRUDTestModel::NavigationActor::DashboardPage",
+                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition",
+                "NavigationActor::Application::CRUDTestModel::RelatedView::myJumper::View::PageDefinition",
+                "NavigationActor::Application::CRUDTestModel::RelatedView::readOnlyJumper::View::PageDefinition",
+                "NavigationActor::Application::CRUDTestModel::JumperRow::jumperRowDetail::View::PageDefinition",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::Create::PageDefinition",
+                "NavigationActor::Application::CRUDTestModel::RelatedRow::detail::View::PageDefinition"
+        ), pages.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        assertEquals(Set.of(
+                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::myJumper",
+                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::readOnlyJumper",
+                "NavigationActor::Application::CRUDTestModel::UserView::PageContainer::UserView::level::related"
+        ), links.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        assertEquals(Set.of(
+                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::myJumpers",
+                "NavigationActor::Application::CRUDTestModel::UserView::PageContainer::UserView::level::relatedCollection"
+        ), tables.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        PageDefinition userPage = pages.stream().filter(p -> p.getName().equals("CRUDTestModel::NavigationActor::user::View::PageDefinition")).findFirst().orElseThrow();
+        PageContainer userPageContainer = userPage.getContainer();
+
+        assertEquals(1, userPageContainer.getLinks().size());
+        assertEquals(1, userPageContainer.getTables().size());
+        assertTrue(userPage.getActions().stream().anyMatch(a -> a.getActionDefinition().getIsDeleteAction()));
+        assertTrue(userPage.getActions().stream().anyMatch(a -> a.getActionDefinition().getIsUpdateAction()));
     }
 }
