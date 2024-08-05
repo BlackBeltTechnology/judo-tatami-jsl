@@ -70,6 +70,15 @@ rule AccessPageDefinition
                 log.info(" - detail: true");
                 t.actions.add(table.equivalent("ViewTableDeclarationOpenPageAction"));
             }
+            if (table.isFilterSupported()) {
+                t.actions.add(table.equivalent("ViewTableDeclarationFilterAction"));
+            }
+            if (table.isRefreshAllowed()) {
+                t.actions.add(table.equivalent("ViewTableDeclarationRefreshAction"));
+            }
+            if (table.isDeleteAllowed()) {
+                t.actions.add(table.equivalent("ViewTableDeclarationRowDeleteAction"));
+            }
         }
 
         t.actions.add(s.equivalent("ViewLinkPageDefinitionBackAction"));

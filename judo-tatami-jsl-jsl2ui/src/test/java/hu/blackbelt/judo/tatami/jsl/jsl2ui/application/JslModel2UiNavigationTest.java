@@ -227,13 +227,16 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         PageDefinition userAccessPage = pages.stream().filter(p -> p.getName().equals("NavigationTestModel::NavigationActor::user::View::PageDefinition")).findFirst().orElseThrow();
         List<Action> userAccessPageActions = userAccessPage.getActions();
 
-        assertEquals(2, userAccessPageActions.size());
+        assertEquals(5, userAccessPageActions.size());
 
-        Action relatedOpenPageAction = userAccessPageActions.stream().filter(a -> a.getName().equals("related::ViewLinkDeclarationOpenPageAction")).findFirst().orElseThrow();
+        Action backAction = userAccessPageActions.stream().filter(a -> a.getName().equals("user::Back")).findFirst().orElseThrow();
+        assertTrue(backAction.getIsBackAction());
+
+        Action relatedOpenPageAction = userAccessPageActions.stream().filter(a -> a.getName().equals("related::OpenPage")).findFirst().orElseThrow();
         assertTrue(relatedOpenPageAction.getIsOpenPageAction());
         assertEquals(pages.stream().filter(p -> p.getName().equals("NavigationTestModel::UserView::related::View::PageDefinition")).findFirst().orElse(null), relatedOpenPageAction.getTargetPageDefinition());
 
-        Action relatedCollectionOpenPageAction = userAccessPageActions.stream().filter(a -> a.getName().equals("relatedCollection::ViewTableDeclarationOpenPageAction")).findFirst().orElseThrow();
+        Action relatedCollectionOpenPageAction = userAccessPageActions.stream().filter(a -> a.getName().equals("relatedCollection::OpenPage")).findFirst().orElseThrow();
         assertTrue(relatedCollectionOpenPageAction.getIsRowOpenPageAction());
         assertEquals(pages.stream().filter(p -> p.getName().equals("NavigationTestModel::RelatedRow::detail::View::PageDefinition")).findFirst().orElse(null), relatedCollectionOpenPageAction.getTargetPageDefinition());
 
@@ -244,11 +247,11 @@ public class JslModel2UiNavigationTest extends AbstractTest {
 
         assertEquals(2, relatedViewPageActions.size());
 
-        Action myJumperOpenPageAction = relatedViewPageActions.stream().filter(a -> a.getName().equals("myJumper::ViewLinkDeclarationOpenPageAction")).findFirst().orElseThrow();
+        Action myJumperOpenPageAction = relatedViewPageActions.stream().filter(a -> a.getName().equals("myJumper::OpenPage")).findFirst().orElseThrow();
         assertTrue(myJumperOpenPageAction.getIsOpenPageAction());
         assertEquals(pages.stream().filter(p -> p.getName().equals("NavigationTestModel::RelatedView::myJumper::View::PageDefinition")).findFirst().orElse(null), myJumperOpenPageAction.getTargetPageDefinition());
 
-        Action myJumpersCollectionOpenPageAction = relatedViewPageActions.stream().filter(a -> a.getName().equals("myJumpers::ViewTableDeclarationOpenPageAction")).findFirst().orElseThrow();
+        Action myJumpersCollectionOpenPageAction = relatedViewPageActions.stream().filter(a -> a.getName().equals("myJumpers::OpenPage")).findFirst().orElseThrow();
         assertTrue(myJumpersCollectionOpenPageAction.getIsRowOpenPageAction());
         assertEquals(pages.stream().filter(p -> p.getName().equals("NavigationTestModel::JumperRow::jumperRowDetail::View::PageDefinition")).findFirst().orElse(null), myJumpersCollectionOpenPageAction.getTargetPageDefinition());
     }

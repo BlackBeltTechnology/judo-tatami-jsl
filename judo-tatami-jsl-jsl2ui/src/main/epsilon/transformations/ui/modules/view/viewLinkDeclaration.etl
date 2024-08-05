@@ -38,6 +38,15 @@ rule ViewLinkPageDefinition
             if (detailLink.isDefined()) {
                 t.actions.add(table.equivalent("ViewTableDeclarationOpenPageAction"));
             }
+            if (table.isFilterSupported()) {
+                t.actions.add(table.equivalent("ViewTableDeclarationFilterAction"));
+            }
+            if (table.isRefreshAllowed()) {
+                t.actions.add(table.equivalent("ViewTableDeclarationRefreshAction"));
+            }
+            if (table.isDeleteAllowed()) {
+                t.actions.add(table.equivalent("ViewTableDeclarationRowDeleteAction"));
+            }
         }
 
         t.actions.add(s.equivalent("ViewLinkPageDefinitionBackAction"));
@@ -59,7 +68,7 @@ rule ViewLinkPageDefinitionBackAction
         guard: actorDeclaration.getAllRelations().contains(s)
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionBackAction");
- 		t.name = s.name + "::ViewLinkPageDefinitionBackAction";
+ 		t.name = s.name + "::Back";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationBackActionDefinition");
 
         log.debug("ViewLinkPageDefinitionBackAction: " + t.name);
@@ -72,7 +81,7 @@ rule ViewLinkPageDefinitionUpdateAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionUpdateAction");
 
- 		t.name = s.name + "::ViewLinkPageDefinitionUpdateAction";
+ 		t.name = s.name + "::Update";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationUpdateActionDefinition");
 
         log.debug("ViewLinkPageDefinitionUpdateAction: " + t.name);
@@ -85,7 +94,7 @@ rule ViewLinkPageDefinitionDeleteAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionDeleteAction");
 
- 		t.name = s.name + "::ViewLinkPageDefinitionDeleteAction";
+ 		t.name = s.name + "::Delete";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationDeleteActionDefinition");
 
         log.debug("ViewLinkPageDefinitionDeleteAction: " + t.name);
@@ -149,7 +158,7 @@ rule ViewLinkCreateFormCreateAction
         var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
         var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
 
- 		t.name = s.name + "::ViewLinkCreateFormCreateAction";
+ 		t.name = s.name + "::Create";
         t.actionDefinition = targetContainer.equivalent("TransferDeclarationCreateActionDefinition");
 
         log.debug("ViewLinkCreateFormCreateAction: " + t.name);
@@ -165,7 +174,7 @@ rule ViewLinkCreateFormBackAction
         var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
         var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
 
- 		t.name = s.name + "::ViewLinkCreateFormBackAction";
+ 		t.name = s.name + "::Back";
         t.actionDefinition = targetContainer.equivalent("TransferDeclarationBackActionDefinition");
 
         log.debug("ViewLinkCreateFormBackAction: " + t.name);
@@ -336,7 +345,7 @@ rule ViewLinkDeclarationOpenPageAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageAction");
 
- 		t.name = s.name + "::ViewLinkDeclarationOpenPageAction";
+ 		t.name = s.name + "::OpenPage";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenPageActionDefinition");
 
         t.targetPageDefinition = s.equivalent("ViewLinkPageDefinition");
@@ -397,7 +406,7 @@ rule ViewLinkDeclarationOpenFormAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormAction");
 
- 		t.name = s.name + "::ViewLinkDeclarationOpenFormAction";
+ 		t.name = s.name + "::OpenForm";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenCreateFormActionDefinition");
 
         t.targetPageDefinition = s.equivalent("ViewLinkCreateFormPageDefinition");
@@ -449,7 +458,7 @@ rule ViewLinkDeclarationRowDeleteAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteAction");
 
- 		t.name = s.name + "::ViewLinkDeclarationRowDeleteAction";
+ 		t.name = s.name + "::RowDelete";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationRowDeleteActionDefinition");
 
         log.debug("ViewLinkDeclarationRowDeleteAction: " + t.name);
