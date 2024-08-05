@@ -229,6 +229,14 @@ public class JslModel2UiNavigationTest extends AbstractTest {
 
         assertEquals(5, userAccessPageActions.size());
 
+        assertEquals(Set.of(
+                "NavigationActor::Application::NavigationTestModel::NavigationActor::user::View::PageDefinition::user::Back",
+                "NavigationActor::Application::NavigationTestModel::NavigationActor::user::View::PageDefinition::related::OpenPage",
+                "NavigationActor::Application::NavigationTestModel::NavigationActor::user::View::PageDefinition::relatedCollection::OpenPage",
+                "NavigationActor::Application::NavigationTestModel::NavigationActor::user::View::PageDefinition::relatedCollection::Filter",
+                "NavigationActor::Application::NavigationTestModel::NavigationActor::user::View::PageDefinition::relatedCollection::Refresh"
+        ), userAccessPageActions.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
         Action backAction = userAccessPageActions.stream().filter(a -> a.getName().equals("user::Back")).findFirst().orElseThrow();
         assertTrue(backAction.getIsBackAction());
 
@@ -245,7 +253,15 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         PageDefinition relatedViewPage = pages.stream().filter(p -> p.getName().equals("NavigationTestModel::RelatedRow::detail::View::PageDefinition")).findFirst().orElseThrow();
         List<Action> relatedViewPageActions = relatedViewPage.getActions();
 
-        assertEquals(2, relatedViewPageActions.size());
+        assertEquals(5, relatedViewPageActions.size());
+
+        assertEquals(Set.of(
+                "NavigationActor::Application::NavigationTestModel::RelatedRow::detail::View::PageDefinition::detail::Back",
+                "NavigationActor::Application::NavigationTestModel::RelatedRow::detail::View::PageDefinition::myJumper::OpenPage",
+                "NavigationActor::Application::NavigationTestModel::RelatedRow::detail::View::PageDefinition::myJumpers::OpenPage",
+                "NavigationActor::Application::NavigationTestModel::RelatedRow::detail::View::PageDefinition::myJumpers::Filter",
+                "NavigationActor::Application::NavigationTestModel::RelatedRow::detail::View::PageDefinition::myJumpers::Refresh"
+        ), relatedViewPageActions.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         Action myJumperOpenPageAction = relatedViewPageActions.stream().filter(a -> a.getName().equals("myJumper::OpenPage")).findFirst().orElseThrow();
         assertTrue(myJumperOpenPageAction.getIsOpenPageAction());

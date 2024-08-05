@@ -92,9 +92,11 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             view RelatedView(Related r) {
                 field String first <= r.first label: "First";
                 field Integer second <= r.second label: "Second";
-                link JumperView readOnlyJumper <= r.theJumper eager:false icon:"jumping" label:"Read only Jumper";
-                link JumperView myJumper <= r.theJumper eager:false icon:"jumping" label:"My Jumper" width:6 create:true update: true delete:true;
-                table JumperRow[] myJumpers <= r.theJumpersCollection eager:false icon:"jumping-all" label:"My Jumpers" width:6 create:true update: true delete:true;
+                group g1 {
+                    link JumperView readOnlyJumper <= r.theJumper eager:false icon:"jumping" label:"Read only Jumper";
+                    link JumperView myJumper <= r.theJumper eager:false icon:"jumping" label:"My Jumper" width:6 create:true update: true delete:true;
+                    table JumperRow[] myJumpers <= r.theJumpersCollection eager:false icon:"jumping-all" label:"My Jumpers" width:6 create:true update: true delete:true;
+                }
 
                 event create onCreate(RelatedForm form);
                 event update onUpdate;
@@ -157,8 +159,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(8, pages.size());
         assertEquals(3, links.size());
         assertEquals(2, tables.size());
-        assertEquals(26, allActions.size());
-
+        assertEquals(36, allActions.size());
 
         assertEquals(Set.of(
                 "NavigationActor::Application::CRUDTestModel::JumperRow::ClassType::jumperRowDetail",
@@ -222,15 +223,17 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         PageContainer relatedRowDetailViewPageContainer = relatedRowDetailViewPageDefinition.getContainer();
 
         assertEquals(Set.of(
-                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::myJumper",
-                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::readOnlyJumper",
+                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::g1::myJumper",
+                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::g1::readOnlyJumper",
                 "NavigationActor::Application::CRUDTestModel::UserView::PageContainer::UserView::level::related"
         ), links.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::myJumpers",
+                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::g1::myJumpers",
                 "NavigationActor::Application::CRUDTestModel::UserView::PageContainer::UserView::level::relatedCollection"
         ), tables.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        // User View page
 
         assertEquals(9, actorUserViewPageDefinition.getActions().size());
         assertEquals(1, actorUserViewPageContainer.getLinks().size());
@@ -247,8 +250,6 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::user::Update",
                 "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::user::Delete"
         ), actorUserViewPageDefinition.getActions().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
-
-        // User View page
 
         Action userViewLinkPageDefinitionBackAction = actorUserViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("user::Back")).findFirst().orElseThrow();
         assertTrue(userViewLinkPageDefinitionBackAction.getIsBackAction());
@@ -299,6 +300,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(relatedView.getActionDefinition().getIsOpenPageAction());
         assertButtonVisuals(relatedView, "View", "eye", "contained");
         assertEquals(relatedViewLinkDeclarationOpenPageAction.getActionDefinition(), relatedView.getActionDefinition());
+        assertEquals(userViewRelatedViewPageDefinition, relatedViewLinkDeclarationOpenPageAction.getTargetPageDefinition());
 
         Button relatedDelete = related.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("related::Delete")).findFirst().orElseThrow();
         assertTrue(relatedDelete.getActionDefinition().getIsRowDeleteAction());
@@ -324,6 +326,36 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(relatedCollectionRefresh.getActionDefinition().getIsRefreshAction());
         assertButtonVisuals(relatedCollectionRefresh, "Refresh", "refresh", "text");
         assertEquals(relatedCollectionViewTableDeclarationRefreshAction.getActionDefinition(), relatedCollectionRefresh.getActionDefinition());
+
+        assertEquals(Set.of(
+                "relatedCollection::View"
+        ), relatedCollection.getRowActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Button relatedCollectionView = relatedCollection.getRowActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("relatedCollection::View")).findFirst().orElseThrow();
+        assertTrue(relatedCollectionView.getActionDefinition().getIsRowOpenPageAction());
+        assertButtonVisuals(relatedCollectionView, "View", "visibility", "contained");
+        assertEquals(relatedCollectionViewTableDeclarationOpenPageAction.getActionDefinition(), relatedCollectionView.getActionDefinition());
+        assertEquals(userViewRelatedViewPageDefinition, relatedViewLinkDeclarationOpenPageAction.getTargetPageDefinition());
+
+        // related RelatedView page
+
+        assertEquals(11, userViewRelatedViewPageDefinition.getActions().size());
+        assertEquals(2, userViewRelatedViewPageContainer.getLinks().size());
+        assertEquals(1, userViewRelatedViewPageContainer.getTables().size());
+
+        assertEquals(Set.of(
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::related::Back",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::related::Update",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::related::Delete",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::readOnlyJumper::OpenPage",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumper::OpenPage",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumper::OpenForm",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumper::RowDelete",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumpers::OpenPage",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumpers::Filter",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumpers::Refresh",
+                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumpers::RowDelete"
+        ), userViewRelatedViewPageDefinition.getActions().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
     }
 
     public static void assertButtonVisuals(Button button, String label, String icon, String style) {

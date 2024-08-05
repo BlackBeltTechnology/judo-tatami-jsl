@@ -54,12 +54,12 @@ rule AccessPageDefinition
         */
 
         for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
-            t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
+            t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", "AccessPageDefinition"));
             if (link.isCreateAllowed()) {
-                t.actions.add(link.equivalent("ViewLinkDeclarationOpenFormAction"));
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", "AccessPageDefinition"));
             }
             if (link.isDeleteAllowed()) {
-                t.actions.add(link.equivalent("ViewLinkDeclarationRowDeleteAction"));
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", "AccessPageDefinition"));
             }
         }
 
@@ -67,17 +67,16 @@ rule AccessPageDefinition
             var detailLink = table.getDetailLink();
 
             if (detailLink.isDefined()) {
-                log.info(" - detail: true");
-                t.actions.add(table.equivalent("ViewTableDeclarationOpenPageAction"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", "AccessPageDefinition"));
             }
             if (table.isFilterSupported()) {
-                t.actions.add(table.equivalent("ViewTableDeclarationFilterAction"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationFilterAction", "AccessPageDefinition"));
             }
             if (table.isRefreshAllowed()) {
-                t.actions.add(table.equivalent("ViewTableDeclarationRefreshAction"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", "AccessPageDefinition"));
             }
             if (table.isDeleteAllowed()) {
-                t.actions.add(table.equivalent("ViewTableDeclarationRowDeleteAction"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "AccessPageDefinition"));
             }
         }
 
