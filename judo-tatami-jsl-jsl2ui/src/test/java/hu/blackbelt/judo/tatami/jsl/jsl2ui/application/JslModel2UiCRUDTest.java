@@ -38,17 +38,9 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         return log;
     }
 
-    @BeforeAll
-    static void prepareTestFolders() throws IOException {
-        if (!Files.exists(Paths.get(TARGET_TEST_CLASSES))) {
-            Files.createDirectories(Paths.get(TARGET_TEST_CLASSES));
-        }
-    }
-
-    @Test
-    void testCRUD() throws Exception {
-        jslModel = JslParser.getModelFromStrings("CRUDTestModel", List.of("""
-            model CRUDTestModel;
+    private static String createModelString(String name) {
+        return """
+            model %s;
 
             import judo::types;
 
@@ -135,7 +127,19 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             actor NavigationActor human {
                 link UserView user <= User.any() label:"User" icon:"tools" update:true delete:true;
             }
-        """));
+        """.formatted(name);
+    }
+
+    @BeforeAll
+    static void prepareTestFolders() throws IOException {
+        if (!Files.exists(Paths.get(TARGET_TEST_CLASSES))) {
+            Files.createDirectories(Paths.get(TARGET_TEST_CLASSES));
+        }
+    }
+
+    @Test
+    void testSummaryCRUD() throws Exception {
+        jslModel = JslParser.getModelFromStrings("SummaryCRUD", List.of(createModelString("SummaryCRUD")));
 
         transform();
 
@@ -161,130 +165,133 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(2, tables.size());
         assertEquals(46, allActions.size());
 
+        PageDefinition actorDashboardPage = pages.stream().filter(p -> p.getName().equals("SummaryCRUD::NavigationActor::DashboardPage")).findFirst().orElseThrow();
+
         assertEquals(Set.of(
-                "NavigationActor::Application::CRUDTestModel::JumperRow::ClassType::jumperRowDetail",
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::ClassType::user",
-                "NavigationActor::Application::CRUDTestModel::RelatedView::ClassType::myJumpers",
-                "NavigationActor::Application::CRUDTestModel::UserView::ClassType::related",
-                "NavigationActor::Application::CRUDTestModel::RelatedView::ClassType::myJumper",
-                "NavigationActor::Application::CRUDTestModel::RelatedView::ClassType::readOnlyJumper",
-                "NavigationActor::Application::CRUDTestModel::RelatedRow::ClassType::detail",
-                "NavigationActor::Application::CRUDTestModel::UserView::ClassType::relatedCollection"
+                "NavigationActor::Application::SummaryCRUD::JumperRow::ClassType::jumperRowDetail",
+                "NavigationActor::Application::SummaryCRUD::NavigationActor::ClassType::user",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumpers",
+                "NavigationActor::Application::SummaryCRUD::UserView::ClassType::related",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumper",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::readOnlyJumper",
+                "NavigationActor::Application::SummaryCRUD::RelatedRow::ClassType::detail",
+                "NavigationActor::Application::SummaryCRUD::UserView::ClassType::relatedCollection"
         ), relationTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::ClassType",
-                "NavigationActor::Application::CRUDTestModel::JumperRow::ClassType",
-                "NavigationActor::Application::CRUDTestModel::RelatedForm::ClassType",
-                "NavigationActor::Application::CRUDTestModel::RelatedRow::ClassType",
-                "NavigationActor::Application::CRUDTestModel::UserView::ClassType",
-                "NavigationActor::Application::CRUDTestModel::JumperView::ClassType",
-                "NavigationActor::Application::CRUDTestModel::RelatedView::ClassType",
-                "NavigationActor::Application::CRUDTestModel::JumperForm::ClassType"
+                "NavigationActor::Application::SummaryCRUD::NavigationActor::ClassType",
+                "NavigationActor::Application::SummaryCRUD::JumperRow::ClassType",
+                "NavigationActor::Application::SummaryCRUD::RelatedForm::ClassType",
+                "NavigationActor::Application::SummaryCRUD::RelatedRow::ClassType",
+                "NavigationActor::Application::SummaryCRUD::UserView::ClassType",
+                "NavigationActor::Application::SummaryCRUD::JumperView::ClassType",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType",
+                "NavigationActor::Application::SummaryCRUD::JumperForm::ClassType"
         ), classTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::Dashboard",
-                "NavigationActor::Application::CRUDTestModel::UserView::PageContainer",
-                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer",
-                "NavigationActor::Application::CRUDTestModel::JumperView::PageContainer",
-                "NavigationActor::Application::CRUDTestModel::RelatedForm::PageContainer",
-                "NavigationActor::Application::CRUDTestModel::RelatedRow::PageContainer",
-                "NavigationActor::Application::CRUDTestModel::JumperRow::PageContainer",
-                "NavigationActor::Application::CRUDTestModel::JumperForm::PageContainer"
+                "NavigationActor::Application::SummaryCRUD::NavigationActor::Dashboard",
+                "NavigationActor::Application::SummaryCRUD::UserView::PageContainer",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::PageContainer",
+                "NavigationActor::Application::SummaryCRUD::JumperView::PageContainer",
+                "NavigationActor::Application::SummaryCRUD::RelatedForm::PageContainer",
+                "NavigationActor::Application::SummaryCRUD::RelatedRow::PageContainer",
+                "NavigationActor::Application::SummaryCRUD::JumperRow::PageContainer",
+                "NavigationActor::Application::SummaryCRUD::JumperForm::PageContainer"
         ), pageContainers.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::DashboardPage",
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition",
-                "NavigationActor::Application::CRUDTestModel::RelatedView::myJumper::View::PageDefinition",
-                "NavigationActor::Application::CRUDTestModel::RelatedView::readOnlyJumper::View::PageDefinition",
-                "NavigationActor::Application::CRUDTestModel::JumperRow::jumperRowDetail::View::PageDefinition",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::Create::PageDefinition",
-                "NavigationActor::Application::CRUDTestModel::RelatedRow::detail::View::PageDefinition"
+                "NavigationActor::Application::SummaryCRUD::NavigationActor::DashboardPage",
+                "NavigationActor::Application::SummaryCRUD::NavigationActor::user::View::PageDefinition",
+                "NavigationActor::Application::SummaryCRUD::UserView::related::View::PageDefinition",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::myJumper::View::PageDefinition",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::readOnlyJumper::View::PageDefinition",
+                "NavigationActor::Application::SummaryCRUD::JumperRow::jumperRowDetail::View::PageDefinition",
+                "NavigationActor::Application::SummaryCRUD::UserView::related::Create::PageDefinition",
+                "NavigationActor::Application::SummaryCRUD::RelatedRow::detail::View::PageDefinition"
         ), pages.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
-        PageDefinition actorDashboardPage = pages.stream().filter(p -> p.getName().equals("CRUDTestModel::NavigationActor::DashboardPage")).findFirst().orElseThrow();
-        PageDefinition actorUserViewPageDefinition = pages.stream().filter(p -> p.getName().equals("CRUDTestModel::NavigationActor::user::View::PageDefinition")).findFirst().orElseThrow();
-        PageDefinition userViewRelatedViewPageDefinition = pages.stream().filter(p -> p.getName().equals("CRUDTestModel::UserView::related::View::PageDefinition")).findFirst().orElseThrow();
-        PageDefinition relatedViewReadOnlyJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("CRUDTestModel::RelatedView::readOnlyJumper::View::PageDefinition")).findFirst().orElseThrow();
-        PageDefinition relatedViewMyJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("CRUDTestModel::RelatedView::myJumper::View::PageDefinition")).findFirst().orElseThrow();
-        PageDefinition jumperRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("CRUDTestModel::JumperRow::jumperRowDetail::View::PageDefinition")).findFirst().orElseThrow();
-        PageDefinition userViewRelatedCreatePageDefinition = pages.stream().filter(p -> p.getName().equals("CRUDTestModel::UserView::related::Create::PageDefinition")).findFirst().orElseThrow();
-        PageDefinition relatedRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("CRUDTestModel::RelatedRow::detail::View::PageDefinition")).findFirst().orElseThrow();
-
-        PageContainer actorUserViewPageContainer = actorUserViewPageDefinition.getContainer();
-        PageContainer userViewRelatedViewPageContainer = userViewRelatedViewPageDefinition.getContainer();
-        PageContainer relatedViewReadOnlyJumperViewPageContainer = relatedViewReadOnlyJumperViewPageDefinition.getContainer();
-        PageContainer relatedViewMyJumperViewPageContainer = relatedViewMyJumperViewPageDefinition.getContainer();
-        PageContainer jumperRowDetailViewPageContainer = jumperRowDetailViewPageDefinition.getContainer();
-        PageContainer userViewRelatedCreatePageContainer = userViewRelatedCreatePageDefinition.getContainer();
-        PageContainer relatedRowDetailViewPageContainer = relatedRowDetailViewPageDefinition.getContainer();
-
         assertEquals(Set.of(
-                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::g1::myJumper",
-                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::g1::readOnlyJumper",
-                "NavigationActor::Application::CRUDTestModel::UserView::PageContainer::UserView::level::related"
+                "NavigationActor::Application::SummaryCRUD::RelatedView::PageContainer::RelatedView::g1::myJumper",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::PageContainer::RelatedView::g1::readOnlyJumper",
+                "NavigationActor::Application::SummaryCRUD::UserView::PageContainer::UserView::level::related"
         ), links.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "NavigationActor::Application::CRUDTestModel::RelatedView::PageContainer::RelatedView::g1::myJumpers",
-                "NavigationActor::Application::CRUDTestModel::UserView::PageContainer::UserView::level::relatedCollection"
+                "NavigationActor::Application::SummaryCRUD::RelatedView::PageContainer::RelatedView::g1::myJumpers",
+                "NavigationActor::Application::SummaryCRUD::UserView::PageContainer::UserView::level::relatedCollection"
         ), tables.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+    }
 
-        // User View page
+    @Test
+    void testAccessViewCRUD() throws Exception {
+        jslModel = JslParser.getModelFromStrings("AccessViewCRUD", List.of(createModelString("AccessViewCRUD")));
 
-        assertEquals(10, actorUserViewPageDefinition.getActions().size());
-        assertEquals(1, actorUserViewPageContainer.getLinks().size());
-        assertEquals(1, actorUserViewPageContainer.getTables().size());
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        Application application = apps.get(0);
+
+        List<PageDefinition> pages = application.getPages();
+
+        PageDefinition pageDefinition = pages.stream().filter(p -> p.getName().equals("AccessViewCRUD::NavigationActor::user::View::PageDefinition")).findFirst().orElseThrow();
+        PageDefinition userViewRelatedViewPageDefinition = pages.stream().filter(p -> p.getName().equals("AccessViewCRUD::UserView::related::View::PageDefinition")).findFirst().orElseThrow();
+        PageDefinition userViewRelatedCreatePageDefinition = pages.stream().filter(p -> p.getName().equals("AccessViewCRUD::UserView::related::Create::PageDefinition")).findFirst().orElseThrow();
+        PageDefinition relatedRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("AccessViewCRUD::RelatedRow::detail::View::PageDefinition")).findFirst().orElseThrow();
+
+        PageContainer pageContainer = pageDefinition.getContainer();
+
+        assertEquals(10, pageDefinition.getActions().size());
+        assertEquals(1, pageContainer.getLinks().size());
+        assertEquals(1, pageContainer.getTables().size());
 
         assertEquals(Set.of(
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::related::OpenPage",
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::related::OpenForm",
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::related::RowDelete",
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::relatedCollection::OpenPage",
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::relatedCollection::Filter",
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::relatedCollection::Refresh",
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::user::Back",
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::user::Refresh",
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::user::Update",
-                "NavigationActor::Application::CRUDTestModel::NavigationActor::user::View::PageDefinition::user::Delete"
-        ), actorUserViewPageDefinition.getActions().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::related::OpenPage",
+                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::related::OpenForm",
+                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::related::RowDelete",
+                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::relatedCollection::OpenPage",
+                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::relatedCollection::Filter",
+                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::relatedCollection::Refresh",
+                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::user::Back",
+                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::user::Refresh",
+                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::user::Update",
+                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::user::Delete"
+        ), pageDefinition.getActions().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
-        Action userViewLinkPageDefinitionBackAction = actorUserViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("user::Back")).findFirst().orElseThrow();
-        assertTrue(userViewLinkPageDefinitionBackAction.getIsBackAction());
+        Action backAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("user::Back")).findFirst().orElseThrow();
+        assertTrue(backAction.getIsBackAction());
 
-        Action userViewLinkPageDefinitionUpdateAction = actorUserViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("user::Update")).findFirst().orElseThrow();
-        assertTrue(userViewLinkPageDefinitionUpdateAction.getIsUpdateAction());
+        Action updateAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("user::Update")).findFirst().orElseThrow();
+        assertTrue(updateAction.getIsUpdateAction());
 
-        Action userViewLinkPageDefinitionDeleteAction = actorUserViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("user::Delete")).findFirst().orElseThrow();
-        assertTrue(userViewLinkPageDefinitionDeleteAction.getIsDeleteAction());
+        Action deleteAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("user::Delete")).findFirst().orElseThrow();
+        assertTrue(deleteAction.getIsDeleteAction());
 
-        Action relatedViewLinkDeclarationOpenPageAction = actorUserViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("related::OpenPage")).findFirst().orElseThrow();
-        assertTrue(relatedViewLinkDeclarationOpenPageAction.getIsOpenPageAction());
-        assertEquals(userViewRelatedViewPageDefinition, relatedViewLinkDeclarationOpenPageAction.getTargetPageDefinition());
+        Action relatedOpenPageAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("related::OpenPage")).findFirst().orElseThrow();
+        assertTrue(relatedOpenPageAction.getIsOpenPageAction());
+        assertEquals(userViewRelatedViewPageDefinition, relatedOpenPageAction.getTargetPageDefinition());
 
-        Action relatedViewLinkDeclarationOpenFormAction = actorUserViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("related::OpenForm")).findFirst().orElseThrow();
-        assertTrue(relatedViewLinkDeclarationOpenFormAction.getIsOpenFormAction());
-        assertEquals(userViewRelatedCreatePageDefinition, relatedViewLinkDeclarationOpenFormAction.getTargetPageDefinition());
+        Action relatedOpenFormAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("related::OpenForm")).findFirst().orElseThrow();
+        assertTrue(relatedOpenFormAction.getIsOpenFormAction());
+        assertEquals(userViewRelatedCreatePageDefinition, relatedOpenFormAction.getTargetPageDefinition());
 
-        Action relatedViewLinkDeclarationRowDeleteAction = actorUserViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("related::RowDelete")).findFirst().orElseThrow();
-        assertTrue(relatedViewLinkDeclarationRowDeleteAction.getIsRowDeleteAction());
+        Action relatedRowDeleteAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("related::RowDelete")).findFirst().orElseThrow();
+        assertTrue(relatedRowDeleteAction.getIsRowDeleteAction());
 
-        Action relatedCollectionViewTableDeclarationOpenPageAction = actorUserViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("relatedCollection::OpenPage")).findFirst().orElseThrow();
-        assertTrue(relatedCollectionViewTableDeclarationOpenPageAction.getIsRowOpenPageAction());
-        assertEquals(relatedRowDetailViewPageDefinition, relatedCollectionViewTableDeclarationOpenPageAction.getTargetPageDefinition());
+        Action relatedCollectionOpenPageAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("relatedCollection::OpenPage")).findFirst().orElseThrow();
+        assertTrue(relatedCollectionOpenPageAction.getIsRowOpenPageAction());
+        assertEquals(relatedRowDetailViewPageDefinition, relatedCollectionOpenPageAction.getTargetPageDefinition());
 
-        Action relatedCollectionViewTableDeclarationFilterAction = actorUserViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("relatedCollection::Filter")).findFirst().orElseThrow();
-        assertTrue(relatedCollectionViewTableDeclarationFilterAction.getIsFilterAction());
+        Action relatedCollectionFilterAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("relatedCollection::Filter")).findFirst().orElseThrow();
+        assertTrue(relatedCollectionFilterAction.getIsFilterAction());
 
-        Action relatedCollectionViewTableDeclarationRefreshAction = actorUserViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("relatedCollection::Refresh")).findFirst().orElseThrow();
-        assertTrue(relatedCollectionViewTableDeclarationRefreshAction.getIsRefreshAction());
+        Action relatedCollectionRefreshAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("relatedCollection::Refresh")).findFirst().orElseThrow();
+        assertTrue(relatedCollectionRefreshAction.getIsRefreshAction());
 
         // - Link - related
 
-        Link related = (Link) actorUserViewPageContainer.getLinks().stream().filter(l -> ((Link) l).getName().equals("related")).findFirst().orElseThrow();
+        Link related = (Link) pageContainer.getLinks().stream().filter(l -> ((Link) l).getName().equals("related")).findFirst().orElseThrow();
         assertEquals("related", related.getDataElement().getName());
         assertEquals(Set.of(
                 "related::Create::Open",
@@ -295,22 +302,22 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         Button relatedCreateOpen = related.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("related::Create::Open")).findFirst().orElseThrow();
         assertTrue(relatedCreateOpen.getActionDefinition().getIsOpenCreateFormAction());
         assertButtonVisuals(relatedCreateOpen, "Create", "note-add", "contained");
-        assertEquals(relatedViewLinkDeclarationOpenFormAction.getActionDefinition(), relatedCreateOpen.getActionDefinition());
+        assertEquals(relatedOpenFormAction.getActionDefinition(), relatedCreateOpen.getActionDefinition());
 
         Button relatedView = related.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("related::View")).findFirst().orElseThrow();
         assertTrue(relatedView.getActionDefinition().getIsOpenPageAction());
         assertButtonVisuals(relatedView, "View", "eye", "contained");
-        assertEquals(relatedViewLinkDeclarationOpenPageAction.getActionDefinition(), relatedView.getActionDefinition());
-        assertEquals(userViewRelatedViewPageDefinition, relatedViewLinkDeclarationOpenPageAction.getTargetPageDefinition());
+        assertEquals(relatedOpenPageAction.getActionDefinition(), relatedView.getActionDefinition());
+        assertEquals(userViewRelatedViewPageDefinition, relatedOpenPageAction.getTargetPageDefinition());
 
         Button relatedDelete = related.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("related::Delete")).findFirst().orElseThrow();
         assertTrue(relatedDelete.getActionDefinition().getIsRowDeleteAction());
         assertButtonVisuals(relatedDelete, "Delete", "delete_forever", "contained");
-        assertEquals(relatedViewLinkDeclarationRowDeleteAction.getActionDefinition(), relatedDelete.getActionDefinition());
+        assertEquals(relatedRowDeleteAction.getActionDefinition(), relatedDelete.getActionDefinition());
 
         // - Table - relatedCollection
 
-        Table relatedCollection = (Table) actorUserViewPageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("relatedCollection")).findFirst().orElseThrow();
+        Table relatedCollection = (Table) pageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("relatedCollection")).findFirst().orElseThrow();
         assertEquals("relatedCollection", relatedCollection.getDataElement().getName());
 
         assertEquals(Set.of(
@@ -321,12 +328,12 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         Button relatedCollectionFilter = relatedCollection.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("relatedCollection::Filter")).findFirst().orElseThrow();
         assertTrue(relatedCollectionFilter.getActionDefinition().getIsFilterAction());
         assertButtonVisuals(relatedCollectionFilter, "Filter", "filter", "text");
-        assertEquals(relatedCollectionViewTableDeclarationFilterAction.getActionDefinition(), relatedCollectionFilter.getActionDefinition());
+        assertEquals(relatedCollectionFilterAction.getActionDefinition(), relatedCollectionFilter.getActionDefinition());
 
         Button relatedCollectionRefresh = relatedCollection.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("relatedCollection::Refresh")).findFirst().orElseThrow();
         assertTrue(relatedCollectionRefresh.getActionDefinition().getIsRefreshAction());
         assertButtonVisuals(relatedCollectionRefresh, "Refresh", "refresh", "text");
-        assertEquals(relatedCollectionViewTableDeclarationRefreshAction.getActionDefinition(), relatedCollectionRefresh.getActionDefinition());
+        assertEquals(relatedCollectionRefreshAction.getActionDefinition(), relatedCollectionRefresh.getActionDefinition());
 
         assertEquals(Set.of(
                 "relatedCollection::View"
@@ -335,80 +342,98 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         Button relatedCollectionView = relatedCollection.getRowActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("relatedCollection::View")).findFirst().orElseThrow();
         assertTrue(relatedCollectionView.getActionDefinition().getIsRowOpenPageAction());
         assertButtonVisuals(relatedCollectionView, "View", "visibility", "contained");
-        assertEquals(relatedCollectionViewTableDeclarationOpenPageAction.getActionDefinition(), relatedCollectionView.getActionDefinition());
-        assertEquals(userViewRelatedViewPageDefinition, relatedViewLinkDeclarationOpenPageAction.getTargetPageDefinition());
+        assertEquals(relatedCollectionOpenPageAction.getActionDefinition(), relatedCollectionView.getActionDefinition());
+        assertEquals(userViewRelatedViewPageDefinition, relatedOpenPageAction.getTargetPageDefinition());
 
-        // related RelatedView page
+    }
 
-        assertEquals(14, userViewRelatedViewPageDefinition.getActions().size());
-        assertEquals(2, userViewRelatedViewPageContainer.getLinks().size());
-        assertEquals(1, userViewRelatedViewPageContainer.getTables().size());
+    @Test
+    void testSingleRelationViewCRUD() throws Exception {
+        jslModel = JslParser.getModelFromStrings("SingleRelationViewCRUD", List.of(createModelString("SingleRelationViewCRUD")));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        Application application = apps.get(0);
+        List<PageDefinition> pages = application.getPages();
+
+        PageDefinition pageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::UserView::related::View::PageDefinition")).findFirst().orElseThrow();
+        PageContainer pageContainer = pageDefinition.getContainer();
+
+        PageDefinition readOnlyJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::readOnlyJumper::View::PageDefinition")).findFirst().orElseThrow();
+        PageDefinition myJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::myJumper::View::PageDefinition")).findFirst().orElseThrow();
+        PageDefinition jumperRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::JumperRow::jumperRowDetail::View::PageDefinition")).findFirst().orElseThrow();
+
+        assertEquals(14, pageDefinition.getActions().size());
+        assertEquals(2, pageContainer.getLinks().size());
+        assertEquals(1, pageContainer.getTables().size());
 
         assertEquals(Set.of(
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::related::Back",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::related::Refresh",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::related::Update",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::related::Delete",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::readOnlyJumper::OpenPage",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::readOnlyJumper::Refresh",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumper::OpenPage",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumper::Refresh",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumper::OpenForm",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumper::RowDelete",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumpers::OpenPage",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumpers::Filter",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumpers::Refresh",
-                "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumpers::RowDelete"
-        ), userViewRelatedViewPageDefinition.getActions().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::related::Back",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::related::Refresh",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::related::Update",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::related::Delete",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::readOnlyJumper::OpenPage",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::readOnlyJumper::Refresh",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumper::OpenPage",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumper::Refresh",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumper::OpenForm",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumper::RowDelete",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumpers::OpenPage",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumpers::Filter",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumpers::Refresh",
+                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumpers::RowDelete"
+        ), pageDefinition.getActions().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
-        Action userViewRelatedViewPageDefinitionBackAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Back")).findFirst().orElseThrow();
-        assertTrue(userViewRelatedViewPageDefinitionBackAction.getIsBackAction());
+        Action BackAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Back")).findFirst().orElseThrow();
+        assertTrue(BackAction.getIsBackAction());
 
-        Action userViewRelatedViewPageDefinitionRefreshAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Refresh")).findFirst().orElseThrow();
-        assertTrue(userViewRelatedViewPageDefinitionRefreshAction.getIsRefreshAction());
+        Action refreshAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Refresh")).findFirst().orElseThrow();
+        assertTrue(refreshAction.getIsRefreshAction());
 
-        Action userViewRelatedViewPageDefinitionUpdateAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Update")).findFirst().orElseThrow();
-        assertTrue(userViewRelatedViewPageDefinitionUpdateAction.getIsUpdateAction());
+        Action updateAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Update")).findFirst().orElseThrow();
+        assertTrue(updateAction.getIsUpdateAction());
 
-        Action userViewRelatedViewPageDefinitionDeleteAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Delete")).findFirst().orElseThrow();
-        assertTrue(userViewRelatedViewPageDefinitionDeleteAction.getIsDeleteAction());
+        Action deleteAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Delete")).findFirst().orElseThrow();
+        assertTrue(deleteAction.getIsDeleteAction());
 
-        Action readOnlyJumperOpenPageAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("readOnlyJumper::OpenPage")).findFirst().orElseThrow();
+        Action readOnlyJumperOpenPageAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("readOnlyJumper::OpenPage")).findFirst().orElseThrow();
         assertTrue(readOnlyJumperOpenPageAction.getIsOpenPageAction());
-        assertEquals(relatedViewReadOnlyJumperViewPageDefinition, readOnlyJumperOpenPageAction.getTargetPageDefinition());
+        assertEquals(readOnlyJumperViewPageDefinition, readOnlyJumperOpenPageAction.getTargetPageDefinition());
 
-        Action readOnlyJumperRefreshAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("readOnlyJumper::Refresh")).findFirst().orElseThrow();
+        Action readOnlyJumperRefreshAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("readOnlyJumper::Refresh")).findFirst().orElseThrow();
         assertTrue(readOnlyJumperRefreshAction.getIsRefreshAction());
 
-        Action myJumperOpenPageAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::OpenPage")).findFirst().orElseThrow();
+        Action myJumperOpenPageAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::OpenPage")).findFirst().orElseThrow();
         assertTrue(myJumperOpenPageAction.getIsOpenPageAction());
-        assertEquals(relatedViewMyJumperViewPageDefinition, myJumperOpenPageAction.getTargetPageDefinition());
+        assertEquals(myJumperViewPageDefinition, myJumperOpenPageAction.getTargetPageDefinition());
 
-        Action myJumperOpenFormAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::OpenForm")).findFirst().orElseThrow();
+        Action myJumperOpenFormAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::OpenForm")).findFirst().orElseThrow();
         assertTrue(myJumperOpenFormAction.getIsOpenFormAction());
 
-        Action myJumperRefreshAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::Refresh")).findFirst().orElseThrow();
+        Action myJumperRefreshAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::Refresh")).findFirst().orElseThrow();
         assertTrue(myJumperRefreshAction.getIsRefreshAction());
 
-        Action myJumperRowDeleteAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::RowDelete")).findFirst().orElseThrow();
+        Action myJumperRowDeleteAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::RowDelete")).findFirst().orElseThrow();
         assertTrue(myJumperRowDeleteAction.getIsRowDeleteAction());
 
-        Action myJumpersOpenPageAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::OpenPage")).findFirst().orElseThrow();
+        Action myJumpersOpenPageAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::OpenPage")).findFirst().orElseThrow();
         assertTrue(myJumpersOpenPageAction.getIsRowOpenPageAction());
         assertEquals(jumperRowDetailViewPageDefinition, myJumpersOpenPageAction.getTargetPageDefinition());
 
-        Action myJumpersFilterAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::Filter")).findFirst().orElseThrow();
+        Action myJumpersFilterAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::Filter")).findFirst().orElseThrow();
         assertTrue(myJumpersFilterAction.getIsFilterAction());
 
-        Action myJumpersRefreshAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::Refresh")).findFirst().orElseThrow();
+        Action myJumpersRefreshAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::Refresh")).findFirst().orElseThrow();
         assertTrue(myJumpersRefreshAction.getIsRefreshAction());
 
-        Action myJumpersRowDeleteAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::RowDelete")).findFirst().orElseThrow();
+        Action myJumpersRowDeleteAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::RowDelete")).findFirst().orElseThrow();
         assertTrue(myJumpersRowDeleteAction.getIsRowDeleteAction());
 
         // - link readOnlyJumper
 
-        Link readOnlyJumper = (Link) userViewRelatedViewPageContainer.getLinks().stream().filter(l -> ((Link) l).getName().equals("readOnlyJumper")).findFirst().orElseThrow();
+        Link readOnlyJumper = (Link) pageContainer.getLinks().stream().filter(l -> ((Link) l).getName().equals("readOnlyJumper")).findFirst().orElseThrow();
         assertEquals("readOnlyJumper", readOnlyJumper.getDataElement().getName());
         assertEquals(Set.of(
                 "readOnlyJumper::View"
@@ -418,11 +443,11 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(readOnlyJumperView.getActionDefinition().getIsOpenPageAction());
         assertButtonVisuals(readOnlyJumperView, "View", "eye", "contained");
         assertEquals(readOnlyJumperOpenPageAction.getActionDefinition(), readOnlyJumperView.getActionDefinition());
-        assertEquals(relatedViewReadOnlyJumperViewPageDefinition, readOnlyJumperOpenPageAction.getTargetPageDefinition());
+        assertEquals(readOnlyJumperViewPageDefinition, readOnlyJumperOpenPageAction.getTargetPageDefinition());
 
         // - Link - myJumper
 
-        Link myJumper = (Link) userViewRelatedViewPageContainer.getLinks().stream().filter(l -> ((Link) l).getName().equals("myJumper")).findFirst().orElseThrow();
+        Link myJumper = (Link) pageContainer.getLinks().stream().filter(l -> ((Link) l).getName().equals("myJumper")).findFirst().orElseThrow();
         assertEquals("myJumper", myJumper.getDataElement().getName());
         assertEquals(Set.of(
                 "myJumper::Create::Open",
@@ -439,7 +464,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(myJumperView.getActionDefinition().getIsOpenPageAction());
         assertButtonVisuals(myJumperView, "View", "eye", "contained");
         assertEquals(myJumperOpenPageAction.getActionDefinition(), myJumperView.getActionDefinition());
-        assertEquals(userViewRelatedViewPageDefinition, relatedViewLinkDeclarationOpenPageAction.getTargetPageDefinition());
+        assertEquals(myJumperViewPageDefinition, myJumperOpenPageAction.getTargetPageDefinition());
 
         Button myJumperDelete = myJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumper::Delete")).findFirst().orElseThrow();
         assertTrue(myJumperDelete.getActionDefinition().getIsRowDeleteAction());
@@ -448,7 +473,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         // - Table - myJumpers
 
-        Table myJumpers = (Table) userViewRelatedViewPageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("myJumpers")).findFirst().orElseThrow();
+        Table myJumpers = (Table) pageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("myJumpers")).findFirst().orElseThrow();
         assertEquals("myJumpers", myJumpers.getDataElement().getName());
 
         assertEquals(Set.of(
@@ -475,7 +500,164 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(myJumpersView.getActionDefinition().getIsRowOpenPageAction());
         assertButtonVisuals(myJumpersView, "View", "visibility", "contained");
         assertEquals(myJumpersOpenPageAction.getActionDefinition(), myJumpersView.getActionDefinition());
-        assertEquals(userViewRelatedViewPageDefinition, relatedViewLinkDeclarationOpenPageAction.getTargetPageDefinition());
+        assertEquals(jumperRowDetailViewPageDefinition, myJumpersOpenPageAction.getTargetPageDefinition());
+
+        Button myJumpersRowDelete = myJumpers.getRowActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::RowDelete")).findFirst().orElseThrow();
+        assertTrue(myJumpersRowDelete.getActionDefinition().getIsRowDeleteAction());
+        assertButtonVisuals(myJumpersRowDelete, "Delete", "delete_forever", "contained");
+        assertEquals(myJumpersRowDeleteAction.getActionDefinition(), myJumpersRowDelete.getActionDefinition());
+
+    }
+
+    @Test
+    void testRelatedRowDetailViewCRUD() throws Exception {
+        // relatedCollection row's RelatedView page
+        jslModel = JslParser.getModelFromStrings("RelatedRowDetailViewCRUD", List.of(createModelString("RelatedRowDetailViewCRUD")));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        Application application = apps.get(0);
+        List<PageDefinition> pages = application.getPages();
+
+        PageDefinition pageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition")).findFirst().orElseThrow();
+        PageContainer pageContainer = pageDefinition.getContainer();
+
+        PageDefinition readOnlyJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::RelatedView::readOnlyJumper::View::PageDefinition")).findFirst().orElseThrow();
+
+        PageDefinition myJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::RelatedView::myJumper::View::PageDefinition")).findFirst().orElseThrow();
+
+        PageDefinition jumperRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::JumperRow::jumperRowDetail::View::PageDefinition")).findFirst().orElseThrow();
+
+        assertEquals(12, pageDefinition.getActions().size());
+        assertEquals(2, pageContainer.getLinks().size());
+        assertEquals(1, pageContainer.getTables().size());
+
+        assertEquals(Set.of(
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::detail::Back",
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::detail::Refresh",
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::readOnlyJumper::OpenPage",
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::readOnlyJumper::Refresh",
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumper::OpenPage",
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumper::Refresh",
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumper::OpenForm",
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumper::RowDelete",
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumpers::OpenPage",
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumpers::Filter",
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumpers::Refresh",
+                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumpers::RowDelete"
+        ), pageDefinition.getActions().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        Action BackAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("detail::Back")).findFirst().orElseThrow();
+        assertTrue(BackAction.getIsBackAction());
+
+        Action refreshAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("detail::Refresh")).findFirst().orElseThrow();
+        assertTrue(refreshAction.getIsRefreshAction());
+
+        Action readOnlyJumperOpenPageAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("readOnlyJumper::OpenPage")).findFirst().orElseThrow();
+        assertTrue(readOnlyJumperOpenPageAction.getIsOpenPageAction());
+        assertEquals(readOnlyJumperViewPageDefinition, readOnlyJumperOpenPageAction.getTargetPageDefinition());
+
+        Action readOnlyJumperRefreshAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("readOnlyJumper::Refresh")).findFirst().orElseThrow();
+        assertTrue(readOnlyJumperRefreshAction.getIsRefreshAction());
+
+        Action myJumperOpenPageAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::OpenPage")).findFirst().orElseThrow();
+        assertTrue(myJumperOpenPageAction.getIsOpenPageAction());
+        assertEquals(myJumperViewPageDefinition, myJumperOpenPageAction.getTargetPageDefinition());
+
+        Action myJumperOpenFormAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::OpenForm")).findFirst().orElseThrow();
+        assertTrue(myJumperOpenFormAction.getIsOpenFormAction());
+
+        Action myJumperRefreshAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::Refresh")).findFirst().orElseThrow();
+        assertTrue(myJumperRefreshAction.getIsRefreshAction());
+
+        Action myJumperRowDeleteAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::RowDelete")).findFirst().orElseThrow();
+        assertTrue(myJumperRowDeleteAction.getIsRowDeleteAction());
+
+        Action myJumpersOpenPageAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::OpenPage")).findFirst().orElseThrow();
+        assertTrue(myJumpersOpenPageAction.getIsRowOpenPageAction());
+        assertEquals(jumperRowDetailViewPageDefinition, myJumpersOpenPageAction.getTargetPageDefinition());
+
+        Action myJumpersFilterAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::Filter")).findFirst().orElseThrow();
+        assertTrue(myJumpersFilterAction.getIsFilterAction());
+
+        Action myJumpersRefreshAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::Refresh")).findFirst().orElseThrow();
+        assertTrue(myJumpersRefreshAction.getIsRefreshAction());
+
+        Action myJumpersRowDeleteAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::RowDelete")).findFirst().orElseThrow();
+        assertTrue(myJumpersRowDeleteAction.getIsRowDeleteAction());
+
+        // - link readOnlyJumper
+
+        Link readOnlyJumper = (Link) pageContainer.getLinks().stream().filter(l -> ((Link) l).getName().equals("readOnlyJumper")).findFirst().orElseThrow();
+        assertEquals("readOnlyJumper", readOnlyJumper.getDataElement().getName());
+        assertEquals(Set.of(
+                "readOnlyJumper::View"
+        ), readOnlyJumper.getActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Button readOnlyJumperView = readOnlyJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("readOnlyJumper::View")).findFirst().orElseThrow();
+        assertTrue(readOnlyJumperView.getActionDefinition().getIsOpenPageAction());
+        assertButtonVisuals(readOnlyJumperView, "View", "eye", "contained");
+        assertEquals(readOnlyJumperOpenPageAction.getActionDefinition(), readOnlyJumperView.getActionDefinition());
+        assertEquals(readOnlyJumperViewPageDefinition, readOnlyJumperOpenPageAction.getTargetPageDefinition());
+
+        // - Link - myJumper
+
+        Link myJumper = (Link) pageContainer.getLinks().stream().filter(l -> ((Link) l).getName().equals("myJumper")).findFirst().orElseThrow();
+        assertEquals("myJumper", myJumper.getDataElement().getName());
+        assertEquals(Set.of(
+                "myJumper::Create::Open",
+                "myJumper::View",
+                "myJumper::Delete"
+        ), myJumper.getActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Button myJumperCreateOpen = myJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumper::Create::Open")).findFirst().orElseThrow();
+        assertTrue(myJumperCreateOpen.getActionDefinition().getIsOpenCreateFormAction());
+        assertButtonVisuals(myJumperCreateOpen, "Create", "note-add", "contained");
+        assertEquals(myJumperOpenFormAction.getActionDefinition(), myJumperCreateOpen.getActionDefinition());
+
+        Button myJumperView = myJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumper::View")).findFirst().orElseThrow();
+        assertTrue(myJumperView.getActionDefinition().getIsOpenPageAction());
+        assertButtonVisuals(myJumperView, "View", "eye", "contained");
+        assertEquals(myJumperOpenPageAction.getActionDefinition(), myJumperView.getActionDefinition());
+        assertEquals(myJumperViewPageDefinition, myJumperOpenPageAction.getTargetPageDefinition());
+
+        Button myJumperDelete = myJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumper::Delete")).findFirst().orElseThrow();
+        assertTrue(myJumperDelete.getActionDefinition().getIsRowDeleteAction());
+        assertButtonVisuals(myJumperDelete, "Delete", "delete_forever", "contained");
+        assertEquals(myJumperRowDeleteAction.getActionDefinition(), myJumperDelete.getActionDefinition());
+
+        // - Table - myJumpers
+
+        Table myJumpers = (Table) pageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("myJumpers")).findFirst().orElseThrow();
+        assertEquals("myJumpers", myJumpers.getDataElement().getName());
+
+        assertEquals(Set.of(
+                "myJumpers::Filter",
+                "myJumpers::Refresh"
+        ), myJumpers.getTableActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Button myJumpersFilter = myJumpers.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::Filter")).findFirst().orElseThrow();
+        assertTrue(myJumpersFilter.getActionDefinition().getIsFilterAction());
+        assertButtonVisuals(myJumpersFilter, "Filter", "filter", "text");
+        assertEquals(myJumpersFilterAction.getActionDefinition(), myJumpersFilter.getActionDefinition());
+
+        Button myJumpersRefresh = myJumpers.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::Refresh")).findFirst().orElseThrow();
+        assertTrue(myJumpersRefresh.getActionDefinition().getIsRefreshAction());
+        assertButtonVisuals(myJumpersRefresh, "Refresh", "refresh", "text");
+        assertEquals(myJumpersRefreshAction.getActionDefinition(), myJumpersRefresh.getActionDefinition());
+
+        assertEquals(Set.of(
+                "myJumpers::View",
+                "myJumpers::RowDelete"
+        ), myJumpers.getRowActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Button myJumpersView = myJumpers.getRowActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::View")).findFirst().orElseThrow();
+        assertTrue(myJumpersView.getActionDefinition().getIsRowOpenPageAction());
+        assertButtonVisuals(myJumpersView, "View", "visibility", "contained");
+        assertEquals(myJumpersOpenPageAction.getActionDefinition(), myJumpersView.getActionDefinition());
+        assertEquals(jumperRowDetailViewPageDefinition, myJumpersOpenPageAction.getTargetPageDefinition());
 
         Button myJumpersRowDelete = myJumpers.getRowActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::RowDelete")).findFirst().orElseThrow();
         assertTrue(myJumpersRowDelete.getActionDefinition().getIsRowDeleteAction());
