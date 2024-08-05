@@ -24,6 +24,9 @@ rule ViewLinkPageDefinition
         for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
             t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", "ViewLinkPageDefinition"));
 
+            if (link.isRefreshAllowed() and not link.isEager()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", "ViewLinkPageDefinition"));
+            }
             if (link.isCreateAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", "ViewLinkPageDefinition"));
             }
@@ -50,6 +53,9 @@ rule ViewLinkPageDefinition
         }
 
         t.actions.add(s.equivalent("ViewLinkPageDefinitionBackAction"));
+        if (s.isRefreshAllowed()) {
+            t.actions.add(s.equivalent("ViewLinkPageDefinitionRefreshAction"));
+        }
         if (s.isUpdateAllowed()) {
             t.actions.add(s.equivalent("ViewLinkPageDefinitionUpdateAction"));
         }
@@ -58,6 +64,20 @@ rule ViewLinkPageDefinition
         }
 
         log.debug("Create ViewLinkPageDefinition: " + t.name);
+}
+
+@lazy
+@greedy
+rule ViewLinkPageDefinitionRefreshAction
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+        guard: actorDeclaration.getAllRelations().contains(s)
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionRefreshAction");
+ 		t.name = s.name + "::Refresh";
+        t.actionDefinition = s.referenceType.equivalent("TransferDeclarationRefreshActionDefinition");
+
+        log.debug("ViewLinkPageDefinitionRefreshAction: " + t.name);
 }
 
 @lazy
@@ -247,13 +267,36 @@ rule InlineViewLink
         /*
         t.autocompleteRangeActionDefinition = s.equivalent("TabularReferenceFieldLinkAutocompleteRangeActionDefinition");
         t.autocompleteSetActionDefinition = s.equivalent("TabularReferenceFieldLinkAutocompleteSetActionDefinition");
-
-        if (relation.isRefreshSupported() and relation.relationKind == ESM!esm::structure::RelationKind#ASSOCIATION) {
-            t.refreshActionDefinition = s.equivalent("TabularReferenceFieldLinkRefreshActionDefinition");
-        }
         */
 
+        if (s.isRefreshAllowed() and not s.isEager()) {
+            t.refreshActionDefinition = s.equivalent("ViewLinkDeclarationRefreshActionDefinition");
+        }
+
         log.debug("InlineViewLink: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationRefreshActionDefinition
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::RefreshActionDefinition {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRefreshActionDefinition");
+ 		t.name = s.name + "::Refresh";
+ 		t.isContainedRelationAction = true;
+
+        log.debug("ViewLinkDeclarationOpenPageActionDefinitionViewLinkDeclarationRefreshActionDefinition: " + t.name);
+}
+
+@greedy
+@lazy
+rule ViewLinkDeclarationRefreshAction
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRefreshAction");
+ 		t.name = s.name + "::Refresh";
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationRefreshActionDefinition");
+
+        log.debug("ViewLinkDeclarationRefreshAction: " + t.name);
 }
 
 @lazy

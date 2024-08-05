@@ -69,6 +69,9 @@ rule TransferDeclarationPageContainer
         if (s.isCreateEventParameter()) {
             t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationCreateButton"));
         }
+        if (s.isRefreshSupported()) {
+            t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationRefreshButton"));
+        }
         if (s.isUpdateSupported()) {
             t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationUpdateButton"));
         }
@@ -137,6 +140,33 @@ rule TransferDeclarationCreateActionDefinition
         */
 
         log.debug("TransferDeclarationCreateActionDefinition: " + t.name);
+}
+
+@lazy
+@greedy
+rule TransferDeclarationRefreshButton
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::Button {
+    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationRefreshButton");
+        t.name = s.getFqName() + "::Refresh";
+        t.buttonStyle = "contained";
+        t.actionDefinition = s.equivalent("TransferDeclarationRefreshActionDefinition");
+
+        t.label = "Refresh";
+        t.icon = "refresh".createSyntheticIcon(s.getId(), s.getFqName());
+
+        log.debug("TransferDeclarationRefreshButton: " + t.name);
+}
+
+@lazy
+@greedy
+rule TransferDeclarationRefreshActionDefinition
+    transform s: JSL!TransferDeclaration
+    to t: UI!ui::RefreshActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationRefreshActionDefinition");
+        t.name = s.getFqName() + "::Refresh";
+
+        log.debug("TransferDeclarationRefreshActionDefinition: " + t.name);
 }
 
 @lazy

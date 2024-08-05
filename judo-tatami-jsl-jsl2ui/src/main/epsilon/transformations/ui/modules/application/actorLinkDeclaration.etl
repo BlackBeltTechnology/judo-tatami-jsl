@@ -55,6 +55,9 @@ rule AccessPageDefinition
 
         for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
             t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", "AccessPageDefinition"));
+            if (link.isRefreshAllowed() and not link.isEager()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", "AccessPageDefinition"));
+            }
             if (link.isCreateAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", "AccessPageDefinition"));
             }
@@ -81,6 +84,9 @@ rule AccessPageDefinition
         }
 
         t.actions.add(s.equivalent("ViewLinkPageDefinitionBackAction"));
+        if (s.isRefreshAllowed()) {
+            t.actions.add(s.equivalent("ViewLinkPageDefinitionRefreshAction"));
+        }
         if (s.isUpdateAllowed()) {
             t.actions.add(s.equivalent("ViewLinkPageDefinitionUpdateAction"));
         }
