@@ -356,6 +356,118 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumpers::Refresh",
                 "NavigationActor::Application::CRUDTestModel::UserView::related::View::PageDefinition::myJumpers::RowDelete"
         ), userViewRelatedViewPageDefinition.getActions().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        Action userViewRelatedViewPageDefinitionBackAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Back")).findFirst().orElseThrow();
+        assertTrue(userViewRelatedViewPageDefinitionBackAction.getIsBackAction());
+
+        Action userViewRelatedViewPageDefinitionUpdateAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Update")).findFirst().orElseThrow();
+        assertTrue(userViewRelatedViewPageDefinitionUpdateAction.getIsUpdateAction());
+
+        Action userViewRelatedViewPageDefinitionDeleteAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Delete")).findFirst().orElseThrow();
+        assertTrue(userViewRelatedViewPageDefinitionDeleteAction.getIsDeleteAction());
+
+        Action readOnlyJumperOpenPageAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("readOnlyJumper::OpenPage")).findFirst().orElseThrow();
+        assertTrue(readOnlyJumperOpenPageAction.getIsOpenPageAction());
+        assertEquals(relatedViewReadOnlyJumperViewPageDefinition, readOnlyJumperOpenPageAction.getTargetPageDefinition());
+
+        Action myJumperOpenPageAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::OpenPage")).findFirst().orElseThrow();
+        assertTrue(myJumperOpenPageAction.getIsOpenPageAction());
+        assertEquals(relatedViewMyJumperViewPageDefinition, myJumperOpenPageAction.getTargetPageDefinition());
+
+        Action myJumperOpenFormAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::OpenForm")).findFirst().orElseThrow();
+        assertTrue(myJumperOpenFormAction.getIsOpenFormAction());
+
+        Action myJumperRowDeleteAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::RowDelete")).findFirst().orElseThrow();
+        assertTrue(myJumperRowDeleteAction.getIsRowDeleteAction());
+
+        Action myJumpersOpenPageAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::OpenPage")).findFirst().orElseThrow();
+        assertTrue(myJumpersOpenPageAction.getIsRowOpenPageAction());
+        assertEquals(jumperRowDetailViewPageDefinition, myJumpersOpenPageAction.getTargetPageDefinition());
+
+        Action myJumpersFilterAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::Filter")).findFirst().orElseThrow();
+        assertTrue(myJumpersFilterAction.getIsFilterAction());
+
+        Action myJumpersRefreshAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::Refresh")).findFirst().orElseThrow();
+        assertTrue(myJumpersRefreshAction.getIsRefreshAction());
+
+        Action myJumpersRowDeleteAction = userViewRelatedViewPageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::RowDelete")).findFirst().orElseThrow();
+        assertTrue(myJumpersRowDeleteAction.getIsRowDeleteAction());
+
+        // - link readOnlyJumper
+
+        Link readOnlyJumper = (Link) userViewRelatedViewPageContainer.getLinks().stream().filter(l -> ((Link) l).getName().equals("readOnlyJumper")).findFirst().orElseThrow();
+        assertEquals("readOnlyJumper", readOnlyJumper.getDataElement().getName());
+        assertEquals(Set.of(
+                "readOnlyJumper::View"
+        ), readOnlyJumper.getActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Button readOnlyJumperView = readOnlyJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("readOnlyJumper::View")).findFirst().orElseThrow();
+        assertTrue(readOnlyJumperView.getActionDefinition().getIsOpenPageAction());
+        assertButtonVisuals(readOnlyJumperView, "View", "eye", "contained");
+        assertEquals(readOnlyJumperOpenPageAction.getActionDefinition(), readOnlyJumperView.getActionDefinition());
+        assertEquals(relatedViewReadOnlyJumperViewPageDefinition, readOnlyJumperOpenPageAction.getTargetPageDefinition());
+
+        // - Link - myJumper
+
+        Link myJumper = (Link) userViewRelatedViewPageContainer.getLinks().stream().filter(l -> ((Link) l).getName().equals("myJumper")).findFirst().orElseThrow();
+        assertEquals("myJumper", myJumper.getDataElement().getName());
+        assertEquals(Set.of(
+                "myJumper::Create::Open",
+                "myJumper::View",
+                "myJumper::Delete"
+        ), myJumper.getActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Button myJumperCreateOpen = myJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumper::Create::Open")).findFirst().orElseThrow();
+        assertTrue(myJumperCreateOpen.getActionDefinition().getIsOpenCreateFormAction());
+        assertButtonVisuals(myJumperCreateOpen, "Create", "note-add", "contained");
+        assertEquals(myJumperOpenFormAction.getActionDefinition(), myJumperCreateOpen.getActionDefinition());
+
+        Button myJumperView = myJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumper::View")).findFirst().orElseThrow();
+        assertTrue(myJumperView.getActionDefinition().getIsOpenPageAction());
+        assertButtonVisuals(myJumperView, "View", "eye", "contained");
+        assertEquals(myJumperOpenPageAction.getActionDefinition(), myJumperView.getActionDefinition());
+        assertEquals(userViewRelatedViewPageDefinition, relatedViewLinkDeclarationOpenPageAction.getTargetPageDefinition());
+
+        Button myJumperDelete = myJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumper::Delete")).findFirst().orElseThrow();
+        assertTrue(myJumperDelete.getActionDefinition().getIsRowDeleteAction());
+        assertButtonVisuals(myJumperDelete, "Delete", "delete_forever", "contained");
+        assertEquals(myJumperRowDeleteAction.getActionDefinition(), myJumperDelete.getActionDefinition());
+
+        // - Table - myJumpers
+
+        Table myJumpers = (Table) userViewRelatedViewPageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("myJumpers")).findFirst().orElseThrow();
+        assertEquals("myJumpers", myJumpers.getDataElement().getName());
+
+        assertEquals(Set.of(
+                "myJumpers::Filter",
+                "myJumpers::Refresh"
+        ), myJumpers.getTableActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Button myJumpersFilter = myJumpers.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::Filter")).findFirst().orElseThrow();
+        assertTrue(myJumpersFilter.getActionDefinition().getIsFilterAction());
+        assertButtonVisuals(myJumpersFilter, "Filter", "filter", "text");
+        assertEquals(myJumpersFilterAction.getActionDefinition(), myJumpersFilter.getActionDefinition());
+
+        Button myJumpersRefresh = myJumpers.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::Refresh")).findFirst().orElseThrow();
+        assertTrue(myJumpersRefresh.getActionDefinition().getIsRefreshAction());
+        assertButtonVisuals(myJumpersRefresh, "Refresh", "refresh", "text");
+        assertEquals(myJumpersRefreshAction.getActionDefinition(), myJumpersRefresh.getActionDefinition());
+
+        assertEquals(Set.of(
+                "myJumpers::View",
+                "myJumpers::RowDelete"
+        ), myJumpers.getRowActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Button myJumpersView = myJumpers.getRowActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::View")).findFirst().orElseThrow();
+        assertTrue(myJumpersView.getActionDefinition().getIsRowOpenPageAction());
+        assertButtonVisuals(myJumpersView, "View", "visibility", "contained");
+        assertEquals(myJumpersOpenPageAction.getActionDefinition(), myJumpersView.getActionDefinition());
+        assertEquals(userViewRelatedViewPageDefinition, relatedViewLinkDeclarationOpenPageAction.getTargetPageDefinition());
+
+        Button myJumpersRowDelete = myJumpers.getRowActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::RowDelete")).findFirst().orElseThrow();
+        assertTrue(myJumpersRowDelete.getActionDefinition().getIsRowDeleteAction());
+        assertButtonVisuals(myJumpersRowDelete, "Delete", "delete_forever", "contained");
+        assertEquals(myJumpersRowDeleteAction.getActionDefinition(), myJumpersRowDelete.getActionDefinition());
     }
 
     public static void assertButtonVisuals(Button button, String label, String icon, String style) {
