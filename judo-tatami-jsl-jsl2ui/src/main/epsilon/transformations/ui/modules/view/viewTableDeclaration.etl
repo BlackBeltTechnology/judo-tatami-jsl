@@ -1,3 +1,84 @@
+@greedy
+rule ViewTableCreateFormPageDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: actorDeclaration.getAllRelations().contains(s)
+            and s.isCreateAllowed()
+            and s.referenceType.getCreateEventDeclaration().isDefined()
+            and s.referenceType.getCreateEventDeclaration().parameterType.isDefined()
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormPageDefinition");
+
+        t.name = s.getFqName() + "::Create::PageDefinition";
+
+        var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
+        var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
+        t.container = targetContainer.equivalent("TransferDeclarationPageContainer");
+
+        actorDeclaration.equivalent("Application").pages.add(t);
+
+        t.dataElement = s.equivalent("RelationType");
+
+        // var relations = s.referenceType.getDirectRelations();
+
+        /*
+        log.info("===================");
+        log.info(t.name + ":");
+        log.info(relations.collect(r | r.name).concat(", "));
+        log.info("===================");
+        */
+        /*
+        for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
+            t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
+        }
+
+        for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
+            var detailLink = table.getDetailLink();
+
+            if (detailLink.isDefined()) {
+                t.actions.add(table.equivalent("ViewTableDeclarationOpenPageAction"));
+            }
+        }
+        */
+
+        t.actions.add(s.equivalent("ViewTableCreateFormBackAction"));
+        t.actions.add(s.equivalent("ViewTableCreateFormCreateAction"));
+
+        log.debug("Create ViewTableCreateFormPageDefinition: " + t.name);
+}
+
+@greedy
+@lazy
+rule ViewTableCreateFormCreateAction
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormCreateAction");
+
+        var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
+        var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
+
+ 		t.name = s.name + "::Create";
+        t.actionDefinition = targetContainer.equivalent("TransferDeclarationCreateActionDefinition");
+
+        log.debug("ViewTableCreateFormCreateAction: " + t.name);
+}
+
+@greedy
+@lazy
+rule ViewTableCreateFormBackAction
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormBackAction");
+
+        var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
+        var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
+
+ 		t.name = s.name + "::Back";
+        t.actionDefinition = targetContainer.equivalent("TransferDeclarationBackActionDefinition");
+
+        log.debug("ViewTableCreateFormBackAction: " + t.name);
+}
+
 @abstract
 rule AbstractViewTableDeclaration
     transform s: JSL!ViewTableDeclaration
@@ -235,6 +316,9 @@ rule InlineViewTableButtonGroup
         if (s.isRefreshAllowed()) {
             t.buttons.add(s.equivalent("ViewTableDeclarationRefreshButton"));
         }
+        if (s.isCreateAllowed()) {
+            t.buttons.add(s.equivalent("ViewTableDeclarationOpenCreateButton"));
+        }
 
         log.debug("InlineViewTableButtonGroup: " + t.name);
 }
@@ -352,6 +436,55 @@ rule ViewTableDeclarationRefreshAction
         t.actionDefinition = s.equivalent("ViewTableDeclarationRefreshActionDefinition");
 
         log.debug("ViewTableDeclarationRefreshAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationOpenCreateButton
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Button {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateButton");
+ 		t.name = s.name + "::OpenCreate";
+ 		t.icon = s.equivalent("ViewTableDeclarationOpenCreateButtonIcon");
+    	t.label = "Create";
+    	t.buttonStyle = "text";
+    	t.actionDefinition = s.equivalent("ViewTableDeclarationOpenCreateActionDefinition");
+
+        log.debug("ViewTableDeclarationOpenCreateButton: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationOpenCreateButtonIcon
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateButtonIcon");
+    	t.name = s.name + "OpenCreateIcon";
+    	t.iconName = "file-document-plus";
+
+    	log.debug("ViewTableDeclarationFilterButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationOpenCreateActionDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::OpenCreateFormActionDefinition {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateActionDefinition");
+ 		t.name = s.name + "::OpenCreate";
+ 		t.targetType = s.referenceType.equivalent("ClassType");
+
+        log.debug("ViewTableDeclarationOpenCreateActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationOpenCreateAction
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateAction");
+ 		t.name = s.name + "::OpenCreate";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationOpenCreateActionDefinition");
+
+        t.targetPageDefinition = s.equivalent("ViewTableCreateFormPageDefinition");
+
+        log.debug("ViewTableDeclarationOpenCreateAction: " + t.name);
 }
 
 @lazy

@@ -38,17 +38,20 @@ rule RowLinkPageDefinition
         for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
             var detailLink = table.getDetailLink();
 
-            if (detailLink.isDefined()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", "RowLinkPageDefinition"));
-            }
             if (table.isFilterSupported()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationFilterAction", "RowLinkPageDefinition"));
             }
             if (table.isRefreshAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", "RowLinkPageDefinition"));
             }
+            if (table.isCreateAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", "RowLinkPageDefinition"));
+            }
             if (table.isDeleteAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "RowLinkPageDefinition"));
+            }
+            if (detailLink.isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", "RowLinkPageDefinition"));
             }
         }
 

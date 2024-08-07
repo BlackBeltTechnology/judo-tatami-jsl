@@ -47,6 +47,9 @@ rule ViewLinkPageDefinition
             if (table.isRefreshAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", "ViewLinkPageDefinition"));
             }
+            if (table.isCreateAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", "ViewLinkPageDefinition"));
+            }
             if (table.isDeleteAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "ViewLinkPageDefinition"));
             }

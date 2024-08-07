@@ -78,6 +78,9 @@ rule AccessPageDefinition
             if (table.isRefreshAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", "AccessPageDefinition"));
             }
+            if (table.isCreateAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", "AccessPageDefinition"));
+            }
             if (table.isDeleteAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "AccessPageDefinition"));
             }
