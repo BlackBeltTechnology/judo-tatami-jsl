@@ -9,6 +9,13 @@ operation JSL!TransferRelationDeclaration getFqName(): String {
 }
 
 @cached
+operation JSL!TransferRelationDeclaration isFormRelation(): Boolean {
+    return self.isCreateAllowed()
+        and self.referenceType.getCreateEventDeclaration().isDefined()
+        and self.referenceType.getCreateEventDeclaration().parameterType.isDefined();
+}
+
+@cached
 operation JSL!TransferRelationDeclaration isEager(): Boolean {
     return jslUtils.isEager(self);
 }
@@ -111,7 +118,7 @@ operation JSL!TransferRelationDeclaration isGetRangeAllowed(): Boolean {
 
 @cached
 operation JSL!TransferRelationDeclaration isRefreshAllowed(): Boolean {
-    return self.maps();
+    return self.maps() or self.reads();
 }
 
 @cached
