@@ -99,7 +99,7 @@ rule GroupFrame
 rule GroupIcon
     transform s: JSL!ViewGroupDeclaration
     to t: UI!ui::Icon {
-    	t.iconName = s.getIconModifier().value.value;
-    	t.name = s.name + "Icon";
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/GroupIcon");
+        t.iconName = s.getIconModifier().value.value;
+        t.name = s.name + "GroupIcon";
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/GroupIcon");
 }

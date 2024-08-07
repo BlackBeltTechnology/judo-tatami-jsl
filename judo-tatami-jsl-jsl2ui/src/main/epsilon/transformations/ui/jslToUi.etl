@@ -35,14 +35,14 @@ pre {
                group.~pos = container.groups.indexOf(group) + 1;
            }
        }
-	}
-	for (visible : JSL!VisibleDeclaration in JSL!VisibleDeclaration.all()) {
+    }
+    for (visible : JSL!VisibleDeclaration in JSL!VisibleDeclaration.all()) {
         if (visible.isTypeOf(JSL!ViewDeclaration) or visible.isTypeOf(JSL!RowDeclaration)) {
             for (member in visible.members) {
                 member.~pos = visible.members.indexOf(member) + 1;
             }
         }
-	}
+    }
 }
 
 post {
