@@ -91,7 +91,7 @@ rule RowLinkPageDefinitionBackAction
         guard: actorDeclaration.getAllRelations().contains(s)
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkPageDefinitionBackAction");
- 		t.name = s.name + "::Back";
+        t.name = s.name + "::Back";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationBackActionDefinition");
 
         log.debug("RowLinkPageDefinitionBackAction: " + t.name);

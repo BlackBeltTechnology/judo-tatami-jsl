@@ -70,7 +70,7 @@ rule ViewTableCreateFormBackAction
         var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
         var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
 
- 		t.name = s.name + "::Back";
+ 	    t.name = s.name + "::Back";
         t.actionDefinition = targetContainer.equivalent("TransferDeclarationBackActionDefinition");
 
         log.debug("ViewTableCreateFormBackAction: " + t.name);

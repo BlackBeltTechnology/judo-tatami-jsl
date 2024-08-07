@@ -91,7 +91,7 @@ rule ViewLinkPageDefinitionBackAction
         guard: actorDeclaration.getAllRelations().contains(s)
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionBackAction");
- 		t.name = s.name + "::Back";
+ 	    t.name = s.name + "::Back";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationBackActionDefinition");
 
         log.debug("ViewLinkPageDefinitionBackAction: " + t.name);
@@ -195,7 +195,7 @@ rule ViewLinkCreateFormBackAction
         var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
         var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
 
- 		t.name = s.name + "::Back";
+ 	    t.name = s.name + "::Back";
         t.actionDefinition = targetContainer.equivalent("TransferDeclarationBackActionDefinition");
 
         log.debug("ViewLinkCreateFormBackAction: " + t.name);
