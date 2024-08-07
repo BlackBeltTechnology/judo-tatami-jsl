@@ -32,10 +32,10 @@ rule GroupTab
     to t: UI!ui::Tab {
         guard: s.eContainer.isKindOf(JSL!ViewTabsDeclaration) and s.getTransferObjectType().isGenerated()
 
-    	s.eContainer.equivalent("TabBarVisualElement").tabs.add(t);
+        s.eContainer.equivalent("TabBarVisualElement").tabs.add(t);
         t.element = s.equivalent("GroupVisualElement");
         t.name = t.element.name;
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/GroupTab");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/GroupTab");
 
         log.debug("GroupTab: " + t.name);
 }
@@ -45,7 +45,7 @@ rule GroupTab
 rule TabsIcon
     transform s: JSL!ViewTabsDeclaration
     to t: UI!ui::Icon {
-    	t.iconName = s.getIconModifier().value.value;
-    	t.name = s.name + "TabsIcon";
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TabsIcon");
+        t.iconName = s.getIconModifier().value.value;
+        t.name = s.name + "TabsIcon";
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TabsIcon");
 }

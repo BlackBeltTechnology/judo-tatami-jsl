@@ -77,7 +77,7 @@ rule ViewLinkPageDefinitionRefreshAction
         guard: actorDeclaration.getAllRelations().contains(s)
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionRefreshAction");
- 		t.name = s.name + "::Refresh";
+         t.name = s.name + "::Refresh";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationRefreshActionDefinition");
 
         log.debug("ViewLinkPageDefinitionRefreshAction: " + t.name);
@@ -91,7 +91,7 @@ rule ViewLinkPageDefinitionBackAction
         guard: actorDeclaration.getAllRelations().contains(s)
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionBackAction");
- 	    t.name = s.name + "::Back";
+         t.name = s.name + "::Back";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationBackActionDefinition");
 
         log.debug("ViewLinkPageDefinitionBackAction: " + t.name);
@@ -104,7 +104,7 @@ rule ViewLinkPageDefinitionUpdateAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionUpdateAction");
 
- 		t.name = s.name + "::Update";
+         t.name = s.name + "::Update";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationUpdateActionDefinition");
 
         log.debug("ViewLinkPageDefinitionUpdateAction: " + t.name);
@@ -117,7 +117,7 @@ rule ViewLinkPageDefinitionDeleteAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionDeleteAction");
 
- 		t.name = s.name + "::Delete";
+         t.name = s.name + "::Delete";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationDeleteActionDefinition");
 
         log.debug("ViewLinkPageDefinitionDeleteAction: " + t.name);
@@ -195,7 +195,7 @@ rule ViewLinkCreateFormBackAction
         var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
         var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
 
- 	    t.name = s.name + "::Back";
+         t.name = s.name + "::Back";
         t.actionDefinition = targetContainer.equivalent("TransferDeclarationBackActionDefinition");
 
         log.debug("ViewLinkCreateFormBackAction: " + t.name);
@@ -207,9 +207,9 @@ rule AbstractViewLinkDeclaration
     to t: UI!ui::Link {
         guard: actorDeclaration.getAllRelations().contains(s)
 
-    	t.name = s.name;
-    	t.relationName = s.name;
-    	if (s.getLabelModifier().isDefined()) {
+        t.name = s.name;
+        t.relationName = s.name;
+        if (s.getLabelModifier().isDefined()) {
             t.label = s.getLabelModifier().value.value;
         }
         if (s.getIconModifier().isDefined()) {
@@ -239,9 +239,9 @@ rule AbstractViewLinkDeclaration
 rule LinkIcon
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::Icon {
-    	t.iconName = s.getIconModifier().value.value;
-    	t.name = s.name + "ViewLinkIcon";
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/LinkIcon");
+        t.iconName = s.getIconModifier().value.value;
+        t.name = s.name + "ViewLinkIcon";
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/LinkIcon");
 }
 
 rule InlineViewLink
@@ -281,9 +281,9 @@ rule InlineViewLink
 rule ViewLinkDeclarationRefreshActionDefinition
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::RefreshActionDefinition {
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRefreshActionDefinition");
- 		t.name = s.name + "::Refresh";
- 		t.isContainedRelationAction = true;
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRefreshActionDefinition");
+         t.name = s.name + "::Refresh";
+         t.isContainedRelationAction = true;
 
         log.debug("ViewLinkDeclarationOpenPageActionDefinitionViewLinkDeclarationRefreshActionDefinition: " + t.name);
 }
@@ -294,7 +294,7 @@ rule ViewLinkDeclarationRefreshAction
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRefreshAction");
- 		t.name = s.name + "::Refresh";
+         t.name = s.name + "::Refresh";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationRefreshActionDefinition");
 
         log.debug("ViewLinkDeclarationRefreshAction: " + t.name);
@@ -349,12 +349,12 @@ rule ViewLinkDeclarationRepresentationColumn
 rule ViewLinkDeclarationOpenPageButton
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::Button {
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButton");
- 		t.name = s.name + "::View";
-    	t.buttonStyle = "contained";
-    	t.label = "View";
-    	t.icon = s.equivalent("ViewLinkDeclarationOpenPageButtonIcon");
-    	t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenPageActionDefinition");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButton");
+         t.name = s.name + "::View";
+        t.buttonStyle = "contained";
+        t.label = "View";
+        t.icon = s.equivalent("ViewLinkDeclarationOpenPageButtonIcon");
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenPageActionDefinition");
 
         log.debug("ViewLinkDeclarationOpenPageButton: " + t.name);
 }
@@ -363,21 +363,21 @@ rule ViewLinkDeclarationOpenPageButton
 rule ViewLinkDeclarationOpenPageButtonIcon
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::Icon {
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButtonIcon");
-    	t.iconName = "eye";
-    	t.name = s.name + "OpenPageIcon";
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButtonIcon");
+        t.iconName = "eye";
+        t.name = s.name + "OpenPageIcon";
 
-    	log.debug("ViewLinkDeclarationOpenPageButtonIcon: " + t.name);
+        log.debug("ViewLinkDeclarationOpenPageButtonIcon: " + t.name);
 }
 
 @lazy
 rule ViewLinkDeclarationOpenPageActionDefinition
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::OpenPageActionDefinition {
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageActionDefinition");
- 		t.name = s.name + "::View";
- 		t.isContainedRelationAction = true;
- 		t.targetType = s.referenceType.equivalent("ClassType");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageActionDefinition");
+         t.name = s.name + "::View";
+         t.isContainedRelationAction = true;
+         t.targetType = s.referenceType.equivalent("ClassType");
 
         log.debug("ViewLinkDeclarationOpenPageActionDefinition: " + t.name);
 }
@@ -389,7 +389,7 @@ rule ViewLinkDeclarationOpenPageAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageAction");
 
- 		t.name = s.name + "::OpenPage";
+         t.name = s.name + "::OpenPage";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenPageActionDefinition");
 
         t.targetPageDefinition = s.equivalent("ViewLinkPageDefinition");
@@ -402,12 +402,12 @@ rule ViewLinkDeclarationOpenPageAction
 rule ViewLinkDeclarationOpenFormButton
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::Button {
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormButton");
- 		t.name = s.name + "::Create::Open";
-    	t.buttonStyle = "contained";
-    	t.label = "Create";
-    	t.icon = s.equivalent("ViewLinkDeclarationOpenFormButtonIcon");
-    	t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenCreateFormActionDefinition");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormButton");
+         t.name = s.name + "::Create::Open";
+        t.buttonStyle = "contained";
+        t.label = "Create";
+        t.icon = s.equivalent("ViewLinkDeclarationOpenFormButtonIcon");
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenCreateFormActionDefinition");
 
         log.debug("ViewLinkDeclarationOpenFormButton: " + t.name);
 }
@@ -416,28 +416,28 @@ rule ViewLinkDeclarationOpenFormButton
 rule ViewLinkDeclarationOpenFormButtonIcon
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::Icon {
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormButtonIcon");
-    	t.iconName = "note-add";
-    	t.name = s.name + "OpenFormIcon";
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormButtonIcon");
+        t.iconName = "note-add";
+        t.name = s.name + "OpenFormIcon";
 
-    	log.debug("ViewLinkDeclarationOpenFormButtonIcon: " + t.name);
+        log.debug("ViewLinkDeclarationOpenFormButtonIcon: " + t.name);
 }
 
 @lazy
 rule ViewLinkDeclarationOpenCreateFormActionDefinition
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::OpenCreateFormActionDefinition {
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenCreateFormActionDefinition");
- 		t.name = s.name + "::Create";
- 		t.isContainedRelationAction = true;
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenCreateFormActionDefinition");
+         t.name = s.name + "::Create";
+         t.isContainedRelationAction = true;
 
         var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
 
- 		if (targetCreateEvent.parameterType.isDefined() and targetCreateEvent.parameterType.isKindOf(JSL!TransferDeclaration)) {
+         if (targetCreateEvent.parameterType.isDefined() and targetCreateEvent.parameterType.isKindOf(JSL!TransferDeclaration)) {
             t.targetType = targetCreateEvent.parameterType.equivalent("ClassType");
- 		} else {
- 		    t.targetType = s.referenceType.equivalent("ClassType");
- 		}
+         } else {
+             t.targetType = s.referenceType.equivalent("ClassType");
+         }
 
         log.debug("ViewLinkDeclarationOpenCreateFormActionDefinition: " + t.name);
 }
@@ -450,7 +450,7 @@ rule ViewLinkDeclarationOpenFormAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormAction");
 
- 		t.name = s.name + "::OpenForm";
+         t.name = s.name + "::OpenForm";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenCreateFormActionDefinition");
 
         t.targetPageDefinition = s.equivalent("ViewLinkCreateFormPageDefinition");
@@ -462,12 +462,12 @@ rule ViewLinkDeclarationOpenFormAction
 rule ViewLinkDeclarationDeleteButton
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::Button {
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButton");
- 		t.name = s.name + "::Delete";
-    	t.buttonStyle = "contained";
-    	t.label = "Delete";
-    	t.icon = s.equivalent("ViewLinkDeclarationDeleteButtonIcon");
-    	t.actionDefinition = s.equivalent("ViewLinkDeclarationRowDeleteActionDefinition");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButton");
+         t.name = s.name + "::Delete";
+        t.buttonStyle = "contained";
+        t.label = "Delete";
+        t.icon = s.equivalent("ViewLinkDeclarationDeleteButtonIcon");
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationRowDeleteActionDefinition");
 
         log.debug("ViewLinkDeclarationDeleteButton: " + t.name);
 }
@@ -476,20 +476,20 @@ rule ViewLinkDeclarationDeleteButton
 rule ViewLinkDeclarationDeleteButtonIcon
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::Icon {
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButtonIcon");
-    	t.iconName = "delete_forever";
-    	t.name = s.name + "DeleteIcon";
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButtonIcon");
+        t.iconName = "delete_forever";
+        t.name = s.name + "DeleteIcon";
 
-    	log.debug("ViewLinkDeclarationDeleteButtonIcon: " + t.name);
+        log.debug("ViewLinkDeclarationDeleteButtonIcon: " + t.name);
 }
 
 @lazy
 rule ViewLinkDeclarationRowDeleteActionDefinition
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::RowDeleteActionDefinition {
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteActionDefinition");
- 		t.name = s.name + "::Delete";
- 		t.isContainedRelationAction = true;
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteActionDefinition");
+         t.name = s.name + "::Delete";
+         t.isContainedRelationAction = true;
         t.targetType = s.referenceType.equivalent("ClassType");
 
         log.debug("ViewLinkDeclarationRowDeleteActionDefinition: " + t.name);
@@ -502,7 +502,7 @@ rule ViewLinkDeclarationRowDeleteAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteAction");
 
- 		t.name = s.name + "::RowDelete";
+         t.name = s.name + "::RowDelete";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationRowDeleteActionDefinition");
 
         log.debug("ViewLinkDeclarationRowDeleteAction: " + t.name);

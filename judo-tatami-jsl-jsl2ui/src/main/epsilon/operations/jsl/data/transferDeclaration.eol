@@ -171,7 +171,7 @@ operation JSL!TransferDeclaration isRefreshSupported(): Boolean {
 
 @cached
 operation JSL!TransferDeclaration isGenerated() : Boolean {
-	return actorDeclaration.getExposedTransferObjects().includes(self);
+    return actorDeclaration.getExposedTransferObjects().includes(self);
 }
 
 operation JSL!TransferDeclaration uiContainer() : UI!ui::VisualElement {
@@ -180,20 +180,20 @@ operation JSL!TransferDeclaration uiContainer() : UI!ui::VisualElement {
 
 @cached
 operation JSL!TransferDeclaration getCreateEventDeclaration() : JSL!TransferCreateDeclaration {
-	return self.members.selectOne(m | m.isKindOf(JSL!TransferCreateDeclaration));
+    return self.members.selectOne(m | m.isKindOf(JSL!TransferCreateDeclaration));
 }
 
 @cached
 operation JSL!TransferDeclaration getFetchEventDeclaration() : JSL!TransferFetchDeclaration {
-	return self.members.selectOne(m | m.isKindOf(JSL!TransferFetchDeclaration));
+    return self.members.selectOne(m | m.isKindOf(JSL!TransferFetchDeclaration));
 }
 
 @cached
 operation JSL!TransferDeclaration getUpdateEventDeclaration() : JSL!TransferUpdateDeclaration {
-	return self.members.selectOne(m | m.isKindOf(JSL!TransferUpdateDeclaration));
+    return self.members.selectOne(m | m.isKindOf(JSL!TransferUpdateDeclaration));
 }
 
 @cached
 operation JSL!TransferDeclaration getDeleteEventDeclaration() : JSL!TransferDeleteDeclaration {
-	return self.members.selectOne(m | m.isKindOf(JSL!TransferDeleteDeclaration));
+    return self.members.selectOne(m | m.isKindOf(JSL!TransferDeleteDeclaration));
 }

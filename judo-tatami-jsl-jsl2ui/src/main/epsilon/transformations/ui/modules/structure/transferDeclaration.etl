@@ -100,12 +100,12 @@ rule TransferDeclarationVisualElement
     to t: UI!ui::Flex {
         guard: actorDeclaration.getExposedTransferObjects().contains(s)
 
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationVisualElement");
- 		t.name = s.name;
- 		t.~pos = 0;
- 		t.col = 12d;
- 		t.direction = UI!Axis#VERTICAL;
- 		t.label = null; // we don't need labels for root visual elements
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationVisualElement");
+         t.name = s.name;
+         t.~pos = 0;
+         t.col = 12d;
+         t.direction = UI!Axis#VERTICAL;
+         t.label = null; // we don't need labels for root visual elements
         log.debug("TransferDeclarationVisualElement: " + t.name);
 }
 
@@ -114,7 +114,7 @@ rule TransferDeclarationVisualElement
 rule TransferDeclarationCreateButton
     transform s: JSL!TransferDeclaration
     to t: UI!ui::Button {
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationCreateButton");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationCreateButton");
         t.name = s.getFqName() + "::Create::Submit";
         t.buttonStyle = "contained";
         t.actionDefinition = s.equivalent("TransferDeclarationCreateActionDefinition");
@@ -147,7 +147,7 @@ rule TransferDeclarationCreateActionDefinition
 rule TransferDeclarationRefreshButton
     transform s: JSL!TransferDeclaration
     to t: UI!ui::Button {
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationRefreshButton");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationRefreshButton");
         t.name = s.getFqName() + "::Refresh";
         t.buttonStyle = "contained";
         t.actionDefinition = s.equivalent("TransferDeclarationRefreshActionDefinition");
@@ -174,7 +174,7 @@ rule TransferDeclarationRefreshActionDefinition
 rule TransferDeclarationUpdateButton
     transform s: JSL!TransferDeclaration
     to t: UI!ui::Button {
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationUpdateButton");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationUpdateButton");
         t.name = s.getFqName() + "::Update";
         t.buttonStyle = "contained";
         t.actionDefinition = s.equivalent("TransferDeclarationUpdateActionDefinition");
@@ -201,7 +201,7 @@ rule TransferDeclarationUpdateActionDefinition
 rule TransferDeclarationDeleteButton
     transform s: JSL!TransferDeclaration
     to t: UI!ui::Button {
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationDeleteButton");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationDeleteButton");
         t.name = s.getFqName() + "::Delete";
         t.buttonStyle = "contained";
         t.actionDefinition = s.equivalent("TransferDeclarationDeleteActionDefinition");
@@ -229,7 +229,7 @@ rule TransferDeclarationBackButton
     to t: UI!ui::Button {
         guard: actorDeclaration.getExposedTransferObjects().contains(s)
 
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationBackButton");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationBackButton");
         t.name = s.getFqName() + "::Create::Back";
         t.buttonStyle = "text";
         t.actionDefinition = s.equivalent("TransferDeclarationBackActionDefinition");

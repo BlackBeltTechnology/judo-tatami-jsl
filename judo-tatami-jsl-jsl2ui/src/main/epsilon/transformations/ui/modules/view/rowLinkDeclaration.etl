@@ -77,7 +77,7 @@ rule RowLinkPageDefinitionRefreshAction
         guard: actorDeclaration.getAllRelations().contains(s)
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkPageDefinitionRefreshAction");
- 		t.name = s.name + "::Refresh";
+         t.name = s.name + "::Refresh";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationRefreshActionDefinition");
 
         log.debug("RowLinkPageDefinitionRefreshAction: " + t.name);
@@ -104,7 +104,7 @@ rule RowLinkPageDefinitionUpdateAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkPageDefinitionUpdateAction");
 
- 		t.name = s.name + "::Update";
+         t.name = s.name + "::Update";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationUpdateActionDefinition");
 
         log.debug("RowLinkPageDefinitionUpdateAction: " + t.name);
@@ -117,7 +117,7 @@ rule RowLinkPageDefinitionDeleteAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkPageDefinitionDeleteAction");
 
- 		t.name = s.name + "::Delete";
+         t.name = s.name + "::Delete";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationDeleteActionDefinition");
 
         log.debug("RowLinkPageDefinitionDeleteAction: " + t.name);

@@ -20,9 +20,9 @@ rule AbstractViewFieldDeclaration
 rule ViewFieldIcon
     transform s: JSL!ViewFieldDeclaration
     to t: UI!ui::Icon {
-    	t.iconName = s.getIconModifier().value.value;
-    	t.name = s.name + "FieldIcon";
-    	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewFieldIcon");
+        t.iconName = s.getIconModifier().value.value;
+        t.name = s.name + "FieldIcon";
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewFieldIcon");
 }
 
 @greedy
