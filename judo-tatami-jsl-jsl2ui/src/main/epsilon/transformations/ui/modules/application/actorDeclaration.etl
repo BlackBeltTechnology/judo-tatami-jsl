@@ -113,10 +113,10 @@ rule EmptyDashboardPageDefinition
     to t: UI!ui::PageDefinition {
         guard: s = actorDeclaration
 
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageDefinition");
-	    t.name = s.getFqName() + "::DashboardPage";
-		t.dashboard = true;
-		t.dataElement = s.equivalent("Actor");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageDefinition");
+        t.name = s.getFqName() + "::DashboardPage";
+        t.dashboard = true;
+        t.dataElement = s.equivalent("Actor");
 
         t.container = s.equivalent("EmptyDashboardPageContainer");
         actorDeclaration.equivalent("Application").pages.add(t);
@@ -130,12 +130,12 @@ rule EmptyDashboardPageContainer
         guard: s = actorDeclaration
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageContainer");
-    	t.name = s.getFqName() + "::Dashboard";
-    	t.label = "Dashboard";
-    	t.type = UI!ui::PageContainerType#TABLE;
-		t.dataElement = s.equivalent("Actor");
+        t.name = s.getFqName() + "::Dashboard";
+        t.label = "Dashboard";
+        t.type = UI!ui::PageContainerType#TABLE;
+        t.dataElement = s.equivalent("Actor");
 
-		actorDeclaration.equivalent("Application").pageContainers.add(t);
+        actorDeclaration.equivalent("Application").pageContainers.add(t);
 
-	    log.debug("EmptyDashboardPageContainer [" + t.name + "]");
+        log.debug("EmptyDashboardPageContainer [" + t.name + "]");
 }

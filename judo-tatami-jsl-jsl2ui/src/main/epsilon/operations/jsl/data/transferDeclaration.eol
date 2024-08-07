@@ -17,9 +17,23 @@ operation JSL!TransferDeclaration getExposedTransferObjects(): Set {
 
     for (relation in relations) {
         transfers.addAll(relation.referenceType.getExposedTransferObjects());
+        var targetCreateEvent = relation.referenceType.getCreateEventDeclaration();
+        if (targetCreateEvent.isDefined() and targetCreateEvent.parameterType.isKindOf(JSL!TransferDeclaration)) {
+            transfers.add(targetCreateEvent.parameterType);
+        }
     }
 
     return transfers;
+}
+
+@cached
+operation JSL!TransferDeclaration getReferencingCreateEvent(): JSL!TransferCreateDeclaration {
+    return JSL!TransferCreateDeclaration.all.selectOne(s | s.parameterType == self);
+}
+
+@cached
+operation JSL!TransferDeclaration isCreateEventParameter(): Boolean {
+    return self.getReferencingCreateEvent().isDefined();
 }
 
 @cached
@@ -89,7 +103,7 @@ operation JSL!TransferDeclaration getDirectRelations(): Set {
     }
 
     for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
-        relations.addAll(member.getAllRelations());
+        relations.addAll(member.getDirectRelations());
     }
 
     return relations;
@@ -110,7 +124,8 @@ operation JSL!TransferDeclaration getAllPrimitiveFields(): Set {
 @cached
 operation JSL!TransferDeclaration isDeleteSupported(): Boolean {
     if (self.map.isDefined()) {
-        return self.members.exists(m | m.isKindOf(JSL!TransferDeleteDeclaration) and m.isEventInstead());
+        var event = self.getDeleteEventDeclaration();
+        return event.isDefined() and event.isEventInstead();
     }
     return false;
 }
@@ -118,7 +133,8 @@ operation JSL!TransferDeclaration isDeleteSupported(): Boolean {
 @cached
 operation JSL!TransferDeclaration isCreateSupported(): Boolean {
     if (self.map.isDefined()) {
-        return self.members.exists(m | m.isKindOf(JSL!TransferCreateDeclaration) and m.isEventInstead());
+        var event = self.getCreateEventDeclaration();
+        return event.isDefined() and event.isEventInstead();
     }
     return false;
 }
@@ -126,7 +142,8 @@ operation JSL!TransferDeclaration isCreateSupported(): Boolean {
 @cached
 operation JSL!TransferDeclaration isUpdateSupported(): Boolean {
     if (self.map.isDefined()) {
-        return self.members.exists(m | m.isKindOf(JSL!TransferUpdateDeclaration) and m.isEventInstead());
+        var event = self.getUpdateEventDeclaration();
+        return event.isDefined() and event.isEventInstead();
     }
     return false;
 }
@@ -154,10 +171,29 @@ operation JSL!TransferDeclaration isRefreshSupported(): Boolean {
 
 @cached
 operation JSL!TransferDeclaration isGenerated() : Boolean {
-	return actorDeclaration.getExposedTransferObjects().includes(self);
+    return actorDeclaration.getExposedTransferObjects().includes(self);
 }
-
 
 operation JSL!TransferDeclaration uiContainer() : UI!ui::VisualElement {
     return self.equivalent("TransferDeclarationVisualElement");
+}
+
+@cached
+operation JSL!TransferDeclaration getCreateEventDeclaration() : JSL!TransferCreateDeclaration {
+    return self.members.selectOne(m | m.isKindOf(JSL!TransferCreateDeclaration));
+}
+
+@cached
+operation JSL!TransferDeclaration getFetchEventDeclaration() : JSL!TransferFetchDeclaration {
+    return self.members.selectOne(m | m.isKindOf(JSL!TransferFetchDeclaration));
+}
+
+@cached
+operation JSL!TransferDeclaration getUpdateEventDeclaration() : JSL!TransferUpdateDeclaration {
+    return self.members.selectOne(m | m.isKindOf(JSL!TransferUpdateDeclaration));
+}
+
+@cached
+operation JSL!TransferDeclaration getDeleteEventDeclaration() : JSL!TransferDeleteDeclaration {
+    return self.members.selectOne(m | m.isKindOf(JSL!TransferDeleteDeclaration));
 }
