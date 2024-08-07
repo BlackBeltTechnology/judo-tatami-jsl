@@ -101,11 +101,11 @@ rule TransferDeclarationVisualElement
         guard: actorDeclaration.getExposedTransferObjects().contains(s)
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferDeclarationVisualElement");
-         t.name = s.name;
-         t.~pos = 0;
-         t.col = 12d;
-         t.direction = UI!Axis#VERTICAL;
-         t.label = null; // we don't need labels for root visual elements
+        t.name = s.name;
+        t.~pos = 0;
+        t.col = 12d;
+        t.direction = UI!Axis#VERTICAL;
+        t.label = null; // we don't need labels for root visual elements
         log.debug("TransferDeclarationVisualElement: " + t.name);
 }
 
