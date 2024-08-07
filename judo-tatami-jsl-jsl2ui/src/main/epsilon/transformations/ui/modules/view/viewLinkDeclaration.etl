@@ -127,10 +127,7 @@ rule ViewLinkPageDefinitionDeleteAction
 rule ViewLinkCreateFormPageDefinition
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::PageDefinition {
-        guard: actorDeclaration.getAllRelations().contains(s)
-            and s.isCreateAllowed()
-            and s.referenceType.getCreateEventDeclaration().isDefined()
-            and s.referenceType.getCreateEventDeclaration().parameterType.isDefined()
+        guard: actorDeclaration.getAllRelations().contains(s) and s.isFormRelation()
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormPageDefinition");
 

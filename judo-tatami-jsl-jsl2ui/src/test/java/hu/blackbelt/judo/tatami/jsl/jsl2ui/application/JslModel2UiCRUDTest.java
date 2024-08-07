@@ -172,12 +172,12 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::Application::SummaryCRUD::NavigationActor::ClassType::user",
                 "NavigationActor::Application::SummaryCRUD::RelatedRow::ClassType::detail",
                 "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumper",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumper::Form",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumperForm",
                 "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumpers",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumpers::Form",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumpersForm",
                 "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::readOnlyJumper",
                 "NavigationActor::Application::SummaryCRUD::UserView::ClassType::related",
-                "NavigationActor::Application::SummaryCRUD::UserView::ClassType::related::Form",
+                "NavigationActor::Application::SummaryCRUD::UserView::ClassType::relatedForm",
                 "NavigationActor::Application::SummaryCRUD::UserView::ClassType::relatedCollection"
         ), relationTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
