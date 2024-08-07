@@ -179,7 +179,7 @@ rule ViewLinkCreateFormCreateAction
         var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
         var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
 
- 		t.name = s.name + "::Create";
+        t.name = s.name + "::Create";
         t.actionDefinition = targetContainer.equivalent("TransferDeclarationCreateActionDefinition");
 
         log.debug("ViewLinkCreateFormCreateAction: " + t.name);
