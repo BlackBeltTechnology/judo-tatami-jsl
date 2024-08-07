@@ -104,7 +104,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             view JumperView(Jumper j) {
                 field String first <= j.first label:"First";
 
-                event create onCreate;
+                event create onCreate(JumperForm form);
                 event update onUpdate;
                 event delete onDelete;
             }
@@ -160,10 +160,10 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(8, relationTypes.size());
         assertEquals(8, classTypes.size());
         assertEquals(8, pageContainers.size());
-        assertEquals(8, pages.size());
+        assertEquals(9, pages.size());
         assertEquals(3, links.size());
         assertEquals(2, tables.size());
-        assertEquals(46, allActions.size());
+        assertEquals(48, allActions.size());
 
         PageDefinition actorDashboardPage = pages.stream().filter(p -> p.getName().equals("SummaryCRUD::NavigationActor::DashboardPage")).findFirst().orElseThrow();
 
@@ -203,11 +203,12 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(Set.of(
                 "NavigationActor::Application::SummaryCRUD::NavigationActor::DashboardPage",
                 "NavigationActor::Application::SummaryCRUD::NavigationActor::user::View::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::UserView::related::View::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::myJumper::View::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::readOnlyJumper::View::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::JumperRow::jumperRowDetail::View::PageDefinition",
                 "NavigationActor::Application::SummaryCRUD::UserView::related::Create::PageDefinition",
+                "NavigationActor::Application::SummaryCRUD::UserView::related::View::PageDefinition",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::readOnlyJumper::View::PageDefinition",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::myJumper::View::PageDefinition",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::myJumper::Create::PageDefinition",
+                "NavigationActor::Application::SummaryCRUD::JumperRow::jumperRowDetail::View::PageDefinition",
                 "NavigationActor::Application::SummaryCRUD::RelatedRow::detail::View::PageDefinition"
         ), pages.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
@@ -527,6 +528,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         PageDefinition readOnlyJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::RelatedView::readOnlyJumper::View::PageDefinition")).findFirst().orElseThrow();
 
         PageDefinition myJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::RelatedView::myJumper::View::PageDefinition")).findFirst().orElseThrow();
+        PageDefinition myJumperCreatePageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::RelatedView::myJumper::Create::PageDefinition")).findFirst().orElseThrow();
 
         PageDefinition jumperRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::JumperRow::jumperRowDetail::View::PageDefinition")).findFirst().orElseThrow();
 
@@ -568,6 +570,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         Action myJumperOpenFormAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::OpenForm")).findFirst().orElseThrow();
         assertTrue(myJumperOpenFormAction.getIsOpenFormAction());
+        assertEquals(myJumperCreatePageDefinition, myJumperOpenFormAction.getTargetPageDefinition());
 
         Action myJumperRefreshAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::Refresh")).findFirst().orElseThrow();
         assertTrue(myJumperRefreshAction.getIsRefreshAction());
