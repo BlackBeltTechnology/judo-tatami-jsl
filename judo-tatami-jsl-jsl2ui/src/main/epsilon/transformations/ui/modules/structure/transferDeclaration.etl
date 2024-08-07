@@ -69,7 +69,7 @@ rule TransferDeclarationPageContainer
         if (s.isCreateEventParameter()) {
             t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationCreateButton"));
         }
-        if (s.isRefreshSupported()) {
+        if (s.isRefreshSupported() and not s.isCreateEventParameter()) {
             t.actionButtonGroup.buttons.add(s.equivalent("TransferDeclarationRefreshButton"));
         }
         if (s.isUpdateSupported()) {

@@ -108,6 +108,25 @@ rule RelationType
         log.debug("Created RelationType [" + t.name + "] into [" + containerClassType.name + "]");
 }
 
+@greedy
+rule FormRelationType
+    transform s: JSL!TransferRelationDeclaration
+    to t: UI!ui::data::RelationType
+    extends AbstractRelationType {
+        guard: s.isCreateAllowed()
+               and s.referenceType.getCreateEventDeclaration().isDefined()
+               and s.referenceType.getCreateEventDeclaration().parameterType.isDefined()
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/FormRelationType");
+        var containerClassType = s.getContainerEquivalentClassType();
+        containerClassType.relations.add(t);
+
+        t.name = s.name + "::Form";
+        t.target = s.referenceType.getCreateEventDeclaration().parameterType.equivalent("ClassType");
+
+        log.debug("Created FormRelationType [" + t.name + "] into [" + containerClassType.name + "]");
+}
+
 @lazy
 @greedy
 rule CloneRelationType

@@ -157,7 +157,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         List<Table> tables = application.getTables();
         List<Action> allActions = application.getPages().stream().flatMap(ps -> ps.getActions().stream()).toList();
 
-        assertEquals(8, relationTypes.size());
+        assertEquals(11, relationTypes.size());
         assertEquals(8, classTypes.size());
         assertEquals(8, pageContainers.size());
         assertEquals(10, pages.size());
@@ -170,11 +170,14 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(Set.of(
                 "NavigationActor::Application::SummaryCRUD::JumperRow::ClassType::jumperRowDetail",
                 "NavigationActor::Application::SummaryCRUD::NavigationActor::ClassType::user",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumpers",
-                "NavigationActor::Application::SummaryCRUD::UserView::ClassType::related",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumper",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::readOnlyJumper",
                 "NavigationActor::Application::SummaryCRUD::RelatedRow::ClassType::detail",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumper",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumper::Form",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumpers",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumpers::Form",
+                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::readOnlyJumper",
+                "NavigationActor::Application::SummaryCRUD::UserView::ClassType::related",
+                "NavigationActor::Application::SummaryCRUD::UserView::ClassType::related::Form",
                 "NavigationActor::Application::SummaryCRUD::UserView::ClassType::relatedCollection"
         ), relationTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
@@ -525,7 +528,6 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
     @Test
     void testRelatedRowDetailViewCRUD() throws Exception {
-        // relatedCollection row's RelatedView page
         jslModel = JslParser.getModelFromStrings("RelatedRowDetailViewCRUD", List.of(createModelString("RelatedRowDetailViewCRUD")));
 
         transform();
@@ -691,6 +693,53 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(myJumpersRowDelete.getActionDefinition().getIsRowDeleteAction());
         assertButtonVisuals(myJumpersRowDelete, "Delete", "delete_forever", "contained");
         assertEquals(myJumpersRowDeleteAction.getActionDefinition(), myJumpersRowDelete.getActionDefinition());
+    }
+
+    @Test
+    void testRelatedFormCRUD() throws Exception {
+        jslModel = JslParser.getModelFromStrings("RelatedFormCRUD", List.of(createModelString("RelatedFormCRUD")));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        Application application = apps.get(0);
+        List<PageDefinition> pages = application.getPages();
+
+        PageDefinition pageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedFormCRUD::UserView::related::Create::PageDefinition")).findFirst().orElseThrow();
+        PageContainer pageContainer = pageDefinition.getContainer();
+        List<Button> buttons = pageContainer.getActionButtonGroup().getButtons();
+        List<Action> actions = pageDefinition.getActions();
+
+        ClassType classType = (ClassType) application.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelatedFormCRUD::RelatedForm::ClassType")).findFirst().orElseThrow();
+
+        assertEquals(Set.of(
+                "NavigationActor::Application::RelatedFormCRUD::UserView::related::Create::PageDefinition::related::Back",
+                "NavigationActor::Application::RelatedFormCRUD::UserView::related::Create::PageDefinition::related::Create"
+        ), actions.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        Action relatedBackActions = actions.stream().filter(a -> a.getName().equals("related::Back")).findFirst().orElseThrow();
+        assertTrue(relatedBackActions.getIsBackAction());
+
+        Action relatedCreateActions = actions.stream().filter(a -> a.getName().equals("related::Create")).findFirst().orElseThrow();
+        assertTrue(relatedCreateActions.getIsCreateAction());
+
+        assertEquals(PageContainerType.FORM, pageContainer.getType());
+        assertEquals(classType, pageDefinition.getRelationType().getTarget());
+        assertEquals(Set.of(
+                "RelatedFormCRUD::RelatedForm::Create::Submit",
+                "RelatedFormCRUD::RelatedForm::Create::Back"
+        ), buttons.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Button back = buttons.stream().filter(b -> b.getName().equals("RelatedFormCRUD::RelatedForm::Create::Back")).findFirst().orElseThrow();
+        assertTrue(back.getActionDefinition().getIsBackAction());
+        assertButtonVisuals(back, "Back", "arrow-left", "text");
+        assertEquals(relatedBackActions.getActionDefinition(), back.getActionDefinition());
+
+        Button myJumpersView = buttons.stream().filter(b -> b.getName().equals("RelatedFormCRUD::RelatedForm::Create::Submit")).findFirst().orElseThrow();
+        assertTrue(myJumpersView.getActionDefinition().getIsCreateAction());
+        assertButtonVisuals(myJumpersView, "Create", "content-save", "contained");
+        assertEquals(relatedCreateActions.getActionDefinition(), myJumpersView.getActionDefinition());
     }
 
     public static void assertButtonVisuals(Button button, String label, String icon, String style) {
