@@ -1,2 +1,3 @@
 import "modelDeclaration.eol";
 import "modifiable.eol";
+import "modifier.eol";
