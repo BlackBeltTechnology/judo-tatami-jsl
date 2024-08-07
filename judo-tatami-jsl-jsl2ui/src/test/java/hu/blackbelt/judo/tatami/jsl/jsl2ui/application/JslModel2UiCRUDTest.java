@@ -368,6 +368,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         PageDefinition readOnlyJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::readOnlyJumper::View::PageDefinition")).findFirst().orElseThrow();
         PageDefinition myJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::myJumper::View::PageDefinition")).findFirst().orElseThrow();
+        PageDefinition myJumperCreatePageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::myJumper::Create::PageDefinition")).findFirst().orElseThrow();
         PageDefinition jumperRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::JumperRow::jumperRowDetail::View::PageDefinition")).findFirst().orElseThrow();
         PageDefinition myJumpersCreatePageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::myJumpers::Create::PageDefinition")).findFirst().orElseThrow();
 
@@ -418,6 +419,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         Action myJumperOpenFormAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::OpenForm")).findFirst().orElseThrow();
         assertTrue(myJumperOpenFormAction.getIsOpenFormAction());
+        assertEquals(myJumperCreatePageDefinition, myJumperOpenFormAction.getTargetPageDefinition());
 
         Action myJumperRefreshAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::Refresh")).findFirst().orElseThrow();
         assertTrue(myJumperRefreshAction.getIsRefreshAction());
