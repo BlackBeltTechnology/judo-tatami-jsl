@@ -117,7 +117,7 @@ rule ViewLinkPageDefinitionDeleteAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionDeleteAction");
 
-         t.name = s.name + "::Delete";
+        t.name = s.name + "::Delete";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationDeleteActionDefinition");
 
         log.debug("ViewLinkPageDefinitionDeleteAction: " + t.name);
@@ -463,7 +463,7 @@ rule ViewLinkDeclarationDeleteButton
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButton");
-         t.name = s.name + "::Delete";
+        t.name = s.name + "::Delete";
         t.buttonStyle = "contained";
         t.label = "Delete";
         t.icon = s.equivalent("ViewLinkDeclarationDeleteButtonIcon");
@@ -488,8 +488,8 @@ rule ViewLinkDeclarationRowDeleteActionDefinition
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::RowDeleteActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteActionDefinition");
-         t.name = s.name + "::Delete";
-         t.isContainedRelationAction = true;
+        t.name = s.name + "::Delete";
+        t.isContainedRelationAction = true;
         t.targetType = s.referenceType.equivalent("ClassType");
 
         log.debug("ViewLinkDeclarationRowDeleteActionDefinition: " + t.name);

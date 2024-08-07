@@ -117,7 +117,7 @@ rule RowLinkPageDefinitionDeleteAction
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkPageDefinitionDeleteAction");
 
-         t.name = s.name + "::Delete";
+        t.name = s.name + "::Delete";
         t.actionDefinition = s.referenceType.equivalent("TransferDeclarationDeleteActionDefinition");
 
         log.debug("RowLinkPageDefinitionDeleteAction: " + t.name);
