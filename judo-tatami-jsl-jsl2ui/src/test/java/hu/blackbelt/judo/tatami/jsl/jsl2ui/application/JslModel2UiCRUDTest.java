@@ -168,64 +168,64 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         PageDefinition actorDashboardPage = pages.stream().filter(p -> p.getName().equals("SummaryCRUD::NavigationActor::DashboardPage")).findFirst().orElseThrow();
 
         assertEquals(Set.of(
-                "NavigationActor::Application::SummaryCRUD::JumperRow::ClassType::jumperRowDetail",
-                "NavigationActor::Application::SummaryCRUD::NavigationActor::ClassType::user",
-                "NavigationActor::Application::SummaryCRUD::RelatedRow::ClassType::detail",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumper",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumperForm",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumpers",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::myJumpersForm",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType::readOnlyJumper",
-                "NavigationActor::Application::SummaryCRUD::UserView::ClassType::related",
-                "NavigationActor::Application::SummaryCRUD::UserView::ClassType::relatedForm",
-                "NavigationActor::Application::SummaryCRUD::UserView::ClassType::relatedCollection"
-        ), relationTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "jumperRowDetail",
+                "user",
+                "detail",
+                "myJumper",
+                "myJumperForm",
+                "myJumpers",
+                "myJumpersForm",
+                "readOnlyJumper",
+                "related",
+                "relatedForm",
+                "relatedCollection"
+        ), relationTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "NavigationActor::Application::SummaryCRUD::NavigationActor::ClassType",
-                "NavigationActor::Application::SummaryCRUD::JumperRow::ClassType",
-                "NavigationActor::Application::SummaryCRUD::RelatedForm::ClassType",
-                "NavigationActor::Application::SummaryCRUD::RelatedRow::ClassType",
-                "NavigationActor::Application::SummaryCRUD::UserView::ClassType",
-                "NavigationActor::Application::SummaryCRUD::JumperView::ClassType",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::ClassType",
-                "NavigationActor::Application::SummaryCRUD::JumperForm::ClassType"
-        ), classTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "SummaryCRUD::NavigationActor::ClassType",
+                "SummaryCRUD::JumperRow::ClassType",
+                "SummaryCRUD::RelatedForm::ClassType",
+                "SummaryCRUD::RelatedRow::ClassType",
+                "SummaryCRUD::UserView::ClassType",
+                "SummaryCRUD::JumperView::ClassType",
+                "SummaryCRUD::RelatedView::ClassType",
+                "SummaryCRUD::JumperForm::ClassType"
+        ), classTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "NavigationActor::Application::SummaryCRUD::NavigationActor::Dashboard",
-                "NavigationActor::Application::SummaryCRUD::UserView::PageContainer",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::PageContainer",
-                "NavigationActor::Application::SummaryCRUD::JumperView::PageContainer",
-                "NavigationActor::Application::SummaryCRUD::RelatedForm::PageContainer",
-                "NavigationActor::Application::SummaryCRUD::RelatedRow::PageContainer",
-                "NavigationActor::Application::SummaryCRUD::JumperRow::PageContainer",
-                "NavigationActor::Application::SummaryCRUD::JumperForm::PageContainer"
-        ), pageContainers.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "SummaryCRUD::NavigationActor::Dashboard",
+                "SummaryCRUD::UserView::PageContainer",
+                "SummaryCRUD::RelatedView::PageContainer",
+                "SummaryCRUD::JumperView::PageContainer",
+                "SummaryCRUD::RelatedForm::PageContainer",
+                "SummaryCRUD::RelatedRow::PageContainer",
+                "SummaryCRUD::JumperRow::PageContainer",
+                "SummaryCRUD::JumperForm::PageContainer"
+        ), pageContainers.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "NavigationActor::Application::SummaryCRUD::NavigationActor::DashboardPage",
-                "NavigationActor::Application::SummaryCRUD::NavigationActor::user::View::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::UserView::related::Create::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::UserView::related::View::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::readOnlyJumper::View::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::myJumper::View::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::myJumper::Create::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::myJumpers::Create::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::JumperRow::jumperRowDetail::View::PageDefinition",
-                "NavigationActor::Application::SummaryCRUD::RelatedRow::detail::View::PageDefinition"
-        ), pages.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "SummaryCRUD::NavigationActor::DashboardPage",
+                "SummaryCRUD::NavigationActor::user::View::PageDefinition",
+                "SummaryCRUD::UserView::related::Create::PageDefinition",
+                "SummaryCRUD::UserView::related::View::PageDefinition",
+                "SummaryCRUD::RelatedView::readOnlyJumper::View::PageDefinition",
+                "SummaryCRUD::RelatedView::myJumper::View::PageDefinition",
+                "SummaryCRUD::RelatedView::myJumper::Create::PageDefinition",
+                "SummaryCRUD::RelatedView::myJumpers::Create::PageDefinition",
+                "SummaryCRUD::JumperRow::jumperRowDetail::View::PageDefinition",
+                "SummaryCRUD::RelatedRow::detail::View::PageDefinition"
+        ), pages.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "NavigationActor::Application::SummaryCRUD::RelatedView::PageContainer::RelatedView::g1::myJumper",
-                "NavigationActor::Application::SummaryCRUD::RelatedView::PageContainer::RelatedView::g1::readOnlyJumper",
-                "NavigationActor::Application::SummaryCRUD::UserView::PageContainer::UserView::level::related"
-        ), links.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "myJumper",
+                "readOnlyJumper",
+                "related"
+        ), links.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "NavigationActor::Application::SummaryCRUD::RelatedView::PageContainer::RelatedView::g1::myJumpers",
-                "NavigationActor::Application::SummaryCRUD::UserView::PageContainer::UserView::level::relatedCollection"
-        ), tables.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "myJumpers",
+                "relatedCollection"
+        ), tables.stream().map(NamedElement::getName).collect(Collectors.toSet()));
     }
 
     @Test
@@ -252,17 +252,17 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(1, pageContainer.getTables().size());
 
         assertEquals(Set.of(
-                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::related::OpenPage",
-                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::related::OpenForm",
-                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::related::RowDelete",
-                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::relatedCollection::OpenPage",
-                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::relatedCollection::Filter",
-                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::relatedCollection::Refresh",
-                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::user::Back",
-                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::user::Refresh",
-                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::user::Update",
-                "NavigationActor::Application::AccessViewCRUD::NavigationActor::user::View::PageDefinition::user::Delete"
-        ), pageDefinition.getActions().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "related::OpenPage",
+                "related::OpenForm",
+                "related::RowDelete",
+                "relatedCollection::OpenPage",
+                "relatedCollection::Filter",
+                "relatedCollection::Refresh",
+                "user::Back",
+                "user::Refresh",
+                "user::Update",
+                "user::Delete"
+        ), pageDefinition.getActions().stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         Action backAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("user::Back")).findFirst().orElseThrow();
         assertTrue(backAction.getIsBackAction());
@@ -376,22 +376,22 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(1, pageContainer.getTables().size());
 
         assertEquals(Set.of(
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::related::Back",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::related::Refresh",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::related::Update",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::related::Delete",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::readOnlyJumper::OpenPage",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::readOnlyJumper::Refresh",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumper::OpenPage",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumper::Refresh",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumper::OpenForm",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumper::RowDelete",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumpers::OpenPage",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumpers::OpenCreate",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumpers::Filter",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumpers::Refresh",
-                "NavigationActor::Application::SingleRelationViewCRUD::UserView::related::View::PageDefinition::myJumpers::RowDelete"
-        ), pageDefinition.getActions().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "related::Back",
+                "related::Refresh",
+                "related::Update",
+                "related::Delete",
+                "readOnlyJumper::OpenPage",
+                "readOnlyJumper::Refresh",
+                "myJumper::OpenPage",
+                "myJumper::Refresh",
+                "myJumper::OpenForm",
+                "myJumper::RowDelete",
+                "myJumpers::OpenPage",
+                "myJumpers::OpenCreate",
+                "myJumpers::Filter",
+                "myJumpers::Refresh",
+                "myJumpers::RowDelete"
+        ), pageDefinition.getActions().stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         Action BackAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("related::Back")).findFirst().orElseThrow();
         assertTrue(BackAction.getIsBackAction());
@@ -553,20 +553,20 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(1, pageContainer.getTables().size());
 
         assertEquals(Set.of(
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::detail::Back",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::detail::Refresh",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::readOnlyJumper::OpenPage",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::readOnlyJumper::Refresh",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumper::OpenPage",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumper::Refresh",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumper::OpenForm",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumper::RowDelete",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumpers::OpenPage",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumpers::OpenCreate",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumpers::Filter",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumpers::Refresh",
-                "NavigationActor::Application::RelatedRowDetailViewCRUD::RelatedRow::detail::View::PageDefinition::myJumpers::RowDelete"
-        ), pageDefinition.getActions().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "detail::Back",
+                "detail::Refresh",
+                "readOnlyJumper::OpenPage",
+                "readOnlyJumper::Refresh",
+                "myJumper::OpenPage",
+                "myJumper::Refresh",
+                "myJumper::OpenForm",
+                "myJumper::RowDelete",
+                "myJumpers::OpenPage",
+                "myJumpers::OpenCreate",
+                "myJumpers::Filter",
+                "myJumpers::Refresh",
+                "myJumpers::RowDelete"
+        ), pageDefinition.getActions().stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         Action BackAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("detail::Back")).findFirst().orElseThrow();
         assertTrue(BackAction.getIsBackAction());
@@ -714,9 +714,9 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         ClassType classType = (ClassType) application.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelatedFormCRUD::RelatedForm::ClassType")).findFirst().orElseThrow();
 
         assertEquals(Set.of(
-                "NavigationActor::Application::RelatedFormCRUD::UserView::related::Create::PageDefinition::related::Back",
-                "NavigationActor::Application::RelatedFormCRUD::UserView::related::Create::PageDefinition::related::Create"
-        ), actions.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "related::Back",
+                "related::Create"
+        ), actions.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         Action relatedBackActions = actions.stream().filter(a -> a.getName().equals("related::Back")).findFirst().orElseThrow();
         assertTrue(relatedBackActions.getIsBackAction());
