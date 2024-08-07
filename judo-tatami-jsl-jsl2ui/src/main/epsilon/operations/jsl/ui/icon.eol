@@ -1,0 +1,7 @@
+operation String createSyntheticIcon(id: String, prefix: String): UI!ui::Icon {
+    var icon: UI!ui::Icon = new UI!ui::Icon();
+    icon.iconName = self;
+    icon.name = prefix + "::" + self + "::" + "Icon";
+    icon.setId(actorDeclaration.name + "/(jsl/" + id + ")/" + self + "SyntheticIcon");
+    return icon;
+}

@@ -46,6 +46,6 @@ rule TabsIcon
     transform s: JSL!ViewTabsDeclaration
     to t: UI!ui::Icon {
     	t.iconName = s.getIconModifier().value.value;
-    	t.name = s.name + "Icon";
+    	t.name = s.name + "TabsIcon";
     	t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TabsIcon");
 }

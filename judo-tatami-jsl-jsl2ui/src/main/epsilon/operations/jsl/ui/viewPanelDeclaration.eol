@@ -1,4 +1,26 @@
 @cached
+operation JSL!ViewPanelDeclaration getDirectRelations(): Set {
+    var relations = new Set();
+
+    if (self.isTypeOf(JSL!ViewGroupDeclaration)) {
+        var ownRelations = self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration));
+        relations.addAll(ownRelations);
+        for (group in self.members.select(m | m.isKindOf(JSL!ViewGroupDeclaration))) {
+            relations.addAll(group.getAllRelations());
+        }
+        for (tabs in self.members.select(m | m.isKindOf(JSL!ViewTabsDeclaration))) {
+            relations.addAll(tabs.getAllRelations());
+        }
+    } else if (self.isTypeOf(JSL!ViewTabsDeclaration)) {
+        for (group in self.groups) {
+            relations.addAll(group.getAllRelations());
+        }
+    }
+
+    return relations;
+}
+
+@cached
 operation JSL!ViewPanelDeclaration getAllRelations(): Set {
     var relations = new Set();
 
