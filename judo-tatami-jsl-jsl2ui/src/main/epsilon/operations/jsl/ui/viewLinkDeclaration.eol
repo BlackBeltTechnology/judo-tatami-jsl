@@ -10,9 +10,3 @@ operation JSL!ViewLinkDeclaration getFqName(): String {
     }
     return self.name;
 }
-
-@cached
-operation JSL!ViewLinkDeclaration hasCreateFormParameter(): Boolean {
-    var createEvent = self.referenceType.getCreateEventDeclaration();
-    return createEvent.isDefined() and createEvent.parameterType.isDefined();
-}
