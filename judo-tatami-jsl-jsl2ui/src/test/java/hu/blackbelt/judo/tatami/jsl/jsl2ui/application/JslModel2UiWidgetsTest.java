@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -408,7 +410,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
         // Tables
 
-        assertEquals(1 , tables.size());
+        assertEquals(2 , tables.size());
 
         Table table = tables.stream().filter(t -> t.getName().equals("relatedCollection")).findFirst().orElseThrow();
         RelationType tableRelation = (RelationType) table.getDataElement();
@@ -419,6 +421,13 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("relatedCollection", table.getRelationName());
         assertEquals("relatedCollection", tableRelation.getName());
         assertEquals(relatedRowClassType, tableRelation.getTarget());
+
+        Table relatedAddSelector = tables.stream().filter(t -> t.getName().equals("relatedCollection::Add::Selector")).findFirst().orElseThrow();
+        assertTrue(relatedAddSelector.getDataElement() instanceof ClassType);
+
+        assertEquals("Related Collection", relatedAddSelector.getLabel());
+        assertEquals(12, relatedAddSelector.getCol());
+        assertEquals("relatedCollection", relatedAddSelector.getRelationName());
 
         // Columns
 
@@ -460,6 +469,11 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals(nonDetailLinkRepresentsRelation, nonDetailLinkColumn.getRepresentsRelation());
         assertEquals(relatedViewClassType, nonDetailLinkRepresentsRelation.getTarget());
 
+        List<Column> relatedAddSelectorColumns = relatedAddSelector.getColumns();
+        assertEquals(Set.of("Non Detail Link", "First", "Second"), relatedAddSelectorColumns.stream().map(LabeledElement::getLabel).collect(Collectors.toSet()));
+        assertEquals(Set.of("_text_nonDetailLink", "first", "second"), relatedAddSelectorColumns.stream().map(c -> c.getAttributeType().getName()).collect(Collectors.toSet()));
+        assertEquals(Set.of("Numeric", "String"), relatedAddSelectorColumns.stream().map(c -> c.getAttributeType().getDataType().getName()).collect(Collectors.toSet()));
+
         // Filters
 
         List<Filter> filters =  table.getFilters();
@@ -478,5 +492,12 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
         assertEquals("Non Detail Link", nonDetailLinkFilter.getLabel());
         assertEquals(nonDetailLinkAttribute, nonDetailLinkFilter.getAttributeType());
+
+        List<Filter> relatedAddSelectorFilters = relatedAddSelector.getFilters();
+
+        assertEquals(Set.of("Non Detail Link", "First", "Second"), relatedAddSelectorFilters.stream().map(LabeledElement::getLabel).collect(Collectors.toSet()));
+        assertEquals(Set.of("_text_nonDetailLink", "first", "second"), relatedAddSelectorFilters.stream().map(c -> c.getAttributeType().getName()).collect(Collectors.toSet()));
+        assertEquals(Set.of("Numeric", "String"), relatedAddSelectorFilters.stream().map(c -> c.getAttributeType().getDataType().getName()).collect(Collectors.toSet()));
+        assertEquals(Set.of(true), relatedAddSelectorFilters.stream().map(c -> c.getAttributeType().isIsFilterable()).collect(Collectors.toSet()));
     }
 }

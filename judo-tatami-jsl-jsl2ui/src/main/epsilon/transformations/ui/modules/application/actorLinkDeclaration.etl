@@ -84,6 +84,13 @@ rule AccessPageDefinition
             if (table.isDeleteAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "AccessPageDefinition"));
             }
+            if (table.isAddReferenceAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", "AccessPageDefinition"));
+            }
+            if (table.isRemoveReferenceAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", "AccessPageDefinition"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", "AccessPageDefinition"));
+            }
         }
 
         t.actions.add(s.equivalent("ViewLinkPageDefinitionBackAction"));
