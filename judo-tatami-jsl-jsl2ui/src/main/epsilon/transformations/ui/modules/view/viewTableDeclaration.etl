@@ -168,21 +168,6 @@ rule TablePrimitiveColumn
             t.icon = s.equivalent("ColumnIcon");
         }
         t.width = s.getWidth().isDefined() ? s.getWidth().value : "120";
-
-        /*
-        if (s.customImplementation.isDefined()) {
-            t.customImplementation = s.customImplementation;
-        }
-        if (s.sort.isDefined()) {
-            t.sort = s.getUiSort();
-        }
-        if (s.sortPrecedence.isDefined()) {
-            t.sortPrecedence = s.sortPrecedence;
-        }
-        if (s.formatValue.isDefined()) {
-            t.formatValue = s.formatValue;
-        }
-        */
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
 
         log.debug("TablePrimitiveColumn: " + t.name);
@@ -302,7 +287,7 @@ rule InlineViewTableButtonGroup
     transform s: JSL!ViewTableDeclaration
     to t: UI!ui::ButtonGroup {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewTableButtonGroup");
-        t.name = s.name + "InlineViewTableButtonGroup";
+        t.name = s.name + "::InlineViewTableButtonGroup";
         t.label = "Actions";
 
         // TODO add buttons
@@ -315,6 +300,13 @@ rule InlineViewTableButtonGroup
         }
         if (s.isCreateAllowed()) {
             t.buttons.add(s.equivalent("ViewTableDeclarationOpenCreateButton"));
+        }
+        if (s.isAddReferenceAllowed()) {
+            t.buttons.add(s.equivalent("ViewTableDeclarationOpenAddSelectorButton"));
+        }
+        if (s.isRemoveReferenceAllowed()) {
+            t.buttons.add(s.equivalent("ViewTableDeclarationClearButton"));
+            t.buttons.add(s.equivalent("ViewTableDeclarationBulkRemoveButton"));
         }
 
         log.debug("InlineViewTableButtonGroup: " + t.name);
@@ -585,4 +577,465 @@ rule ViewTableDeclarationRowDeleteAction
         t.actionDefinition = s.equivalent("ViewTableDeclarationRowDeleteActionDefinition");
 
         log.debug("ViewTableDeclarationRowDeleteAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationOpenAddSelectorButton
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Button {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorButton");
+        t.name = s.name + "::OpenAddSelector";
+        t.icon = s.equivalent("ViewTableDeclarationOpenAddSelectorButtonIcon");
+        t.label = "Add";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationOpenAddSelectorActionDefinition");
+
+        log.debug("ViewTableDeclarationOpenAddSelectorButton: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationOpenAddSelectorButtonIcon
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorButtonIcon");
+        t.name = s.name + "OpenAddSelectorIcon";
+        t.iconName = "attachment-plus";
+
+        log.debug("ViewTableDeclarationOpenAddSelectorButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationOpenAddSelectorActionDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::OpenAddSelectorActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorActionDefinition");
+        t.name = s.name + "::OpenAddSelector";
+        t.isContainedRelationAction = true;
+        t.selectorFor = s.equivalent("ViewTableDeclarationAddSelectorActionDefinition");
+
+        log.debug("ViewTableDeclarationOpenAddSelectorActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationOpenAddSelectorAction
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorAction");
+        t.name = s.name + "::OpenAddSelector";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationOpenAddSelectorActionDefinition");
+
+        t.targetPageDefinition = s.equivalent("ViewTableDeclarationAddSelectorPageDefinition");
+
+        log.debug("ViewTableDeclarationOpenAddSelectorAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationBulkRemoveButton
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Button {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveButton");
+        t.name = s.name + "::BulkRemove";
+        t.icon = s.equivalent("ViewTableDeclarationBulkRemoveButtonIcon");
+        t.label = "Remove";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationBulkRemoveActionDefinition");
+
+        log.debug("ViewTableDeclarationBulkRemoveButton: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationBulkRemoveButtonIcon
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveButtonIcon");
+        t.name = s.name + "RemoveIcon";
+        t.iconName = "link-off";
+
+        log.debug("ViewTableDeclarationBulkRemoveButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationBulkRemoveActionDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::BulkRemoveActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveActionDefinition");
+        t.name = s.name + "::BulkRemove";
+        t.targetType = s.referenceType.equivalent("ClassType");
+        t.isContainedRelationAction = true;
+        t.isBulk = true;
+
+        log.debug("ViewTableDeclarationBulkRemoveActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationBulkRemoveAction
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveAction");
+        t.name = s.name + "::BulkRemove";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationBulkRemoveActionDefinition");
+
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.targetDataElement = s.equivalent("RelationType");
+
+        log.debug("ViewTableDeclarationBulkRemoveAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationClearButton
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Button {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearButton");
+        t.name = s.name + "::Clear";
+        t.icon = s.equivalent("ViewTableDeclarationClearButtonIcon");
+        t.label = "Clear";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationClearActionDefinition");
+
+        log.debug("ViewTableDeclarationClearButton: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationClearButtonIcon
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearButtonIcon");
+        t.name = s.name + "ClearIcon";
+        t.iconName = "link-off";
+
+        log.debug("ViewTableDeclarationClearButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationClearActionDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::ClearActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearActionDefinition");
+        t.name = s.name + "::Clear";
+        t.isContainedRelationAction = true;
+
+        log.debug("ViewTableDeclarationClearActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationClearAction
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearAction");
+        t.name = s.name + "::Clear";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationClearActionDefinition");
+
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.targetDataElement = s.equivalent("RelationType");
+
+        log.debug("ViewTableDeclarationClearAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorPageDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::PageDefinition {
+
+    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorPageDefinition");
+
+    t.name = s.getFqName() + "::AddSelector::PageDefinition";
+
+    t.container = s.equivalent("ViewTableDeclarationAddSelectorPageContainer");
+    t.dataElement = s.equivalent("RelationType");
+    t.openInDialog = true;
+    t.dialogSize = UI!ui::DialogSize#MD;
+
+    t.actions.add(s.equivalent("ViewTableDeclarationAddSelectorAddAction"));
+    t.actions.add(s.equivalent("ViewTableDeclarationAddSelectorBackAction"));
+    t.actions.add(s.equivalent("ViewTableDeclarationAddSelectorTableFilterAction"));
+    t.actions.add(s.equivalent("ViewTableDeclarationAddSelectorTableRangeAction"));
+
+    actorDeclaration.equivalent("Application").pages.add(t);
+
+    log.debug("ViewTableDeclarationAddSelectorPageDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorAddAction
+	transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorAddAction");
+ 		t.name = s.getFqName() + "::AddSelector::Add";
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition");
+
+        log.debug("ViewTableDeclarationAddSelectorAddAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorBackAction
+	transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorBackAction");
+ 		t.name = s.getFqName() + "::AddSelector::Back";
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableBackActionDefinition");
+
+        log.debug("ViewTableDeclarationAddSelectorBackAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableFilterAction
+	transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableFilterAction");
+ 		t.name = s.getFqName() + "::AddSelector::Table::Filter";
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.targetDataElement = s.equivalent("RelationType");
+        t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableTableFilterActionDefinition");
+
+        log.debug("ViewTableDeclarationAddSelectorTableFilterAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableRangeAction
+	transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableRangeAction");
+ 		t.name = s.getFqName() + "::AddSelector::Table::Range";
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.targetDataElement = s.equivalent("RelationType");
+        t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableRangeActionDefinition");
+
+        log.debug("ViewTableDeclarationAddSelectorTableRangeAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorPageContainer
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::PageContainer {
+
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorPageContainer");
+
+        t.name = s.getFqName() + "::AddSelector::PageContainer";
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+        t.titleFrom = UI!ui::TitleFrom#LABEL;
+        t.type = UI!ui::PageContainerType#TABLE;
+        t.onInit = s.equivalent("ViewTableDeclarationAddSelectorTableRangeActionDefinition");
+
+        t.children.add(s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorVisualElement"));
+        t.actionButtonGroup = s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorButtonGroup");
+        t.dataElement = s.referenceType.equivalent("ClassType");
+        t.isSelector = true;
+        t.isRelationSelector = true;
+
+        actorDeclaration.equivalent("Application").pageContainers.add(t);
+
+        log.debug("ViewTableDeclarationAddSelectorPageContainer: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableRangeActionDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::SelectorRangeActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableRangeActionDefinition");
+
+        t.name = s.getFqName() + "::AddSelector::Table::Range";
+        t.targetType = s.referenceType.equivalent("ClassType");
+
+        log.debug("ViewTableDeclarationAddSelectorTableRangeActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableAddSelectorButtonGroup
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::ButtonGroup {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorButtonGroup");
+        t.name = s.getFqName() + "::AddSelectorTableAddSelectorButtonGroup";
+        t.label = "Actions";
+
+        t.buttons.add(s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorBackButton"));
+        t.buttons.add(s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorAddButton"));
+
+        log.debug("ViewTableDeclarationAddSelectorTableAddSelectorButtonGroup: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableAddSelectorBackButton
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Button {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorBackButton");
+        t.name = s.getFqName() + "::Back";
+        t.label = "Back";
+        t.buttonStyle = "text";
+        t.icon = "arrow-left".createSyntheticIcon(s.getId(), s.getFqName());
+        t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableBackActionDefinition");
+
+        log.debug("ViewTableDeclarationAddSelectorTableAddSelectorBackButton: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableBackActionDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::BackActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableBackActionDefinition");
+        t.name = s.getFqName() + "::Back";
+        log.debug("ViewTableDeclarationAddSelectorTableBackActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableAddSelectorAddButton
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Button {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorAddButton");
+        t.name = s.getFqName() + "::Add";
+        t.label = "Add";
+        t.buttonStyle = "contained";
+        t.icon = "attachment-plus".createSyntheticIcon(s.getId(), s.getFqName());
+        t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition");
+
+        log.debug("ViewTableDeclarationAddSelectorTableAddSelectorAddButton: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::AddActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition");
+        t.name = s.getFqName() + "::Add";
+        t.targetType = s.referenceType.equivalent("ClassType");
+        log.debug("ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableAddSelectorVisualElement
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Flex {
+        t.~pos = 0;
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorVisualElement");
+        t.name = s.name;
+        t.direction = UI!Axis#VERTICAL;
+        t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        t.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        t.col = 12d;
+        t.children.add(s.equivalent("ViewTableDeclarationAddSelectorTableTable"));
+        t.frame = s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorFrame");
+
+        log.debug("ViewTableDeclarationAddSelectorTableAddSelectorVisualElement: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableAddSelectorFrame
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Frame {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorFrame");
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableTable
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Table {
+        var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableTable";
+        t.setId(id);
+        t.col = 12d;
+        if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
+        t.isSelectorTable = true;
+        t.isRelationSelectorTable = true;
+        t.allowSelectMultiple = true;
+        t.name = s.name + "::Add::Selector";
+        t.relationName = s.name;
+        t.dataElement = s.referenceType.equivalent("ClassType");
+        t.tableActionButtonGroup = s.equivalent("ViewTableDeclarationAddSelectorTableTableButtonGroup");
+        t.~pos = s.~pos;
+        t.showTotalCount = false;
+        t.selectorRowsPerPage = 10;
+
+        if (s.getRows().isDefined()) {
+            t.rowsPerPage = s.getRows().value.asInteger();
+        } else {
+            t.rowsPerPage = 10;
+        }
+        if (t.~pos.isUndefined()) {
+            t.~pos = 0;
+        }
+
+        // TODO eventually selector should work?
+        var rowDeclaration = s.referenceType;
+
+        var primitiveFields = rowDeclaration.members.select(m | m.isTypeOf(JSL!RowFieldDeclaration) and m.referenceType.`primitive`.isDefined());
+        var links = rowDeclaration.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
+
+        for (field in primitiveFields) {
+            var col = field.equivalentDiscriminated("TablePrimitiveColumn", id);
+            t.columns.add(col);
+            if (col.attributeType.isFilterable) {
+               t.filters.add(field.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
+            }
+        }
+
+        for (link in links) {
+            if (link.getDetail().isUndefined()) {
+                var col = link.equivalentDiscriminated("RowLinkDerivedColumn", id);
+                t.columns.add(col);
+                if (col.attributeType.isFilterable) {
+                   t.filters.add(link.equivalentDiscriminated("RowLinkDerivedColumnFilter", id));
+                }
+            } else {
+                // TODO generate open action from link with detail modifier
+            }
+
+        }
+
+        log.debug("ViewTableDeclarationAddSelectorTableTable: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableTableButtonGroup
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::ButtonGroup {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableTableButtonGroup");
+ 		t.name = s.getFqName() + "::AddSelectorTableActions";
+ 		t.label = "Actions";
+
+    	t.buttons.add(s.equivalent("ViewTableDeclarationAddSelectorTableTableFilterButton"));
+    	t.buttons.add(s.equivalent("TransferObjectTableAddSelectorTableRefreshButton"));
+
+        log.debug("ViewTableDeclarationAddSelectorTableTableButtonGroup: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableTableFilterButton
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Button {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableTableFilterButton");
+ 		t.name = s.getFqName() + "::AddSelector::Table::Filter";
+    	t.label = "Set Filters";
+    	t.buttonStyle = "text";
+    	t.icon = "filter".createSyntheticIcon(s.getId(), s.getFqName());
+    	t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableTableFilterActionDefinition");
+
+        log.debug("ViewTableDeclarationAddSelectorTableTableFilterButton: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationAddSelectorTableTableFilterActionDefinition
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::FilterActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableTableFilterActionDefinition");
+        t.name = s.getFqName() + "::Table::Filter";
+        log.debug("ViewTableDeclarationAddSelectorTableTableFilterActionDefinition: " + t.name);
+}
+
+@lazy
+rule TransferObjectTableAddSelectorTableRefreshButton
+    transform s: JSL!ViewTableDeclaration
+    to t: UI!ui::Button {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferObjectTableAddSelectorTableRefreshButton");
+ 		t.name = s.getFqName() + "::AddSelector::Table::Refresh";
+    	t.label = "Refresh";
+    	t.buttonStyle = "text";
+    	t.icon = "refresh".createSyntheticIcon(s.getId(), s.getFqName());
+    	t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableRangeActionDefinition");
+
+        log.debug("TransferObjectTableAddSelectorTableRefreshButton: " + t.name);
 }

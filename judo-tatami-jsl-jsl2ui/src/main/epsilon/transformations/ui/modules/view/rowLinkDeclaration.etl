@@ -50,6 +50,13 @@ rule RowLinkPageDefinition
             if (table.isDeleteAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "RowLinkPageDefinition"));
             }
+            if (table.isAddReferenceAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", "RowLinkPageDefinition"));
+            }
+            if (table.isRemoveReferenceAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", "RowLinkPageDefinition"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", "RowLinkPageDefinition"));
+            }
             if (detailLink.isDefined()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", "RowLinkPageDefinition"));
             }
