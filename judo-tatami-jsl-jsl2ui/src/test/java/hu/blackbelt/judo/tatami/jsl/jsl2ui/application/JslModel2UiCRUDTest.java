@@ -163,7 +163,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(11, pages.size());
         assertEquals(3, links.size());
         assertEquals(3, tables.size());
-        assertEquals(59, allActions.size());
+        assertEquals(62, allActions.size());
 
         PageDefinition actorDashboardPage = pages.stream().filter(p -> p.getName().equals("SummaryCRUD::NavigationActor::DashboardPage")).findFirst().orElseThrow();
 
@@ -620,10 +620,11 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         PageDefinition myJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::RelatedView::myJumper::View::PageDefinition")).findFirst().orElseThrow();
         PageDefinition myJumperCreatePageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::RelatedView::myJumper::Create::PageDefinition")).findFirst().orElseThrow();
         PageDefinition myJumpersCreatePageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::RelatedView::myJumpers::Create::PageDefinition")).findFirst().orElseThrow();
+        PageDefinition myJumpersAddSelectorPageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::RelatedView::myJumpers::AddSelector::PageDefinition")).findFirst().orElseThrow();
 
         PageDefinition jumperRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::JumperRow::jumperRowDetail::View::PageDefinition")).findFirst().orElseThrow();
 
-        assertEquals(13, pageDefinition.getActions().size());
+        assertEquals(16, pageDefinition.getActions().size());
         assertEquals(2, pageContainer.getLinks().size());
         assertEquals(1, pageContainer.getTables().size());
 
@@ -640,7 +641,10 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "myJumpers::OpenCreate",
                 "myJumpers::Filter",
                 "myJumpers::Refresh",
-                "myJumpers::RowDelete"
+                "myJumpers::RowDelete",
+                "myJumpers::BulkRemove",
+                "myJumpers::Clear",
+                "myJumpers::OpenAddSelector"
         ), pageDefinition.getActions().stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         Action BackAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("detail::Back")).findFirst().orElseThrow();
@@ -686,6 +690,10 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         Action myJumpersRowDeleteAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::RowDelete")).findFirst().orElseThrow();
         assertTrue(myJumpersRowDeleteAction.getIsRowDeleteAction());
+
+        Action myJumpersOpenAddSelectorAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::OpenAddSelector")).findFirst().orElseThrow();
+        assertTrue(myJumpersOpenAddSelectorAction.isOpenAddSelectorAction());
+        assertEquals(myJumpersAddSelectorPageDefinition, myJumpersOpenAddSelectorAction.getTargetPageDefinition());
 
         // - link readOnlyJumper
 
@@ -755,6 +763,21 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(myJumpersOpenCreate.getActionDefinition().getIsOpenCreateFormAction());
         assertButtonVisuals(myJumpersOpenCreate, "Create", "file-document-plus", "text");
         assertEquals(myJumpersOpenCreateAction.getActionDefinition(), myJumpersOpenCreate.getActionDefinition());
+
+        Button myJumpersOpenAddSelector = myJumpers.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::OpenAddSelector")).findFirst().orElseThrow();
+        assertTrue(myJumpersOpenAddSelector.getActionDefinition().getIsOpenAddSelectorAction());
+        assertButtonVisuals(myJumpersOpenAddSelector, "Add", "attachment-plus", "text");
+        assertEquals(myJumpersOpenAddSelectorAction.getActionDefinition(), myJumpersOpenAddSelector.getActionDefinition());
+
+        Button myJumpersClear = myJumpers.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::Clear")).findFirst().orElseThrow();
+        assertTrue(myJumpersClear.getActionDefinition().getIsClearAction());
+        assertButtonVisuals(myJumpersClear, "Clear", "link-off", "text");
+        assertEquals(myJumpersClear.getActionDefinition(), myJumpersClear.getActionDefinition());
+
+        Button myJumpersBulkRemove = myJumpers.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumpers::BulkRemove")).findFirst().orElseThrow();
+        assertTrue(myJumpersBulkRemove.getActionDefinition().getIsBulkRemoveAction());
+        assertButtonVisuals(myJumpersBulkRemove, "Remove", "link-off", "text");
+        assertEquals(myJumpersBulkRemove.getActionDefinition(), myJumpersBulkRemove.getActionDefinition());
 
         assertEquals(Set.of(
                 "myJumpers::View",
