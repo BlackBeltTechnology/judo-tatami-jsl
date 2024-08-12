@@ -597,11 +597,11 @@ rule ViewTableDeclarationOpenAddSelectorButton
 rule ViewTableDeclarationOpenAddSelectorButtonIcon
     transform s: JSL!ViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorButton");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorButtonIcon");
         t.name = s.name + "OpenAddSelectorIcon";
         t.iconName = "attachment-plus";
 
-        log.debug("ViewTableDeclarationOpenAddSelectorButton: " + t.name);
+        log.debug("ViewTableDeclarationOpenAddSelectorButtonIcon: " + t.name);
 }
 
 @lazy
