@@ -53,6 +53,13 @@ rule ViewLinkPageDefinition
             if (table.isDeleteAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "ViewLinkPageDefinition"));
             }
+            if (table.isAddReferenceAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", "ViewLinkPageDefinition"));
+            }
+            if (table.isRemoveReferenceAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", "ViewLinkPageDefinition"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", "ViewLinkPageDefinition"));
+            }
         }
 
         t.actions.add(s.equivalent("ViewLinkPageDefinitionBackAction"));
@@ -428,7 +435,7 @@ rule ViewLinkDeclarationOpenCreateFormActionDefinition
     transform s: JSL!ViewLinkDeclaration
     to t: UI!ui::OpenCreateFormActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenCreateFormActionDefinition");
-        t.name = s.name + "::Create";
+        t.name = s.name + "::OpenCreate";
         t.isContainedRelationAction = true;
 
         var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
