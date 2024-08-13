@@ -33,6 +33,12 @@ rule RowLinkPageDefinition
             if (link.isDeleteAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", "RowLinkPageDefinition"));
             }
+            if (link.isSetReferenceAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", "RowLinkPageDefinition"));
+            }
+            if (link.isUnsetReferenceAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", "RowLinkPageDefinition"));
+            }
         }
 
         for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
