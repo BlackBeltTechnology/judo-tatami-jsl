@@ -132,3 +132,13 @@ operation JSL!Modifiable getVAlign(): JSL!Modifier {
 operation JSL!Modifiable getLines(): JSL!Modifier {
     return (self.modifiers.selectOne(m | m.type == "lines"));
 }
+
+@cached
+operation JSL!Modifiable getRows(): JSL!Modifier {
+    return (self.modifiers.selectOne(m | m.type == "rows"));
+}
+
+@cached
+operation JSL!Modifiable getSelector(): JSL!Modifier {
+    return (self.modifiers.selectOne(m | m.type == "selector"));
+}
