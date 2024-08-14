@@ -64,6 +64,12 @@ rule AccessPageDefinition
             if (link.isDeleteAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", "AccessPageDefinition"));
             }
+            if (link.isSetReferenceAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", "AccessPageDefinition"));
+            }
+            if (link.isUnsetReferenceAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", "AccessPageDefinition"));
+            }
         }
 
         for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {

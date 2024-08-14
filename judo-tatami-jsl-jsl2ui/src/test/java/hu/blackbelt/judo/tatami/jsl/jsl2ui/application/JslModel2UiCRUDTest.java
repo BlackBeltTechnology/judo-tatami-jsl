@@ -159,11 +159,11 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         assertEquals(11, relationTypes.size());
         assertEquals(8, classTypes.size());
-        assertEquals(9, pageContainers.size());
-        assertEquals(11, pages.size());
+        assertEquals(11, pageContainers.size());
+        assertEquals(13, pages.size());
         assertEquals(3, links.size());
-        assertEquals(3, tables.size());
-        assertEquals(62, allActions.size());
+        assertEquals(5, tables.size());
+        assertEquals(76, allActions.size());
 
         PageDefinition actorDashboardPage = pages.stream().filter(p -> p.getName().equals("SummaryCRUD::NavigationActor::DashboardPage")).findFirst().orElseThrow();
 
@@ -195,12 +195,14 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(Set.of(
                 "SummaryCRUD::NavigationActor::Dashboard",
                 "SummaryCRUD::UserView::PageContainer",
+                "SummaryCRUD::UserView::related::SetSelector::PageContainer",
                 "SummaryCRUD::RelatedView::PageContainer",
                 "SummaryCRUD::JumperView::PageContainer",
                 "SummaryCRUD::RelatedForm::PageContainer",
                 "SummaryCRUD::RelatedRow::PageContainer",
                 "SummaryCRUD::JumperRow::PageContainer",
                 "SummaryCRUD::JumperForm::PageContainer",
+                "SummaryCRUD::RelatedView::myJumper::SetSelector::PageContainer",
                 "SummaryCRUD::RelatedView::myJumpers::AddSelector::PageContainer"
         ), pageContainers.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
@@ -209,12 +211,14 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "SummaryCRUD::NavigationActor::user::View::PageDefinition",
                 "SummaryCRUD::UserView::related::Create::PageDefinition",
                 "SummaryCRUD::UserView::related::View::PageDefinition",
+                "SummaryCRUD::UserView::related::SetSelector::PageDefinition",
                 "SummaryCRUD::RelatedView::readOnlyJumper::View::PageDefinition",
                 "SummaryCRUD::RelatedView::myJumper::View::PageDefinition",
                 "SummaryCRUD::RelatedView::myJumper::Create::PageDefinition",
                 "SummaryCRUD::RelatedView::myJumpers::Create::PageDefinition",
                 "SummaryCRUD::JumperRow::jumperRowDetail::View::PageDefinition",
                 "SummaryCRUD::RelatedRow::detail::View::PageDefinition",
+                "SummaryCRUD::RelatedView::myJumper::SetSelector::PageDefinition",
                 "SummaryCRUD::RelatedView::myJumpers::AddSelector::PageDefinition"
         ), pages.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
@@ -225,9 +229,11 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         ), links.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "myJumpers",
                 "relatedCollection",
-                "myJumpers::Add::Selector"
+                "related::Set::Selector",
+                "myJumpers",
+                "myJumpers::Add::Selector",
+                "myJumper::Set::Selector"
         ), tables.stream().map(NamedElement::getName).collect(Collectors.toSet()));
     }
 
@@ -250,7 +256,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         PageContainer pageContainer = pageDefinition.getContainer();
 
-        assertEquals(10, pageDefinition.getActions().size());
+        assertEquals(12, pageDefinition.getActions().size());
         assertEquals(1, pageContainer.getLinks().size());
         assertEquals(1, pageContainer.getTables().size());
 
@@ -258,6 +264,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "related::OpenPage",
                 "related::OpenForm",
                 "related::RowDelete",
+                "related::OpenSetSelector",
+                "related::Unset",
                 "relatedCollection::OpenPage",
                 "relatedCollection::Filter",
                 "relatedCollection::Refresh",
@@ -304,7 +312,9 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(Set.of(
                 "related::Create::Open",
                 "related::View",
-                "related::Delete"
+                "related::Delete",
+                "related::OpenSetSelector",
+                "related::Unset"
         ), related.getActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         Button relatedCreateOpen = related.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("related::Create::Open")).findFirst().orElseThrow();
@@ -370,14 +380,17 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         PageContainer pageContainer = pageDefinition.getContainer();
 
         PageDefinition readOnlyJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::readOnlyJumper::View::PageDefinition")).findFirst().orElseThrow();
+        PageDefinition relatedSetSelectorPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::UserView::related::SetSelector::PageDefinition")).findFirst().orElseThrow();
         PageDefinition myJumperViewPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::myJumper::View::PageDefinition")).findFirst().orElseThrow();
         PageDefinition myJumperCreatePageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::myJumper::Create::PageDefinition")).findFirst().orElseThrow();
+        PageDefinition myJumperSetSelectorPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::PageDefinition")).findFirst().orElseThrow();
         PageDefinition jumperRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::JumperRow::jumperRowDetail::View::PageDefinition")).findFirst().orElseThrow();
         PageDefinition myJumpersCreatePageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::myJumpers::Create::PageDefinition")).findFirst().orElseThrow();
         PageDefinition myJumpersAddSelectorPageDefinition = pages.stream().filter(p -> p.getName().equals("SingleRelationViewCRUD::RelatedView::myJumpers::AddSelector::PageDefinition")).findFirst().orElseThrow();
         PageContainer myJumpersAddSelectorPageContainer = myJumpersAddSelectorPageDefinition.getContainer();
+        PageContainer myJumperSetSelectorPageContainer = myJumperSetSelectorPageDefinition.getContainer();
 
-        assertEquals(18, pageDefinition.getActions().size());
+        assertEquals(20, pageDefinition.getActions().size());
         assertEquals(4, myJumpersAddSelectorPageDefinition.getActions().size());
         assertEquals(2, pageContainer.getLinks().size());
         assertEquals(1, pageContainer.getTables().size());
@@ -393,6 +406,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "myJumper::Refresh",
                 "myJumper::OpenForm",
                 "myJumper::RowDelete",
+                "myJumper::OpenSetSelector",
+                "myJumper::Unset",
                 "myJumpers::OpenPage",
                 "myJumpers::OpenCreate",
                 "myJumpers::OpenAddSelector",
@@ -435,6 +450,13 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         Action myJumperRowDeleteAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::RowDelete")).findFirst().orElseThrow();
         assertTrue(myJumperRowDeleteAction.getIsRowDeleteAction());
+
+        Action myJumperOpenSetSelectorAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::OpenSetSelector")).findFirst().orElseThrow();
+        assertTrue(myJumperOpenSetSelectorAction.isOpenSetSelectorAction());
+        assertEquals(myJumperSetSelectorPageDefinition, myJumperOpenSetSelectorAction.getTargetPageDefinition());
+
+        Action myJumperUnsetAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumper::Unset")).findFirst().orElseThrow();
+        assertTrue(myJumperUnsetAction.getIsUnsetAction());
 
         Action myJumpersOpenPageAction = pageDefinition.getActions().stream().filter(a -> a.getName().equals("myJumpers::OpenPage")).findFirst().orElseThrow();
         assertTrue(myJumpersOpenPageAction.getIsRowOpenPageAction());
@@ -484,7 +506,9 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(Set.of(
                 "myJumper::Create::Open",
                 "myJumper::View",
-                "myJumper::Delete"
+                "myJumper::Delete",
+                "myJumper::OpenSetSelector",
+                "myJumper::Unset"
         ), myJumper.getActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         Button myJumperCreateOpen = myJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumper::Create::Open")).findFirst().orElseThrow();
@@ -502,6 +526,16 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(myJumperDelete.getActionDefinition().getIsRowDeleteAction());
         assertButtonVisuals(myJumperDelete, "Delete", "delete_forever", "contained");
         assertEquals(myJumperRowDeleteAction.getActionDefinition(), myJumperDelete.getActionDefinition());
+
+        Button myJumperOpenSetSelector = myJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumper::OpenSetSelector")).findFirst().orElseThrow();
+        assertTrue(myJumperOpenSetSelector.getActionDefinition().getIsOpenSelectorAction());
+        assertButtonVisuals(myJumperOpenSetSelector, "Set", "link", "contained");
+        assertEquals(myJumperOpenSetSelectorAction.getActionDefinition(), myJumperOpenSetSelector.getActionDefinition());
+
+        Button myJumperUnset = myJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumper::Unset")).findFirst().orElseThrow();
+        assertTrue(myJumperUnset.getActionDefinition().getIsUnsetAction());
+        assertButtonVisuals(myJumperUnset, "Unset", "link-off", "contained");
+        assertEquals(myJumperUnsetAction.getActionDefinition(), myJumperUnset.getActionDefinition());
 
         // - Table - myJumpers
 
@@ -599,6 +633,43 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(myJumpersAddSelectorFilter.getActionDefinition().getIsFilterAction());
         assertButtonVisuals(myJumpersAddSelectorFilter, "Set Filters", "filter", "text");
         assertEquals(myJumpersAddSelectorFilterAction.getActionDefinition(), myJumpersAddSelectorFilter.getActionDefinition());
+
+        // set selector - myJumper
+
+        assertEquals(Set.of(
+                "SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::Table::Filter",
+                "SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::Table::Range",
+                "SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::Set",
+                "SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::Back"
+        ), myJumperSetSelectorPageDefinition.getActions().stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Action myJumperSetSelectorFilterAction = myJumperSetSelectorPageDefinition.getActions().stream().filter(a -> a.getName().equals("SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::Table::Filter")).findFirst().orElseThrow();
+        assertTrue(myJumperSetSelectorFilterAction.getActionDefinition().getIsFilterAction());
+
+        Action myJumperSetSelectorrangeAction = myJumperSetSelectorPageDefinition.getActions().stream().filter(a -> a.getName().equals("SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::Table::Range")).findFirst().orElseThrow();
+        assertTrue(myJumperSetSelectorrangeAction.getActionDefinition().getIsSelectorRangeAction());
+
+        Action myJumperSetSelectorSetAction = myJumperSetSelectorPageDefinition.getActions().stream().filter(a -> a.getName().equals("SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::Set")).findFirst().orElseThrow();
+        assertTrue(myJumperSetSelectorSetAction.getActionDefinition().getIsSetAction());
+
+        Action myJumperSetSelectorBackAction = myJumperSetSelectorPageDefinition.getActions().stream().filter(a -> a.getName().equals("SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::Back")).findFirst().orElseThrow();
+        assertTrue(myJumperSetSelectorBackAction.getActionDefinition().getIsBackAction());
+
+        Table myJumperSetSelector = (Table) myJumperSetSelectorPageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("myJumper::Set::Selector")).findFirst().orElseThrow();
+        assertEquals("SingleRelationViewCRUD::JumperRow::ClassType", myJumpersAddSelector.getDataElement().getName());
+        assertTrue(myJumpersAddSelector.isAllowSelectMultiple());
+        assertTrue(myJumpersAddSelector.isIsRelationSelectorTable());
+        assertTrue(myJumpersAddSelector.isIsSelectorTable());
+
+        assertEquals(Set.of(
+                "SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::Table::Filter",
+                "SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::Table::Refresh"
+        ), myJumperSetSelector.getTableActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        Button myJumperSetSelectorFilter = myJumperSetSelector.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("SingleRelationViewCRUD::RelatedView::myJumper::SetSelector::Table::Filter")).findFirst().orElseThrow();
+        assertTrue(myJumperSetSelectorFilter.getActionDefinition().getIsFilterAction());
+        assertButtonVisuals(myJumperSetSelectorFilter, "Set Filters", "filter", "text");
+        assertEquals(myJumperSetSelectorFilterAction.getActionDefinition(), myJumperSetSelectorFilter.getActionDefinition());
     }
 
     @Test
@@ -624,7 +695,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         PageDefinition jumperRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::JumperRow::jumperRowDetail::View::PageDefinition")).findFirst().orElseThrow();
 
-        assertEquals(16, pageDefinition.getActions().size());
+        assertEquals(18, pageDefinition.getActions().size());
         assertEquals(2, pageContainer.getLinks().size());
         assertEquals(1, pageContainer.getTables().size());
 
@@ -637,6 +708,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "myJumper::Refresh",
                 "myJumper::OpenForm",
                 "myJumper::RowDelete",
+                "myJumper::OpenSetSelector",
+                "myJumper::Unset",
                 "myJumpers::OpenPage",
                 "myJumpers::OpenCreate",
                 "myJumpers::Filter",
@@ -716,7 +789,9 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(Set.of(
                 "myJumper::Create::Open",
                 "myJumper::View",
-                "myJumper::Delete"
+                "myJumper::Delete",
+                "myJumper::OpenSetSelector",
+                "myJumper::Unset"
         ), myJumper.getActionButtonGroup().getButtons().stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         Button myJumperCreateOpen = myJumper.getActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("myJumper::Create::Open")).findFirst().orElseThrow();
