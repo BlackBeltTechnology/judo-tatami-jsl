@@ -531,7 +531,7 @@ rule ViewLinkDeclarationUnsetButton
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetButton");
         t.name = s.name + "::Unset";
         t.label = "Unset";
-        t.buttonStyle = "text";
+        t.buttonStyle = "contained";
         t.icon = "link-off".createSyntheticIcon(s.getId(), s.getFqName());
         t.actionDefinition = s.equivalent("ViewLinkDeclarationUnsetActionDefinition");
 
@@ -568,7 +568,7 @@ rule ViewLinkDeclarationOpenSetSelectorButton
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorButton");
         t.name = s.name + "::OpenSetSelector";
         t.label = "Set";
-        t.buttonStyle = "text";
+        t.buttonStyle = "contained";
         t.icon = "link".createSyntheticIcon(s.getId(), s.getFqName());
         t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenSetSelectorActionDefinition");
 
