@@ -410,7 +410,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
         // Tables
 
-        assertEquals(2 , tables.size());
+        assertEquals(4 , tables.size());
 
         Table table = tables.stream().filter(t -> t.getName().equals("relatedCollection")).findFirst().orElseThrow();
         RelationType tableRelation = (RelationType) table.getDataElement();
@@ -422,12 +422,26 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("relatedCollection", tableRelation.getName());
         assertEquals(relatedRowClassType, tableRelation.getTarget());
 
-        Table relatedAddSelector = tables.stream().filter(t -> t.getName().equals("relatedCollection::Add::Selector")).findFirst().orElseThrow();
-        assertTrue(relatedAddSelector.getDataElement() instanceof ClassType);
+        Table relatedCollectionAddSelector = tables.stream().filter(t -> t.getName().equals("relatedCollection::Add::Selector")).findFirst().orElseThrow();
+        assertTrue(relatedCollectionAddSelector.getDataElement() instanceof ClassType);
 
-        assertEquals("Related Collection", relatedAddSelector.getLabel());
-        assertEquals(12, relatedAddSelector.getCol());
-        assertEquals("relatedCollection", relatedAddSelector.getRelationName());
+        assertEquals("Related Collection", relatedCollectionAddSelector.getLabel());
+        assertEquals(12, relatedCollectionAddSelector.getCol());
+        assertEquals("relatedCollection", relatedCollectionAddSelector.getRelationName());
+
+        Table relatedSetSelector = tables.stream().filter(t -> t.getName().equals("related::Set::Selector")).findFirst().orElseThrow();
+        assertTrue(relatedSetSelector.getDataElement() instanceof ClassType);
+
+        assertEquals("Related", relatedSetSelector.getLabel());
+        assertEquals(12, relatedSetSelector.getCol());
+        assertEquals("related", relatedSetSelector.getRelationName());
+
+        Table relatedAssociationSetSelector = tables.stream().filter(t -> t.getName().equals("relatedAssociation::Set::Selector")).findFirst().orElseThrow();
+        assertTrue(relatedAssociationSetSelector.getDataElement() instanceof ClassType);
+
+        assertEquals("Related Association", relatedAssociationSetSelector.getLabel());
+        assertEquals(12, relatedAssociationSetSelector.getCol());
+        assertEquals("relatedAssociation", relatedAssociationSetSelector.getRelationName());
 
         // Columns
 
@@ -469,10 +483,20 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals(nonDetailLinkRepresentsRelation, nonDetailLinkColumn.getRepresentsRelation());
         assertEquals(relatedViewClassType, nonDetailLinkRepresentsRelation.getTarget());
 
-        List<Column> relatedAddSelectorColumns = relatedAddSelector.getColumns();
-        assertEquals(Set.of("Non Detail Link", "First", "Second"), relatedAddSelectorColumns.stream().map(LabeledElement::getLabel).collect(Collectors.toSet()));
-        assertEquals(Set.of("_text_nonDetailLink", "first", "second"), relatedAddSelectorColumns.stream().map(c -> c.getAttributeType().getName()).collect(Collectors.toSet()));
-        assertEquals(Set.of("Numeric", "String"), relatedAddSelectorColumns.stream().map(c -> c.getAttributeType().getDataType().getName()).collect(Collectors.toSet()));
+        List<Column> relatedAddSelectorColumns = relatedCollectionAddSelector.getColumns();
+        assertEquals(List.of("First", "Second", "Non Detail Link"), relatedAddSelectorColumns.stream().map(LabeledElement::getLabel).toList());
+        assertEquals(List.of("first", "second", "_text_nonDetailLink"), relatedAddSelectorColumns.stream().map(c -> c.getAttributeType().getName()).toList());
+        assertEquals(List.of("String", "Numeric", "String"), relatedAddSelectorColumns.stream().map(c -> c.getAttributeType().getDataType().getName()).toList());
+
+        List<Column> relatedSetSelectorColumns = relatedSetSelector.getColumns();
+        assertEquals(List.of("First", "Second"), relatedSetSelectorColumns.stream().map(LabeledElement::getLabel).toList());
+        assertEquals(List.of("first", "second"), relatedSetSelectorColumns.stream().map(c -> c.getAttributeType().getName()).toList());
+        assertEquals(List.of("String", "Numeric"), relatedSetSelectorColumns.stream().map(c -> c.getAttributeType().getDataType().getName()).toList());
+
+        List<Column> relatedAssociationSetSelectorColumns = relatedSetSelector.getColumns();
+        assertEquals(List.of("First", "Second"), relatedAssociationSetSelectorColumns.stream().map(LabeledElement::getLabel).toList());
+        assertEquals(List.of("first", "second"), relatedAssociationSetSelectorColumns.stream().map(c -> c.getAttributeType().getName()).toList());
+        assertEquals(List.of("String", "Numeric"), relatedAssociationSetSelectorColumns.stream().map(c -> c.getAttributeType().getDataType().getName()).toList());
 
         // Filters
 
@@ -493,11 +517,25 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("Non Detail Link", nonDetailLinkFilter.getLabel());
         assertEquals(nonDetailLinkAttribute, nonDetailLinkFilter.getAttributeType());
 
-        List<Filter> relatedAddSelectorFilters = relatedAddSelector.getFilters();
+        List<Filter> relatedAddSelectorFilters = relatedCollectionAddSelector.getFilters();
 
-        assertEquals(Set.of("Non Detail Link", "First", "Second"), relatedAddSelectorFilters.stream().map(LabeledElement::getLabel).collect(Collectors.toSet()));
-        assertEquals(Set.of("_text_nonDetailLink", "first", "second"), relatedAddSelectorFilters.stream().map(c -> c.getAttributeType().getName()).collect(Collectors.toSet()));
-        assertEquals(Set.of("Numeric", "String"), relatedAddSelectorFilters.stream().map(c -> c.getAttributeType().getDataType().getName()).collect(Collectors.toSet()));
-        assertEquals(Set.of(true), relatedAddSelectorFilters.stream().map(c -> c.getAttributeType().isIsFilterable()).collect(Collectors.toSet()));
+        assertEquals(List.of("First", "Second", "Non Detail Link"), relatedAddSelectorFilters.stream().map(LabeledElement::getLabel).toList());
+        assertEquals(List.of("first", "second", "_text_nonDetailLink"), relatedAddSelectorFilters.stream().map(c -> c.getAttributeType().getName()).toList());
+        assertEquals(List.of("String", "Numeric", "String"), relatedAddSelectorFilters.stream().map(c -> c.getAttributeType().getDataType().getName()).toList());
+        assertEquals(List.of(true, true, true), relatedAddSelectorFilters.stream().map(c -> c.getAttributeType().isIsFilterable()).toList());
+
+        List<Filter> relatedSetSelectorFilters = relatedSetSelector.getFilters();
+
+        assertEquals(List.of("First", "Second"), relatedSetSelectorFilters.stream().map(LabeledElement::getLabel).toList());
+        assertEquals(List.of("first", "second"), relatedSetSelectorFilters.stream().map(c -> c.getAttributeType().getName()).toList());
+        assertEquals(List.of("String", "Numeric"), relatedSetSelectorFilters.stream().map(c -> c.getAttributeType().getDataType().getName()).toList());
+        assertEquals(List.of(true, true), relatedSetSelectorFilters.stream().map(c -> c.getAttributeType().isIsFilterable()).toList());
+
+        List<Filter> relatedAssociationSetSelectorFilters = relatedAssociationSetSelector.getFilters();
+
+        assertEquals(List.of("First", "Second"), relatedAssociationSetSelectorFilters.stream().map(LabeledElement::getLabel).toList());
+        assertEquals(List.of("first", "second"), relatedAssociationSetSelectorFilters.stream().map(c -> c.getAttributeType().getName()).toList());
+        assertEquals(List.of("String", "Numeric"), relatedAssociationSetSelectorFilters.stream().map(c -> c.getAttributeType().getDataType().getName()).toList());
+        assertEquals(List.of(true, true), relatedAssociationSetSelectorFilters.stream().map(c -> c.getAttributeType().isIsFilterable()).toList());
     }
 }

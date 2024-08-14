@@ -33,6 +33,12 @@ rule ViewLinkPageDefinition
             if (link.isDeleteAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", "ViewLinkPageDefinition"));
             }
+            if (link.isSetReferenceAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", "ViewLinkPageDefinition"));
+            }
+            if (link.isUnsetReferenceAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", "ViewLinkPageDefinition"));
+            }
         }
 
         for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
@@ -315,8 +321,6 @@ rule InlineViewLinkButtonGroup
         t.name = s.name + "::Actions";
         t.label = "Actions";
 
-        // TODO add action buttons
-
         t.buttons.add(s.equivalent("ViewLinkDeclarationOpenPageButton"));
 
         if (s.isCreateAllowed()) {
@@ -324,6 +328,12 @@ rule InlineViewLinkButtonGroup
         }
         if (s.isDeleteAllowed()) {
             t.buttons.add(s.equivalent("ViewLinkDeclarationDeleteButton"));
+        }
+        if (s.isSetReferenceAllowed()) {
+            t.buttons.add(s.equivalent("ViewLinkDeclarationOpenSetSelectorButton"));
+        }
+        if (s.isUnsetReferenceAllowed()) {
+            t.buttons.add(s.equivalent("ViewLinkDeclarationUnsetButton"));
         }
 
         log.debug("InlineViewLinkButtonGroup: " + t.name);
@@ -449,7 +459,6 @@ rule ViewLinkDeclarationOpenCreateFormActionDefinition
         log.debug("ViewLinkDeclarationOpenCreateFormActionDefinition: " + t.name);
 }
 
-
 @greedy
 @lazy
 rule ViewLinkDeclarationOpenFormAction
@@ -513,4 +522,370 @@ rule ViewLinkDeclarationRowDeleteAction
         t.actionDefinition = s.equivalent("ViewLinkDeclarationRowDeleteActionDefinition");
 
         log.debug("ViewLinkDeclarationRowDeleteAction: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationUnsetButton
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Button {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetButton");
+        t.name = s.name + "::Unset";
+        t.label = "Unset";
+        t.buttonStyle = "contained";
+        t.icon = "link-off".createSyntheticIcon(s.getId(), s.getFqName());
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationUnsetActionDefinition");
+
+        log.debug("ViewLinkDeclarationUnsetButton: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationUnsetActionDefinition
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::UnsetActionDefinition {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetActionDefinition");
+ 		t.name = s.name + "::Unset";
+ 		t.isContainedRelationAction = true;
+ 		t.targetType = s.referenceType.equivalent("ClassType");
+
+        log.debug("ViewLinkDeclarationUnsetActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationUnsetAction
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetAction");
+        t.name = s.name + "::Unset";
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationUnsetActionDefinition");
+
+        log.debug("ViewLinkDeclarationUnsetAction: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationOpenSetSelectorButton
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Button {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorButton");
+        t.name = s.name + "::OpenSetSelector";
+        t.label = "Set";
+        t.buttonStyle = "contained";
+        t.icon = "link".createSyntheticIcon(s.getId(), s.getFqName());
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenSetSelectorActionDefinition");
+
+        log.debug("ViewLinkDeclarationOpenSetSelectorButton: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationOpenSetSelectorActionDefinition
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::OpenSetSelectorActionDefinition {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorActionDefinition");
+ 		t.name = s.name + "::OpenSetSelector";
+ 		t.isContainedRelationAction = true;
+ 		t.selectorFor = s.equivalent("ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition");
+
+        log.debug("ViewLinkDeclarationOpenSetSelectorActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationOpenSetSelectorDialogAction
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorDialogAction");
+        t.name = s.name + "::OpenSetSelector";
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenSetSelectorActionDefinition");
+        t.targetPageDefinition = s.equivalent("ViewLinkDeclarationSetSelectorPageDefinition");
+
+        log.debug("ViewLinkDeclarationOpenSetSelectorDialogAction: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorPageDefinition
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::PageDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorPageDefinition");
+        t.name = s.getFqName() + "::SetSelector::PageDefinition";
+        t.container = s.equivalent("ViewLinkDeclarationSetSelectorPageContainer");
+        t.dataElement = s.equivalent("RelationType");
+        t.openInDialog = true;
+        t.dialogSize = UI!ui::DialogSize#MD;
+
+        t.actions.add(s.equivalent("ViewLinkDeclarationSetSelectorSetAction"));
+        t.actions.add(s.equivalent("ViewLinkDeclarationSetSelectorBackAction"));
+        t.actions.add(s.equivalent("ViewLinkDeclarationSetSelectorTableFilterAction"));
+        t.actions.add(s.equivalent("ViewLinkDeclarationSetSelectorTableRangeAction"));
+
+        actorDeclaration.equivalent("Application").pages.add(t);
+
+        log.debug("ViewLinkDeclarationSetSelectorPageDefinition: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorSetAction
+	transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetAction");
+ 		t.name = s.getFqName() + "::SetSelector::Set";
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition");
+
+        log.debug("ViewLinkDeclarationSetSelectorSetAction: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorBackAction
+	transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorBackAction");
+ 		t.name = s.getFqName() + "::SetSelector::Back";
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorBackActionDefinition");
+
+        log.debug("ViewLinkDeclarationSetSelectorBackAction: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorTableFilterAction
+	transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableFilterAction");
+ 		t.name = s.getFqName() + "::SetSelector::Table::Filter";
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.targetDataElement = s.equivalent("RelationType");
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorTableFilterActionDefinition");
+
+        log.debug("ViewLinkDeclarationSetSelectorTableFilterAction: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorTableRangeAction
+	transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Action {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableRangeAction");
+ 		t.name = s.getFqName() + "::SetSelector::Table::Range";
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.targetDataElement = s.equivalent("RelationType");
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorTableRangeActionDefinition");
+
+        log.debug("ViewLinkDeclarationSetSelectorTableRangeAction: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorPageContainer
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::PageContainer {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorPageContainer");
+        t.name = s.getFqName() + "::SetSelector::PageContainer";
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+        t.titleFrom = UI!ui::TitleFrom#LABEL;
+        t.type = UI!ui::PageContainerType#TABLE;
+        t.onInit = s.equivalent("ViewLinkDeclarationSetSelectorTableRangeActionDefinition");
+
+        t.children.add(s.equivalent("ViewLinkDeclarationSetSelectorVisualElement"));
+        t.actionButtonGroup = s.equivalent("ViewLinkDeclarationSetSelectorButtonGroup");
+        t.dataElement = s.referenceType.equivalent("ClassType");
+        t.isSelector = true;
+        t.isRelationSelector = true;
+
+        actorDeclaration.equivalent("Application").pageContainers.add(t);
+
+        log.debug("ViewLinkDeclarationSetSelectorPageContainer: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorVisualElement
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Flex {
+        t.~pos = 0;
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorVisualElement");
+        t.name = s.name;
+        t.direction = UI!Axis#VERTICAL;
+        t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        t.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        t.col = 12d;
+        t.children.add(s.equivalent("ViewLinkDeclarationSetSelectorTable"));
+        t.frame = s.equivalent("ViewLinkDeclarationSetSelectorFrame");
+
+        log.debug("ViewLinkDeclarationSetSelectorVisualElement: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorFrame
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Frame {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorFrame");
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorTable
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Table {
+        var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTable";
+        t.setId(id);
+        t.col = 12d;
+        if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
+        t.isSelectorTable = true;
+        t.isRelationSelectorTable = true;
+        t.allowSelectMultiple = false;
+        t.name = s.name + "::Set::Selector";
+        t.relationName = s.name;
+        t.dataElement = s.referenceType.equivalent("ClassType");
+        t.tableActionButtonGroup = s.equivalent("ViewLinkDeclarationSetSelectorTableButtonGroup");
+        t.~pos = s.~pos;
+        t.showTotalCount = false;
+        t.selectorRowsPerPage = 10;
+
+        if (s.getRows().isDefined()) {
+            t.rowsPerPage = s.getRows().value.asInteger();
+        } else {
+            t.rowsPerPage = 10;
+        }
+        if (t.~pos.isUndefined()) {
+            t.~pos = 0;
+        }
+
+        // TODO eventually selector should work?
+        var targetDeclaration = s.referenceType;
+
+        var primitiveFields = targetDeclaration.members.select(m | m.isTypeOf(JSL!ViewFieldDeclaration) and m.referenceType.`primitive`.isDefined());
+
+        for (field in primitiveFields) {
+            var col = field.equivalentDiscriminated("TablePrimitiveColumn", id);
+            t.columns.add(col);
+            if (col.attributeType.isFilterable) {
+               t.filters.add(field.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
+            }
+        }
+
+        log.debug("ViewLinkDeclarationSetSelectorTable: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorTableButtonGroup
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::ButtonGroup {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableButtonGroup");
+ 		t.name = s.getFqName() + "::SetSelectorTableActions";
+ 		t.label = "Actions";
+
+    	t.buttons.add(s.equivalent("ViewLinkDeclarationSetSelectorTableFilterButton"));
+    	t.buttons.add(s.equivalent("ViewLinkDeclarationSetSelectorTableRefreshButton"));
+
+        log.debug("ViewLinkDeclarationSetSelectorTableButtonGroup: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorTableFilterButton
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Button {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableFilterButton");
+ 		t.name = s.getFqName() + "::SetSelector::Table::Filter";
+    	t.label = "Set Filters";
+    	t.buttonStyle = "text";
+    	t.icon = "filter".createSyntheticIcon(s.getId(), s.getFqName());
+    	t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorTableFilterActionDefinition");
+
+        log.debug("ViewLinkDeclarationSetSelectorTableFilterButton: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorTableFilterActionDefinition
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::FilterActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableFilterActionDefinition");
+        t.name = s.getFqName() + "::Table::Filter";
+        log.debug("ViewLinkDeclarationSetSelectorTableFilterActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorTableRefreshButton
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Button {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableRefreshButton");
+ 		t.name = s.getFqName() + "::SetSelector::Table::Refresh";
+    	t.label = "Refresh";
+    	t.buttonStyle = "text";
+    	t.icon = "refresh".createSyntheticIcon(s.getId(), s.getFqName());
+    	t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorTableRangeActionDefinition");
+
+        log.debug("ViewLinkDeclarationSetSelectorTableRefreshButton: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorTableRangeActionDefinition
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::SelectorRangeActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableRangeActionDefinition");
+
+        t.name = s.getFqName() + "::SetSelector::Table::Range";
+        t.targetType = s.referenceType.equivalent("ClassType");
+
+        log.debug("ViewLinkDeclarationSetSelectorTableRangeActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorButtonGroup
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::ButtonGroup {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorButtonGroup");
+        t.name = s.getFqName() + "::SetSelectorButtonGroup";
+        t.label = "Actions";
+
+        t.buttons.add(s.equivalent("ViewLinkDeclarationSetSelectorSetSelectorBackButton"));
+        t.buttons.add(s.equivalent("ViewLinkDeclarationSetSelectorSetSelectorSetButton"));
+
+        log.debug("ViewLinkDeclarationSetSelectorButtonGroup: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorSetSelectorBackButton
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Button {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetSelectorBackButton");
+        t.name = s.getFqName() + "::Back";
+        t.label = "Back";
+        t.buttonStyle = "text";
+        t.icon = "arrow-left".createSyntheticIcon(s.getId(), s.getFqName());
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorBackActionDefinition");
+
+        log.debug("ViewLinkDeclarationSetSelectorSetSelectorBackButton: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorBackActionDefinition
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::BackActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorBackActionDefinition");
+        t.name = s.getFqName() + "::Back";
+        log.debug("ViewLinkDeclarationSetSelectorBackActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorSetSelectorSetButton
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::Button {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetSelectorSetButton");
+        t.name = s.getFqName() + "::Set";
+        t.label = "Set";
+        t.buttonStyle = "contained";
+        t.icon = "attachment-plus".createSyntheticIcon(s.getId(), s.getFqName());
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition");
+
+        log.debug("ViewLinkDeclarationSetSelectorSetSelectorSetButton: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition
+    transform s: JSL!ViewLinkDeclaration
+    to t: UI!ui::SetActionDefinition {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition");
+        t.name = s.getFqName() + "::Set";
+        t.targetType = s.referenceType.equivalent("ClassType");
+
+        log.debug("ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition: " + t.name);
 }
