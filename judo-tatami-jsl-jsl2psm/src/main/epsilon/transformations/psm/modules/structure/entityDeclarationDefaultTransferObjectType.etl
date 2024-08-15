@@ -14,7 +14,6 @@ rule CreateEntityDefaultTransferObjectType
         t.entityType.defaultRepresentation = t;
 
         t.name = defaultTransferObjectNamePrefix + s.name + defaultTransferObjectNamePostfix;
-        t.optional = false;
         t.queryCustomizer = false;
 
         // By default owned attributes are transformed in `transferAttribute.etl`, therefore we only transform inherited
