@@ -9,6 +9,8 @@ rule FormPageContainer
         }
         t.name = s.getFqName() + "::Create::PageContainer";
         t.children.add(s.equivalent("FormPageContainerVisualElement"));
+        t.actionButtonGroup = s.equivalent("FormPageContainerButtonGroup");
+        t.dataElement = s.map.transfer.equivalent("ClassType");
 
         rootMenu.equivalent("Application").pageContainers.add(t);
 
@@ -65,4 +67,102 @@ rule ViewPageContainerVisualElement
         t.col = 12d;
 
         log.debug("ViewPageContainerVisualElement: " + t.name);
+}
+
+@lazy
+rule FormPageContainerButtonGroup
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::ButtonGroup { 
+		var id = rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerButtonGroup";
+	    t.setId(id);
+ 		t.name = s.getFqName() + "::PageActions";
+ 		t.label = "Actions";
+ 		t.buttons.add(s.equivalent("FormPageContainerBackButton"));
+ 		t.buttons.add(s.equivalent("FormPageContainerCreateButton"));
+
+        log.debug("FormPageContainerButtonGroup: " + t.name);
+}
+
+@lazy
+rule FormPageContainerBackActionDefinition
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::BackActionDefinition  {
+	    t.setId(rootMenu.name + "/(esm/" + s.getId() + ")/FormPageContainerBackActionDefinition");
+ 		t.name = s.getFqName() + "::Back";
+        log.debug("FormPageContainerBackActionDefinition: " + t.name);    
+}
+
+@lazy
+rule FormPageContainerBackButtonIcon
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Icon {
+    	t.iconName = "arrow-left";
+    	t.name = s.name + "Icon";
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerBackButtonIcon");
+}
+
+@lazy
+rule FormPageContainerBackButton
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerBackButton");
+ 		t.name = s.getFqName() + "::Back";
+    	t.label = "Back";
+    	t.buttonStyle = "text";
+    	t.icon = s.equivalent("FormPageContainerBackButtonIcon");    	    	
+    	t.actionDefinition = s.equivalent("FormPageContainerBackActionDefinition");
+
+        log.debug("FormPageContainerBackButton: " + t.name);    
+}
+
+@lazy
+rule FormPageContainerCreateButtonIcon
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Icon {
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerCreateButtonIcon");
+    	t.name = s.name + "Icon";
+    	t.iconName = "content-save";
+    	
+    	log.debug("FormPageContainerCreateButtonIcon: " + t.name);
+}
+
+@lazy
+rule FormPageContainerCreateButton
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerCreateButton");
+ 		t.name = s.getFqName() + "::Create";
+    	t.label = "Create";
+    	t.buttonStyle = "contained";
+    	t.icon = s.equivalent("FormPageContainerCreateButtonIcon");
+    	t.actionDefinition = s.equivalent("FormPageContainerCreateActionDefinition");
+	 	
+        log.debug("FormPageContainerCreateButton: " + t.name);
+}
+
+@lazy
+rule FormPageContainerCreateActionDefinition
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::CreateActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerCreateActionDefinition");
+        t.name = s.getFqName() + "::Create";
+        
+        /*
+        if (s.autoOpenAfterCreate.isDefined()) {
+            t.autoOpenAfterCreate = s.autoOpenAfterCreate;
+        }
+        */
+
+        log.debug("FormPageContainerCreateActionDefinition: " + t.name);    
+}
+
+@lazy
+rule FormPageContainerGetTemplateActionDefinition
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::GetTemplateActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TransferObjectFormGetTemplateActionDefinition");
+ 		t.name = s.getFqName() + "::GetTemplate";
+		t.targetType = s.map.transfer.equivalent("ClassType");
+
+        log.debug("TransferObjectFormGetTemplateActionDefinition: " + t.name);
 }
