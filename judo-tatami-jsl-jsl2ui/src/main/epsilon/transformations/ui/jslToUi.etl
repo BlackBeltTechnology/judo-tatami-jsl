@@ -13,6 +13,7 @@ import "modules/type/type.etl";
 
 import "modules/view/enumLiteral.etl";
 import "modules/view/menuDeclaration.etl";
+import "modules/view/menuTableDeclaration.etl";
 import "modules/view/rowLinkDeclaration.etl";
 import "modules/view/viewGroupDeclaration.etl";
 import "modules/view/viewLinkDeclaration.etl";
@@ -47,7 +48,7 @@ pre {
 }
 
 post {
-    var application = actorDeclaration.equivalent("Application");
+    var application = rootMenu.equivalent("Application");
 
     for (navigationController : UI!ui::NavigationController in UI!ui::NavigationController.all()) {
         navigationController.items = navigationController.items.sortBy(e | e.~pos);

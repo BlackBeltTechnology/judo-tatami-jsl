@@ -9,6 +9,15 @@ operation JSL!Modifiable getLabelModifier(): JSL!Modifier {
 }
 
 @cached
+operation JSL!Modifiable getLabelWithNameFallback(): String {
+    var labelModifier = self.modifiers.selectOne(m | m.isTypeOf(JSL!LabelModifier));
+    if (labelModifier.isUndefined()) {
+        return self.name;
+    }
+    return labelModifier.value.value;
+}
+
+@cached
 operation JSL!Modifiable getIconModifier(): JSL!Modifier {
     return self.modifiers.selectOne(m | m.isTypeOf(JSL!IconModifier));
 }

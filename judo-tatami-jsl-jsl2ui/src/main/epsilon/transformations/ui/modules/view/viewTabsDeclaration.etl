@@ -7,11 +7,8 @@ rule TabBarVisualElement
         t.name = s.name;
         t.~pos = s.~pos;
         t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12d;
-
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
-        if (s.getLabelModifier().isDefined()) {
+        t.label = s.getLabelWithNameFallback();
+        if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("TabsIcon");
         }
         if (s.getOrientationModifier().isDefined()) {

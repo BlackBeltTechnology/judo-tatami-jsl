@@ -84,9 +84,7 @@ rule AbstractViewTableDeclaration
 
         t.name = s.name;
         t.relationName = s.name;
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("TableIcon");
         }
@@ -161,9 +159,7 @@ rule TablePrimitiveColumn
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumn");
         t.name = s.name;
         t.format = "%s";
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("ColumnIcon");
         }
@@ -194,9 +190,7 @@ rule TablePrimitiveColumnFilter
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumnFilter");
         t.name = s.name + "Filter";
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         log.debug("TablePrimitiveColumnFilter: " + t.name);
 }
 
@@ -209,9 +203,7 @@ rule RowLinkDerivedColumn
         // we keep the name of the link it self because the relation won't be present in the visual elements only in the data model
         t.name = s.name;
         t.format = "%s";
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("RowLinkDerivedColumnIcon");
         }
@@ -257,9 +249,7 @@ rule RowLinkDerivedColumnFilter
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumnFilter");
         t.name = s.name + "Filter";
         t.attributeType = s.equivalent("RowLinkDerivedAttributeType");
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         log.debug("RowLinkDerivedColumnFilter: " + t.name);
 }
 
@@ -813,10 +803,7 @@ rule ViewTableDeclarationAddSelectorPageContainer
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorPageContainer");
 
         t.name = s.getFqName() + "::AddSelector::PageContainer";
-        var label = s.getLabelModifier();
-        if (label.isDefined()) {
-            t.label = label.value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         t.titleFrom = UI!ui::TitleFrom#LABEL;
         t.type = UI!ui::PageContainerType#TABLE;
         t.onInit = s.equivalent("ViewTableDeclarationAddSelectorTableRangeActionDefinition");
@@ -936,9 +923,7 @@ rule ViewTableDeclarationAddSelectorTableTable
         var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableTable";
         t.setId(id);
         t.col = 12d;
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         t.isSelectorTable = true;
         t.isRelationSelectorTable = true;
         t.allowSelectMultiple = true;

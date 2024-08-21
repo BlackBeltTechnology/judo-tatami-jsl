@@ -5,9 +5,7 @@ rule AbstractViewWidgetDeclaration
         guard: rootMenu.containsVisualElement(s)
 
         t.name = s.name;
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("ViewWidgetIcon");
         }

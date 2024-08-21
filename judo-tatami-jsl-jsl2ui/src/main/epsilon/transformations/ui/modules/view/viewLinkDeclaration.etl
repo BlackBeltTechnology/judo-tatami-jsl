@@ -222,9 +222,7 @@ rule AbstractViewLinkDeclaration
 
         t.name = s.name;
         t.relationName = s.name;
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("LinkIcon");
         }
@@ -676,10 +674,7 @@ rule ViewLinkDeclarationSetSelectorPageContainer
     to t: UI!ui::PageContainer {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorPageContainer");
         t.name = s.getFqName() + "::SetSelector::PageContainer";
-        var label = s.getLabelModifier();
-        if (label.isDefined()) {
-            t.label = label.value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         t.titleFrom = UI!ui::TitleFrom#LABEL;
         t.type = UI!ui::PageContainerType#TABLE;
         t.onInit = s.equivalent("ViewLinkDeclarationSetSelectorTableRangeActionDefinition");
@@ -726,9 +721,7 @@ rule ViewLinkDeclarationSetSelectorTable
         var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTable";
         t.setId(id);
         t.col = 12d;
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         t.isSelectorTable = true;
         t.isRelationSelectorTable = true;
         t.allowSelectMultiple = false;
