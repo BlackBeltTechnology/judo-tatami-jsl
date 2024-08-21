@@ -12,12 +12,13 @@ import "modules/structure/transferRelationDeclaration.etl";
 import "modules/type/type.etl";
 
 import "modules/view/enumLiteral.etl";
+import "modules/view/menuDeclaration.etl";
 import "modules/view/rowLinkDeclaration.etl";
-import "modules/view/viewFieldDeclaration.etl";
 import "modules/view/viewGroupDeclaration.etl";
 import "modules/view/viewLinkDeclaration.etl";
 import "modules/view/viewTableDeclaration.etl";
 import "modules/view/viewTabsDeclaration.etl";
+import "modules/view/viewWidgetDeclaration.etl";
 
 pre {
     var ecoreUtil = new Native("org.eclipse.emf.ecore.util.EcoreUtil");

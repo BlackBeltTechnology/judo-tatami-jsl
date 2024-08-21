@@ -1,0 +1,45 @@
+@cached
+operation JSL!UIMenuDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!UIMenuDeclaration getFqName(): String {
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
+    }
+    return self.name;
+}
+
+@cached
+operation JSL!UIMenuDeclaration getRootMenu(): JSL!UIMenuDeclaration {
+    if (self.eContainer.isDefined()) {
+        if (self.eContainer.isTypeOf(JSL!ModelDeclaration)) {
+            return self;
+
+        }
+        // todo handle groups traversing upwards?
+        return self.getRootMenu();
+    }
+    return null;
+}
+
+@cached
+operation JSL!UIMenuDeclaration getExposedVisualElements(): Set {
+    var ves = new Set();
+
+    for (link in self.members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
+        ves.addAll(link.getExposedVisualElements());
+    }
+
+    for (table in self.members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
+        ves.addAll(table.getExposedVisualElements());
+    }
+
+    return ves;
+}
+
+@cached
+operation JSL!UIMenuDeclaration containsVisualElement(element: Any): Boolean {
+    return self.getRootMenu().getExposedVisualElements().contains(element);
+}

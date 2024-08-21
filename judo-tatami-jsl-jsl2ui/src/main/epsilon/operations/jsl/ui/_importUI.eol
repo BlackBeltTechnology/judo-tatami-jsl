@@ -1,11 +1,14 @@
 import "icon.eol";
+import "menuDeclaration.eol";
+import "menuLinkDeclaration.eol";
+import "menuTableDeclaration.eol";
 import "rowLinkDeclaration.eol";
 import "viewActionDeclaration.eol";
 import "viewDeclaration.eol";
-import "viewFieldDeclaration.eol";
 import "viewGroupDeclaration.eol";
 import "viewLinkDeclaration.eol";
 import "viewPanelDeclaration.eol";
 import "viewTableDeclaration.eol";
 import "viewTabsDeclaration.eol";
+import "viewWidgetDeclaration.eol";
 import "visibleDeclaration.eol";

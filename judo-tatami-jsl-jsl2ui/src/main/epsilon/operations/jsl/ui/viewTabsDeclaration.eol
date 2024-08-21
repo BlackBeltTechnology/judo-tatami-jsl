@@ -1,3 +1,4 @@
+/*
 @cached
 operation JSL!ViewTabsDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
@@ -25,3 +26,4 @@ operation JSL!ViewTabsDeclaration isFrame(): Boolean {
 operation JSL!ViewTabsDeclaration uiContainer() : UI!ui::VisualElement {
     return self.equivalent("TabBarVisualElement");
 }
+*/

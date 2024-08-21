@@ -7,14 +7,14 @@ operation JSL!TransferRelationDeclaration getId(): String {
 operation JSL!TransferRelationDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "::" + self.name;
 }
-
+/*
 @cached
 operation JSL!TransferRelationDeclaration isFormRelation(): Boolean {
     return self.isCreateAllowed()
         and self.referenceType.getCreateEventDeclaration().isDefined()
         and self.referenceType.getCreateEventDeclaration().parameterType.isDefined();
 }
-
+*/
 @cached
 operation JSL!TransferRelationDeclaration isEager(): Boolean {
     return jslUtils.isEager(self);
@@ -89,26 +89,24 @@ operation JSL!TransferRelationDeclaration isChoiceDefined(): Boolean {
 operation JSL!TransferRelationDeclaration isAddReferenceAllowed(): Boolean {
     var lower = self.isRequired() and not self.isMany ? 1 : 0;
     var upper = self.isMany ? -1 : 1;
-    return self.maps() and self.getTransferContainer().isUpdateSupported()
-        and upper != 1 and (lower < upper or upper == -1);
+    return self.maps() and upper != 1 and (lower < upper or upper == -1);
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isRemoveReferenceAllowed(): Boolean {
     var lower = self.isRequired() and not self.isMany ? 1 : 0;
     var upper = self.isMany ? -1 : 1;
-    return self.maps() and self.getTransferContainer().isUpdateSupported()
-        and upper != 1 and (lower < upper or upper == -1);
+    return self.maps() and upper != 1 and (lower < upper or upper == -1);
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isSetReferenceAllowed(): Boolean {
-    return self.maps() and self.getTransferContainer().isUpdateSupported() and not self.isRequired();
+    return self.maps() and not self.isRequired();
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isUnsetReferenceAllowed(): Boolean {
-    return self.maps() and self.getTransferContainer().isUpdateSupported() and not self.isRequired();
+    return self.maps() and not self.isRequired();
 }
 
 @cached
@@ -151,10 +149,6 @@ operation JSL!TransferRelationDeclaration getMappedTransferRelationEquivalent():
 operation JSL!TransferRelationDeclaration getTransferContainer(): JSL!TransferDeclaration {
     if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
         return self.eContainer;
-    } else if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration)) {
-         return self.eContainer.getActorDeclaration();
-    } else if (self.eContainer.isKindOf(JSL!ViewPanelDeclaration)) {
-        return self.eContainer.getTransferContainer();
     }
     return null;
 }
@@ -169,11 +163,11 @@ operation JSL!TransferRelationDeclaration getContainerEquivalentClassType(): UI!
     }
     return null;
 }
-
+/*
 operation JSL!TransferRelationDeclaration uiContainer() : UI!ui::VisualElement {
     return self.referenceType.equivalent("TransferDeclarationVisualElement");
 }
-
+*/
 @cached
 operation JSL!TransferRelationDeclaration getTransferObjectType(): JSL!TransferDeclaration {
     return self.referenceType;

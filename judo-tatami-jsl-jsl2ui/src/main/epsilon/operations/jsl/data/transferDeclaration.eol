@@ -17,15 +17,16 @@ operation JSL!TransferDeclaration getExposedTransferObjects(): Set {
 
     for (relation in relations) {
         transfers.addAll(relation.referenceType.getExposedTransferObjects());
-        var targetCreateEvent = relation.referenceType.getCreateEventDeclaration();
-        if (targetCreateEvent.isDefined() and targetCreateEvent.parameterType.isKindOf(JSL!TransferDeclaration)) {
-            transfers.add(targetCreateEvent.parameterType);
-        }
+        //var targetCreateEvent = relation.referenceType.getCreateEventDeclaration();
+        //if (targetCreateEvent.isDefined() and targetCreateEvent.parameterType.isKindOf(JSL!TransferDeclaration)) {
+        //    transfers.add(targetCreateEvent.parameterType);
+        //}
     }
 
     return transfers;
 }
 
+/*
 @cached
 operation JSL!TransferDeclaration getReferencingCreateEvent(): JSL!TransferCreateDeclaration {
     return JSL!TransferCreateDeclaration.all.selectOne(s | s.parameterType == self);
@@ -35,6 +36,7 @@ operation JSL!TransferDeclaration getReferencingCreateEvent(): JSL!TransferCreat
 operation JSL!TransferDeclaration isCreateEventParameter(): Boolean {
     return self.getReferencingCreateEvent().isDefined();
 }
+*/
 
 @cached
 operation JSL!TransferDeclaration getExposedRelations(): Set {
@@ -68,7 +70,7 @@ operation JSL!TransferDeclaration getAllRelations(): Set {
     var relations = new Set();
     var ownRelations = self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration));
     relations.addAll(ownRelations);
-
+/*
     if (self.isKindOf(JSL!ActorDeclaration)) {
         var linkRelations = self.getAllMenuDeclarations();
         relations.addAll(linkRelations);
@@ -83,7 +85,7 @@ operation JSL!TransferDeclaration getAllRelations(): Set {
     for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
         relations.addAll(member.getAllRelations());
     }
-
+*/
     // also add relations of relations to complete the trees
     for (member in ownRelations) {
         relations.addAll(member.referenceType.getAllRelations());
@@ -96,7 +98,7 @@ operation JSL!TransferDeclaration getAllRelations(): Set {
 operation JSL!TransferDeclaration getDirectRelations(): Set {
     var relations = new Set();
     relations.addAll(self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration)));
-
+/*
     if (self.isKindOf(JSL!ActorDeclaration)) {
         var linkRelations = self.getAllMenuDeclarations();
         relations.addAll(linkRelations);
@@ -105,7 +107,7 @@ operation JSL!TransferDeclaration getDirectRelations(): Set {
     for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
         relations.addAll(member.getDirectRelations());
     }
-
+*/
     return relations;
 }
 
@@ -121,6 +123,7 @@ operation JSL!TransferDeclaration getAllPrimitiveFields(): Set {
     return fields;
 }
 
+/*
 @cached
 operation JSL!TransferDeclaration isDeleteSupported(): Boolean {
     if (self.map.isDefined()) {
@@ -147,6 +150,7 @@ operation JSL!TransferDeclaration isUpdateSupported(): Boolean {
     }
     return false;
 }
+*/
 
 @cached
 operation JSL!TransferDeclaration isDefinedAsInputParameter(): Boolean {
@@ -155,9 +159,6 @@ operation JSL!TransferDeclaration isDefinedAsInputParameter(): Boolean {
 
 @cached
 operation JSL!TransferDeclaration isGetTemplateSupported(): Boolean {
-    if (self.isCreateSupported()) {
-        return true;
-    }
     if (self.map.isUndefined()) {
         return self.isDefinedAsInputParameter();
     }
@@ -178,6 +179,7 @@ operation JSL!TransferDeclaration uiContainer() : UI!ui::VisualElement {
     return self.equivalent("TransferDeclarationVisualElement");
 }
 
+/*
 @cached
 operation JSL!TransferDeclaration getCreateEventDeclaration() : JSL!TransferCreateDeclaration {
     return self.members.selectOne(m | m.isKindOf(JSL!TransferCreateDeclaration));
@@ -197,3 +199,4 @@ operation JSL!TransferDeclaration getUpdateEventDeclaration() : JSL!TransferUpda
 operation JSL!TransferDeclaration getDeleteEventDeclaration() : JSL!TransferDeleteDeclaration {
     return self.members.selectOne(m | m.isKindOf(JSL!TransferDeleteDeclaration));
 }
+*/

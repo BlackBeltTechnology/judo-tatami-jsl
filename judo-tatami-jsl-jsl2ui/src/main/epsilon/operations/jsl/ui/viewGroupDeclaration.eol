@@ -7,7 +7,7 @@ operation JSL!ViewGroupDeclaration getId(): String {
 operation JSL!ViewGroupDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "::" + self.name;
 }
-
+/*
 @cached
 operation JSL!ViewGroupDeclaration getTransferObjectType(): JSL!TransferDeclaration {
     var to = self.eContainer;
@@ -16,7 +16,7 @@ operation JSL!ViewGroupDeclaration getTransferObjectType(): JSL!TransferDeclarat
     }
     return to;
 }
-
+*/
 @cached
 operation JSL!ViewGroupDeclaration isFrame(): Boolean {
     var frame = self.getFrame();

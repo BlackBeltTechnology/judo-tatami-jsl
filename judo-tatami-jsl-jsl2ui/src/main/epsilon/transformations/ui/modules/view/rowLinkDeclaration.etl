@@ -21,7 +21,7 @@ rule RowLinkPageDefinition
         log.info("===================");
         */
 
-        for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
+        for (link in relations.select(r | r.isKindOf(JSL!UIViewLinkDeclaration))) {
             t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", "RowLinkPageDefinition"));
 
             if (link.isRefreshAllowed() and not link.isEager()) {
@@ -41,7 +41,7 @@ rule RowLinkPageDefinition
             }
         }
 
-        for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
+        for (table in relations.select(r | r.isKindOf(JSL!UIViewTableDeclaration))) {
             var detailLink = table.getDetailLink();
 
             if (table.isFilterSupported()) {

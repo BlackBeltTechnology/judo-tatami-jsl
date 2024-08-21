@@ -2,13 +2,13 @@
 rule CreateNumericType
     transform s: JSL!DataTypeDeclaration
     to t: UI!ui::data::NumericType {
-        guard: s.`primitive` == "numeric" and ((s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration) or s.eContainer.name == "judo::types")
+        guard: s.`primitive` == "numeric"
 
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateNumericType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateNumericType");
         t.name = s.name;
         t.precision = s.getPrecision().value.intValue();
         t.scale = s.getScale().value.intValue();
-        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created NumericType: " + t.name);
 }
 
@@ -16,11 +16,11 @@ rule CreateNumericType
 rule CreateDateType
     transform s: JSL!DataTypeDeclaration
     to t: UI!ui::data::DateType {
-        guard: s.`primitive` == "date" and ((s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration) or s.eContainer.name == "judo::types")
+        guard: s.`primitive` == "date"
 
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateDateType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateDateType");
         t.name = s.name;
-        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created DateType: " + t.name);
 }
 
@@ -28,11 +28,11 @@ rule CreateDateType
 rule CreateTimeType
     transform s: JSL!DataTypeDeclaration
     to t: UI!ui::data::TimeType {
-        guard: s.`primitive` == "time" and ((s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration) or s.eContainer.name == "judo::types")
+        guard: s.`primitive` == "time"
 
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateTimeType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateTimeType");
         t.name = s.name;
-        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created TimeType: " + t.name);
 }
 
@@ -40,11 +40,11 @@ rule CreateTimeType
 rule CreateTimestampType
     transform s: JSL!DataTypeDeclaration
     to t: UI!ui::data::TimestampType {
-        guard: s.`primitive` == "timestamp" and ((s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration) or s.eContainer.name == "judo::types")
+        guard: s.`primitive` == "timestamp"
 
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateTimestampType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateTimestampType");
         t.name = s.name;
-        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created TimestampType: " + t.name);
 }
 
@@ -52,11 +52,9 @@ rule CreateTimestampType
 rule CreateEnumerationType
     transform s: JSL!EnumDeclaration
     to t: UI!ui::data::EnumerationType {
-        guard: (s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration) or s.eContainer.name == "judo::types"
-
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateEnumerationType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateEnumerationType");
         t.name = s.name;
-        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created EnumerationType: " + t.name);
 }
 
@@ -64,9 +62,7 @@ rule CreateEnumerationType
 rule CreateEnumerationMember
     transform s: JSL!EnumLiteral
     to t: UI!ui::data::EnumerationMember {
-        guard: (s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration) or s.eContainer.name == "judo::types"
-
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateEnumerationMember");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateEnumerationMember");
         t.name = s.name;
         t.ordinal = s.value.intValue();
         s.eContainer.equivalent("CreateEnumerationType").members.add(t);
@@ -77,11 +73,11 @@ rule CreateEnumerationMember
 rule CreateBooleanType 
     transform s : JSL!DataTypeDeclaration
     to t : UI!ui::data::BooleanType {
-        guard: s.`primitive` == "boolean" and ((s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration) or s.eContainer.name == "judo::types")
+        guard: s.`primitive` == "boolean"
 
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateBooleanType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateBooleanType");
         t.name = s.name;
-        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created BooleanType: " + t.name);
 }
 
@@ -89,9 +85,9 @@ rule CreateBooleanType
 rule CreateStringType 
     transform s : JSL!DataTypeDeclaration
     to t : UI!ui::data::StringType {
-        guard: s.`primitive` == "string" and ((s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration) or s.eContainer.name == "judo::types")
+        guard: s.`primitive` == "string"
 
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateStringType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateStringType");
         t.name = s.name;
         t.maxLength = s.getMaxSize().value.intValue();
 
@@ -99,7 +95,7 @@ rule CreateStringType
             t.regExp = s.getRegex().regex.value;
         }
 
-        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created StringType: " + t.name);
 }
 
@@ -107,12 +103,12 @@ rule CreateStringType
 rule MimeType
     transform s: String
     to t: UI!ui::data::MimeType {
-        t.setId(actorDeclaration.name + "/(jsl/" + s + ")/MimeType");
+        t.setId(rootMenu.name + "/(jsl/" + s + ")/MimeType");
         var split = s.split("/");
         t.type = split[0];
         t.subType = split[1];
 
-        actorDeclaration.equivalent("Application").mimeTypes.add(t);
+        rootMenu.equivalent("Application").mimeTypes.add(t);
         log.debug("Created MimeType: " + s);
 }
 
@@ -120,9 +116,9 @@ rule MimeType
 rule CreateBinaryType
     transform s : JSL!DataTypeDeclaration
     to t : UI!ui::data::BinaryType {
-        guard: s.`primitive` == "binary" and ((s.getActorDeclaration().isDefined() and s.getActorDeclaration() == actorDeclaration) or s.eContainer.name == "judo::types")
+        guard: s.`primitive` == "binary"
 
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/CreateBinaryType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateBinaryType");
         t.name = s.name;
 
         if (s.getMimeType().isDefined()) {
@@ -135,6 +131,6 @@ rule CreateBinaryType
             t.maxFileSize = jslUtils.getMaxFileSizeValue(s.getMaxFileSize()).longValue();
         }
 
-        actorDeclaration.equivalent("Application").dataTypes.add(t);
+        rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created BinaryType: " + t.name);
 }

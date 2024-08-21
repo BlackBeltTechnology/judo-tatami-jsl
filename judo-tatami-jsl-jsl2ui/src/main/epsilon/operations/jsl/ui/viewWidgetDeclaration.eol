@@ -1,0 +1,37 @@
+@cached
+operation JSL!UIViewWidgetDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!UIViewWidgetDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}
+
+@cached
+operation JSL!UIViewWidgetDeclaration getTransferObjectType(): JSL!TransferDeclaration {
+    /*
+    var to = self.eContainer;
+    while (to.isDefined() and not to.isKindOf(JSL!TransferDeclaration)) {
+        to = to.eContainer;
+    }
+    return to;
+    */
+    return self.referenceType.eContainer;
+}
+
+@cached
+operation JSL!UIViewWidgetDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
+    var primitive = self.referenceType;
+
+    if (primitive.isTransient()) {
+        return primitive.equivalent("CreateTransientTransferAttribute");
+    }
+    if (primitive.reads()) {
+        return primitive.equivalent("CreateDerivedTransferAttribute");
+    }
+    if (primitive.maps()) {
+        return primitive.equivalent("CreateMappedTransferAttribute");
+    }
+    throw "Could not determinate attribute type: " + s.fqName();
+}

@@ -1,71 +1,3 @@
-rule Application
-    transform s: JSL!ActorDeclaration
-    to t: UI!ui::Application {
-          guard: s = actorDeclaration
-
-          t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Application");
-
-        log.debug("Application: " + s.name);
-
-
-        //t.version = esmUtils.getModel(s).version;
-
-        t.name = s.name + "::Application";
-        t.modelName = defaultModelName;
-
-        t.actor = s.equivalent("Actor");
-        t.dataElements.add(t.actor);
-
-        var identity = s.getIdentityTransferDeclaration();
-
-        if (identity.isDefined()) {
-            t.principal = identity.equivalent("ClassType");
-        }
-
-        //if (s.defaultLanguage.isDefined()) {
-            t.defaultLanguage = "en-US";
-        //}
-
-        //if (s.applicationLogo.isDefined()) {
-            t.logo = "judo-color-logo.png";
-        //}
-
-        t.navigationController = s.equivalent("NavigationController");
-}
-
-rule Theme
-    transform s: JSL!ActorDeclaration
-    to t: UI!ui::Theme {
-          t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Theme");
-          /*
-        if (s.textPrimaryColor.isDefined()) {
-            t.textPrimaryColor = s.textPrimaryColor;
-        }
-        if (s.textSecondaryColor.isDefined()) {
-            t.textSecondaryColor = s.textSecondaryColor;
-        }
-        if (s.primaryColor.isDefined()) {
-            t.primaryColor = s.primaryColor;
-        }
-        if (s.subtitleColor.isDefined()) {
-            t.subtitleColor = s.subtitleColor;
-        }
-        if (s.secondaryColor.isDefined()) {
-            t.secondaryColor = s.secondaryColor;
-        }
-        if (s.backgroundColor.isDefined()) {
-            t.backgroundColor = s.backgroundColor;
-        }
-        */
-        t.textPrimaryColor = "#17191DFF";
-        t.textSecondaryColor = "#434448FF";
-        t.primaryColor = "#3C4166FF";
-        t.secondaryColor = "#E7501DFF";
-        t.subtitleColor = "#8C8C8C";
-        t.backgroundColor = "#FAFAFAFF";
-
-        actorDeclaration.equivalent("Application").theme = t;
-}
 
 rule Actor
     transform s: JSL!ActorDeclaration
@@ -79,17 +11,6 @@ rule Actor
         t.isActor = true;
 
         log.debug("Create class type (Actor): " + t.name);
-}
-
-rule NavigationController
-    transform s: JSL!ActorDeclaration
-    to t : UI!ui::NavigationController {
-        guard: s = actorDeclaration
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NavigationController");
-
-        t.name = s.getFqName() + "::NavigationController";
-
-        log.debug("Create NavigationController: " + t.name);
 }
 
 rule Authentication
@@ -106,36 +27,4 @@ rule Authentication
         s.equivalent("Application").authentication = t;
 
         log.debug("Create Authentication: " + t.realm);
-}
-
-rule EmptyDashboardPageDefinition
-    transform s: JSL!ActorDeclaration
-    to t: UI!ui::PageDefinition {
-        guard: s = actorDeclaration
-
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageDefinition");
-        t.name = s.getFqName() + "::DashboardPage";
-        t.dashboard = true;
-        t.dataElement = s.equivalent("Actor");
-
-        t.container = s.equivalent("EmptyDashboardPageContainer");
-        actorDeclaration.equivalent("Application").pages.add(t);
-
-        log.debug("EmptyDashboardPageDefinition [" + t.name + "]");
-}
-
-rule EmptyDashboardPageContainer
-    transform s: JSL!ActorDeclaration
-    to t: UI!ui::PageContainer {
-        guard: s = actorDeclaration
-
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageContainer");
-        t.name = s.getFqName() + "::Dashboard";
-        t.label = "Dashboard";
-        t.type = UI!ui::PageContainerType#TABLE;
-        t.dataElement = s.equivalent("Actor");
-
-        actorDeclaration.equivalent("Application").pageContainers.add(t);
-
-        log.debug("EmptyDashboardPageContainer [" + t.name + "]");
 }

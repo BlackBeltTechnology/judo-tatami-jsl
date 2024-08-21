@@ -1,15 +1,15 @@
 @abstract
-rule AbstractViewFieldDeclaration
-    transform s: JSL!ViewFieldDeclaration
+rule AbstractViewWidgetDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::VisualElement {
-        guard: s.getTransferObjectType().isGenerated()
+        guard: rootMenu.containsVisualElement(s)
 
         t.name = s.name;
         if (s.getLabelModifier().isDefined()) {
             t.label = s.getLabelModifier().value.value;
         }
         if (s.getIconModifier().isDefined()) {
-            t.icon = s.equivalent("ViewFieldIcon");
+            t.icon = s.equivalent("ViewWidgetIcon");
         }
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
         t.~pos = s.~pos;
@@ -17,19 +17,19 @@ rule AbstractViewFieldDeclaration
 
 @lazy
 @greedy
-rule ViewFieldIcon
-    transform s: JSL!ViewFieldDeclaration
+rule ViewWidgetIcon
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::Icon {
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "FieldIcon";
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewFieldIcon");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewWidgetIcon");
 }
 
 @greedy
 rule BinaryTypeInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::BinaryTypeInput
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.referenceType.`primitive`.isDefined()
             and s.referenceType.`primitive` == "binary"
 
@@ -40,9 +40,9 @@ rule BinaryTypeInput
 
 @greedy
 rule BooleanTypeTrinaryLogicCombo
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::TrinaryLogicCombo
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.referenceType.`primitive`.isDefined()
             and s.referenceType.`primitive` == "boolean"
             // and (s.booleanWidget == ESM!esm::ui::BooleanWidget#COMBO)
@@ -55,9 +55,9 @@ rule BooleanTypeTrinaryLogicCombo
 /*
 @greedy
 rule BooleanTypeCheckbox
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::Checkbox
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.referenceType.`primitive`.isDefined()
             and s.referenceType.`primitive` == "boolean"
             // and (s.booleanWidget.isUndefined() or s.booleanWidget <> ESM!esm::ui::BooleanWidget#COMBO)
@@ -71,9 +71,9 @@ rule BooleanTypeCheckbox
 
 @greedy
 rule DateTypeInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::DateInput
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.referenceType.`primitive`.isDefined()
             and s.referenceType.`primitive` == "date"
 
@@ -84,9 +84,9 @@ rule DateTypeInput
 
 @greedy
 rule TimestampTypeDateTimeInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::DateTimeInput
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.referenceType.`primitive`.isDefined()
             and s.referenceType.`primitive` == "timestamp"
 
@@ -97,9 +97,9 @@ rule TimestampTypeDateTimeInput
 
 @greedy
 rule TimeTypeTypeTimeInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::TimeInput
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.referenceType.`primitive`.isDefined()
             and s.referenceType.`primitive` == "time"
 
@@ -111,9 +111,9 @@ rule TimeTypeTypeTimeInput
 /*
 @greedy
 rule EnumerationTypeRadio
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::EnumerationRadio
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.enumWidget == ESM!esm::ui::EnumWidget#RADIO
                 and s.getTransferObjectType().isGenerated()
                 and not s.dataFeature.getMember().isQuery
@@ -132,9 +132,9 @@ rule EnumerationTypeRadio
 
 @greedy
 rule EnumerationTypeCombo
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::EnumerationCombo
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.referenceType.isTypeOf(JSL!EnumDeclaration)
 
         var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/EnumerationTypeCombo";
@@ -148,9 +148,9 @@ rule EnumerationTypeCombo
 
 @greedy
 rule NumericTypeVisualInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::NumericInput
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.referenceType.`primitive`.isDefined()
             and s.referenceType.`primitive` == "numeric"
 
@@ -164,9 +164,9 @@ rule NumericTypeVisualInput
 
 @greedy
 rule StringTypeTextInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::TextInput
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.referenceType.`primitive`.isDefined()
             and s.referenceType.`primitive` == "string"
             and (not s.getLines().isDefined() or s.getLines().value == 1)
@@ -181,9 +181,9 @@ rule StringTypeTextInput
 
 @greedy
 rule StringTypeTextArea
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::TextArea
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.referenceType.`primitive`.isDefined()
             and s.referenceType.`primitive` == "string"
             and s.getLines().isDefined()

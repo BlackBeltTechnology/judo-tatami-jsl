@@ -1,9 +1,9 @@
 @cached
-operation JSL!ViewDeclaration getId(): String {
+operation JSL!UIViewDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
 
 @cached
-operation JSL!ViewDeclaration getFqName(): String {
+operation JSL!UIViewDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "::" + self.name;
 }
