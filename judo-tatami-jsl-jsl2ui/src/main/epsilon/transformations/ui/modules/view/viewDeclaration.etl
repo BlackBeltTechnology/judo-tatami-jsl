@@ -8,11 +8,30 @@ rule FormPageContainer
             t.~pos = 0;
         }
         t.name = s.getFqName() + "::Create::PageContainer";
+        t.children.add(s.equivalent("FormPageContainerVisualElement"));
 
         rootMenu.equivalent("Application").pageContainers.add(t);
 
         log.debug("Create FormPageContainer: " + t.name);
 }
+
+@lazy
+rule FormPageContainerVisualElement
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Flex {
+        guard: rootMenu.containsVisualElement(s) and s.form.isDefined() and s.form
+
+        t.~pos = 0;
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerVisualElement");
+        t.name = s.name;
+        t.direction = UI!Axis#VERTICAL;
+        t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        t.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        t.col = 12d;
+
+        log.debug("FormPageContainerVisualElement: " + t.name);
+}
+
 
 rule ViewPageContainer
     transform s: JSL!UIViewDeclaration
@@ -24,8 +43,26 @@ rule ViewPageContainer
             t.~pos = 0;
         }
         t.name = s.getFqName() + "::View::PageContainer";
+        t.children.add(s.equivalent("ViewPageContainerVisualElement"));
 
         rootMenu.equivalent("Application").pageContainers.add(t);
 
         log.debug("Create ViewPageContainer: " + t.name);
+}
+
+@lazy
+rule ViewPageContainerVisualElement
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Flex {
+        guard: rootMenu.containsVisualElement(s) and (s.form.isUndefined() or not s.form)
+
+        t.~pos = 0;
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerVisualElement");
+        t.name = s.name;
+        t.direction = UI!Axis#VERTICAL;
+        t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        t.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        t.col = 12d;
+
+        log.debug("ViewPageContainerVisualElement: " + t.name);
 }

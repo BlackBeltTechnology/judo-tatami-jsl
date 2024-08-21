@@ -20,10 +20,12 @@ operation JSL!UIMenuTableDeclaration getExposedVisualElements(): Set {
 
     if (self.getCreateFormModifier().isDefined()) {
         ves.add(self.getCreateFormModifier().form);
+        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements());
     }
 
     if (self.getUpdateViewModifier().isDefined()) {
         ves.add(self.getUpdateViewModifier().view);
+        ves.addAll(self.getUpdateViewModifier().view.getExposedVisualElements());
     }
 
     return ves;

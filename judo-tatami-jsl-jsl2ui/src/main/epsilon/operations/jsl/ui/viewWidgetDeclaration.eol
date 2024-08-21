@@ -20,9 +20,19 @@ operation JSL!UIViewWidgetDeclaration getTransferObjectType(): JSL!TransferDecla
     return self.referenceType.eContainer;
 }
 
+operation JSL!UIViewWidgetDeclaration uiContainer() : UI!ui::VisualElement {
+    if (self.eContainer.isKindOf(JSL!UIViewDeclaration)) {
+        if (self.eContainer.form.isDefined() and self.form) {
+            return self.eContainer.equivalent("FormPageContainerVisualElement");
+        }
+        return self.eContainer.equivalent("ViewPageContainerVisualElement");
+    }
+    throw "Could not map container for uiContainer()";
+}
+
 @cached
 operation JSL!UIViewWidgetDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
-    var primitive = self.referenceType;
+    var primitive = self.transferField.target;
 
     if (primitive.isTransient()) {
         return primitive.equivalent("CreateTransientTransferAttribute");

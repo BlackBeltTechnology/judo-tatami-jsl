@@ -7,3 +7,27 @@ operation JSL!UIViewDeclaration getId(): String {
 operation JSL!UIViewDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "::" + self.name;
 }
+
+operation JSL!UIViewDeclaration uiContainer() : UI!ui::VisualElement {
+    if (self.form.isDefined() and self.form) {
+        return self.equivalent("FormPageContainerVisualElement");
+    }
+    return self.equivalent("ViewPageContainerVisualElement");
+}
+
+@cached
+operation JSL!UIViewDeclaration getExposedVisualElements(): Set {
+    var ves = new Set();
+
+    for (link in self.members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
+        ves.addAll(link.getExposedVisualElements());
+    }
+
+    for (table in self.members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
+        ves.addAll(table.getExposedVisualElements());
+    }
+
+    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
+
+    return ves;
+}

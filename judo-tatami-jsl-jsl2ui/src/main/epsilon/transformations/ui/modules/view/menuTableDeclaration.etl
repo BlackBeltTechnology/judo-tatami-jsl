@@ -120,7 +120,8 @@ rule AccessTablePageContainer
         t.titleFrom = UI!ui::TitleFrom#LABEL;
         t.type = UI!ui::PageContainerType#TABLE;
         t.children.add(s.equivalent("AccessTablePageContainerVisualElement"));
-        t.actionButtonGroup = s.equivalent("AccessTablePageContainerTableButtonGroup");
+        t.actionButtonGroup = s.equivalent("AccessTablePageContainerButtonGroup");
+        t.dataElement = s.referenceType.equivalent("ClassType");
         t.onInit = s.equivalent("AccessTableTableRefreshActionDefinition");
 
         rootMenu.equivalent("Application").pageContainers.add(t);
@@ -133,6 +134,50 @@ rule AccessTablePageContainer
         */
 
         log.debug("Create AccessTablePageDefinition: " + t.name);
+}
+
+@lazy
+rule AccessTablePageContainerButtonGroup
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::ButtonGroup {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainerButtonGroup");
+ 		t.name = s.getFqName() + "::PageActions";
+ 		t.label = "Actions";
+
+ 		t.buttons.add(s.equivalent("AccessTablePageContainerBackButton"));
+
+        log.debug("AccessTablePageContainerButtonGroup: " + t.name);
+}
+
+@lazy
+rule AccessTablePageContainerBackButtonIcon
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Icon {
+    	t.iconName = "arrow-left";
+    	t.name = s.name.anchor("Icon");
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainerBackButtonIcon");
+}
+
+@lazy
+rule AccessTablePageContainerBackActionDefinition
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::BackActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainerBackActionDefinition");
+ 		t.name = s.getFqName() + "::Back";
+        log.debug("AccessTablePageContainerBackActionDefinition: " + t.name);
+}
+
+@lazy
+rule AccessTablePageContainerBackButton
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainerBackButton");
+ 		t.name = s.getFqName() + "::Back";
+    	t.label = "Back";
+    	t.buttonStyle = "text";
+    	t.icon = s.equivalent("TransferObjectTableBackButtonIcon");
+    	t.actionDefinition = s.equivalent("AccessTablePageContainerBackActionDefinition");
+        log.debug("AccessTablePageContainerBackButton: " + t.name);
 }
 
 @lazy
@@ -954,6 +999,7 @@ rule AccessTableCreateFormPageDefinition
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableCreateFormPageDefinition");
 
+        t.openInDialog = true;
         t.name = s.getFqName() + "::Create::PageDefinition";
         t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
 
