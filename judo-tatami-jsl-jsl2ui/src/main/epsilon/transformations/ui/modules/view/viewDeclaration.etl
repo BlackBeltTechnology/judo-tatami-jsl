@@ -46,6 +46,8 @@ rule ViewPageContainer
         }
         t.name = s.getFqName() + "::View::PageContainer";
         t.children.add(s.equivalent("ViewPageContainerVisualElement"));
+        t.actionButtonGroup = s.equivalent("ViewPageContainerButtonGroup");
+        t.dataElement = s.map.transfer.equivalent("ClassType");
 
         rootMenu.equivalent("Application").pageContainers.add(t);
 
@@ -70,6 +72,203 @@ rule ViewPageContainerVisualElement
 }
 
 @lazy
+rule ViewPageContainerButtonGroup
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::ButtonGroup {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerButtonGroup");
+ 		t.name = s.getFqName() + "::PageActions";
+ 		t.label = "Actions";
+ 		t.buttons.add(s.equivalent("ViewPageContainerBackButton"));
+ 		t.buttons.add(s.equivalent("ViewPageContainerRefreshButton"));
+ 		t.buttons.add(s.equivalent("ViewPageContainerDeleteButton"));
+ 		t.buttons.add(s.equivalent("ViewPageContainerCancelButton"));
+ 		t.buttons.add(s.equivalent("ViewPageContainerUpdateButton"));
+
+        log.debug("ViewPageContainerButtonGroup: " + t.name);
+}
+
+@lazy
+rule ViewPageContainerBackActionDefinition
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::BackActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerBackActionDefinition");
+ 		t.name = s.getFqName() + "::Back";
+
+        log.debug("ViewPageContainerBackActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewPageContainerBackButtonIcon
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Icon {
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerBackButtonIcon");
+    	t.name = s.name + "BackButtonIcon";
+    	t.iconName = "arrow-left";
+    	
+    	log.debug("ViewPageContainerBackButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewPageContainerBackButton
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerBackButton");
+ 		t.name = s.getFqName() + "::Back";
+    	t.label = "Back";
+    	t.buttonStyle = "text";
+    	t.icon = s.equivalent("ViewPageContainerBackButtonIcon");
+    	t.actionDefinition = s.equivalent("ViewPageContainerBackActionDefinition");
+
+        log.debug("ViewPageContainerBackButton: " + t.name);
+}
+
+@lazy
+rule ViewPageContainerRefreshActionDefinition
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::RefreshActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerRefreshActionDefinition");
+ 		t.name = s.getFqName() + "::Refresh";
+
+        log.debug("ViewPageContainerRefreshActionDefinition: " + t.name);    
+}
+
+@lazy
+rule ViewPageContainerRefreshButtonIcon
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Icon {
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerRefreshButtonIcon");
+    	t.name = s.name + "RefreshButtonIcon";
+    	t.iconName = "refresh";
+    	
+    	log.debug("ViewPageContainerRefreshButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewPageContainerRefreshButton
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerRefreshButton");
+ 		t.name = s.getFqName() + "::Refresh";
+    	t.label = "Refresh";
+    	t.buttonStyle = "contained";
+    	t.icon = s.equivalent("ViewPageContainerRefreshButtonIcon");
+    	t.actionDefinition = s.equivalent("ViewPageContainerRefreshActionDefinition");
+
+        log.debug("ViewPageContainerRefreshButton: " + t.name);
+}
+
+@lazy
+rule ViewPageContainerDeleteActionDefinition
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::DeleteActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerDeleteActionDefinition");
+ 		t.name = s.getFqName() + "::Delete";
+
+        log.debug("ViewPageContainerDeleteActionDefinition: " + t.name);    
+}
+
+@lazy
+rule ViewPageContainerDeleteButtonIcon
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Icon {
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerDeleteButtonIcon");
+    	t.name = s.name + "DeleteButtonIcon";
+    	t.iconName = "delete_forever";
+    	
+    	log.debug("ViewPageContainerDeleteButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewPageContainerDeleteButton
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerDeleteButton");
+ 		t.name = s.getFqName() + "::Delete";
+    	t.label = "Delete";
+    	t.buttonStyle = "contained";
+    	t.icon = s.equivalent("ViewPageContainerDeleteButtonIcon");
+    	t.actionDefinition = s.equivalent("ViewPageContainerDeleteActionDefinition");
+
+        log.debug("ViewPageContainerDeleteButton: " + t.name);    
+}
+
+@lazy
+rule ViewPageContainerUpdateActionDefinition
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::UpdateActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerUpdateActionDefinition");
+        t.name = s.getFqName() + "::Update";
+        
+        /*
+        if (s.autoCloseOnSave.isDefined()) {
+            t.autoCloseOnSave = s.autoCloseOnSave;
+        }
+        */
+
+        log.debug("ViewPageContainerUpdateActionDefinition: " + t.name);    
+}
+
+@lazy
+rule ViewPageContainerUpdateButtonIcon
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Icon {
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerUpdateButtonIcon");
+    	t.name = s.name + "UpdateButtonIcon";
+    	t.iconName = "content-save";
+    	
+    	log.debug("ViewPageContainerUpdateButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewPageContainerUpdateButton
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerUpdateButton");
+ 		t.name = s.getFqName() + "::Update";
+    	t.label = "Save";
+    	t.buttonStyle = "contained";
+    	t.icon = s.equivalent("ViewPageContainerUpdateButtonIcon");
+    	t.actionDefinition = s.equivalent("ViewPageContainerUpdateActionDefinition");
+
+        log.debug("ViewPageContainerUpdateButton: " + t.name);    
+}
+
+@lazy
+rule ViewPageContainerCancelActionDefinition
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::CancelActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerCancelActionDefinition");
+ 		t.name = s.getFqName() + "::Cancel";
+
+        log.debug("ViewPageContainerCancelActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewPageContainerCancelButtonIcon
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Icon {
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerCancelButtonIcon");
+    	t.name = s.name + "CancelButtonIcon";
+    	t.iconName = "cancel";
+
+    	log.debug("ViewPageContainerCancelButtonIcon: " + t.name);
+}
+
+@lazy
+rule ViewPageContainerCancelButton
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerCancelButton");
+ 		t.name = s.getFqName() + "::Cancel";
+    	t.label = "Cancel";
+    	t.buttonStyle = "text";
+    	t.icon = s.equivalent("ViewPageContainerCancelButtonIcon");
+    	t.actionDefinition = s.equivalent("ViewPageContainerCancelActionDefinition");
+
+        log.debug("ViewPageContainerCancelButton: " + t.name);
+}
+
+@lazy
 rule FormPageContainerButtonGroup
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::ButtonGroup { 
@@ -87,7 +286,7 @@ rule FormPageContainerButtonGroup
 rule FormPageContainerBackActionDefinition
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::BackActionDefinition  {
-	    t.setId(rootMenu.name + "/(esm/" + s.getId() + ")/FormPageContainerBackActionDefinition");
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerBackActionDefinition");
  		t.name = s.getFqName() + "::Back";
         log.debug("FormPageContainerBackActionDefinition: " + t.name);    
 }
@@ -97,7 +296,7 @@ rule FormPageContainerBackButtonIcon
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Icon {
     	t.iconName = "arrow-left";
-    	t.name = s.name + "Icon";
+    	t.name = s.name + "BackButtonIcon";
     	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerBackButtonIcon");
 }
 
@@ -120,7 +319,7 @@ rule FormPageContainerCreateButtonIcon
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Icon {
     	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerCreateButtonIcon");
-    	t.name = s.name + "Icon";
+    	t.name = s.name + "CreateButtonIcon";
     	t.iconName = "content-save";
     	
     	log.debug("FormPageContainerCreateButtonIcon: " + t.name);
