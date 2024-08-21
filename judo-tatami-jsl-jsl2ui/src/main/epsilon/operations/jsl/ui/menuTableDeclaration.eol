@@ -18,5 +18,13 @@ operation JSL!UIMenuTableDeclaration getExposedVisualElements(): Set {
 
     ves.addAll(rowDeclaration.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration)).asSet());
 
+    if (self.getCreateFormModifier().isDefined()) {
+        ves.add(self.getCreateFormModifier().form);
+    }
+
+    if (self.getUpdateViewModifier().isDefined()) {
+        ves.add(self.getUpdateViewModifier().view);
+    }
+
     return ves;
 }

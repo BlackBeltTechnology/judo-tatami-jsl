@@ -2,6 +2,7 @@ import "icon.eol";
 import "menuDeclaration.eol";
 import "menuLinkDeclaration.eol";
 import "menuTableDeclaration.eol";
+import "rowColumnDeclaration.eol";
 import "rowLinkDeclaration.eol";
 import "viewActionDeclaration.eol";
 import "viewDeclaration.eol";

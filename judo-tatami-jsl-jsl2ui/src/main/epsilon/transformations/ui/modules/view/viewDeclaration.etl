@@ -1,0 +1,31 @@
+rule FormPageContainer
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::PageContainer {
+        guard: rootMenu.containsVisualElement(s) and s.form.isDefined() and s.form
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainer");
+        if (t.~pos.isUndefined()) {
+            t.~pos = 0;
+        }
+        t.name = s.getFqName() + "::Create::PageContainer";
+
+        rootMenu.equivalent("Application").pageContainers.add(t);
+
+        log.debug("Create FormPageContainer: " + t.name);
+}
+
+rule ViewPageContainer
+    transform s: JSL!UIViewDeclaration
+    to t: UI!ui::PageContainer {
+        guard: rootMenu.containsVisualElement(s) and (s.form.isUndefined() or not s.form)
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainer");
+        if (t.~pos.isUndefined()) {
+            t.~pos = 0;
+        }
+        t.name = s.getFqName() + "::View::PageContainer";
+
+        rootMenu.equivalent("Application").pageContainers.add(t);
+
+        log.debug("Create ViewPageContainer: " + t.name);
+}
