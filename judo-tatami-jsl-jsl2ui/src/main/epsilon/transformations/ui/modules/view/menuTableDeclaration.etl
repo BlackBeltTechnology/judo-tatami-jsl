@@ -1034,8 +1034,77 @@ rule AccessTableViewPageDefinition
         }
         */
 
-        //t.actions.add(s.equivalent("ViewLinkCreateFormBackAction"));
-        //t.actions.add(s.equivalent("ViewLinkCreateFormCreateAction"));
+        t.actions.add(s.equivalent("AccessViewBackAction"));
+        if (s.actorAccess.target.isRefreshAllowed()) {
+            t.actions.add(s.equivalent("AccessViewRefreshAction"));
+        }
+        if (s.actorAccess.target.isUpdateAllowed()) {
+            t.actions.add(s.equivalent("AccessViewCancelAction"));
+            t.actions.add(s.equivalent("AccessViewUpdateAction"));
+        }
+        if (s.actorAccess.target.isDeleteAllowed()) {
+            t.actions.add(s.equivalent("AccessViewDeleteAction"));
+        }
 
         log.debug("Create AccessTableViewPageDefinition: " + t.name);
+}
+
+@lazy
+rule AccessViewBackAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewBackAction");
+ 		t.name = s.getFqName() + "::Back";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerBackActionDefinition");
+
+        log.debug("AccessViewBackAction: " + t.name);
+}
+
+@lazy
+rule AccessViewRefreshAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewRefreshAction");
+ 		t.name = s.getFqName() + "::Refresh";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerRefreshActionDefinition");
+
+        log.debug("AccessViewRefreshAction: " + t.name);
+}
+
+@lazy
+rule AccessViewCancelAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewCancelAction");
+ 		t.name = s.getFqName() + "::Cancel";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerCancelActionDefinition");
+
+        log.debug("AccessViewCancelAction: " + t.name);
+}
+
+@lazy
+rule AccessViewUpdateAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewUpdateAction");
+ 		t.name = s.getFqName() + "::Update";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerUpdateActionDefinition");
+
+        log.debug("AccessViewUpdateAction: " + t.name);
+}
+
+@lazy
+rule AccessViewDeleteAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewDeleteAction");
+ 		t.name = s.getFqName() + "::Delete";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerDeleteActionDefinition");
+
+        log.debug("AccessViewDeleteAction: " + t.name);
 }
