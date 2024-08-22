@@ -20,7 +20,7 @@ rule CreateCreateOperationForAccess
       guard: generateBehaviours and s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateCreateOperationForAccess");
-      t.name = s.referenceType.getCreateEventInsteadOf().name + "Of" + s.name.firstToUpperCase();
+      t.name = s.referenceType.name + "Of" + s.name.firstToUpperCase();
       if (s.eContainer.members.exists(m | m.name == t.name)) {
 	      t.name = "_" + t.name;
       }

@@ -172,11 +172,11 @@ rule CreateQueryCustomizerOrderingEnumeration
 rule CreateQueryCustomizerOrderingEnumerationMember
     transform s : JSL!TransferFieldDeclaration
     to t : JUDOPSM!EnumerationMember {
-	  guard: generateBehaviours and s.getTransferContainer().map.isDefined() and s.isSortable()
+	  guard: generateBehaviours and s.eContainer.map.isDefined() and s.isSortable()
       t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerOrderingEnumerationDerivedTransferAttribute");
       t.name = s.name;
       t.ordinal = -1; // will be calculated by post operation      
-      s.getTransferContainer().equivalent("CreateQueryCustomizerOrderingEnumeration").members.add(t);
+      s.eContainer.equivalent("CreateQueryCustomizerOrderingEnumeration").members.add(t);
       log.debug("CreateQueryCustomizerOrderingEnumerationDerivedTransferAttribute: " + t.name);
 }
 
@@ -197,12 +197,12 @@ rule CreateQueryCustomizerSeekLastItem
 rule CreateQueryCustomizerSeekLastItemAttribute
     transform s : JSL!TransferFieldDeclaration
     to t : JUDOPSM!TransferAttribute {
-	  guard: generateBehaviours and s.getTransferContainer().map.isDefined() and (s.isFilterable() or s.isSortable())
+	  guard: generateBehaviours and s.eContainer.map.isDefined() and (s.isFilterable() or s.isSortable())
       t.setId("(jsl/" + s.getId() + ")/CreateQueryCustomizerSeekLastItemAttribute");
       t.name = s.name;
       t.dataType = s.referenceType.getPrimitiveDeclarationEquivalent();
       t.required = false;
-      s.getTransferContainer().equivalent("CreateQueryCustomizerSeekLastItem").attributes.add(t);
+      s.eContainer.equivalent("CreateQueryCustomizerSeekLastItem").attributes.add(t);
       log.debug("CreateQueryCustomizerSeekLastItemAttribute: " + t.name);
 }
 

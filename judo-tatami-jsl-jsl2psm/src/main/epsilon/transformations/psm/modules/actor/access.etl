@@ -25,13 +25,13 @@ rule CreateTransientTransferObjectRelationForActorAccessDeclaration
         if (s.getDefault().isDefined()) {
           t.defaultValue = s.getDefault().equivalent("CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor");
         }      
-        if (s.getActorDeclaration().map.isDefined()) {
+        if (s.eContainer.map.isDefined()) {
            t.binding = s.getterExpr.equivalent("CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclaration");
         } else {
            t.binding = s.getterExpr.equivalent("CreateReadsReferenceExpressionForUnmappedTransferObjectTransferRelationDeclaration");
         }
 
-        s.getActorDeclaration().getActorDeclarationEquivalent().relations.add(t);
+        s.eContainer.getActorDeclarationEquivalent().relations.add(t);
 
         log.debug("Created TransferObjectRelation for ActorAccessDeclaration: [" + t.name + "] into [" + t.eContainer.name + "]");
 }

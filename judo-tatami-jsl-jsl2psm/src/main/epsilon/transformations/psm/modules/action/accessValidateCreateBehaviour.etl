@@ -20,7 +20,7 @@ rule CreateValidateCreateOperationForAccess
       guard: generateBehaviours and s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateValidateCreateOperationForAccess");
-      t.name = "validate" + s.referenceType.getCreateEventInsteadOf().name.firstToUpperCase() + "Of" + s.name.firstToUpperCase();
+      t.name = "validate" + s.referenceType.name.firstToUpperCase() + "Of" + s.name.firstToUpperCase();
       if (s.eContainer.members.exists(m | m.name == t.name)) {
 	      t.name = "_" + t.name;
       }
