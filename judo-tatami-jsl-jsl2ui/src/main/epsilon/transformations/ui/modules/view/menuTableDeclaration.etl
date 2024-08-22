@@ -878,7 +878,7 @@ rule AccessTableTableAddSelectorTableTable
         var rowDeclaration = s.referenceType;
 
         var primitiveFields = rowDeclaration.members.select(m | m.isTypeOf(JSL!RowFieldDeclaration) and m.referenceType.`primitive`.isDefined());
-        var links = rowDeclaration.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
+        // var links = rowDeclaration.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
 
         for (field in primitiveFields) {
             var col = field.equivalentDiscriminated("TablePrimitiveColumn", id);
@@ -887,7 +887,7 @@ rule AccessTableTableAddSelectorTableTable
                t.filters.add(field.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
             }
         }
-
+/*
         for (link in links) {
             if (link.getDetail().isUndefined()) {
                 var col = link.equivalentDiscriminated("RowLinkDerivedColumn", id);
@@ -900,7 +900,7 @@ rule AccessTableTableAddSelectorTableTable
             }
 
         }
-
+*/
         log.debug("AccessTableTableAddSelectorTableTable: " + t.name);
 }
 

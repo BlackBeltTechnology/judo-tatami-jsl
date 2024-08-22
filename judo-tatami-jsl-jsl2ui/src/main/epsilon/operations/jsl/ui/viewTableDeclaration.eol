@@ -11,11 +11,12 @@ operation JSL!UIViewTableDeclaration getFqName(): String {
     return self.name;
 }
 
+/*
 @cached
 operation JSL!UIViewTableDeclaration getAllLinks(): Set {
     return self.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
 }
-/*
+
 @cached
 operation JSL!UIViewTableDeclaration getDetailLink(): JSL!RowLinkDeclaration {
     return self.getAllLinks().selectOne(l | l.getDetail().isDefined());

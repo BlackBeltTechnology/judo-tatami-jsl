@@ -1,3 +1,4 @@
+/*
 rule TabBarVisualElement
     transform s: JSL!ViewTabsDeclaration
     to t: UI!ui::TabController {
@@ -46,3 +47,4 @@ rule TabsIcon
         t.name = s.name + "TabsIcon";
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TabsIcon");
 }
+*/

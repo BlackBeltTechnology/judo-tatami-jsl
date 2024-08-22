@@ -115,11 +115,11 @@ operation JSL!TransferDeclaration getDirectRelations(): Set {
 operation JSL!TransferDeclaration getAllPrimitiveFields(): Set {
     var fields = new Set();
     fields.addAll(self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.referenceType.isDefined() and m.referenceType.`primitive`.isDefined()));
-
+/*
     for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
         fields.addAll(member.getAllPrimitiveFields());
     }
-
+*/
     return fields;
 }
 

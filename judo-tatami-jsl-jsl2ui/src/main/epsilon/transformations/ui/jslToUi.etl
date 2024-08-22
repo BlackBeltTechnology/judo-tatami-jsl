@@ -28,7 +28,7 @@ pre {
     var __cacheMap = new ConcurrentMap();
     var __originalMap = new ConcurrentMap();
     var System = Native("java.lang.System");
-
+/*
     for (container : JSL!ViewPanelDeclaration in JSL!ViewPanelDeclaration.all()) {
         if (container.isTypeOf(JSL!ViewGroupDeclaration)) {
             for (member in container.members) {
@@ -40,6 +40,7 @@ pre {
            }
        }
     }
+
     for (visible : JSL!VisibleDeclaration in JSL!VisibleDeclaration.all()) {
         if (visible.isTypeOf(JSL!ViewDeclaration) or visible.isTypeOf(JSL!RowDeclaration)) {
             for (member in visible.members) {
@@ -47,6 +48,7 @@ pre {
             }
         }
     }
+*/
 }
 
 post {

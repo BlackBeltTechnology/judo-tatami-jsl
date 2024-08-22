@@ -1,3 +1,4 @@
+/*
 @abstract
 rule AbstractViewGroupDeclaration
     transform s: JSL!ViewGroupDeclaration
@@ -99,3 +100,4 @@ rule GroupIcon
         t.name = s.name + "GroupIcon";
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/GroupIcon");
 }
+*/

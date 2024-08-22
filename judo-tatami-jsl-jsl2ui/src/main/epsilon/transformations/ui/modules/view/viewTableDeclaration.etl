@@ -119,7 +119,7 @@ rule InlineViewTable
         s.eContainer.uiContainer().children.add(t);
 
         var primitiveFields = s.referenceType.members.select(m | m.isTypeOf(JSL!RowFieldDeclaration) and m.referenceType.`primitive`.isDefined());
-        var links = s.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
+        // var links = s.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
 
         for (field in primitiveFields) {
             var col = field.equivalentDiscriminated("TablePrimitiveColumn", id);
@@ -128,7 +128,7 @@ rule InlineViewTable
                t.filters.add(field.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
             }
         }
-
+/*
         for (link in links) {
             if (link.getDetail().isUndefined()) {
                 var col = link.equivalentDiscriminated("RowLinkDerivedColumn", id);
@@ -141,7 +141,7 @@ rule InlineViewTable
             }
 
         }
-
+*/
         t.tableActionButtonGroup = s.equivalent("InlineViewTableButtonGroup");
         t.rowActionButtonGroup = s.equivalent("InlineViewTableRowButtonGroup");
 
@@ -193,7 +193,7 @@ rule TablePrimitiveColumnFilter
         t.label = s.getLabelWithNameFallback();
         log.debug("TablePrimitiveColumnFilter: " + t.name);
 }
-
+/*
 @lazy
 @greedy
 rule RowLinkDerivedColumn
@@ -208,21 +208,6 @@ rule RowLinkDerivedColumn
             t.icon = s.equivalent("RowLinkDerivedColumnIcon");
         }
         t.width = s.getWidth().isDefined() ? s.getWidth().value : "120";
-
-        /*
-        if (s.customImplementation.isDefined()) {
-            t.customImplementation = s.customImplementation;
-        }
-        if (s.sort.isDefined()) {
-            t.sort = s.getUiSort();
-        }
-        if (s.sortPrecedence.isDefined()) {
-            t.sortPrecedence = s.sortPrecedence;
-        }
-        if (s.formatValue.isDefined()) {
-            t.formatValue = s.formatValue;
-        }
-        */
         t.attributeType = s.equivalent("RowLinkDerivedAttributeType");
         t.representsRelation = s.equivalent("RelationType");
 
@@ -271,7 +256,7 @@ rule RowLinkDerivedAttributeType
         s.getContainerEquivalentClassType().attributes.add(t);
         log.debug("Created RowLinkDerivedAttributeType for ViewLinkDeclaration: [" + t.name + "] for [" + s.name + "]");
 }
-
+*/
 @lazy
 rule InlineViewTableButtonGroup
     transform s: JSL!UIViewTableDeclaration

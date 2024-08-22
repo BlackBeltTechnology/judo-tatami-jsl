@@ -1,7 +1,9 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
-import hu.blackbelt.judo.meta.ui.Application;
+import hu.blackbelt.judo.meta.ui.*;
+import hu.blackbelt.judo.meta.ui.data.ClassType;
+import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,6 +14,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -88,6 +92,43 @@ public class JslModel2UiTest extends AbstractTest  {
 
         assertEquals(1, apps.size());
 
-        Application app = apps.get(0);
+        Application application = apps.get(0);
+
+        List<RelationType> relationTypes = application.getRelationTypes();
+        List<ClassType> classTypes = application.getClassTypes();
+        List<PageContainer> pageContainers = application.getPageContainers();
+        List<PageDefinition> pages = application.getPages();
+        List<Link> links = application.getLinks();
+        List<Table> tables = application.getTables();
+        List<Action> allActions = application.getPages().stream().flatMap(ps -> ps.getActions().stream()).toList();
+
+        assertEquals(Set.of(
+                "cars"
+        ), relationTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        assertEquals(Set.of(
+                "Car::CarTransfer::ClassType",
+                "Car::User::ClassType"
+        ), classTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        assertEquals(Set.of(
+                "Car::CarView::View::PageContainer",
+                "Car::CarApp::cars::Table::PageContainer",
+                "Car::CarApp::Dashboard",
+                "Car::CarForm::Create::PageContainer"
+        ), pageContainers.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        assertEquals(Set.of(
+                "Car::CarApp::cars::View::PageDefinition",
+                "Car::CarApp::cars::Create::PageDefinition",
+                "Car::CarApp::cars::Table::PageDefinition",
+                "Car::CarApp::DashboardPage"
+        ), pages.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        assertEquals(Set.of(), links.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+
+        assertEquals(Set.of(
+                "cars::Table"
+        ), tables.stream().map(NamedElement::getName).collect(Collectors.toSet()));
     }
 }
