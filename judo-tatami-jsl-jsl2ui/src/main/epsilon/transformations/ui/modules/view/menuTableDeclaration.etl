@@ -28,85 +28,48 @@ rule AccessTablePageDefinition
     to t: UI!ui::PageDefinition {
         guard: rootMenu.containsVisualElement(s)
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageDefinition");
+        var relation = s.actorAccess.target;
 
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageDefinition");
         t.name = s.getFqName() + "::Table::PageDefinition";
         t.container = s.equivalent("AccessTablePageContainer");
+        t.dataElement = relation.equivalent("RelationType");
+
+        t.actions.add(s.equivalent("AccessTableBackAction"));
+        if (relation.isRefreshAllowed()) {
+            t.actions.add(s.equivalent("AccessTableTableRefreshAction"));
+        }
+        if (relation.isDeleteAllowed()) {
+            t.actions.add(s.equivalent("AccessTableRowDeleteAction"));
+        }
+        if (relation.isFilterSupported()) {
+            t.actions.add(s.equivalent("AccessTableTableFilterAction"));
+        }
+        if (relation.isCreateAllowed()) {
+            t.actions.add(s.equivalent("AccessTableTableOpenCreateAction"));
+        }
+        if (relation.isAddReferenceAllowed()) {
+            t.actions.add(table.equivalent("ViewTableDeclarationOpenAddSelectorAction"));
+        }
+        if (relation.isRemoveReferenceAllowed()) {
+            t.actions.add(table.equivalent("AccessTableTableClearAction"));
+            t.actions.add(table.equivalent("AccessTableTableBulkRemoveAction"));
+        }
 
         rootMenu.equivalent("Application").pages.add(t);
 
-        t.dataElement = s.actorAccess.target.equivalent("RelationType");
-
-        // var relations = s.referenceType.getDirectRelations();
-
-        /*
-        log.info("===================");
-        log.info(t.name + ":");
-        log.info(relations.collect(r | r.name).concat(", "));
-        log.info("===================");
-        */
-
-        /*
-        for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
-            t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", "AccessPageDefinition"));
-            if (link.isRefreshAllowed() and not link.isEager()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", "AccessPageDefinition"));
-            }
-            if (link.isCreateAllowed()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", "AccessPageDefinition"));
-            }
-            if (link.isDeleteAllowed()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", "AccessPageDefinition"));
-            }
-            if (link.isSetReferenceAllowed()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", "AccessPageDefinition"));
-            }
-            if (link.isUnsetReferenceAllowed()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", "AccessPageDefinition"));
-            }
-        }
-
-        for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
-            var detailLink = table.getDetailLink();
-
-            if (detailLink.isDefined()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", "AccessPageDefinition"));
-            }
-            if (table.isFilterSupported()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationFilterAction", "AccessPageDefinition"));
-            }
-            if (table.isRefreshAllowed()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", "AccessPageDefinition"));
-            }
-            if (table.isCreateAllowed()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", "AccessPageDefinition"));
-            }
-            if (table.isDeleteAllowed()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "AccessPageDefinition"));
-            }
-            if (table.isAddReferenceAllowed()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", "AccessPageDefinition"));
-            }
-            if (table.isRemoveReferenceAllowed()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", "AccessPageDefinition"));
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", "AccessPageDefinition"));
-            }
-        }
-
-        t.actions.add(s.equivalent("ViewLinkPageDefinitionBackAction"));
-        if (s.isRefreshAllowed()) {
-            t.actions.add(s.equivalent("ViewLinkPageDefinitionRefreshAction"));
-        }
-        if (s.isUpdateAllowed()) {
-            t.actions.add(s.equivalent("ViewLinkPageDefinitionUpdateAction"));
-        }
-        if (s.isDeleteAllowed()) {
-            t.actions.add(s.equivalent("ViewLinkPageDefinitionDeleteAction"));
-        }
-
-        */
-
         log.debug("Create AccessTablePageDefinition: " + t.name);
+}
+
+@lazy
+rule AccessTableBackAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableBackAction");
+        t.name = s.name + "::Back";
+        t.actionDefinition = s.equivalent("AccessTablePageContainerBackActionDefinition");
+
+        log.debug("AccessTableBackAction: " + t.name);
 }
 
 rule AccessTablePageContainer
