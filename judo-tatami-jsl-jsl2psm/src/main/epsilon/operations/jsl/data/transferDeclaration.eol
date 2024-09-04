@@ -112,7 +112,7 @@ operation JSL!TransferDeclaration getCreateEvent(): JSL!TransferCreateDeclaratio
 
 @cached
 operation JSL!TransferDeclaration hasSortableField(): Boolean {
-    return self.members.exists(m | m.isKindOf(JSL!TransferFieldDeclaration));
+    return self.members.exists(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.isSortable());
 }
 
 @cached
