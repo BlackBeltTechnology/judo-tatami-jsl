@@ -10,7 +10,7 @@ rule Application
 
         //t.version = esmUtils.getModel(s).version;
 
-        t.name = s.name + "::Application";
+        t.name = rootMenu.map.actor.name;
         t.modelName = defaultModelName;
 
         t.actor = s.map.actor.equivalent("Actor");

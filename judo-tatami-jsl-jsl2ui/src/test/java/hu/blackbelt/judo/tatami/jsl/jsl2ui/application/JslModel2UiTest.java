@@ -121,6 +121,8 @@ public class JslModel2UiTest extends AbstractTest  {
 
         Application application = apps.get(0);
 
+        assertEquals("UserActor", application.getName());
+
         List<RelationType> relationTypes = application.getRelationTypes();
         List<ClassType> classTypes = application.getClassTypes();
         List<PageContainer> pageContainers = application.getPageContainers();
