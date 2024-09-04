@@ -18,6 +18,8 @@ rule AbstractRelationType
             t.relationKind = UI!ui::data::RelationKind#ASSOCIATION;
         }
 
+        t.isAccess = s.isKindOf(JSL!ActorAccessDeclaration);
+
         if (s.reads()) {
             t.memberType = UI!ui::data::MemberType#DERIVED;
         } else if (s.maps()) {

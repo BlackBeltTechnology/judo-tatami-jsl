@@ -19,7 +19,7 @@ rule Application
         var identity = s.map.actor.getIdentityTransferDeclaration();
 
         if (identity.isDefined()) {
-            t.principal = identity.equivalent("Actor");
+            t.principal = identity.equivalent("ClassType");
         }
 
         //if (s.defaultLanguage.isDefined()) {

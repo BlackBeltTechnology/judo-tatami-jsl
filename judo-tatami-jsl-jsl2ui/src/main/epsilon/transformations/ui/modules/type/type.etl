@@ -8,6 +8,7 @@ rule CreateNumericType
         t.name = s.name;
         t.precision = s.getPrecision().value.intValue();
         t.scale = s.getScale().value.intValue();
+        t.operator = actorDeclaration.equivalent("NumericOperation");
         rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created NumericType: " + t.name);
 }
@@ -20,6 +21,7 @@ rule CreateDateType
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateDateType");
         t.name = s.name;
+        t.operator = actorDeclaration.equivalent("NumericOperation");
         rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created DateType: " + t.name);
 }
@@ -32,6 +34,7 @@ rule CreateTimeType
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateTimeType");
         t.name = s.name;
+        t.operator = actorDeclaration.equivalent("NumericOperation");
         rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created TimeType: " + t.name);
 }
@@ -44,6 +47,7 @@ rule CreateTimestampType
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateTimestampType");
         t.name = s.name;
+        t.operator = actorDeclaration.equivalent("NumericOperation");
         rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created TimestampType: " + t.name);
 }
@@ -54,6 +58,7 @@ rule CreateEnumerationType
     to t: UI!ui::data::EnumerationType {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateEnumerationType");
         t.name = s.name;
+        t.operator = actorDeclaration.equivalent("EnumerationOperation");
         rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created EnumerationType: " + t.name);
 }
@@ -78,6 +83,7 @@ rule CreateBooleanType
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateBooleanType");
         t.name = s.name;
         rootMenu.equivalent("Application").dataTypes.add(t);
+        t.operator = actorDeclaration.equivalent("BooleanOperation");
         log.debug("Created BooleanType: " + t.name);
 }
 
@@ -94,6 +100,8 @@ rule CreateStringType
         if (s.getRegex().isDefined() and s.getRegex().regex.value.isDefined()) {
             t.regExp = s.getRegex().regex.value;
         }
+
+        t.operator = actorDeclaration.equivalent("StringOperation");
 
         rootMenu.equivalent("Application").dataTypes.add(t);
         log.debug("Created StringType: " + t.name);

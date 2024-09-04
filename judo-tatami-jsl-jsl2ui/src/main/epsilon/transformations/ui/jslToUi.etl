@@ -9,6 +9,7 @@ import "modules/structure/transferDeclaration.etl";
 import "modules/structure/transferFieldDeclaration.etl";
 import "modules/structure/transferRelationDeclaration.etl";
 
+import "modules/type/dataTypeOperation.etl";
 import "modules/type/type.etl";
 
 import "modules/view/enumLiteral.etl";
