@@ -8,6 +8,7 @@ rule Actor
         t.name = s.getFqName() + "::ClassType";
         t.simpleName = s.name;
         //t.setPackageNameTokens(s);
+        t.packageNameTokens.add(0, defaultModelName);
         t.isActor = true;
 
         log.debug("Create class type (Actor): " + t.name);

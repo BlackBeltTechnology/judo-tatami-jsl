@@ -177,7 +177,7 @@ rule AccessTableTable
         t.label = s.getLabelWithNameFallback();
         t.name = s.name + "::Table";
         t.dataElement = s.actorAccess.target.referenceType.equivalent("ClassType");
-        t.relationName = s.actorAccess.target.name;
+        t.relationName = "";
         if (t.~pos.isUndefined()) {
             t.~pos = 0;
         }
@@ -858,7 +858,7 @@ rule AccessTableTableAddSelectorTableTable
         t.isRelationSelectorTable = true;
         t.allowSelectMultiple = true;
         t.name = s.name + "::Add::Selector";
-        t.relationName = s.name;
+        t.relationName = "";
         t.dataElement = s.referenceType.map.transfer.equivalent("ClassType");
         t.tableActionButtonGroup = s.equivalent("AccessTableTableAddSelectorTableTableButtonGroup");
         t.~pos = s.~pos;
