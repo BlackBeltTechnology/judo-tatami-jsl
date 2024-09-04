@@ -33,17 +33,17 @@ operation JSL!TransferRelationDeclaration getFqName(): String {
 
 @cached
 operation JSL!TransferRelationDeclaration isCreateAllowed() : Boolean {
-	return self.modifiers.exists(m | m.isTypeOf(JSL!CreateModifier) and m.`true`);
+	return self.modifiers.exists(m | m.isTypeOf(JSL!CreateModifier) and not m.`false`);
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isUpdateAllowed() : Boolean {
-	return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and m.`true`);
+	return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and not m.`false`);
 }
 
 @cached
 operation JSL!TransferRelationDeclaration isDeleteAllowed() : Boolean {
-	return self.modifiers.exists(m | m.isTypeOf(JSL!DeleteModifier) and m.`true`);
+	return self.modifiers.exists(m | m.isTypeOf(JSL!DeleteModifier) and not m.`false`);
 }
 
 @cached

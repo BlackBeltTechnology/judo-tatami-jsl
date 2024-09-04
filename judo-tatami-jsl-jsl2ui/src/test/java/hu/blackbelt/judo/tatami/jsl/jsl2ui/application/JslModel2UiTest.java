@@ -61,6 +61,10 @@ public class JslModel2UiTest extends AbstractTest  {
             transfer CarTransfer(Car c) {
                 field String make <=> c.make;
                 field String type <=> c.type;
+
+                event create createCar;
+                event update updateCar;
+                event delete deleteCar;
             }
 
             actor User {

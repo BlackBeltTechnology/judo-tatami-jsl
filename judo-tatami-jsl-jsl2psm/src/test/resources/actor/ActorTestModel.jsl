@@ -16,6 +16,10 @@ entity User {
 
 transfer UserTransfer maps User as u {
     field String email <=> u.email;
+    
+    event create createInstance;
+    event delete deleteInstance;
+    event update updateInstance;
 }
 
 actor Actor

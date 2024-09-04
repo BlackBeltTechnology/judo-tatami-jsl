@@ -43,6 +43,9 @@ transfer MappedTransfer maps Entity as e {
 	action void mappedChoice(MappedTransfer input choices: Entity.all());
 	action void mappedChoiceStatic(MappedTransfer input choices: Entity.all()) static;
 
+	event create createInstance;
+	event delete deleteInstance;
+	event update updateInstance;
 }
 
 entity Entity {	
@@ -58,6 +61,9 @@ entity Entity {
 
 
 transfer CreateTransfer maps CreateEntity as e {
+	event create createInstance;
+	event delete deleteInstance;
+	event update updateInstance;
 }
 
 entity CreateEntity {
