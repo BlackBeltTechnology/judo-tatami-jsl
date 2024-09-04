@@ -1,13 +1,10 @@
+/*
 @abstract
 rule AbstractViewGroupDeclaration
     transform s: JSL!ViewGroupDeclaration
     to t: UI!ui::Flex {
-
         t.name = s.name;
-
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("GroupIcon");
         }
@@ -103,3 +100,4 @@ rule GroupIcon
         t.name = s.name + "GroupIcon";
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/GroupIcon");
 }
+*/

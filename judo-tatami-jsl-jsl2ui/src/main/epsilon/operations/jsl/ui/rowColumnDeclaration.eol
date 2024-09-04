@@ -1,0 +1,15 @@
+@cached
+operation JSL!UIRowColumnDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
+    var field = self.transferField.target;
+
+    if (field.isTransient()) {
+        return field.equivalent("CreateTransientTransferAttribute");
+    }
+    if (field.reads()) {
+        return field.equivalent("CreateDerivedTransferAttribute");
+    }
+    if (field.maps()) {
+        return field.equivalent("CreateMappedTransferAttribute");
+    }
+    throw "Could not determinate attribute type: " + s.fqName();
+}

@@ -143,5 +143,16 @@
 			<version>2.1.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.jsl.model</artifactId>
+			<version>${judo-meta-jsl-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo.tatami</groupId>
+			<artifactId>judo-tatami-core</artifactId>
+			<version>${judo-tatami-core-version}</version>
+		</dependency>
+
 	</dependencies>
 </project>

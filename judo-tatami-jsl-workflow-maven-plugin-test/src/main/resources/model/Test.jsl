@@ -1,9 +1,30 @@
 model Test;
 
 type string String min-size:0 max-size:128;
+type boolean Boolean;
 
 entity Person {
     field String firstName;
     field String lastName;
     field String fullName <= self.firstName + " " + self.lastName;
+}
+
+actor UserActor
+                realm: "COMPANY"
+                claim: "email"
+                identity: UserTransfer::email
+{
+}
+
+entity User {
+    identifier String email;
+    field Boolean isActive;
+}
+
+transfer UserTransfer maps User as u {
+    field String email <=> u.email;
+
+    event create createInstance;
+    event delete deleteInstance;
+    event update updateInstance;
 }

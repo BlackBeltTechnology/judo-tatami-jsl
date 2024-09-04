@@ -77,8 +77,8 @@ transfer UnmappedInputParameter {
 
 
 transfer MappedOutputParameter maps OutputParameterEntity as o {
-	event update onUpdate();
-	event delete onDelete();
+	event update updateMappedOutputParameter;
+	event delete deleteMappedOutputParameter;
 }
 
 transfer MappedInputParameter maps InputParameterEntity as i {	
