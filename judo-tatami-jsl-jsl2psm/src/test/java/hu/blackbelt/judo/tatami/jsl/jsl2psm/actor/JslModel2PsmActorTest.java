@@ -90,7 +90,6 @@ public class JslModel2PsmActorTest extends AbstractTest {
 
         assertMappedTransferObject("UserTransfer");
         assertThat(assertMappedTransferObject("UserTransfer").getOperations().size(), equalTo(5));
-        assertMappedTransferObject("UserTransfer").getOperations().forEach(o -> System.out.println(o.getName()));
 
         assertCrudOperation(params()
         		.transferName("UserTransfer")

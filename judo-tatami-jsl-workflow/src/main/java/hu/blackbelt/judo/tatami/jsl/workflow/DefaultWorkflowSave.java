@@ -23,6 +23,7 @@ package hu.blackbelt.judo.tatami.jsl.workflow;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
+import hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -39,6 +40,7 @@ import java.util.List;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.SaveArguments.expressionSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.SaveArguments.jslDslSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel.SaveArguments.keycloakSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler.fixUriOutputStream;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.SaveArguments.measureSaveArgumentsBuilder;
@@ -110,6 +112,11 @@ public class DefaultWorkflowSave {
                 m.saveExpressionModel(expressionSaveArgumentsBuilder()
                         .validateModel(VALIDATE_MODELS_ON_SAVE)
                         .file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-expression.model"))))));
+
+        transformationContext.getByClass(KeycloakModel.class).ifPresent(executeWrapper(catchError, (m) ->
+                m.saveKeycloakModel(keycloakSaveArgumentsBuilder()
+                        .validateModel(VALIDATE_MODELS_ON_SAVE)
+                        .file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-keycloak.model"))))));
 
         dialectList.forEach(dialect -> getLiquibaseModel(transformationContext, dialect)
                 .ifPresent(executeWrapper(catchError,

@@ -89,7 +89,6 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
         transform();
 
         assertMappedTransferObject("MappedTransfer");
-        assertMappedTransferObject("MappedTransfer").getOperations().forEach(o -> System.out.println(o.getName()));
         assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(19));
 
         assertCrudOperation(params()

@@ -90,6 +90,12 @@ public class DefaultWorkflowSetupParameters {
     private Boolean ignoreAsm2RdbmsTrace = false;
 
     @Builder.Default
+    private Boolean ignoreAsm2Keycloak = true;
+
+    @Builder.Default
+    private Boolean ignoreAsm2KeycloakTrace = true;
+
+    @Builder.Default
     private Boolean ignoreRdbms2Liquibase = false;
 
     @Builder.Default
