@@ -21,12 +21,9 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui;
  */
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.ActorDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.util.builder.ActorDeclarationBuilder;
-import hu.blackbelt.judo.meta.jsl.jsldsl.util.builder.EntityDeclarationBuilder;
-import hu.blackbelt.judo.meta.jsl.jsldsl.util.builder.HumanModifierBuilder;
 import hu.blackbelt.judo.meta.jsl.jsldsl.util.builder.ModelDeclarationBuilder;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
@@ -69,7 +66,6 @@ class Jsl2UiWorkTest {
         JslDslModel jslModel = buildJslDslModel().uri(URI.createURI(JSL_FILE_LOCATION)).name(MODEL_NAME).build();
 
         final ActorDeclaration actorDeclaration = ActorDeclarationBuilder.create()
-                .withModifiers(HumanModifierBuilder.create().build())
                 .withName("WorkActor")
                 .build();
 

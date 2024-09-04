@@ -1,69 +1,72 @@
 @abstract
-rule AbstractViewFieldDeclaration
-    transform s: JSL!ViewFieldDeclaration
+rule AbstractViewWidgetDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::VisualElement {
-        guard: s.getTransferObjectType().isGenerated()
+        guard: rootMenu.containsVisualElement(s)
 
         t.name = s.name;
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
-            t.icon = s.equivalent("ViewFieldIcon");
+            t.icon = s.equivalent("ViewWidgetIcon");
         }
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
-        t.~pos = s.~pos;
+        if (s.eContainer.isKindOf(JSL!UIViewDeclaration)) {
+            t.~pos = s.eContainer.members.indexOf(s);
+        } else {
+            t.~pos = s.~pos.isDefined() ? s.~pos : 0;
+        }
+
 }
 
 @lazy
 @greedy
-rule ViewFieldIcon
-    transform s: JSL!ViewFieldDeclaration
+rule ViewWidgetIcon
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::Icon {
         t.iconName = s.getIconModifier().value.value;
-        t.name = s.name + "FieldIcon";
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewFieldIcon");
+        t.name = s.name + "WidgetIcon";
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewWidgetIcon");
 }
 
 @greedy
 rule BinaryTypeInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::BinaryTypeInput
-    extends AbstractViewFieldDeclaration {
-        guard: s.referenceType.`primitive`.isDefined()
-            and s.referenceType.`primitive` == "binary"
+    extends AbstractViewWidgetDeclaration {
+        guard: s.transferField.target.referenceType.`primitive`.isDefined()
+            and s.transferField.target.referenceType.`primitive` == "binary"
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/BinaryTypeInput");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/BinaryTypeInput");
         log.debug("BinaryTypeInput: " + t.name);
 }
 
 @greedy
 rule BooleanTypeTrinaryLogicCombo
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::TrinaryLogicCombo
-    extends AbstractViewFieldDeclaration {
-        guard: s.referenceType.`primitive`.isDefined()
-            and s.referenceType.`primitive` == "boolean"
+    extends AbstractViewWidgetDeclaration {
+        guard: s.transferField.target.referenceType.`primitive`.isDefined()
+            and s.transferField.target.referenceType.`primitive` == "boolean"
             // and (s.booleanWidget == ESM!esm::ui::BooleanWidget#COMBO)
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/BooleanTypeTrinaryLogicCombo");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/BooleanTypeTrinaryLogicCombo");
         log.debug("BooleanTypeTrinaryLogicCombo: " + t.name);
 }
 
 /*
 @greedy
 rule BooleanTypeCheckbox
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::Checkbox
-    extends AbstractViewFieldDeclaration {
-        guard: s.referenceType.`primitive`.isDefined()
-            and s.referenceType.`primitive` == "boolean"
+    extends AbstractViewWidgetDeclaration {
+        guard: s.transferField.target.referenceType.`primitive`.isDefined()
+            and s.transferField.target.referenceType.`primitive` == "boolean"
             // and (s.booleanWidget.isUndefined() or s.booleanWidget <> ESM!esm::ui::BooleanWidget#COMBO)
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/BooleanTypeCheckbox");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/BooleanTypeCheckbox");
         t.valueLabelPlacement = UI!ui::Placement#START; // todo add modifier to jsl and transform afterwards
         log.debug("BooleanTypeCheckbox: " + t.name);
 }
@@ -71,49 +74,49 @@ rule BooleanTypeCheckbox
 
 @greedy
 rule DateTypeInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::DateInput
-    extends AbstractViewFieldDeclaration {
-        guard: s.referenceType.`primitive`.isDefined()
-            and s.referenceType.`primitive` == "date"
+    extends AbstractViewWidgetDeclaration {
+        guard: s.transferField.target.referenceType.`primitive`.isDefined()
+            and s.transferField.target.referenceType.`primitive` == "date"
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/DateTypeInput");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/DateTypeInput");
         log.debug("DateTypeInput: " + t.name);
 }
 
 @greedy
 rule TimestampTypeDateTimeInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::DateTimeInput
-    extends AbstractViewFieldDeclaration {
-        guard: s.referenceType.`primitive`.isDefined()
-            and s.referenceType.`primitive` == "timestamp"
+    extends AbstractViewWidgetDeclaration {
+        guard: s.transferField.target.referenceType.`primitive`.isDefined()
+            and s.transferField.target.referenceType.`primitive` == "timestamp"
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TimestampTypeDateTimeInput");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TimestampTypeDateTimeInput");
         log.debug("TimestampTypeDateTimeInput: " + t.name);
 }
 
 @greedy
 rule TimeTypeTypeTimeInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::TimeInput
-    extends AbstractViewFieldDeclaration {
-        guard: s.referenceType.`primitive`.isDefined()
-            and s.referenceType.`primitive` == "time"
+    extends AbstractViewWidgetDeclaration {
+        guard: s.transferField.target.referenceType.`primitive`.isDefined()
+            and s.transferField.target.referenceType.`primitive` == "time"
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TimeTypeTypeTimeInput");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TimeTypeTypeTimeInput");
         log.debug("TimeTypeTypeTimeInput: " + t.name);
 }
 
 /*
 @greedy
 rule EnumerationTypeRadio
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::EnumerationRadio
-    extends AbstractViewFieldDeclaration {
+    extends AbstractViewWidgetDeclaration {
         guard: s.enumWidget == ESM!esm::ui::EnumWidget#RADIO
                 and s.getTransferObjectType().isGenerated()
                 and not s.dataFeature.getMember().isQuery
@@ -132,15 +135,15 @@ rule EnumerationTypeRadio
 
 @greedy
 rule EnumerationTypeCombo
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::EnumerationCombo
-    extends AbstractViewFieldDeclaration {
-        guard: s.referenceType.isTypeOf(JSL!EnumDeclaration)
+    extends AbstractViewWidgetDeclaration {
+        guard: s.transferField.target.referenceType.isTypeOf(JSL!EnumDeclaration)
 
-        var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/EnumerationTypeCombo";
+        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/EnumerationTypeCombo";
         s.eContainer.uiContainer().children.add(t);
         t.setId(id);
-        for (l in s.referenceType.literals) {
+        for (l in s.transferField.target.referenceType.literals) {
             t.options.add(l.equivalentDiscriminated("EnumerationMemberOption", id));
         }
         log.debug("EnumerationTypeCombo: " + t.name);
@@ -148,14 +151,14 @@ rule EnumerationTypeCombo
 
 @greedy
 rule NumericTypeVisualInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::NumericInput
-    extends AbstractViewFieldDeclaration {
-        guard: s.referenceType.`primitive`.isDefined()
-            and s.referenceType.`primitive` == "numeric"
+    extends AbstractViewWidgetDeclaration {
+        guard: s.transferField.target.referenceType.`primitive`.isDefined()
+            and s.transferField.target.referenceType.`primitive` == "numeric"
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericTypeVisualInput");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/NumericTypeVisualInput");
         // if (s.formatValue.isDefined()) {
         //     t.formatValue = s.formatValue;
         // }
@@ -164,15 +167,15 @@ rule NumericTypeVisualInput
 
 @greedy
 rule StringTypeTextInput
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::TextInput
-    extends AbstractViewFieldDeclaration {
-        guard: s.referenceType.`primitive`.isDefined()
-            and s.referenceType.`primitive` == "string"
-            and (not s.getLines().isDefined() or s.getLines().value == 1)
+    extends AbstractViewWidgetDeclaration {
+        guard: s.transferField.target.referenceType.`primitive`.isDefined()
+            and s.transferField.target.referenceType.`primitive` == "string"
+            // and (not s.getLines().isDefined() or s.getLines().value == 1)
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringTypeTextInput");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/StringTypeTextInput");
         // if (s.isTypeAheadField.isDefined() and s.isTypeAheadField == true) {
         //     t.isTypeAheadField = true;
         // }
@@ -181,16 +184,16 @@ rule StringTypeTextInput
 
 @greedy
 rule StringTypeTextArea
-    transform s: JSL!ViewFieldDeclaration
+    transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::TextArea
-    extends AbstractViewFieldDeclaration {
-        guard: s.referenceType.`primitive`.isDefined()
-            and s.referenceType.`primitive` == "string"
+    extends AbstractViewWidgetDeclaration {
+        guard: s.transferField.target.referenceType.`primitive`.isDefined()
+            and s.transferField.target.referenceType.`primitive` == "string"
             and s.getLines().isDefined()
             and s.getLines().value > 1
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringTypeTextArea");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/StringTypeTextArea");
         log.debug("StringTypeTextArea: " + t.name);
 }
 
@@ -200,7 +203,7 @@ rule StringTypeFormatted
     transform s: ESM!esm::ui::DataField
     to t: UI!ui::Formatted
     extends AbstractDataFieldVisualElement {
-        guard: s.referenceType.`primitive`.isDefined()
+        guard: s.transferField.target.referenceType.`primitive`.isDefined()
                 and not s.dataFeature.getMember().isQuery
                 and s.dataFeature.getMember().getDataType().isTypeOf(ESM!esm::type::StringType)
                 and s.textWidget == ESM!esm::ui::TextWidget#TEXT
@@ -211,4 +214,3 @@ rule StringTypeFormatted
             log.debug("StringTypeFormatted: " + t.name);
 }
 */
-

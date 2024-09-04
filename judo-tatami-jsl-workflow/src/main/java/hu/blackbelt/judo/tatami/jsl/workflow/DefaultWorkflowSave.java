@@ -23,10 +23,12 @@ package hu.blackbelt.judo.tatami.jsl.workflow;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
+import hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakTransformationTrace;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
@@ -39,6 +41,7 @@ import java.util.List;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.SaveArguments.asmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.SaveArguments.expressionSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.SaveArguments.jslDslSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel.SaveArguments.keycloakSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler.fixUriOutputStream;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.SaveArguments.measureSaveArgumentsBuilder;
@@ -111,12 +114,20 @@ public class DefaultWorkflowSave {
                         .validateModel(VALIDATE_MODELS_ON_SAVE)
                         .file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-expression.model"))))));
 
+        transformationContext.getByClass(KeycloakModel.class).ifPresent(executeWrapper(catchError, (m) ->
+                m.saveKeycloakModel(keycloakSaveArgumentsBuilder()
+                        .validateModel(VALIDATE_MODELS_ON_SAVE)
+                        .file(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-keycloak.model"))))));
+
         dialectList.forEach(dialect -> getLiquibaseModel(transformationContext, dialect)
                 .ifPresent(executeWrapper(catchError,
                         (m) -> saveFixedLiquibaseModel(m, new FileOutputStream(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "liquibase_" + dialect + ".changelog.xml")))))));
 
         transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
                 m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "psm2asm.model")))));
+
+        transformationContext.getByClass(Asm2KeycloakTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
+                m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "asm2keycloak.model")))));
 
         dialectList.forEach(dialect -> getAsm2RdbmsTrace(transformationContext, dialect)
                 .ifPresent(executeWrapper(catchError, (m) -> m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "asm2rdbms_" + dialect + ".model"))))));

@@ -1,0 +1,32 @@
+@cached
+operation JSL!UIMenuTableDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!UIMenuTableDeclaration getFqName(): String {
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
+    }
+    return self.name;
+}
+
+@cached
+operation JSL!UIMenuTableDeclaration getExposedVisualElements(): Set {
+    var ves = new Set();
+    var rowDeclaration = self.referenceType;
+
+    ves.addAll(rowDeclaration.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration)).asSet());
+
+    if (self.getCreateFormModifier().isDefined()) {
+        ves.add(self.getCreateFormModifier().form);
+        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements());
+    }
+
+    if (self.getUpdateViewModifier().isDefined()) {
+        ves.add(self.getUpdateViewModifier().view);
+        ves.addAll(self.getUpdateViewModifier().view.getExposedVisualElements());
+    }
+
+    return ves;
+}
