@@ -24,7 +24,7 @@ rule Authentication
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Authentication");
         t.realm = s.getRealm().value.value;
 
-        s.equivalent("Application").authentication = t;
+        rootMenu.equivalent("Application").authentication = t;
 
         log.debug("Create Authentication: " + t.realm);
 }

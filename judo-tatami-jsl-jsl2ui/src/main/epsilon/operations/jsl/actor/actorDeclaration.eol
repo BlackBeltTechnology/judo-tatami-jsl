@@ -79,13 +79,13 @@ operation JSL!ActorDeclaration getExposedTransferObjects() : Set {
     for (vd in declarations) {
         collected.addAll(vd.getExposedTransferObjects());
     }
-/*
+
     var identity = self.getIdentityTransferDeclaration();
 
     if (identity.isDefined()) {
         // Principal Transfers are not required to be present in the view graph
         collected.add(identity);
     }
-*/
+
     return collected;
 }

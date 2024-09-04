@@ -81,3 +81,17 @@ operation JSL!TransferFieldDeclaration isFilterable(): Boolean {
       self.referenceType.`primitive` == "boolean"
     );
 }
+
+@cached
+operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
+    if (self.isTransient()) {
+        return self.equivalent("CreateTransientTransferAttribute");
+    }
+    if (self.reads()) {
+        return self.equivalent("CreateDerivedTransferAttribute");
+    }
+    if (self.maps()) {
+        return self.equivalent("CreateMappedTransferAttribute");
+    }
+    throw "Could not determinate attribute type: " + s.fqName();
+}

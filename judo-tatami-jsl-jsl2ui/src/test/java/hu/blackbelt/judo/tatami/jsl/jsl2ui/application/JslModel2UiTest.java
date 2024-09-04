@@ -51,7 +51,26 @@ public class JslModel2UiTest extends AbstractTest  {
         jslModel = JslParser.getModelFromStrings("Car", List.of("""
             model Car;
 
-            import judo::types;
+            type binary Binary max-file-size: 1MB  mime-type: ["image/*"];
+            type boolean Boolean;
+            type date Date;
+            type numeric Numeric scale: 0 precision: 9;
+            type string String min-size: 0 max-size: 255;
+            type time Time;
+            type timestamp Timestamp;
+
+            entity User {
+                identifier String email;
+                field Boolean isActive;
+            }
+
+            transfer UserTransfer maps User as u {
+                field String email <=> u.email;
+  
+                event create createInstance;
+                event delete deleteInstance;
+                event update updateInstance;
+            }
 
             entity Car {
                 field String make;
@@ -67,7 +86,11 @@ public class JslModel2UiTest extends AbstractTest  {
                 event delete deleteCar;
             }
 
-            actor User {
+            actor UserActor
+                realm: "COMPANY"
+                claim: "email"
+                identity: UserTransfer::email
+            {
                 access CarTransfer[] cars <= Car.all() create delete update;
             }
 
@@ -85,7 +108,7 @@ public class JslModel2UiTest extends AbstractTest  {
                 column String type <= ct.type;
             }
 
-            menu CarApp(User usr) {
+            menu CarApp(UserActor usr) {
                 table CarTable cars <= usr.cars form:CarForm view:CarView;
             }
         """));
@@ -112,7 +135,8 @@ public class JslModel2UiTest extends AbstractTest  {
 
         assertEquals(Set.of(
                 "Car::CarTransfer::ClassType",
-                "Car::User::ClassType"
+                "Car::UserActor::ClassType",
+                "Car::UserTransfer::ClassType"
         ), classTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
