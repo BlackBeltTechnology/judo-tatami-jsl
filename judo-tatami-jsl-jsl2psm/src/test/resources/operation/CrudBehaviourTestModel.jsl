@@ -10,10 +10,6 @@ type timestamp Timestamp;
 
 
 transfer MappedTransfer maps Entity as e {
-	event delete deleteInstance();
-	event update updateInstance();
-	event create createInstance();	
-	
 	relation CreateTransfer[] createEntities <= e.createEntities 
 			create: true 
 			update: false 
@@ -36,17 +32,20 @@ transfer MappedTransfer maps Entity as e {
 	field Time timeTransient;
 	field Timestamp timestampTransient;	
 
-	field Binary binaryMapped <= e.binary bind: true;
-	field String stringMapped <= e.string bind: true;
-	field Boolean booleanMapped <= e.boolean bind: true;
-	field Date dateMapped <= e.date bind: true;
-	field Numeric numericMapped <= e.numeric bind: true;
-	field Time timeMapped <= e.time bind: true;
-	field Timestamp timestampMapped <= e.timestamp bind: true;	
+	field Binary binaryMapped <=> e.binary;
+	field String stringMapped <=> e.string;
+	field Boolean booleanMapped <=> e.boolean;
+	field Date dateMapped <=> e.date;
+	field Numeric numericMapped <=> e.numeric;
+	field Time timeMapped <=> e.time;
+	field Timestamp timestampMapped <=> e.timestamp;
 
 	action void mappedChoice(MappedTransfer input choices: Entity.all());
 	action void mappedChoiceStatic(MappedTransfer input choices: Entity.all()) static;
 
+	event create createInstance;
+	event delete deleteInstance;
+	event update updateInstance;
 }
 
 entity Entity {	
@@ -62,7 +61,9 @@ entity Entity {
 
 
 transfer CreateTransfer maps CreateEntity as e {
-	event create createInstance;		
+	event create createInstance;
+	event delete deleteInstance;
+	event update updateInstance;
 }
 
 entity CreateEntity {
@@ -78,7 +79,7 @@ entity User {
 }
 
 transfer UserTransfer maps User as u {
-    field String email <= u.email bind: true;
+    field String email <=> u.email;
 }
 
 actor Actor

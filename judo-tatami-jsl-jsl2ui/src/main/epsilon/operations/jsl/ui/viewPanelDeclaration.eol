@@ -1,3 +1,4 @@
+/*
 @cached
 operation JSL!ViewPanelDeclaration getDirectRelations(): Set {
     var relations = new Set();
@@ -25,7 +26,7 @@ operation JSL!ViewPanelDeclaration getAllRelations(): Set {
     var relations = new Set();
 
     if (self.isTypeOf(JSL!ViewGroupDeclaration)) {
-        var ownRelations = self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration));
+        var ownRelations = self.members.select(m | m.isKindOf(JSL!UIViewLinkDeclaration));
         relations.addAll(ownRelations);
         for (group in self.members.select(m | m.isKindOf(JSL!ViewGroupDeclaration))) {
             relations.addAll(group.getAllRelations());
@@ -78,3 +79,4 @@ operation JSL!ViewPanelDeclaration getTransferContainer(): JSL!TransferDeclarati
 
     return null;
 }
+*/

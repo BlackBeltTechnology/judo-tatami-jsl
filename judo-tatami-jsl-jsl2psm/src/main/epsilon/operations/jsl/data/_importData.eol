@@ -27,5 +27,3 @@ import "transferUpdateDeclaration.eol";
 import "transferDeleteDeclaration.eol";
 import "actorDeclaration.eol";
 import "actorAccessDeclaration.eol";
-import "actorGroupDeclaration.eol";
-import "actorLinkDeclaration.eol";

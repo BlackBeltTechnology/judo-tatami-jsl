@@ -38,6 +38,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakWork.Asm2KeycloakWorkParameter.asm2KeycloakWorkParameter;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork.Asm2RdbmsWorkParameter.asm2RdbmsWorkParameter;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.ParallelFlow.Builder.aNewParallelFlow;
@@ -102,6 +103,11 @@ public abstract class AbstractTatamiPipelineWorkflow {
                 .inverseForeignKeyPrefix(parameters.getRdbmsInverseForeignKeyPrefix())
                 .junctionTablePrefix(parameters.getRdbmsJunctionTablePrefix())
                 .build());
+        transformationContext.put(asm2KeycloakWorkParameter()
+                .createTrace(!parameters.getIgnoreAsm2KeycloakTrace())
+                .useCache(parameters.getUseCache())
+                .parallel(parameters.getRunInParallel())
+                .build());
 
         loadModels(workflowHelper, metrics, transformationContext, parameters);
 
@@ -150,6 +156,11 @@ public abstract class AbstractTatamiPipelineWorkflow {
                         .map(dialect -> Optional.of(workflowHelper.createRdbms2LiquibaseWork(dialect))
                         );
 
+        Optional<Work> createKeycloakWork = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2Keycloak() || workflowHelper.asm2KeycloakOutputPredicate().get() ?
+                Optional.empty() :
+                Optional.of(workflowHelper.createAsm2KeycloakWork());
+
+
         WorkFlow workflow;
 
         if (parameters.getRunInParallel()) {
@@ -176,7 +187,7 @@ public abstract class AbstractTatamiPipelineWorkflow {
                                     aNewParallelFlow()
                                             .named("Parallel ASM Transformations")
                                             .execute(Stream.concat(
-                                                    Stream.of(createExpressionWork),
+                                                    Stream.of(createExpressionWork, createKeycloakWork),
                                                     createRdbmsWorks
                                             ))
                                             .build()),

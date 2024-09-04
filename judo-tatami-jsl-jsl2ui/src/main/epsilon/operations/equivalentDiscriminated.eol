@@ -8,7 +8,7 @@ operation Any equivalentDiscriminated(transformation : String, id : String, disc
     // Find the discriminated id in cahe first
     var f = __cacheMap.get(targetId);
 
-    // Whenit is not found in cache, search from the model and put to cache when found
+    // When it is not found in cache, search from the model and put to cache when found
     if (f.isUndefined()) {
         f = ecoreUtil.getAllContents(r, false).select(e | e.getId() == targetId).first;
         if (f.isDefined()) {
