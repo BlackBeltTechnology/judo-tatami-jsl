@@ -15,13 +15,13 @@ rule ClassType
         // t.isOptional = s.isMapped();
 
         rootMenu.equivalent("Application").dataElements.add(t);
-/*
+
         var identity = actorDeclaration.getIdentityTransferDeclaration();
 
         if (identity.isDefined() and identity == s) {
             t.isPrincipal = true;
         }
-*/
+
         t.isActor = s.isKindOf(JSL!ActorDeclaration);
 
         log.debug("Create ClassType: " + t.name);

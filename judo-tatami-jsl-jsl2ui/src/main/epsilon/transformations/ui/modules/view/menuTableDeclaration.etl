@@ -84,7 +84,7 @@ rule AccessTablePageContainer
         t.type = UI!ui::PageContainerType#TABLE;
         t.children.add(s.equivalent("AccessTablePageContainerVisualElement"));
         t.actionButtonGroup = s.equivalent("AccessTablePageContainerButtonGroup");
-        t.dataElement = s.referenceType.equivalent("ClassType");
+        t.dataElement = s.actorAccess.target.referenceType.equivalent("ClassType");
         t.onInit = s.equivalent("AccessTableTableRefreshActionDefinition");
 
         rootMenu.equivalent("Application").pageContainers.add(t);
@@ -176,7 +176,7 @@ rule AccessTableTable
         t.col = 12d;
         t.label = s.getLabelWithNameFallback();
         t.name = s.name + "::Table";
-        t.dataElement = s.actorAccess.target.referenceType.equivalent("RelationType");
+        t.dataElement = s.actorAccess.target.referenceType.equivalent("ClassType");
         t.relationName = s.actorAccess.target.name;
         if (t.~pos.isUndefined()) {
             t.~pos = 0;
@@ -740,7 +740,7 @@ rule AccessTableTableAddSelectorPageContainer
 
         t.children.add(s.equivalent("AccessTableTableAddSelectorTableAddSelectorVisualElement"));
         t.actionButtonGroup = s.equivalent("AccessTableTableAddSelectorTableAddSelectorButtonGroup");
-        t.dataElement = s.referenceType.map.transfer.equivalent("ClassType");
+        t.dataElement = s.actorAccess.target.referenceType.equivalent("ClassType");
         t.isSelector = true;
         t.isRelationSelector = true;
 

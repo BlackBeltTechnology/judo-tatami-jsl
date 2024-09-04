@@ -11,6 +11,7 @@ rule FormPageContainer
         t.children.add(s.equivalent("FormPageContainerVisualElement"));
         t.actionButtonGroup = s.equivalent("FormPageContainerButtonGroup");
         t.dataElement = s.map.transfer.equivalent("ClassType");
+        t.type = UI!ui::PageContainerType#FORM;
 
         rootMenu.equivalent("Application").pageContainers.add(t);
 
@@ -48,6 +49,7 @@ rule ViewPageContainer
         t.children.add(s.equivalent("ViewPageContainerVisualElement"));
         t.actionButtonGroup = s.equivalent("ViewPageContainerButtonGroup");
         t.dataElement = s.map.transfer.equivalent("ClassType");
+        t.type = UI!ui::PageContainerType#VIEW;
 
         rootMenu.equivalent("Application").pageContainers.add(t);
 

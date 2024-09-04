@@ -16,13 +16,11 @@ rule Application
         t.actor = s.map.actor.equivalent("Actor");
         t.dataElements.add(t.actor);
 
-        /*
-        var identity = s.getIdentityTransferDeclaration();
+        var identity = s.map.actor.getIdentityTransferDeclaration();
 
         if (identity.isDefined()) {
-            t.principal = identity.equivalent("ClassType");
+            t.principal = identity.equivalent("Actor");
         }
-        */
 
         //if (s.defaultLanguage.isDefined()) {
         t.defaultLanguage = "en-US";
@@ -83,7 +81,7 @@ rule EmptyDashboardPageContainer
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageContainer");
         t.name = s.getFqName() + "::Dashboard";
         t.label = "Dashboard";
-        t.type = UI!ui::PageContainerType#TABLE;
+        t.type = UI!ui::PageContainerType#VIEW;
         t.dataElement = s.map.actor.equivalent("Actor");
 
         rootMenu.equivalent("Application").pageContainers.add(t);
