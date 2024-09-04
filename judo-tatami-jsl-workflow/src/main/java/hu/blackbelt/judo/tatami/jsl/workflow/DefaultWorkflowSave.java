@@ -28,6 +28,7 @@ import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakTransformationTrace;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
@@ -124,6 +125,9 @@ public class DefaultWorkflowSave {
 
         transformationContext.getByClass(Psm2AsmTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
                 m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "psm2asm.model")))));
+
+        transformationContext.getByClass(Asm2KeycloakTransformationTrace.class).ifPresent(executeWrapper(catchError, (m) ->
+                m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "asm2keycloak.model")))));
 
         dialectList.forEach(dialect -> getAsm2RdbmsTrace(transformationContext, dialect)
                 .ifPresent(executeWrapper(catchError, (m) -> m.save(deleteFileIfExists(new File(dest, fileName(transformationContext) + "-" + "asm2rdbms_" + dialect + ".model"))))));
