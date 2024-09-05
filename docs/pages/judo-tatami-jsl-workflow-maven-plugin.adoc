@@ -118,6 +118,8 @@ the correct measurement handling.
         <rdbmsJunctionTablePrefix>J_</rdbmsJunctionTablePrefix> <!--29-->
         <rdbmsTableNameMaxSize>-1</rdbmsTableNameMaxSize> <!--30-->
         <rdbmsColumnNameMaxSize>-1</rdbmsColumnNameMaxSize> <!--31-->
+        <ignoreAsm2Keycloak>true</ignoreAsm2Rdbms> <!--32-->
+        <ignoreAsm2KeycloakTrace>true</ignoreAsm2RdbmsTrace> <!--33-->
     </configuration>
 </execution>
 ----
@@ -260,6 +262,14 @@ When -1 is used it uses database specific default.
 When -1 is used it uses database specific default.
 +
 (Default: `-1`)
+
+<32> (Optional) Ignore Asm2Keycloak work.
++
+Default: `false`
+
+<33> (Optional) Ignore Asm2Keycloak Trace.
++
+Default: `false`
 
 == Example
 

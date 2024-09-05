@@ -1,3 +1,4 @@
+/*
 @cached
 operation JSL!ActorLinkDeclaration getFqName(): String {
     if (self.getTransferContainer().isDefined()) {
@@ -15,3 +16,4 @@ operation JSL!ActorLinkDeclaration getActorDeclaration(): JSL!ActorDeclaration {
     }
     return null;
 }
+*/

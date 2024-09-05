@@ -71,7 +71,7 @@ operation JSL!ActorDeclaration getIdentityTransferDeclaration() : JSL!TransferDe
 
 @cached
 operation JSL!ActorDeclaration getExposedTransferObjects() : Set {
-    var declarations = self.getAllMenuDeclarations().select(m | m.referenceType.isKindOf(JSL!VisibleDeclaration)).collect(m | m.referenceType).asSet();
+    var declarations = self.members.select(m | m.isKindOf(JSL!ActorAccessDeclaration)).collect(m | m.referenceType).asSet();
 
     var collected = new Set();
     collected.addAll(declarations);

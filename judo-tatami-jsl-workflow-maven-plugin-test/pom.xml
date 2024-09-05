@@ -38,6 +38,7 @@
                 <configuration>
                     <sources>${basedir}/src/main/resources/model</sources>
                     <destination>${basedir}/target/generated-sources/model</destination>
+                    <ignoreAsm2Keycloak>false</ignoreAsm2Keycloak>
                     <saveModels>true</saveModels>
                 </configuration>
             </plugin>

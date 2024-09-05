@@ -34,25 +34,9 @@ operation JSL!TransferFieldDeclaration getFqName(): String {
 }
 
 @cached
-operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
-    if (self.isTransient()) {
-        return self.equivalent("CreateTransientTransferAttribute");
-    }
-    if (self.reads()) {
-        return self.equivalent("CreateDerivedTransferAttribute");
-    }
-    if (self.maps()) {
-        return self.equivalent("CreateMappedTransferAttribute");
-    }
-    throw "Could not determinate attribute type: " + s.fqName();
-}
-
-@cached
 operation JSL!TransferFieldDeclaration getTransferContainer(): JSL!TransferDeclaration {
     if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
         return self.eContainer;
-    } else if (self.eContainer.isKindOf(JSL!ViewPanelDeclaration)) {
-        return self.eContainer.getTransferContainer();
     }
     return null;
 }
@@ -96,4 +80,18 @@ operation JSL!TransferFieldDeclaration isFilterable(): Boolean {
       self.referenceType.`primitive` == "time" or
       self.referenceType.`primitive` == "boolean"
     );
+}
+
+@cached
+operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
+    if (self.isTransient()) {
+        return self.equivalent("CreateTransientTransferAttribute");
+    }
+    if (self.reads()) {
+        return self.equivalent("CreateDerivedTransferAttribute");
+    }
+    if (self.maps()) {
+        return self.equivalent("CreateMappedTransferAttribute");
+    }
+    throw "Could not determinate attribute type: " + s.fqName();
 }

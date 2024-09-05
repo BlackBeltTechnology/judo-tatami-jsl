@@ -1,0 +1,228 @@
+@greedy
+rule BooleanOperation
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationType {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/BooleanOperation");
+	    t.name = "BooleanOperation";
+	    rootMenu.equivalent("Application").dataTypes.add(t);
+}
+
+@greedy
+rule BooleanOperationEquals
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/BooleanOperationEquals");
+	    t.ordinal = 0;
+	    t.name = "equals";
+	    s.equivalent("BooleanOperation").members.add(t);
+}
+
+@greedy
+rule NumericOperation
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationType {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperation");
+	    t.name = "NumericOperation";
+	    rootMenu.equivalent("Application").dataTypes.add(t);
+}
+
+@greedy
+rule NumericOperationLessThan
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationLessThan");
+	    t.ordinal = 0;
+	    t.name = "lessThan";
+	    s.equivalent("NumericOperation").members.add(t);
+}
+
+@greedy
+rule NumericOperationGreaterThan
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationGreaterThan");
+	    t.ordinal = 1;
+	    t.name = "greaterThan";
+	    s.equivalent("NumericOperation").members.add(t);
+}
+
+@greedy
+rule NumericOperationLessOrEqual
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationLessOrEqual");
+	    t.ordinal = 2;
+	    t.name = "lessOrEqual";
+	    s.equivalent("NumericOperation").members.add(t);
+}
+
+@greedy
+rule NumericOperationGreaterOrEqual
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationGreaterOrEqual");
+	    t.ordinal = 3;
+	    t.name = "greaterOrEqual";
+	    s.equivalent("NumericOperation").members.add(t);
+}
+
+@greedy
+rule NumericOperationEqual
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationEqual");
+	    t.ordinal = 4;
+	    t.name = "equal";
+	    s.equivalent("NumericOperation").members.add(t);
+}
+
+@greedy
+rule NumericOperationNotEqual
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationNotEqual");
+	    t.ordinal = 5;
+	    t.name = "notEqual";
+	    s.equivalent("NumericOperation").members.add(t);
+}
+
+@greedy
+rule EnumerationOperation
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationType {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EnumerationOperation");
+	    t.name = "EnumerationOperation";
+	    rootMenu.equivalent("Application").dataTypes.add(t);
+}
+
+@greedy
+rule EnumerationOperationEquals
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EnumerationOperationEquals");
+	    t.ordinal = 0;
+	    t.name = "equals";
+	    s.equivalent("EnumerationOperation").members.add(t);
+}
+
+@greedy
+rule EnumerationOperationNotEquals
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EnumerationOperationNotEquals");
+	    t.ordinal = 1;
+	    t.name = "notEquals";
+	    s.equivalent("EnumerationOperation").members.add(t);
+}
+
+
+@greedy
+rule StringOperation
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationType {
+	    guard: s = actorDeclaration
+
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperation");
+	    t.name = "StringOperation";
+	    rootMenu.equivalent("Application").dataTypes.add(t);
+}
+
+@greedy
+rule StringOperationLessThan
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationLessThan");
+	    t.ordinal = 0;
+	    t.name = "lessThan";
+	    s.equivalent("StringOperation").members.add(t);
+}
+
+@greedy
+rule StringOperationGreaterThan
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationGreaterThan");
+	    t.ordinal = 1;
+	    t.name = "greaterThan";
+	    s.equivalent("StringOperation").members.add(t);
+}
+
+@greedy
+rule StringOperationLessOrEqual
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationLessOrEqual");
+	    t.ordinal = 2;
+	    t.name = "lessOrEqual";
+	    s.equivalent("StringOperation").members.add(t);
+}
+
+@greedy
+rule StringOperationGreaterOrEqual
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationGreaterOrEqual");
+	    t.ordinal = 3;
+	    t.name = "greaterOrEqual";
+	    s.equivalent("StringOperation").members.add(t);
+}
+
+@greedy
+rule StringOperationEqual
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationEqual");
+	    t.ordinal = 4;
+	    t.name = "equal";
+	    s.equivalent("StringOperation").members.add(t);
+}
+
+@greedy
+rule StringOperationNotEqual
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationNotEqual");
+	    t.ordinal = 5;
+	    t.name = "notEqual";
+	    s.equivalent("StringOperation").members.add(t);
+}
+
+@greedy
+rule StringOperationMatches
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationMatches");
+	    t.ordinal = 6;
+	    t.name = "matches";
+	    s.equivalent("StringOperation").members.add(t);
+}
+
+@greedy
+rule StringOperationLike
+    transform s: JSL!ActorDeclaration
+    to t: UI!ui::data::EnumerationMember {
+	    guard: s = actorDeclaration
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationLike");
+	    t.ordinal = 7;
+	    t.name = "like";
+	    s.equivalent("StringOperation").members.add(t);
+}

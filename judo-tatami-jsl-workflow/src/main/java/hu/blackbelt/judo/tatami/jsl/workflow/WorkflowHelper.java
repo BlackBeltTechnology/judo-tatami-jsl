@@ -24,6 +24,7 @@ import com.pivovarit.function.ThrowingSupplier;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
+import hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -31,6 +32,8 @@ import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.support.RdbmsModelResourceSupport;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.asm2expression.Asm2ExpressionWork;
+import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakTransformationTrace;
+import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakWork;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork;
 import hu.blackbelt.judo.tatami.expression.asm.validation.ExpressionValidationOnAsmWork;
@@ -58,6 +61,7 @@ import java.util.stream.Stream;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArguments.jslDslLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel.LoadArguments.keycloakLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.LoadArguments.liquibaseLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
@@ -250,7 +254,40 @@ public class WorkflowHelper {
                                         .toURL().openStream())
                         .name(modelName)))));
     }
-    
+
+    public void loadKeycloakModel(final String modelName,
+                                  final KeycloakModel keycloakModel,
+                                  final URI keycloakModelSourceURI,
+                                  final Asm2KeycloakTransformationTrace asm2KeycloakTransformationTrace,
+                                  final URI asm2KeycloakTransformationTraceSourceURI) {
+
+        if (keycloakModel == null && keycloakModelSourceURI == null) {
+            return;
+        }
+
+        transformationContext.put(ofNullable(keycloakModel).orElseGet(
+                ThrowingSupplier.sneaky(() -> KeycloakModel.loadKeycloakModel(keycloakLoadArgumentsBuilder()
+                        .inputStream(
+                                of(keycloakModelSourceURI).orElseThrow(() ->
+                                                new IllegalArgumentException("keycloakModel or keycloakModelSourceURI have to be defined"))
+                                        .toURL().openStream())
+                        .name(modelName)))));
+
+        Optional<AsmModel> asmModelFromContext = transformationContext.getByClass(AsmModel.class);
+
+        KeycloakModel keycloakModelFromContext = transformationContext.getByClass(KeycloakModel.class).get();
+
+        transformationContext.put(ofNullable(asm2KeycloakTransformationTrace).orElseGet(
+                ThrowingSupplier.sneaky(() -> Asm2KeycloakTransformationTrace.fromModelsAndTrace(
+                        modelName,
+                        asmModelFromContext.orElseThrow(() ->
+                                new IllegalArgumentException("psmModel have to be defined")),
+                        keycloakModelFromContext,
+                        of(asm2KeycloakTransformationTraceSourceURI).orElseThrow(() ->
+                                        new IllegalArgumentException("asm2KeycloakTransformationTrace or asm2KeycloakTransformationTraceSourceURI have to be defined"))
+                                .toURL().openStream()))));
+    }
+
     public Work createPsmValidateWork() {
         return aNewConditionalFlow()
                 .named("Conditional when Psm model exists then Execute PsmValidation")
@@ -417,6 +454,29 @@ public class WorkflowHelper {
                                 .execute(
                                         new Rdbms2LiquibaseWork(transformationContext, dialect).withMetricsCollector(workflowMetrics),
                                         new CheckWork(rdbms2LiquibaseOutputPredicate(dialect))
+                                )
+                                .build()
+                )
+                .otherwise(new NoOpWork())
+                .build();
+    }
+
+    public Supplier<Boolean> asm2KeycloakOutputPredicate() {
+        return () -> transformationContext.transformationContextVerifier.verifyClassPresent(KeycloakModel.class) &&
+                transformationContext.transformationContextVerifier.verifyClassPresent(Asm2KeycloakTransformationTrace.class);
+    }
+
+    public Work createAsm2KeycloakWork() {
+        return     aNewConditionalFlow()
+                .named("Conditional when Asm model exists then Execute Asm2Keycloak")
+                .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyClassPresent(AsmModel.class)))
+                .when(WorkReportPredicate.COMPLETED)
+                .then(
+                        aNewSequentialFlow()
+                                .named("Execute Asm2Keycloak")
+                                .execute(
+                                        new Asm2KeycloakWork(transformationContext).withMetricsCollector(workflowMetrics),
+                                        new CheckWork(asm2KeycloakOutputPredicate())
                                 )
                                 .build()
                 )
