@@ -1,22 +1,39 @@
 @cached
-operation JSL!ViewTableDeclaration getId(): String {
+operation JSL!UIViewTableDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
 
 @cached
-operation JSL!ViewTableDeclaration getFqName(): String {
+operation JSL!UIViewTableDeclaration getFqName(): String {
     if (self.getTransferContainer().isDefined()) {
         return self.getTransferContainer().getFqName() + "::" + self.name;
     }
     return self.name;
 }
 
+/*
 @cached
-operation JSL!ViewTableDeclaration getAllLinks(): Set {
+operation JSL!UIViewTableDeclaration getAllLinks(): Set {
     return self.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
 }
 
 @cached
-operation JSL!ViewTableDeclaration getDetailLink(): JSL!RowLinkDeclaration {
+operation JSL!UIViewTableDeclaration getDetailLink(): JSL!RowLinkDeclaration {
     return self.getAllLinks().selectOne(l | l.getDetail().isDefined());
+}
+*/
+
+@cached
+operation JSL!UIViewTableDeclaration getRelation(): TransferRelationDeclaration {
+    return self.transferRelation.target;
+}
+
+@cached
+operation JSL!UIViewTableDeclaration getExposedVisualElements(): Set {
+    var ves = new Set();
+    var rowDeclaration = self.referenceType;
+
+    ves.addAll(rowDeclaration.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration)).asSet());
+
+    return ves;
 }

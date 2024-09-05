@@ -1,3 +1,4 @@
+/*
 rule RowLinkPageDefinition
     transform s: JSL!RowLinkDeclaration
     to t: UI!ui::PageDefinition {
@@ -14,14 +15,7 @@ rule RowLinkPageDefinition
 
         var relations = s.referenceType.getDirectRelations();
 
-        /*
-        log.info("===================");
-        log.info(t.name + ":");
-        log.info(relations.collect(r | r.name).concat(", "));
-        log.info("===================");
-        */
-
-        for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
+        for (link in relations.select(r | r.isKindOf(JSL!UIViewLinkDeclaration))) {
             t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", "RowLinkPageDefinition"));
 
             if (link.isRefreshAllowed() and not link.isEager()) {
@@ -41,7 +35,7 @@ rule RowLinkPageDefinition
             }
         }
 
-        for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
+        for (table in relations.select(r | r.isKindOf(JSL!UIViewTableDeclaration))) {
             var detailLink = table.getDetailLink();
 
             if (table.isFilterSupported()) {
@@ -135,3 +129,4 @@ rule RowLinkPageDefinitionDeleteAction
 
         log.debug("RowLinkPageDefinitionDeleteAction: " + t.name);
 }
+*/

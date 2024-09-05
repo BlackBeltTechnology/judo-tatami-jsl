@@ -1,6 +1,6 @@
 @greedy
 rule ViewTableCreateFormPageDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::PageDefinition {
         guard: actorDeclaration.getAllRelations().contains(s) and s.isFormRelation()
 
@@ -25,11 +25,11 @@ rule ViewTableCreateFormPageDefinition
         log.info("===================");
         */
         /*
-        for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
+        for (link in relations.select(r | r.isKindOf(JSL!UIViewLinkDeclaration))) {
             t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
         }
 
-        for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
+        for (table in relations.select(r | r.isKindOf(JSL!UIViewTableDeclaration))) {
             var detailLink = table.getDetailLink();
 
             if (detailLink.isDefined()) {
@@ -47,7 +47,7 @@ rule ViewTableCreateFormPageDefinition
 @greedy
 @lazy
 rule ViewTableCreateFormCreateAction
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormCreateAction");
 
@@ -63,7 +63,7 @@ rule ViewTableCreateFormCreateAction
 @greedy
 @lazy
 rule ViewTableCreateFormBackAction
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormBackAction");
 
@@ -78,15 +78,13 @@ rule ViewTableCreateFormBackAction
 
 @abstract
 rule AbstractViewTableDeclaration
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Table {
         guard: actorDeclaration.getAllRelations().contains(s)
 
         t.name = s.name;
         t.relationName = s.name;
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("TableIcon");
         }
@@ -101,7 +99,7 @@ rule AbstractViewTableDeclaration
 @lazy
 @greedy
 rule TableIcon
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TableIcon");
         t.name = s.name + "TableIcon";
@@ -109,7 +107,7 @@ rule TableIcon
 }
 
 rule InlineViewTable
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Table
     extends AbstractViewTableDeclaration {
         guard: s.getTransferObjectType().isGenerated()
@@ -121,7 +119,7 @@ rule InlineViewTable
         s.eContainer.uiContainer().children.add(t);
 
         var primitiveFields = s.referenceType.members.select(m | m.isTypeOf(JSL!RowFieldDeclaration) and m.referenceType.`primitive`.isDefined());
-        var links = s.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
+        // var links = s.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
 
         for (field in primitiveFields) {
             var col = field.equivalentDiscriminated("TablePrimitiveColumn", id);
@@ -130,7 +128,7 @@ rule InlineViewTable
                t.filters.add(field.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
             }
         }
-
+/*
         for (link in links) {
             if (link.getDetail().isUndefined()) {
                 var col = link.equivalentDiscriminated("RowLinkDerivedColumn", id);
@@ -143,7 +141,7 @@ rule InlineViewTable
             }
 
         }
-
+*/
         t.tableActionButtonGroup = s.equivalent("InlineViewTableButtonGroup");
         t.rowActionButtonGroup = s.equivalent("InlineViewTableRowButtonGroup");
 
@@ -161,9 +159,7 @@ rule TablePrimitiveColumn
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumn");
         t.name = s.name;
         t.format = "%s";
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("ColumnIcon");
         }
@@ -194,12 +190,10 @@ rule TablePrimitiveColumnFilter
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumnFilter");
         t.name = s.name + "Filter";
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         log.debug("TablePrimitiveColumnFilter: " + t.name);
 }
-
+/*
 @lazy
 @greedy
 rule RowLinkDerivedColumn
@@ -209,28 +203,11 @@ rule RowLinkDerivedColumn
         // we keep the name of the link it self because the relation won't be present in the visual elements only in the data model
         t.name = s.name;
         t.format = "%s";
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("RowLinkDerivedColumnIcon");
         }
         t.width = s.getWidth().isDefined() ? s.getWidth().value : "120";
-
-        /*
-        if (s.customImplementation.isDefined()) {
-            t.customImplementation = s.customImplementation;
-        }
-        if (s.sort.isDefined()) {
-            t.sort = s.getUiSort();
-        }
-        if (s.sortPrecedence.isDefined()) {
-            t.sortPrecedence = s.sortPrecedence;
-        }
-        if (s.formatValue.isDefined()) {
-            t.formatValue = s.formatValue;
-        }
-        */
         t.attributeType = s.equivalent("RowLinkDerivedAttributeType");
         t.representsRelation = s.equivalent("RelationType");
 
@@ -257,9 +234,7 @@ rule RowLinkDerivedColumnFilter
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumnFilter");
         t.name = s.name + "Filter";
         t.attributeType = s.equivalent("RowLinkDerivedAttributeType");
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         log.debug("RowLinkDerivedColumnFilter: " + t.name);
 }
 
@@ -281,10 +256,10 @@ rule RowLinkDerivedAttributeType
         s.getContainerEquivalentClassType().attributes.add(t);
         log.debug("Created RowLinkDerivedAttributeType for ViewLinkDeclaration: [" + t.name + "] for [" + s.name + "]");
 }
-
+*/
 @lazy
 rule InlineViewTableButtonGroup
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ButtonGroup {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewTableButtonGroup");
         t.name = s.name + "::InlineViewTableButtonGroup";
@@ -314,7 +289,7 @@ rule InlineViewTableButtonGroup
 
 @lazy
 rule InlineViewTableRowButtonGroup
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ButtonGroup {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewTableRowButtonGroup");
         t.name = s.name + "InlineViewTableRowButtonGroup";
@@ -335,7 +310,7 @@ rule InlineViewTableRowButtonGroup
 
 @lazy
 rule ViewTableDeclarationFilterButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterButton");
         t.name = s.name + "::Filter";
@@ -349,7 +324,7 @@ rule ViewTableDeclarationFilterButton
 
 @lazy
 rule ViewTableDeclarationFilterButtonIcon
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterButtonIcon");
         t.name = s.name + "FilterIcon";
@@ -360,7 +335,7 @@ rule ViewTableDeclarationFilterButtonIcon
 
 @lazy
 rule ViewTableDeclarationFilterActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::FilterActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterActionDefinition");
         t.name = s.name + "::Filter";
@@ -371,7 +346,7 @@ rule ViewTableDeclarationFilterActionDefinition
 
 @lazy
 rule ViewTableDeclarationFilterAction
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterAction");
         t.name = s.name + "::Filter";
@@ -382,7 +357,7 @@ rule ViewTableDeclarationFilterAction
 
 @lazy
 rule ViewTableDeclarationRefreshButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshButton");
         t.name = s.name + "::Refresh";
@@ -396,7 +371,7 @@ rule ViewTableDeclarationRefreshButton
 
 @lazy
 rule ViewTableDeclarationRefreshButtonIcon
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshButtonIcon");
         t.name = s.name + "RefreshIcon";
@@ -407,7 +382,7 @@ rule ViewTableDeclarationRefreshButtonIcon
 
 @lazy
 rule ViewTableDeclarationRefreshActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::RefreshActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshActionDefinition");
         t.name = s.name + "::Refresh";
@@ -418,7 +393,7 @@ rule ViewTableDeclarationRefreshActionDefinition
 
 @lazy
 rule ViewTableDeclarationRefreshAction
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshAction");
         t.name = s.name + "::Refresh";
@@ -429,7 +404,7 @@ rule ViewTableDeclarationRefreshAction
 
 @lazy
 rule ViewTableDeclarationOpenCreateButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateButton");
         t.name = s.name + "::OpenCreate";
@@ -443,7 +418,7 @@ rule ViewTableDeclarationOpenCreateButton
 
 @lazy
 rule ViewTableDeclarationOpenCreateButtonIcon
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateButtonIcon");
         t.name = s.name + "OpenCreateIcon";
@@ -454,7 +429,7 @@ rule ViewTableDeclarationOpenCreateButtonIcon
 
 @lazy
 rule ViewTableDeclarationOpenCreateActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::OpenCreateFormActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateActionDefinition");
         t.name = s.name + "::OpenCreate";
@@ -465,7 +440,7 @@ rule ViewTableDeclarationOpenCreateActionDefinition
 
 @lazy
 rule ViewTableDeclarationOpenCreateAction
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateAction");
         t.name = s.name + "::OpenCreate";
@@ -478,7 +453,7 @@ rule ViewTableDeclarationOpenCreateAction
 
 @lazy
 rule ViewTableDeclarationRowOpenPageButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowOpenPageButton");
         t.name = s.name + "::View";
@@ -492,7 +467,7 @@ rule ViewTableDeclarationRowOpenPageButton
 
 @lazy
 rule ViewTableDeclarationRowOpenPageButtonIcon
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowOpenPageButtonIcon");
         t.name = s.name + "RowOpenIcon";
@@ -503,7 +478,7 @@ rule ViewTableDeclarationRowOpenPageButtonIcon
 
 @lazy
 rule ViewTableDeclarationRowOpenPageActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::RowOpenPageActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowOpenPageActionDefinition");
         t.name = s.name + "::View";
@@ -518,7 +493,7 @@ rule ViewTableDeclarationRowOpenPageActionDefinition
 
 @lazy
 rule ViewTableDeclarationOpenPageAction
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         var row = s.referenceType;
 
@@ -534,7 +509,7 @@ rule ViewTableDeclarationOpenPageAction
 
 @lazy
 rule ViewTableDeclarationRowDeleteButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteButton");
          t.name = s.name + "::RowDelete";
@@ -548,7 +523,7 @@ rule ViewTableDeclarationRowDeleteButton
 
 @lazy
 rule ViewTableDeclarationRowDeleteButtonIcon
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteButtonIcon");
         t.name = s.name + "RowDeleteIcon";
@@ -559,7 +534,7 @@ rule ViewTableDeclarationRowDeleteButtonIcon
 
 @lazy
 rule ViewTableDeclarationRowDeleteActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::RowDeleteActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteActionDefinition");
          t.name = s.name + "::RowDelete";
@@ -570,7 +545,7 @@ rule ViewTableDeclarationRowDeleteActionDefinition
 
 @lazy
 rule ViewTableDeclarationRowDeleteAction
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteAction");
          t.name = s.name + "::RowDelete";
@@ -581,7 +556,7 @@ rule ViewTableDeclarationRowDeleteAction
 
 @lazy
 rule ViewTableDeclarationOpenAddSelectorButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorButton");
         t.name = s.name + "::OpenAddSelector";
@@ -595,7 +570,7 @@ rule ViewTableDeclarationOpenAddSelectorButton
 
 @lazy
 rule ViewTableDeclarationOpenAddSelectorButtonIcon
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorButtonIcon");
         t.name = s.name + "OpenAddSelectorIcon";
@@ -606,7 +581,7 @@ rule ViewTableDeclarationOpenAddSelectorButtonIcon
 
 @lazy
 rule ViewTableDeclarationOpenAddSelectorActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::OpenAddSelectorActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorActionDefinition");
         t.name = s.name + "::OpenAddSelector";
@@ -618,7 +593,7 @@ rule ViewTableDeclarationOpenAddSelectorActionDefinition
 
 @lazy
 rule ViewTableDeclarationOpenAddSelectorAction
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorAction");
         t.name = s.name + "::OpenAddSelector";
@@ -631,7 +606,7 @@ rule ViewTableDeclarationOpenAddSelectorAction
 
 @lazy
 rule ViewTableDeclarationBulkRemoveButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveButton");
         t.name = s.name + "::BulkRemove";
@@ -645,7 +620,7 @@ rule ViewTableDeclarationBulkRemoveButton
 
 @lazy
 rule ViewTableDeclarationBulkRemoveButtonIcon
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveButtonIcon");
         t.name = s.name + "RemoveIcon";
@@ -656,7 +631,7 @@ rule ViewTableDeclarationBulkRemoveButtonIcon
 
 @lazy
 rule ViewTableDeclarationBulkRemoveActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::BulkRemoveActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveActionDefinition");
         t.name = s.name + "::BulkRemove";
@@ -669,7 +644,7 @@ rule ViewTableDeclarationBulkRemoveActionDefinition
 
 @lazy
 rule ViewTableDeclarationBulkRemoveAction
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveAction");
         t.name = s.name + "::BulkRemove";
@@ -683,7 +658,7 @@ rule ViewTableDeclarationBulkRemoveAction
 
 @lazy
 rule ViewTableDeclarationClearButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearButton");
         t.name = s.name + "::Clear";
@@ -697,7 +672,7 @@ rule ViewTableDeclarationClearButton
 
 @lazy
 rule ViewTableDeclarationClearButtonIcon
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearButtonIcon");
         t.name = s.name + "ClearIcon";
@@ -708,7 +683,7 @@ rule ViewTableDeclarationClearButtonIcon
 
 @lazy
 rule ViewTableDeclarationClearActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ClearActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearActionDefinition");
         t.name = s.name + "::Clear";
@@ -719,7 +694,7 @@ rule ViewTableDeclarationClearActionDefinition
 
 @lazy
 rule ViewTableDeclarationClearAction
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearAction");
         t.name = s.name + "::Clear";
@@ -733,7 +708,7 @@ rule ViewTableDeclarationClearAction
 
 @lazy
 rule ViewTableDeclarationAddSelectorPageDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::PageDefinition {
 
     t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorPageDefinition");
@@ -757,7 +732,7 @@ rule ViewTableDeclarationAddSelectorPageDefinition
 
 @lazy
 rule ViewTableDeclarationAddSelectorAddAction
-	transform s: JSL!ViewTableDeclaration
+	transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorAddAction");
  		t.name = s.getFqName() + "::AddSelector::Add";
@@ -769,7 +744,7 @@ rule ViewTableDeclarationAddSelectorAddAction
 
 @lazy
 rule ViewTableDeclarationAddSelectorBackAction
-	transform s: JSL!ViewTableDeclaration
+	transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorBackAction");
  		t.name = s.getFqName() + "::AddSelector::Back";
@@ -781,7 +756,7 @@ rule ViewTableDeclarationAddSelectorBackAction
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableFilterAction
-	transform s: JSL!ViewTableDeclaration
+	transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableFilterAction");
  		t.name = s.getFqName() + "::AddSelector::Table::Filter";
@@ -794,7 +769,7 @@ rule ViewTableDeclarationAddSelectorTableFilterAction
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableRangeAction
-	transform s: JSL!ViewTableDeclaration
+	transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableRangeAction");
  		t.name = s.getFqName() + "::AddSelector::Table::Range";
@@ -807,16 +782,13 @@ rule ViewTableDeclarationAddSelectorTableRangeAction
 
 @lazy
 rule ViewTableDeclarationAddSelectorPageContainer
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::PageContainer {
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorPageContainer");
 
         t.name = s.getFqName() + "::AddSelector::PageContainer";
-        var label = s.getLabelModifier();
-        if (label.isDefined()) {
-            t.label = label.value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         t.titleFrom = UI!ui::TitleFrom#LABEL;
         t.type = UI!ui::PageContainerType#TABLE;
         t.onInit = s.equivalent("ViewTableDeclarationAddSelectorTableRangeActionDefinition");
@@ -834,7 +806,7 @@ rule ViewTableDeclarationAddSelectorPageContainer
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableRangeActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::SelectorRangeActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableRangeActionDefinition");
 
@@ -846,7 +818,7 @@ rule ViewTableDeclarationAddSelectorTableRangeActionDefinition
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableAddSelectorButtonGroup
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ButtonGroup {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorButtonGroup");
         t.name = s.getFqName() + "::AddSelectorTableAddSelectorButtonGroup";
@@ -860,7 +832,7 @@ rule ViewTableDeclarationAddSelectorTableAddSelectorButtonGroup
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableAddSelectorBackButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorBackButton");
         t.name = s.getFqName() + "::Back";
@@ -874,7 +846,7 @@ rule ViewTableDeclarationAddSelectorTableAddSelectorBackButton
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableBackActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::BackActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableBackActionDefinition");
         t.name = s.getFqName() + "::Back";
@@ -883,7 +855,7 @@ rule ViewTableDeclarationAddSelectorTableBackActionDefinition
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableAddSelectorAddButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorAddButton");
         t.name = s.getFqName() + "::Add";
@@ -897,7 +869,7 @@ rule ViewTableDeclarationAddSelectorTableAddSelectorAddButton
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::AddActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition");
         t.name = s.getFqName() + "::Add";
@@ -907,7 +879,7 @@ rule ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableAddSelectorVisualElement
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Flex {
         t.~pos = 0;
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorVisualElement");
@@ -924,21 +896,19 @@ rule ViewTableDeclarationAddSelectorTableAddSelectorVisualElement
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableAddSelectorFrame
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Frame {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorFrame");
 }
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableTable
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Table {
         var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableTable";
         t.setId(id);
         t.col = 12d;
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         t.isSelectorTable = true;
         t.isRelationSelectorTable = true;
         t.allowSelectMultiple = true;
@@ -991,7 +961,7 @@ rule ViewTableDeclarationAddSelectorTableTable
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableTableButtonGroup
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ButtonGroup {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableTableButtonGroup");
  		t.name = s.getFqName() + "::AddSelectorTableActions";
@@ -1005,7 +975,7 @@ rule ViewTableDeclarationAddSelectorTableTableButtonGroup
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableTableFilterButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableTableFilterButton");
  		t.name = s.getFqName() + "::AddSelector::Table::Filter";
@@ -1019,7 +989,7 @@ rule ViewTableDeclarationAddSelectorTableTableFilterButton
 
 @lazy
 rule ViewTableDeclarationAddSelectorTableTableFilterActionDefinition
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::FilterActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableTableFilterActionDefinition");
         t.name = s.getFqName() + "::Table::Filter";
@@ -1028,7 +998,7 @@ rule ViewTableDeclarationAddSelectorTableTableFilterActionDefinition
 
 @lazy
 rule TransferObjectTableAddSelectorTableRefreshButton
-    transform s: JSL!ViewTableDeclaration
+    transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TransferObjectTableAddSelectorTableRefreshButton");
  		t.name = s.getFqName() + "::AddSelector::Table::Refresh";

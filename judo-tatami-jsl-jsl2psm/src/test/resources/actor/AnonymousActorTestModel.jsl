@@ -1,4 +1,4 @@
-model ActorTestModel;
+model AnonymousActorTestModel;
 
 type binary Binary max-file-size: 1MB  mime-type: ["image/*"];
 type boolean Boolean;
@@ -22,11 +22,6 @@ transfer UserTransfer maps User as u {
     event update updateInstance;
 }
 
-actor Actor
-    realm: "COMPANY"
-    claim: "email"
-    identity: UserTransfer::email
-    guard: User.all().filter(u | u.email == String.getVariable(category = "PRINCIPAL", key = "preferred_username")).any().isActive
-{	
+actor Actor {
     access UserTransfer[] manager <= User.all() create: true update: true delete: true;
 };

@@ -7,7 +7,7 @@ operation JSL!TransferActionDeclaration getId(): String {
 @cached
 operation JSL!TransferActionDeclaration isUpdateAllowed() : Boolean {
     if (self.`return`.isDefined()){
-        return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and m.`true`);
+        return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and not m.`false`);
     }
     return false;
 }
@@ -15,7 +15,7 @@ operation JSL!TransferActionDeclaration isUpdateAllowed() : Boolean {
 @cached
 operation JSL!TransferActionDeclaration isDeleteAllowed() : Boolean {
     if (self.`return`.isDefined()){
-        return self.modifiers.exists (m | m.isTypeOf(JSL!DeleteModifier) and m.`true`);
+        return self.modifiers.exists (m | m.isTypeOf(JSL!DeleteModifier) and not m.`false`);
     }
     return false;
 }

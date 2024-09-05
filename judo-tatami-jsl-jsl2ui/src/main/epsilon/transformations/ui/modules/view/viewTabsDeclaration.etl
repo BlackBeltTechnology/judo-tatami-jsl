@@ -1,3 +1,4 @@
+/*
 rule TabBarVisualElement
     transform s: JSL!ViewTabsDeclaration
     to t: UI!ui::TabController {
@@ -7,11 +8,8 @@ rule TabBarVisualElement
         t.name = s.name;
         t.~pos = s.~pos;
         t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12d;
-
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
-        if (s.getLabelModifier().isDefined()) {
+        t.label = s.getLabelWithNameFallback();
+        if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("TabsIcon");
         }
         if (s.getOrientationModifier().isDefined()) {
@@ -49,3 +47,4 @@ rule TabsIcon
         t.name = s.name + "TabsIcon";
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TabsIcon");
 }
+*/

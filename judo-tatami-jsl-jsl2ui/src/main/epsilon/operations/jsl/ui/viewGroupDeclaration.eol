@@ -1,3 +1,4 @@
+/*
 @cached
 operation JSL!ViewGroupDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
@@ -26,3 +27,4 @@ operation JSL!ViewGroupDeclaration isFrame(): Boolean {
 operation JSL!ViewGroupDeclaration uiContainer() : UI!ui::VisualElement {
     return self.equivalent("GroupVisualElement");
 }
+*/
