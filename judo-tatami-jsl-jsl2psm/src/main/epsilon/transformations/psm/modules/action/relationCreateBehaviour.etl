@@ -9,7 +9,7 @@ rule CreateCreateOperationForEntityType
 
       t.setId("(jsl/" + s.getId() + ")/CreateCreateOperationForEntityType");
       t.instanceRepresentation = s.eContainer.getTransferDeclarationEquivalent();
-      t.name = s.referenceType.getCreateEventInsteadOf().name + "ForRelation" + s.getFqName().fqNameToCamelCase();
+      t.name = s.referenceType.getCreateEvent().name + "ForRelation" + s.getFqName().fqNameToCamelCase();
       s.eContainer.map.entity.getEntityDeclarationEquivalent().operations.add(t);
       log.debug("Created CreateCreateOperationForEntityType: " + t.name);
 }
@@ -33,7 +33,7 @@ rule CreateCreateOperationForTransferType
       guard: generateBehaviours and not s.isActorRelated() and (s.maps() or s.reads()) and s.referenceType.isCreateSupported() and s.isCreateAllowed()
 
       t.setId("(jsl/" + s.getId() + ")/CreateCreateOperationForTransferType");
-      t.name = s.referenceType.getCreateEventInsteadOf().name + "Of" + s.name.firstToUpperCase();
+      t.name = s.referenceType.getCreateEvent().name + "Of" + s.name.firstToUpperCase();
       if (s.eContainer.members.exists(m | m.name == t.name)) {
 	      t.name = "_" + t.name;
       }

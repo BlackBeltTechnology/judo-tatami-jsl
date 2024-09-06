@@ -1,5 +1,5 @@
 rule ViewLinkPageDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::PageDefinition {
         guard: actorDeclaration.getAllRelations().contains(s)
 
@@ -21,7 +21,7 @@ rule ViewLinkPageDefinition
         log.info("===================");
         */
 
-        for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
+        for (link in relations.select(r | r.isKindOf(JSL!UIViewLinkDeclaration))) {
             t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", "ViewLinkPageDefinition"));
 
             if (link.isRefreshAllowed() and not link.isEager()) {
@@ -41,7 +41,7 @@ rule ViewLinkPageDefinition
             }
         }
 
-        for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
+        for (table in relations.select(r | r.isKindOf(JSL!UIViewTableDeclaration))) {
             var detailLink = table.getDetailLink();
 
             if (detailLink.isDefined()) {
@@ -85,7 +85,7 @@ rule ViewLinkPageDefinition
 @lazy
 @greedy
 rule ViewLinkPageDefinitionRefreshAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         guard: actorDeclaration.getAllRelations().contains(s)
 
@@ -99,7 +99,7 @@ rule ViewLinkPageDefinitionRefreshAction
 @lazy
 @greedy
 rule ViewLinkPageDefinitionBackAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         guard: actorDeclaration.getAllRelations().contains(s)
 
@@ -113,7 +113,7 @@ rule ViewLinkPageDefinitionBackAction
 @lazy
 @greedy
 rule ViewLinkPageDefinitionUpdateAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionUpdateAction");
 
@@ -126,7 +126,7 @@ rule ViewLinkPageDefinitionUpdateAction
 @lazy
 @greedy
 rule ViewLinkPageDefinitionDeleteAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionDeleteAction");
 
@@ -138,7 +138,7 @@ rule ViewLinkPageDefinitionDeleteAction
 
 @greedy
 rule ViewLinkCreateFormPageDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::PageDefinition {
         guard: actorDeclaration.getAllRelations().contains(s) and s.isFormRelation()
 
@@ -163,11 +163,11 @@ rule ViewLinkCreateFormPageDefinition
         log.info("===================");
         */
         /*
-        for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
+        for (link in relations.select(r | r.isKindOf(JSL!UIViewLinkDeclaration))) {
             t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
         }
 
-        for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
+        for (table in relations.select(r | r.isKindOf(JSL!UIViewTableDeclaration))) {
             var detailLink = table.getDetailLink();
 
             if (detailLink.isDefined()) {
@@ -185,7 +185,7 @@ rule ViewLinkCreateFormPageDefinition
 @greedy
 @lazy
 rule ViewLinkCreateFormCreateAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormCreateAction");
 
@@ -201,7 +201,7 @@ rule ViewLinkCreateFormCreateAction
 @greedy
 @lazy
 rule ViewLinkCreateFormBackAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormBackAction");
 
@@ -216,15 +216,13 @@ rule ViewLinkCreateFormBackAction
 
 @abstract
 rule AbstractViewLinkDeclaration
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Link {
         guard: actorDeclaration.getAllRelations().contains(s)
 
         t.name = s.name;
         t.relationName = s.name;
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("LinkIcon");
         }
@@ -250,7 +248,7 @@ rule AbstractViewLinkDeclaration
 @lazy
 @greedy
 rule LinkIcon
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Icon {
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "ViewLinkIcon";
@@ -258,7 +256,7 @@ rule LinkIcon
 }
 
 rule InlineViewLink
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Link
     extends AbstractViewLinkDeclaration {
         guard: s.getTransferObjectType().isGenerated()
@@ -292,7 +290,7 @@ rule InlineViewLink
 
 @lazy
 rule ViewLinkDeclarationRefreshActionDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::RefreshActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRefreshActionDefinition");
         t.name = s.name + "::Refresh";
@@ -304,7 +302,7 @@ rule ViewLinkDeclarationRefreshActionDefinition
 @greedy
 @lazy
 rule ViewLinkDeclarationRefreshAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRefreshAction");
         t.name = s.name + "::Refresh";
@@ -315,7 +313,7 @@ rule ViewLinkDeclarationRefreshAction
 
 @lazy
 rule InlineViewLinkButtonGroup
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::ButtonGroup {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewLinkButtonGroup");
         t.name = s.name + "::Actions";
@@ -341,7 +339,7 @@ rule InlineViewLinkButtonGroup
 
 @lazy
 rule ViewLinkDeclarationRepresentationColumn
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Column {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRepresentationColumn");
 
@@ -364,7 +362,7 @@ rule ViewLinkDeclarationRepresentationColumn
 
 @lazy
 rule ViewLinkDeclarationOpenPageButton
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButton");
         t.name = s.name + "::View";
@@ -378,7 +376,7 @@ rule ViewLinkDeclarationOpenPageButton
 
 @lazy
 rule ViewLinkDeclarationOpenPageButtonIcon
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButtonIcon");
         t.iconName = "eye";
@@ -389,7 +387,7 @@ rule ViewLinkDeclarationOpenPageButtonIcon
 
 @lazy
 rule ViewLinkDeclarationOpenPageActionDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::OpenPageActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageActionDefinition");
         t.name = s.name + "::View";
@@ -402,7 +400,7 @@ rule ViewLinkDeclarationOpenPageActionDefinition
 @greedy
 @lazy
 rule ViewLinkDeclarationOpenPageAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageAction");
 
@@ -417,7 +415,7 @@ rule ViewLinkDeclarationOpenPageAction
 
 @lazy
 rule ViewLinkDeclarationOpenFormButton
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormButton");
         t.name = s.name + "::Create::Open";
@@ -431,7 +429,7 @@ rule ViewLinkDeclarationOpenFormButton
 
 @lazy
 rule ViewLinkDeclarationOpenFormButtonIcon
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormButtonIcon");
         t.iconName = "note-add";
@@ -442,7 +440,7 @@ rule ViewLinkDeclarationOpenFormButtonIcon
 
 @lazy
 rule ViewLinkDeclarationOpenCreateFormActionDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::OpenCreateFormActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenCreateFormActionDefinition");
         t.name = s.name + "::OpenCreate";
@@ -462,7 +460,7 @@ rule ViewLinkDeclarationOpenCreateFormActionDefinition
 @greedy
 @lazy
 rule ViewLinkDeclarationOpenFormAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormAction");
 
@@ -476,7 +474,7 @@ rule ViewLinkDeclarationOpenFormAction
 
 @lazy
 rule ViewLinkDeclarationDeleteButton
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButton");
         t.name = s.name + "::Delete";
@@ -490,7 +488,7 @@ rule ViewLinkDeclarationDeleteButton
 
 @lazy
 rule ViewLinkDeclarationDeleteButtonIcon
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Icon {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButtonIcon");
         t.iconName = "delete_forever";
@@ -501,7 +499,7 @@ rule ViewLinkDeclarationDeleteButtonIcon
 
 @lazy
 rule ViewLinkDeclarationRowDeleteActionDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::RowDeleteActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteActionDefinition");
         t.name = s.name + "::Delete";
@@ -514,7 +512,7 @@ rule ViewLinkDeclarationRowDeleteActionDefinition
 @greedy
 @lazy
 rule ViewLinkDeclarationRowDeleteAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteAction");
 
@@ -526,7 +524,7 @@ rule ViewLinkDeclarationRowDeleteAction
 
 @lazy
 rule ViewLinkDeclarationUnsetButton
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetButton");
         t.name = s.name + "::Unset";
@@ -540,7 +538,7 @@ rule ViewLinkDeclarationUnsetButton
 
 @lazy
 rule ViewLinkDeclarationUnsetActionDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::UnsetActionDefinition {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetActionDefinition");
  		t.name = s.name + "::Unset";
@@ -552,7 +550,7 @@ rule ViewLinkDeclarationUnsetActionDefinition
 
 @lazy
 rule ViewLinkDeclarationUnsetAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetAction");
         t.name = s.name + "::Unset";
@@ -563,7 +561,7 @@ rule ViewLinkDeclarationUnsetAction
 
 @lazy
 rule ViewLinkDeclarationOpenSetSelectorButton
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorButton");
         t.name = s.name + "::OpenSetSelector";
@@ -577,7 +575,7 @@ rule ViewLinkDeclarationOpenSetSelectorButton
 
 @lazy
 rule ViewLinkDeclarationOpenSetSelectorActionDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::OpenSetSelectorActionDefinition {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorActionDefinition");
  		t.name = s.name + "::OpenSetSelector";
@@ -589,7 +587,7 @@ rule ViewLinkDeclarationOpenSetSelectorActionDefinition
 
 @lazy
 rule ViewLinkDeclarationOpenSetSelectorDialogAction
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorDialogAction");
         t.name = s.name + "::OpenSetSelector";
@@ -601,7 +599,7 @@ rule ViewLinkDeclarationOpenSetSelectorDialogAction
 
 @lazy
 rule ViewLinkDeclarationSetSelectorPageDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::PageDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorPageDefinition");
         t.name = s.getFqName() + "::SetSelector::PageDefinition";
@@ -622,7 +620,7 @@ rule ViewLinkDeclarationSetSelectorPageDefinition
 
 @lazy
 rule ViewLinkDeclarationSetSelectorSetAction
-	transform s: JSL!ViewLinkDeclaration
+	transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetAction");
  		t.name = s.getFqName() + "::SetSelector::Set";
@@ -634,7 +632,7 @@ rule ViewLinkDeclarationSetSelectorSetAction
 
 @lazy
 rule ViewLinkDeclarationSetSelectorBackAction
-	transform s: JSL!ViewLinkDeclaration
+	transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorBackAction");
  		t.name = s.getFqName() + "::SetSelector::Back";
@@ -646,7 +644,7 @@ rule ViewLinkDeclarationSetSelectorBackAction
 
 @lazy
 rule ViewLinkDeclarationSetSelectorTableFilterAction
-	transform s: JSL!ViewLinkDeclaration
+	transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableFilterAction");
  		t.name = s.getFqName() + "::SetSelector::Table::Filter";
@@ -659,7 +657,7 @@ rule ViewLinkDeclarationSetSelectorTableFilterAction
 
 @lazy
 rule ViewLinkDeclarationSetSelectorTableRangeAction
-	transform s: JSL!ViewLinkDeclaration
+	transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableRangeAction");
  		t.name = s.getFqName() + "::SetSelector::Table::Range";
@@ -672,14 +670,11 @@ rule ViewLinkDeclarationSetSelectorTableRangeAction
 
 @lazy
 rule ViewLinkDeclarationSetSelectorPageContainer
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::PageContainer {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorPageContainer");
         t.name = s.getFqName() + "::SetSelector::PageContainer";
-        var label = s.getLabelModifier();
-        if (label.isDefined()) {
-            t.label = label.value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         t.titleFrom = UI!ui::TitleFrom#LABEL;
         t.type = UI!ui::PageContainerType#TABLE;
         t.onInit = s.equivalent("ViewLinkDeclarationSetSelectorTableRangeActionDefinition");
@@ -697,7 +692,7 @@ rule ViewLinkDeclarationSetSelectorPageContainer
 
 @lazy
 rule ViewLinkDeclarationSetSelectorVisualElement
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Flex {
         t.~pos = 0;
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorVisualElement");
@@ -714,21 +709,19 @@ rule ViewLinkDeclarationSetSelectorVisualElement
 
 @lazy
 rule ViewLinkDeclarationSetSelectorFrame
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Frame {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorFrame");
 }
 
 @lazy
 rule ViewLinkDeclarationSetSelectorTable
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Table {
         var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTable";
         t.setId(id);
         t.col = 12d;
-        if (s.getLabelModifier().isDefined()) {
-            t.label = s.getLabelModifier().value.value;
-        }
+        t.label = s.getLabelWithNameFallback();
         t.isSelectorTable = true;
         t.isRelationSelectorTable = true;
         t.allowSelectMultiple = false;
@@ -752,7 +745,7 @@ rule ViewLinkDeclarationSetSelectorTable
         // TODO eventually selector should work?
         var targetDeclaration = s.referenceType;
 
-        var primitiveFields = targetDeclaration.members.select(m | m.isTypeOf(JSL!ViewFieldDeclaration) and m.referenceType.`primitive`.isDefined());
+        var primitiveFields = targetDeclaration.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration) and m.referenceType.`primitive`.isDefined());
 
         for (field in primitiveFields) {
             var col = field.equivalentDiscriminated("TablePrimitiveColumn", id);
@@ -767,7 +760,7 @@ rule ViewLinkDeclarationSetSelectorTable
 
 @lazy
 rule ViewLinkDeclarationSetSelectorTableButtonGroup
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::ButtonGroup {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableButtonGroup");
  		t.name = s.getFqName() + "::SetSelectorTableActions";
@@ -781,7 +774,7 @@ rule ViewLinkDeclarationSetSelectorTableButtonGroup
 
 @lazy
 rule ViewLinkDeclarationSetSelectorTableFilterButton
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableFilterButton");
  		t.name = s.getFqName() + "::SetSelector::Table::Filter";
@@ -795,7 +788,7 @@ rule ViewLinkDeclarationSetSelectorTableFilterButton
 
 @lazy
 rule ViewLinkDeclarationSetSelectorTableFilterActionDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::FilterActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableFilterActionDefinition");
         t.name = s.getFqName() + "::Table::Filter";
@@ -804,7 +797,7 @@ rule ViewLinkDeclarationSetSelectorTableFilterActionDefinition
 
 @lazy
 rule ViewLinkDeclarationSetSelectorTableRefreshButton
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableRefreshButton");
  		t.name = s.getFqName() + "::SetSelector::Table::Refresh";
@@ -818,7 +811,7 @@ rule ViewLinkDeclarationSetSelectorTableRefreshButton
 
 @lazy
 rule ViewLinkDeclarationSetSelectorTableRangeActionDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::SelectorRangeActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableRangeActionDefinition");
 
@@ -830,7 +823,7 @@ rule ViewLinkDeclarationSetSelectorTableRangeActionDefinition
 
 @lazy
 rule ViewLinkDeclarationSetSelectorButtonGroup
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::ButtonGroup {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorButtonGroup");
         t.name = s.getFqName() + "::SetSelectorButtonGroup";
@@ -844,7 +837,7 @@ rule ViewLinkDeclarationSetSelectorButtonGroup
 
 @lazy
 rule ViewLinkDeclarationSetSelectorSetSelectorBackButton
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetSelectorBackButton");
         t.name = s.getFqName() + "::Back";
@@ -858,7 +851,7 @@ rule ViewLinkDeclarationSetSelectorSetSelectorBackButton
 
 @lazy
 rule ViewLinkDeclarationSetSelectorBackActionDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::BackActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorBackActionDefinition");
         t.name = s.getFqName() + "::Back";
@@ -867,7 +860,7 @@ rule ViewLinkDeclarationSetSelectorBackActionDefinition
 
 @lazy
 rule ViewLinkDeclarationSetSelectorSetSelectorSetButton
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetSelectorSetButton");
         t.name = s.getFqName() + "::Set";
@@ -881,7 +874,7 @@ rule ViewLinkDeclarationSetSelectorSetSelectorSetButton
 
 @lazy
 rule ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition
-    transform s: JSL!ViewLinkDeclaration
+    transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::SetActionDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition");
         t.name = s.getFqName() + "::Set";

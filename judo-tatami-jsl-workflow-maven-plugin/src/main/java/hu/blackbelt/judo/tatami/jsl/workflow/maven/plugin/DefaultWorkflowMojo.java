@@ -95,6 +95,12 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
     @Parameter(property = "ignoreAsm2RdbmsTrace", defaultValue = "false")
     private Boolean ignoreAsm2RdbmsTrace = false;
 
+    @Parameter(property = "ignoreAsm2Keycloak", defaultValue = "true")
+    private Boolean ignoreAsm2Keycloak = true;
+
+    @Parameter(property = "ignoreAsm2KeycloakTrace", defaultValue = "true")
+    private Boolean ignoreAsm2KeycloakTrace = true;
+
     @Parameter(property = "ignoreRdbms2Liquibase", defaultValue = "false")
     private Boolean ignoreRdbms2Liquibase = false;
 
@@ -193,6 +199,8 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
                         .ignorePsm2AsmTrace(ignorePsm2AsmTrace)
                         .ignorePsm2MeasureTrace(ignorePsm2MeasureTrace)
                         .ignoreAsm2RdbmsTrace(ignoreAsm2RdbmsTrace)
+                        .ignoreAsm2Keycloak(ignoreAsm2Keycloak)
+                        .ignoreAsm2KeycloakTrace(ignoreAsm2KeycloakTrace)
                         .generateBehaviours(true)
                         .validateModels(validateModels)
                         .modelName(modelName)
