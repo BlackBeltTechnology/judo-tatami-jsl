@@ -31,9 +31,10 @@ rule AccessTablePageDefinition
         var relation = s.actorAccess.target;
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageDefinition");
-        t.name = s.getFqName() + "::Table::PageDefinition";
+        t.name = s.getFqName() + "::AccessTablePage";
         t.container = s.equivalent("AccessTablePageContainer");
         t.dataElement = relation.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
 
         t.actions.add(s.equivalent("AccessTableBackAction"));
         if (relation.isRefreshAllowed()) {
@@ -658,10 +659,11 @@ rule AccessTableTableAddSelectorPageDefinition
 
     t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorPageDefinition");
 
-    t.name = s.getFqName() + "::AddSelector::PageDefinition";
+    t.name = s.getFqName() + "::AddSelectorPage";
 
     t.container = s.equivalent("AccessTableTableAddSelectorPageContainer");
     t.dataElement = s.actorAccess.target.equivalent("RelationType");
+    t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
     t.openInDialog = true;
     t.dialogSize = UI!ui::DialogSize#MD;
 
@@ -962,9 +964,10 @@ rule AccessTableCreateFormPageDefinition
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableCreateFormPageDefinition");
         t.openInDialog = true;
-        t.name = s.getFqName() + "::Create::PageDefinition";
+        t.name = s.getFqName() + "::AccessFormPage";
         t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
         t.dataElement = s.actorAccess.target.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
 
         t.actions.add(s.equivalent("AccessTableCreateFormBackAction"));
         t.actions.add(s.equivalent("AccessTableCreateFormCreateAction"));
@@ -1005,12 +1008,13 @@ rule AccessTableViewPageDefinition
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewPageDefinition");
 
-        t.name = s.getFqName() + "::View::PageDefinition";
+        t.name = s.getFqName() + "::AccessViewPage";
         t.container = s.getUpdateViewModifier().view.equivalent("ViewPageContainer");
 
         rootMenu.equivalent("Application").pages.add(t);
 
         t.dataElement = s.actorAccess.target.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
 
         // var relations = s.referenceType.getDirectRelations();
 

@@ -149,10 +149,10 @@ public class JslModel2UiTest extends AbstractTest  {
         ), pageContainers.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "Car::CarApp::cars::View::PageDefinition",
-                "Car::CarApp::cars::Create::PageDefinition",
-                "Car::CarApp::cars::Table::PageDefinition",
-                "Car::CarApp::DashboardPage"
+                "Car::CarApp::cars::AccessFormPage",
+                "Car::CarApp::cars::AccessViewPage",
+                "Car::CarApp::DashboardPage",
+                "Car::CarApp::cars::AccessTablePage"
         ), pages.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(), links.stream().map(NamedElement::getName).collect(Collectors.toSet()));
