@@ -7,11 +7,14 @@ rule FormPageContainer
         if (t.~pos.isUndefined()) {
             t.~pos = 0;
         }
+        t.label = s.getLabelWithNameFallback();
         t.name = s.getFqName() + "::Create::PageContainer";
         t.children.add(s.equivalent("FormPageContainerVisualElement"));
         t.actionButtonGroup = s.equivalent("FormPageContainerButtonGroup");
         t.dataElement = s.map.transfer.equivalent("ClassType");
         t.type = UI!ui::PageContainerType#FORM;
+        t.onInit = s.equivalent("FormPageContainerGetTemplateActionDefinition");
+        t.templateAction = s.equivalent("FormPageContainerGetTemplateActionDefinition");
 
         rootMenu.equivalent("Application").pageContainers.add(t);
 
@@ -50,6 +53,7 @@ rule ViewPageContainer
         t.actionButtonGroup = s.equivalent("ViewPageContainerButtonGroup");
         t.dataElement = s.map.transfer.equivalent("ClassType");
         t.type = UI!ui::PageContainerType#VIEW;
+        t.onInit = s.equivalent("ViewPageContainerRefreshActionDefinition");
 
         rootMenu.equivalent("Application").pageContainers.add(t);
 
@@ -361,9 +365,9 @@ rule FormPageContainerCreateActionDefinition
 rule FormPageContainerGetTemplateActionDefinition
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::GetTemplateActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TransferObjectFormGetTemplateActionDefinition");
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerGetTemplateActionDefinition");
  		t.name = s.getFqName() + "::GetTemplate";
 		t.targetType = s.map.transfer.equivalent("ClassType");
 
-        log.debug("TransferObjectFormGetTemplateActionDefinition: " + t.name);
+        log.debug("FormPageContainerGetTemplateActionDefinition: " + t.name);
 }

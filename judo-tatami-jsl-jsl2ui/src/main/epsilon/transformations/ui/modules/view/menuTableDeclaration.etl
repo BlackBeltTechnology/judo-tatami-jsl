@@ -118,7 +118,7 @@ rule AccessTablePageContainerBackButtonIcon
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Icon {
     	t.iconName = "arrow-left";
-    	t.name = s.name.anchor("Icon");
+    	t.name = s.name + "BackIcon";
     	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainerBackButtonIcon");
 }
 
@@ -139,7 +139,7 @@ rule AccessTablePageContainerBackButton
  		t.name = s.getFqName() + "::Back";
     	t.label = "Back";
     	t.buttonStyle = "text";
-    	t.icon = s.equivalent("TransferObjectTableBackButtonIcon");
+    	t.icon = s.equivalent("AccessTablePageContainerBackButtonIcon");
     	t.actionDefinition = s.equivalent("AccessTablePageContainerBackActionDefinition");
         log.debug("AccessTablePageContainerBackButton: " + t.name);
 }
@@ -971,6 +971,9 @@ rule AccessTableCreateFormPageDefinition
 
         t.actions.add(s.equivalent("AccessTableCreateFormBackAction"));
         t.actions.add(s.equivalent("AccessTableCreateFormCreateAction"));
+        if (s.actorAccess.target.isTemplateAllowed()) {
+            t.actions.add(s.equivalent("AccessTableCreateFormGetTemplateAction"));
+        }
 
         rootMenu.equivalent("Application").pages.add(t);
 
@@ -986,6 +989,16 @@ rule AccessTableCreateFormBackAction
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerBackActionDefinition");
 
         log.debug("AccessTableCreateFormBackAction: " + t.name);
+}
+
+@lazy
+rule AccessTableCreateFormGetTemplateAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableCreateFormGetTemplateAction");
+ 		t.name = s.name + "::GetTemplate";
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerGetTemplateActionDefinition");
+        log.debug("AccessTableCreateFormGetTemplateAction: " + t.name);
 }
 
 @lazy
