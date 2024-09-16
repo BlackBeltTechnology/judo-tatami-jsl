@@ -36,7 +36,7 @@ rule AccessTablePageDefinition
         t.dataElement = relation.equivalent("RelationType");
         t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
 
-        t.actions.add(s.equivalent("AccessTableBackAction"));
+        t.actions.add(s.equivalent("AccessTableRowOpenPageAction"));
         if (relation.isRefreshAllowed()) {
             t.actions.add(s.equivalent("AccessTableTableRefreshAction"));
         }
@@ -448,7 +448,7 @@ rule AccessTableRowOpenPageAction
         t.name = s.name + "::OpenPage";
         t.actionDefinition = s.equivalent("AccessTableRowOpenPageActionDefinition");
 
-        t.targetPageDefinition = s.equivalent("AccessTableRowOpenPageDefinition");
+        t.targetPageDefinition = s.equivalent("AccessTableViewPageDefinition");
 
         log.debug("AccessTableRowOpenPageAction: " + t.name);
 }
