@@ -52,7 +52,7 @@ operation JSL!TransferRelationDeclaration isListAllowed(): Boolean {
 
 @cached
 operation JSL!TransferRelationDeclaration isTemplateAllowed(): Boolean {
-    return self.modifiers.exists(m | m.isTypeOf(JSL!DefaultModifier));
+    return self.referenceType.isGetTemplateSupported();
 }
 
 @cached

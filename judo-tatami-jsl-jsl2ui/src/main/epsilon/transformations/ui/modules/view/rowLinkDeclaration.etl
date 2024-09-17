@@ -6,7 +6,7 @@ rule RowLinkPageDefinition
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/RowLinkPageDefinition");
 
-        t.name = s.getFqName() + "::View::PageDefinition";
+        t.name = s.getFqName() + "::ViewPage";
         t.container = s.referenceType.equivalent("TransferDeclarationPageContainer");
 
         actorDeclaration.equivalent("Application").pages.add(t);

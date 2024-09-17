@@ -5,7 +5,7 @@ rule ViewLinkPageDefinition
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinition");
 
-        t.name = s.getFqName() + "::View::PageDefinition";
+        t.name = s.getFqName() + "::ViewPage";
         t.container = s.referenceType.equivalent("TransferDeclarationPageContainer");
 
         actorDeclaration.equivalent("Application").pages.add(t);
@@ -144,7 +144,7 @@ rule ViewLinkCreateFormPageDefinition
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormPageDefinition");
 
-        t.name = s.getFqName() + "::Create::PageDefinition";
+        t.name = s.getFqName() + "::FormPage";
 
         var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
         var targetContainer = targetCreateEvent.parameterType;
@@ -602,7 +602,7 @@ rule ViewLinkDeclarationSetSelectorPageDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::PageDefinition {
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorPageDefinition");
-        t.name = s.getFqName() + "::SetSelector::PageDefinition";
+        t.name = s.getFqName() + "::SetSelectorPage";
         t.container = s.equivalent("ViewLinkDeclarationSetSelectorPageContainer");
         t.dataElement = s.equivalent("RelationType");
         t.openInDialog = true;

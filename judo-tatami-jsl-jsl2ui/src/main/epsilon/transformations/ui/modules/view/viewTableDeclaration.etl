@@ -6,7 +6,7 @@ rule ViewTableCreateFormPageDefinition
 
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormPageDefinition");
 
-        t.name = s.getFqName() + "::Create::PageDefinition";
+        t.name = s.getFqName() + "::FormPage";
 
         var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
         var targetContainer = targetCreateEvent.parameterType;
@@ -713,7 +713,7 @@ rule ViewTableDeclarationAddSelectorPageDefinition
 
     t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorPageDefinition");
 
-    t.name = s.getFqName() + "::AddSelector::PageDefinition";
+    t.name = s.getFqName() + "::AddSelectorPage";
 
     t.container = s.equivalent("ViewTableDeclarationAddSelectorPageContainer");
     t.dataElement = s.equivalent("RelationType");
