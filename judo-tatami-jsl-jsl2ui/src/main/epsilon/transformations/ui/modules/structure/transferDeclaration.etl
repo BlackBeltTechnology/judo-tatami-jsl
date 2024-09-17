@@ -10,9 +10,28 @@ rule ClassType
         t.transferObjectTypeName = s.name;
         t.simpleName = s.name;
         //t.setPackageNameTokens(s);
+        t.packageNameTokens.add(0, defaultModelName);
 
         t.isMapped = s.map.isDefined();
         // t.isOptional = s.isMapped();
+
+        if (s.isRefreshSupported()) {
+            t.behaviours.add(UI!ui::data::ClassBehaviourType#REFRESH);
+        }
+        if (s.isUpdateSupported()) {
+            t.behaviours.add(UI!ui::data::ClassBehaviourType#UPDATE);
+            t.behaviours.add(UI!ui::data::ClassBehaviourType#VALIDATE_UPDATE);
+            t.isForCreateOrUpdateType = true;
+        }
+
+        if (s.isDeleteSupported()) {
+            t.behaviours.add(UI!ui::data::ClassBehaviourType#DELETE);
+        }
+
+        if (s.isGetTemplateSupported()) {
+            t.behaviours.add(UI!ui::data::ClassBehaviourType#TEMPLATE);
+            t.isOptional = true;
+        }
 
         rootMenu.equivalent("Application").dataElements.add(t);
 

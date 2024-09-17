@@ -31,11 +31,12 @@ rule AccessTablePageDefinition
         var relation = s.actorAccess.target;
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageDefinition");
-        t.name = s.getFqName() + "::Table::PageDefinition";
+        t.name = s.getFqName() + "::AccessTablePage";
         t.container = s.equivalent("AccessTablePageContainer");
         t.dataElement = relation.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
 
-        t.actions.add(s.equivalent("AccessTableBackAction"));
+        t.actions.add(s.equivalent("AccessTableRowOpenPageAction"));
         if (relation.isRefreshAllowed()) {
             t.actions.add(s.equivalent("AccessTableTableRefreshAction"));
         }
@@ -117,7 +118,7 @@ rule AccessTablePageContainerBackButtonIcon
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Icon {
     	t.iconName = "arrow-left";
-    	t.name = s.name.anchor("Icon");
+    	t.name = s.name + "BackIcon";
     	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainerBackButtonIcon");
 }
 
@@ -138,7 +139,7 @@ rule AccessTablePageContainerBackButton
  		t.name = s.getFqName() + "::Back";
     	t.label = "Back";
     	t.buttonStyle = "text";
-    	t.icon = s.equivalent("TransferObjectTableBackButtonIcon");
+    	t.icon = s.equivalent("AccessTablePageContainerBackButtonIcon");
     	t.actionDefinition = s.equivalent("AccessTablePageContainerBackActionDefinition");
         log.debug("AccessTablePageContainerBackButton: " + t.name);
 }
@@ -447,7 +448,7 @@ rule AccessTableRowOpenPageAction
         t.name = s.name + "::OpenPage";
         t.actionDefinition = s.equivalent("AccessTableRowOpenPageActionDefinition");
 
-        t.targetPageDefinition = s.equivalent("AccessTableRowOpenPageDefinition");
+        t.targetPageDefinition = s.equivalent("AccessTableViewPageDefinition");
 
         log.debug("AccessTableRowOpenPageAction: " + t.name);
 }
@@ -658,10 +659,11 @@ rule AccessTableTableAddSelectorPageDefinition
 
     t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorPageDefinition");
 
-    t.name = s.getFqName() + "::AddSelector::PageDefinition";
+    t.name = s.getFqName() + "::AddSelectorPage";
 
     t.container = s.equivalent("AccessTableTableAddSelectorPageContainer");
     t.dataElement = s.actorAccess.target.equivalent("RelationType");
+    t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
     t.openInDialog = true;
     t.dialogSize = UI!ui::DialogSize#MD;
 
@@ -962,12 +964,16 @@ rule AccessTableCreateFormPageDefinition
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableCreateFormPageDefinition");
         t.openInDialog = true;
-        t.name = s.getFqName() + "::Create::PageDefinition";
+        t.name = s.getFqName() + "::AccessFormPage";
         t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
         t.dataElement = s.actorAccess.target.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
 
         t.actions.add(s.equivalent("AccessTableCreateFormBackAction"));
         t.actions.add(s.equivalent("AccessTableCreateFormCreateAction"));
+        if (s.actorAccess.target.isTemplateAllowed()) {
+            t.actions.add(s.equivalent("AccessTableCreateFormGetTemplateAction"));
+        }
 
         rootMenu.equivalent("Application").pages.add(t);
 
@@ -983,6 +989,16 @@ rule AccessTableCreateFormBackAction
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerBackActionDefinition");
 
         log.debug("AccessTableCreateFormBackAction: " + t.name);
+}
+
+@lazy
+rule AccessTableCreateFormGetTemplateAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableCreateFormGetTemplateAction");
+ 		t.name = s.name + "::GetTemplate";
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerGetTemplateActionDefinition");
+        log.debug("AccessTableCreateFormGetTemplateAction: " + t.name);
 }
 
 @lazy
@@ -1005,12 +1021,13 @@ rule AccessTableViewPageDefinition
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewPageDefinition");
 
-        t.name = s.getFqName() + "::View::PageDefinition";
+        t.name = s.getFqName() + "::AccessViewPage";
         t.container = s.getUpdateViewModifier().view.equivalent("ViewPageContainer");
 
         rootMenu.equivalent("Application").pages.add(t);
 
         t.dataElement = s.actorAccess.target.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
 
         // var relations = s.referenceType.getDirectRelations();
 
