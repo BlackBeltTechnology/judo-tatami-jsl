@@ -5,8 +5,8 @@ operation JSL!UIViewTableDeclaration getId(): String {
 
 @cached
 operation JSL!UIViewTableDeclaration getFqName(): String {
-    if (self.getTransferContainer().isDefined()) {
-        return self.getTransferContainer().getFqName() + "::" + self.name;
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
     }
     return self.name;
 }

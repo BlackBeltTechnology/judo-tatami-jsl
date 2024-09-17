@@ -161,16 +161,16 @@ rule AccessTablePageContainerVisualElement
         t.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
         t.col = 12d;
         t.children.add(s.equivalent("AccessTableTable"));
-        t.frame = s.equivalent("ViewLinkDeclarationSetSelectorFrame");
+        t.frame = s.equivalent("AccessTableFrame");
 
         log.debug("AccessTablePageContainerVisualElement: " + t.name);
 }
 
 @lazy
-rule ViewLinkDeclarationSetSelectorFrame
+rule AccessTableFrame
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Frame {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorFrame");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableFrame");
 }
 
 @lazy

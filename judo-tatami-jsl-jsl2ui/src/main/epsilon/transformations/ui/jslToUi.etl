@@ -2,7 +2,6 @@ import "../../operations/_importAll.eol";
 
 import "modules/application/actorDeclaration.etl";
 import "modules/application/actorGroupDeclaration.etl";
-import "modules/application/actorLinkDeclaration.etl";
 import "modules/application/modifiable.etl";
 
 import "modules/structure/transferDeclaration.etl";
@@ -14,6 +13,7 @@ import "modules/type/type.etl";
 
 import "modules/view/enumLiteral.etl";
 import "modules/view/menuDeclaration.etl";
+import "modules/view/menuLinkDeclaration.etl";
 import "modules/view/menuTableDeclaration.etl";
 import "modules/view/rowColumnDeclaration.etl";
 import "modules/view/rowLinkDeclaration.etl";

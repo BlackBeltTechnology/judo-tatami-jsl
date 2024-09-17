@@ -70,11 +70,11 @@ operation JSL!ViewPanelDeclaration getAllPrimitiveFields(): Set {
 }
 
 @cached
-operation JSL!ViewPanelDeclaration getTransferContainer(): JSL!TransferDeclaration {
-    if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
+operation JSL!ViewPanelDeclaration getViewContainer(): JSL!UIViewDeclaration {
+    if (self.eContainer.isKindOf(JSL!UIViewDeclaration)) {
         return self.eContainer;
     } else if (self.eContainer.isKindOf(JSL!ViewPanelDeclaration)) {
-         return self.eContainer.getTransferContainer();
+         return self.eContainer.getViewContainer();
     }
 
     return null;

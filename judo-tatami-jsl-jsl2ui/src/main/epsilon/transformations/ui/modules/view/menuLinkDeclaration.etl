@@ -1,0 +1,277 @@
+rule MenuLinkNavigationItem
+    transform s: JSL!UIMenuLinkDeclaration
+    to t : UI!ui::NavigationItem {
+        guard: rootMenu.containsVisualElement(s)
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/MenuLinkNavigationItem");
+        t.name = s.getFqName();
+
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+
+        var icon = s.getIconModifier();
+        if (icon.isDefined()) {
+            t.icon = icon.equivalent("IconModifierIcon");
+        }
+
+        t.target = s.equivalent("AccessViewPageDefinition");
+
+        if (s.eContainer.isKindOf(JSL!UIMenuGroupDeclaration)) {
+            s.eContainer.equivalent("MenuItemGroup").items.add(t);
+            t.~pos = s.eContainer.members.indexOf(s);
+        } else {
+            var navigationController = rootMenu.equivalent("Application").navigationController;
+            navigationController.items.add(t);
+            t.~pos = s.eContainer.members.indexOf(s);
+        }
+
+        log.debug("MenuLinkNavigationItem: " + s.name);
+    }
+
+rule AccessViewPageDefinition
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: rootMenu.containsVisualElement(s)
+
+        var relation = s.actorAccess.target;
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageDefinition");
+        t.name = s.getFqName() + "::AccessViewPage";
+        t.container = s.equivalent("AccessViewPageContainer");
+
+        rootMenu.equivalent("Application").pages.add(t);
+
+        t.dataElement = relation.equivalent("RelationType");
+
+        // var relations = s.referenceType.getDirectRelations();
+
+        /*
+        log.info("===================");
+        log.info(t.name + ":");
+        log.info(relations.collect(r | r.name).concat(", "));
+        log.info("===================");
+        */
+/*
+        for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
+            t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", "AccessPageDefinition"));
+            if (link.isRefreshAllowed() and not link.isEager()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", "AccessPageDefinition"));
+            }
+            if (link.isCreateAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", "AccessPageDefinition"));
+            }
+            if (link.isDeleteAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", "AccessPageDefinition"));
+            }
+            if (link.isSetReferenceAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", "AccessPageDefinition"));
+            }
+            if (link.isUnsetReferenceAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", "AccessPageDefinition"));
+            }
+        }
+
+        for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
+            var detailLink = table.getDetailLink();
+
+            if (detailLink.isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", "AccessPageDefinition"));
+            }
+            if (table.isFilterSupported()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationFilterAction", "AccessPageDefinition"));
+            }
+            if (table.isRefreshAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", "AccessPageDefinition"));
+            }
+            if (table.isCreateAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", "AccessPageDefinition"));
+            }
+            if (table.isDeleteAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "AccessPageDefinition"));
+            }
+            if (table.isAddReferenceAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", "AccessPageDefinition"));
+            }
+            if (table.isRemoveReferenceAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", "AccessPageDefinition"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", "AccessPageDefinition"));
+            }
+        }
+*/
+/*
+        t.actions.add(s.equivalent("AccessViewBackAction"));
+        if (relation.isRefreshAllowed()) {
+            t.actions.add(s.equivalent("AccessViewRefreshAction"));
+        }
+        */
+        /*
+        if (relation.isUpdateAllowed()) {
+            t.actions.add(s.equivalent("ViewLinkPageDefinitionUpdateAction"));
+        }
+        if (relation.isDeleteAllowed()) {
+            t.actions.add(s.equivalent("ViewLinkPageDefinitionDeleteAction"));
+        }
+        */
+
+        log.debug("Create AccessViewPageDefinition: " + t.name);
+}
+
+@lazy
+rule AccessViewBackAction
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableBackAction");
+        t.name = s.name + "::Back";
+        t.actionDefinition = s.equivalent("AccessViewPageContainerBackActionDefinition");
+
+        log.debug("AccessTableBackAction: " + t.name);
+}
+
+rule AccessViewPageContainer
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::PageContainer {
+        guard: rootMenu.containsVisualElement(s)
+
+        var relation = s.actorAccess.target;
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageContainer");
+        t.name = s.getFqName() + "::View::PageContainer";
+        t.label = s.getLabelWithNameFallback();
+        t.titleFrom = UI!ui::TitleFrom#LABEL;
+        t.type = UI!ui::PageContainerType#VIEW;
+        t.children.add(s.equivalent("AccessViewPageContainerVisualElement"));
+        t.actionButtonGroup = s.equivalent("AccessViewPageContainerButtonGroup");
+        t.dataElement = relation.referenceType.equivalent("ClassType");
+        t.onInit = s.equivalent("AccessViewPageContainerRefreshActionDefinition");
+
+        rootMenu.equivalent("Application").pageContainers.add(t);
+
+        /*
+        for (dataFeature in s.additionalMaskFeatures) {
+            var attributeType = dataFeature.getMember().mapAttributeType(s.eContainer.equivalent("ClassType"));
+            t.additionalMaskAttributes.add(attributeType);
+        }
+        */
+
+        log.debug("Create AccessViewPageDefinition: " + t.name);
+}
+
+@lazy
+rule AccessViewPageContainerButtonGroup
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::ButtonGroup {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageContainerButtonGroup");
+ 		t.name = s.getFqName() + "::PageActions";
+ 		t.label = "Actions";
+
+ 		t.buttons.add(s.equivalent("AccessViewPageContainerBackButton"));
+ 		t.buttons.add(s.equivalent("AccessViewPageContainerRefreshButton"));
+
+        log.debug("AccessViewPageContainerButtonGroup: " + t.name);
+}
+
+@lazy
+rule AccessViewPageContainerBackButtonIcon
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Icon {
+    	t.iconName = "arrow-left";
+    	t.name = s.name + "BackIcon";
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageContainerBackButtonIcon");
+}
+
+@lazy
+rule AccessViewPageContainerBackActionDefinition
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::BackActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageContainerBackActionDefinition");
+ 		t.name = s.getFqName() + "::Back";
+        log.debug("AccessViewPageContainerBackActionDefinition: " + t.name);
+}
+
+@lazy
+rule AccessViewPageContainerBackButton
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageContainerBackButton");
+ 		t.name = s.getFqName() + "::Back";
+    	t.label = "Back";
+    	t.buttonStyle = "text";
+    	t.icon = s.equivalent("AccessViewPageContainerBackButtonIcon");
+    	t.actionDefinition = s.equivalent("AccessViewPageContainerBackActionDefinition");
+        log.debug("AccessViewPageContainerBackButton: " + t.name);
+}
+
+@lazy
+rule AccessViewPageContainerVisualElement
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Flex {
+        t.~pos = 0;
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageContainerVisualElement");
+        t.name = s.name;
+        t.direction = UI!Axis#VERTICAL;
+        t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        t.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        t.col = 12d;
+        // t.children.add(s.equivalent("AccessTableTable"));
+        t.frame = s.equivalent("AccessViewFrame");
+
+        log.debug("AccessViewPageContainerVisualElement: " + t.name);
+}
+
+@lazy
+rule AccessViewFrame
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Frame {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewFrame");
+}
+
+@lazy
+rule AccessViewPageContainerRefreshButton
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageContainerRefreshButton");
+        t.name = s.name + "::Refresh";
+        t.icon = s.equivalent("AccessViewPageContainerRefreshButtonIcon");
+        t.label = "Refresh";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("AccessViewPageContainerRefreshActionDefinition");
+
+        log.debug("AccessViewPageContainerRefreshButton: " + t.name);
+}
+
+@lazy
+rule AccessViewPageContainerRefreshButtonIcon
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageContainerRefreshButtonIcon");
+        t.name = s.name + "RefreshIcon";
+        t.iconName = "refresh";
+
+        log.debug("AccessViewPageContainerRefreshButtonIcon: " + t.name);
+}
+
+@lazy
+rule AccessViewPageContainerRefreshActionDefinition
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::RefreshActionDefinition {
+        var relation = s.actorAccess.target;
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageContainerRefreshActionDefinition");
+        t.name = s.name + "::Refresh";
+        t.targetType = relation.referenceType.equivalent("ClassType");
+
+        log.debug("AccessViewPageContainerRefreshActionDefinition: " + t.name);
+}
+
+@lazy
+rule AccessViewRefreshAction
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewRefreshAction");
+        t.name = s.name + "::Refresh";
+        t.actionDefinition = s.equivalent("AccessViewPageContainerRefreshActionDefinition");
+
+        log.debug("AccessViewRefreshAction: " + t.name);
+}
