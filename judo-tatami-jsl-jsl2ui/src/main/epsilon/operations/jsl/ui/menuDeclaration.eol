@@ -13,15 +13,12 @@ operation JSL!UIMenuDeclaration getFqName(): String {
 
 @cached
 operation JSL!UIMenuDeclaration getRootMenu(): JSL!UIMenuDeclaration {
-    if (self.eContainer.isDefined()) {
-        if (self.eContainer.isTypeOf(JSL!ModelDeclaration)) {
-            return self;
+    return self;
+}
 
-        }
-        // todo handle groups traversing upwards?
-        return self.getRootMenu();
-    }
-    return null;
+@cached
+operation JSL!UIMenuDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    return self.map.actor;
 }
 
 @cached
@@ -36,6 +33,11 @@ operation JSL!UIMenuDeclaration getExposedVisualElements(): Set {
     for (table in self.members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
         ves.add(table);
         ves.addAll(table.getExposedVisualElements());
+    }
+
+    for (group in self.members.select(m | m.isTypeOf(JSL!UIMenuGroupDeclaration)).asSet()) {
+        ves.add(group);
+        ves.addAll(group.getExposedVisualElements());
     }
 
     return ves;

@@ -14,7 +14,10 @@ rule MenuTableNavigationItem
 
         t.target = s.equivalent("AccessTablePageDefinition");
 
-        if (s.eContainer.isTypeOf(JSL!UIMenuDeclaration)) {
+        if (s.eContainer.isKindOf(JSL!UIMenuGroupDeclaration)) {
+            s.eContainer.equivalent("MenuItemGroup").items.add(t);
+            t.~pos = s.eContainer.members.indexOf(s);
+        } else {
             var navigationController = rootMenu.equivalent("Application").navigationController;
             navigationController.items.add(t);
             t.~pos = s.eContainer.members.indexOf(s);
@@ -36,7 +39,9 @@ rule AccessTablePageDefinition
         t.dataElement = relation.equivalent("RelationType");
         t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
 
-        t.actions.add(s.equivalent("AccessTableRowOpenPageAction"));
+        if (s.getUpdateViewModifier().isDefined()) {
+            t.actions.add(s.equivalent("AccessTableRowOpenPageAction"));
+        }
         if (relation.isRefreshAllowed()) {
             t.actions.add(s.equivalent("AccessTableTableRefreshAction"));
         }

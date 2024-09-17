@@ -1,19 +1,50 @@
-/*
 @cached
-operation JSL!ActorGroupDeclaration getFqName(): String {
-    if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration) or self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
-        return self.eContainer.getFqName() + "::MenuItemGroup::" + self.name;
+operation JSL!UIMenuGroupDeclaration getFqName(): String {
+    if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration) or self.eContainer.isTypeOf(JSL!UIMenuDeclaration)) {
+        return self.eContainer.getFqName() + "::" + self.name;
     }
-    return self.tag;
+    return self.name;
 }
 
 @cached
-operation JSL!ActorGroupDeclaration getActorDeclaration(): JSL!ActorDeclaration {
-    if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration)) {
-        return self.eContainer.getActorDeclaration();
-    } else if (self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
-        return self.eContainer;
+operation JSL!UIMenuGroupDeclaration getRootMenu(): JSL!UIMenuDeclaration {
+    if (self.eContainer.isDefined()) {
+        if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration)) {
+            return self.eContainer.getRootMenu();
+        } else if (self.eContainer.isTypeOf(JSL!UIMenuDeclaration)) {
+            return self.eContainer;
+        }
     }
     return null;
 }
-*/
+
+@cached
+operation JSL!UIMenuGroupDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    var root = self.getRootMenu();
+    if (root.isDefined()) {
+        return root.getActorDeclaration();
+    }
+    return null;
+}
+
+@cached
+operation JSL!UIMenuGroupDeclaration getExposedVisualElements(): Set {
+    var ves = new Set();
+
+    for (link in self.members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
+        ves.add(link);
+        ves.addAll(link.getExposedVisualElements());
+    }
+
+    for (table in self.members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
+        ves.add(table);
+        ves.addAll(table.getExposedVisualElements());
+    }
+
+    for (group in self.members.select(m | m.isTypeOf(JSL!UIMenuGroupDeclaration)).asSet()) {
+        ves.add(group);
+        ves.addAll(group.getExposedVisualElements());
+    }
+
+    return ves;
+}

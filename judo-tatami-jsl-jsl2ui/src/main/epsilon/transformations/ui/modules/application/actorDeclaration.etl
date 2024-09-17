@@ -1,4 +1,3 @@
-
 rule Actor
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::ClassType {

@@ -86,11 +86,7 @@ public class JslModel2UiTest extends AbstractTest  {
                 event delete deleteCar;
             }
 
-            actor UserActor
-                realm: "COMPANY"
-                claim: "email"
-                identity: UserTransfer::email
-            {
+            actor UserActor realm: "COMPANY" claim: "email" identity: UserTransfer::email {
                 access CarTransfer[] cars <= Car.all() create delete update;
             }
 
