@@ -35,7 +35,7 @@ rule AccessTablePageDefinition
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageDefinition");
         t.name = s.getFqName() + "::AccessTablePage";
-        t.container = s.equivalent("AccessTablePageContainer");
+        t.container = s.referenceType.equivalent("TablePageContainer");
         t.dataElement = relation.equivalent("RelationType");
         t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
 
@@ -73,322 +73,9 @@ rule AccessTableBackAction
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableBackAction");
         t.name = s.name + "::Back";
-        t.actionDefinition = s.equivalent("AccessTablePageContainerBackActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("AccessTablePageContainerBackActionDefinition");
 
         log.debug("AccessTableBackAction: " + t.name);
-}
-
-rule AccessTablePageContainer
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::PageContainer {
-        guard: rootMenu.containsVisualElement(s)
-
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainer");
-        t.name = s.getFqName() + "::Table::PageContainer";
-        t.label = s.getLabelWithNameFallback();
-        t.titleFrom = UI!ui::TitleFrom#LABEL;
-        t.type = UI!ui::PageContainerType#TABLE;
-        t.children.add(s.equivalent("AccessTablePageContainerVisualElement"));
-        t.actionButtonGroup = s.equivalent("AccessTablePageContainerButtonGroup");
-        t.dataElement = s.actorAccess.target.referenceType.equivalent("ClassType");
-        t.onInit = s.equivalent("AccessTableTableRefreshActionDefinition");
-
-        rootMenu.equivalent("Application").pageContainers.add(t);
-
-        /*
-        for (dataFeature in s.additionalMaskFeatures) {
-            var attributeType = dataFeature.getMember().mapAttributeType(s.eContainer.equivalent("ClassType"));
-            t.additionalMaskAttributes.add(attributeType);
-        }
-        */
-
-        log.debug("Create AccessTablePageDefinition: " + t.name);
-}
-
-@lazy
-rule AccessTablePageContainerButtonGroup
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::ButtonGroup {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainerButtonGroup");
- 		t.name = s.getFqName() + "::PageActions";
- 		t.label = "Actions";
-
- 		t.buttons.add(s.equivalent("AccessTablePageContainerBackButton"));
-
-        log.debug("AccessTablePageContainerButtonGroup: " + t.name);
-}
-
-@lazy
-rule AccessTablePageContainerBackButtonIcon
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Icon {
-    	t.iconName = "arrow-left";
-    	t.name = s.name + "BackIcon";
-    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainerBackButtonIcon");
-}
-
-@lazy
-rule AccessTablePageContainerBackActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::BackActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainerBackActionDefinition");
- 		t.name = s.getFqName() + "::Back";
-        log.debug("AccessTablePageContainerBackActionDefinition: " + t.name);
-}
-
-@lazy
-rule AccessTablePageContainerBackButton
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainerBackButton");
- 		t.name = s.getFqName() + "::Back";
-    	t.label = "Back";
-    	t.buttonStyle = "text";
-    	t.icon = s.equivalent("AccessTablePageContainerBackButtonIcon");
-    	t.actionDefinition = s.equivalent("AccessTablePageContainerBackActionDefinition");
-        log.debug("AccessTablePageContainerBackButton: " + t.name);
-}
-
-@lazy
-rule AccessTablePageContainerVisualElement
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Flex {
-        t.~pos = 0;
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageContainerVisualElement");
-        t.name = s.name;
-        t.direction = UI!Axis#VERTICAL;
-        t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
-        t.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
-        t.col = 12d;
-        t.children.add(s.equivalent("AccessTableTable"));
-        t.frame = s.equivalent("AccessTableFrame");
-
-        log.debug("AccessTablePageContainerVisualElement: " + t.name);
-}
-
-@lazy
-rule AccessTableFrame
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Frame {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableFrame");
-}
-
-@lazy
-rule AccessTableTable
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Table {
-        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTable";
-        t.setId(id);
-        t.col = 12d;
-        t.label = s.getLabelWithNameFallback();
-        t.name = s.name + "::Table";
-        t.dataElement = s.actorAccess.target.referenceType.equivalent("ClassType");
-        t.relationName = "";
-        if (t.~pos.isUndefined()) {
-            t.~pos = 0;
-        }
-
-        var rowDeclaration = s.referenceType;
-        var primitiveFields = rowDeclaration.members.select(m | m.transferField.isDefined() and m.transferField.target.referenceType.`primitive`.isDefined());
-
-        for (field in primitiveFields) {
-            var col = field.equivalentDiscriminated("RowColumnDeclarationPrimitiveColumn", id);
-            t.columns.add(col);
-            if (col.attributeType.isFilterable) {
-               t.filters.add(field.equivalentDiscriminated("RowColumnDeclarationPrimitiveColumnFilter", id));
-            }
-        }
-
-        t.tableActionButtonGroup = s.equivalent("AccessTableTableButtonGroup");
-        t.rowActionButtonGroup = s.equivalent("AccessTableRowButtonGroup");
-
-        // TODO transform selector row per page
-        t.selectorRowsPerPage = 10;
-
-        log.debug("AccessTableTable: " + t.name);
-}
-
-@lazy
-rule AccessTableTableButtonGroup
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableButtonGroup");
-        t.name = s.name + "::InlineViewTableButtonGroup";
-        t.label = "Actions";
-
-        // TODO add buttons
-
-        var relation = s.actorAccess.target;
-
-        if (relation.isFilterSupported()) {
-            t.buttons.add(s.equivalent("AccessTableTableFilterButton"));
-        }
-        if (relation.isRefreshAllowed()) {
-            t.buttons.add(s.equivalent("AccessTableTableRefreshButton"));
-        }
-        if (relation.isCreateAllowed()) {
-            t.buttons.add(s.equivalent("AccessTableTableOpenCreateButton"));
-        }
-        if (relation.isAddReferenceAllowed()) {
-            t.buttons.add(s.equivalent("AccessTableTableOpenAddSelectorButton"));
-        }
-        if (relation.isRemoveReferenceAllowed()) {
-            t.buttons.add(s.equivalent("AccessTableTableClearButton"));
-            t.buttons.add(s.equivalent("AccessTableTableBulkRemoveButton"));
-        }
-
-        log.debug("AccessTableTableButtonGroup: " + t.name);
-}
-
-@lazy
-rule AccessTableRowButtonGroup
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowButtonGroup");
-        t.name = s.name + "InlineViewTableRowButtonGroup";
-        t.label = "Actions";
-
-        // TODO add buttons
-
-        if (s.getUpdateViewModifier().isDefined()) {
-            t.buttons.add(s.equivalent("AccessTableRowOpenPageButton"));
-        }
-        if (s.actorAccess.target.isDeleteAllowed()) {
-            t.buttons.add(s.equivalent("AccessTableRowDeleteButton"));
-        }
-
-        log.debug("AccessTableRowButtonGroup: " + t.name);
-}
-
-
-@lazy
-rule AccessTableTableFilterButton
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableFilterButton");
-        t.name = s.name + "::Filter";
-        t.icon = s.equivalent("AccessTableTableFilterButtonIcon");
-        t.label = "Filter";
-        t.buttonStyle = "text";
-        t.actionDefinition = s.equivalent("AccessTableTableFilterActionDefinition");
-
-        log.debug("AccessTableTableFilterButton: " + t.name);
-}
-
-@lazy
-rule AccessTableTableFilterButtonIcon
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableFilterButtonIcon");
-        t.name = s.name + "FilterIcon";
-        t.iconName = "filter";
-
-        log.debug("AccessTableTableFilterButtonIcon: " + t.name);
-}
-
-@lazy
-rule AccessTableTableFilterActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::FilterActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableFilterActionDefinition");
-        t.name = s.name + "::Filter";
-        t.targetType = s.referenceType.equivalent("ClassType");
-
-        log.debug("AccessTableTableFilterActionDefinition: " + t.name);
-}
-
-@lazy
-rule AccessTableTableFilterAction
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableFilterAction");
-        t.name = s.name + "::Filter";
-        t.actionDefinition = s.equivalent("AccessTableTableFilterActionDefinition");
-
-        log.debug("AccessTableTableFilterAction: " + t.name);
-}
-
-@lazy
-rule AccessTableTableRefreshButton
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableRefreshButton");
-        t.name = s.name + "::Refresh";
-        t.icon = s.equivalent("AccessTableTableRefreshButtonIcon");
-        t.label = "Refresh";
-        t.buttonStyle = "text";
-        t.actionDefinition = s.equivalent("AccessTableTableRefreshActionDefinition");
-
-        log.debug("AccessTableTableRefreshButton: " + t.name);
-}
-
-@lazy
-rule AccessTableTableRefreshButtonIcon
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableRefreshButtonIcon");
-        t.name = s.name + "RefreshIcon";
-        t.iconName = "refresh";
-
-        log.debug("AccessTableTableRefreshButtonIcon: " + t.name);
-}
-
-@lazy
-rule AccessTableTableRefreshActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::RefreshActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableRefreshActionDefinition");
-        t.name = s.name + "::Refresh";
-        t.targetType = s.referenceType.equivalent("ClassType");
-
-        log.debug("AccessTableTableRefreshActionDefinition: " + t.name);
-}
-
-@lazy
-rule AccessTableTableRefreshAction
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableRefreshAction");
-        t.name = s.name + "::Refresh";
-        t.actionDefinition = s.equivalent("AccessTableTableRefreshActionDefinition");
-
-        log.debug("AccessTableTableRefreshAction: " + t.name);
-}
-
-@lazy
-rule AccessTableTableOpenCreateButton
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenCreateButton");
-        t.name = s.name + "::OpenCreate";
-        t.icon = s.equivalent("AccessTableTableOpenCreateButtonIcon");
-        t.label = "Create";
-        t.buttonStyle = "text";
-        t.actionDefinition = s.equivalent("AccessTableTableOpenCreateActionDefinition");
-
-        log.debug("AccessTableTableOpenCreateButton: " + t.name);
-}
-
-@lazy
-rule AccessTableTableOpenCreateButtonIcon
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenCreateButtonIcon");
-        t.name = s.name + "OpenCreateIcon";
-        t.iconName = "file-document-plus";
-
-        log.debug("AccessTableTableFilterButtonIcon: " + t.name);
-}
-
-@lazy
-rule AccessTableTableOpenCreateActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::OpenCreateFormActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenCreateActionDefinition");
-        t.name = s.name + "::OpenCreate";
-        t.targetType = s.getCreateFormModifier().form.map.transfer.equivalent("ClassType");
-
-        log.debug("AccessTableTableOpenCreateActionDefinition: " + t.name);
 }
 
 @lazy
@@ -397,51 +84,33 @@ rule AccessTableTableOpenCreateAction
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenCreateAction");
         t.name = s.name + "::OpenCreate";
-        t.actionDefinition = s.equivalent("AccessTableTableOpenCreateActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("TableTableOpenCreateActionDefinition");
 
-        t.targetPageDefinition = s.equivalent("AccessTableCreateFormPageDefinition");
+        t.targetPageDefinition = s.getCreateFormModifier().form.equivalent("AccessTableCreateFormPageDefinition");
 
         log.debug("AccessTableTableOpenCreateAction: " + t.name);
 }
 
 @lazy
-rule AccessTableRowOpenPageButton
+rule AccessTableTableRefreshAction
     transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowOpenPageButton");
-        t.name = s.name + "::View";
-        t.icon = s.equivalent("AccessTableRowOpenPageButtonIcon");
-        t.label = "View";
-        t.buttonStyle = "contained";
-        t.actionDefinition = s.equivalent("AccessTableRowOpenPageActionDefinition");
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableRefreshAction");
+        t.name = s.name + "::Refresh";
+        t.actionDefinition = s.referenceType.equivalent("TableTableRefreshActionDefinition");
 
-        log.debug("AccessTableRowOpenPageButton: " + t.name);
+        log.debug("AccessTableTableRefreshAction: " + t.name);
 }
 
 @lazy
-rule AccessTableRowOpenPageButtonIcon
+rule AccessTableTableFilterAction
     transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowOpenPageButtonIcon");
-        t.name = s.name + "RowOpenIcon";
-        t.iconName = "visibility";
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableFilterAction");
+        t.name = s.name + "::Filter";
+        t.actionDefinition = s.referenceType.equivalent("TableTableFilterActionDefinition");
 
-        log.debug("AccessTableRowOpenPageButtonIcon: " + t.name);
-}
-
-@lazy
-rule AccessTableRowOpenPageActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::OpenPageActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowOpenPageActionDefinition");
-        t.name = s.name + "::View";
-        t.targetType = s.getUpdateViewModifier().view.map.transfer.equivalent("ClassType");
-
-        //var rowLinks = s.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
-
-        //t.linkRelation = rowLinks.selectOne(l | l.getDetail().isDefined()).equivalent("RelationType");
-
-        log.debug("AccessTableRowOpenPageActionDefinition: " + t.name);
+        log.debug("AccessTableTableFilterAction: " + t.name);
 }
 
 @lazy
@@ -451,47 +120,11 @@ rule AccessTableRowOpenPageAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowOpenPageAction");
 
         t.name = s.name + "::OpenPage";
-        t.actionDefinition = s.equivalent("AccessTableRowOpenPageActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("TableRowOpenPageActionDefinition");
 
         t.targetPageDefinition = s.equivalent("AccessTableViewPageDefinition");
 
         log.debug("AccessTableRowOpenPageAction: " + t.name);
-}
-
-@lazy
-rule AccessTableRowDeleteButton
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowDeleteButton");
-        t.name = s.name + "::RowDelete";
-        t.icon = s.equivalent("AccessTableRowDeleteButtonIcon");
-        t.label = "Delete";
-        t.buttonStyle = "contained";
-        t.actionDefinition = s.equivalent("AccessTableRowDeleteActionDefinition");
-
-        log.debug("AccessTableRowDeleteButton: " + t.name);
-}
-
-@lazy
-rule AccessTableRowDeleteButtonIcon
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowDeleteButtonIcon");
-        t.name = s.name + "RowDeleteIcon";
-        t.iconName = "delete_forever";
-
-        log.debug("AccessTableRowDeleteButtonIcon: " + t.name);
-}
-
-@lazy
-rule AccessTableRowDeleteActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::RowDeleteActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowDeleteActionDefinition");
-        t.name = s.name + "::RowDelete";
-        t.targetType = s.referenceType.map.transfer.equivalent("ClassType");
-
-        log.debug("AccessTableRowDeleteActionDefinition: " + t.name);
 }
 
 @lazy
@@ -500,97 +133,9 @@ rule AccessTableRowDeleteAction
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowDeleteAction");
         t.name = s.name + "::RowDelete";
-        t.actionDefinition = s.equivalent("AccessTableRowDeleteActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("TableRowDeleteActionDefinition");
 
         log.debug("AccessTableRowDeleteAction: " + t.name);
-}
-
-@lazy
-rule AccessTableTableOpenAddSelectorButton
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenAddSelectorButton");
-        t.name = s.name + "::OpenAddSelector";
-        t.icon = s.equivalent("AccessTableTableOpenAddSelectorButtonIcon");
-        t.label = "Add";
-        t.buttonStyle = "text";
-        t.actionDefinition = s.equivalent("AccessTableTableOpenAddSelectorActionDefinition");
-
-        log.debug("AccessTableTableOpenAddSelectorButton: " + t.name);
-}
-
-@lazy
-rule AccessTableTableOpenAddSelectorButtonIcon
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenAddSelectorButtonIcon");
-        t.name = s.name + "OpenAddSelectorIcon";
-        t.iconName = "attachment-plus";
-
-        log.debug("AccessTableTableOpenAddSelectorButtonIcon: " + t.name);
-}
-
-@lazy
-rule AccessTableTableOpenAddSelectorActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::OpenAddSelectorActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenAddSelectorActionDefinition");
-        t.name = s.name + "::OpenAddSelector";
-        t.isContainedRelationAction = true;
-        t.selectorFor = s.equivalent("AccessTableTableAddSelectorActionDefinition");
-
-        log.debug("AccessTableTableOpenAddSelectorActionDefinition: " + t.name);
-}
-
-@lazy
-rule AccessTableTableOpenAddSelectorAction
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenAddSelectorAction");
-        t.name = s.name + "::OpenAddSelector";
-        t.actionDefinition = s.equivalent("AccessTableTableOpenAddSelectorActionDefinition");
-
-        t.targetPageDefinition = s.equivalent("AccessTableTableAddSelectorPageDefinition");
-
-        log.debug("AccessTableTableOpenAddSelectorAction: " + t.name);
-}
-
-@lazy
-rule AccessTableTableBulkRemoveButton
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableBulkRemoveButton");
-        t.name = s.name + "::BulkRemove";
-        t.icon = s.equivalent("AccessTableTableBulkRemoveButtonIcon");
-        t.label = "Remove";
-        t.buttonStyle = "text";
-        t.actionDefinition = s.equivalent("AccessTableTableBulkRemoveActionDefinition");
-
-        log.debug("AccessTableTableBulkRemoveButton: " + t.name);
-}
-
-@lazy
-rule AccessTableTableBulkRemoveButtonIcon
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableBulkRemoveButtonIcon");
-        t.name = s.name + "RemoveIcon";
-        t.iconName = "link-off";
-
-        log.debug("AccessTableTableBulkRemoveButtonIcon: " + t.name);
-}
-
-@lazy
-rule AccessTableTableBulkRemoveActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::BulkRemoveActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableBulkRemoveActionDefinition");
-        t.name = s.name + "::BulkRemove";
-        t.targetType = s.referenceType.map.transfer.equivalent("ClassType");
-        t.isContainedRelationAction = true;
-        t.isBulk = true;
-
-        log.debug("AccessTableTableBulkRemoveActionDefinition: " + t.name);
 }
 
 @lazy
@@ -605,42 +150,6 @@ rule AccessTableTableBulkRemoveAction
         t.targetDataElement = s.actorAccess.target.equivalent("RelationType");
 
         log.debug("AccessTableTableBulkRemoveAction: " + t.name);
-}
-
-@lazy
-rule AccessTableTableClearButton
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableClearButton");
-        t.name = s.name + "::Clear";
-        t.icon = s.equivalent("AccessTableTableClearButtonIcon");
-        t.label = "Clear";
-        t.buttonStyle = "text";
-        t.actionDefinition = s.equivalent("AccessTableTableClearActionDefinition");
-
-        log.debug("AccessTableTableClearButton: " + t.name);
-}
-
-@lazy
-rule AccessTableTableClearButtonIcon
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableClearButtonIcon");
-        t.name = s.name + "ClearIcon";
-        t.iconName = "link-off";
-
-        log.debug("AccessTableTableClearButtonIcon: " + t.name);
-}
-
-@lazy
-rule AccessTableTableClearActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::ClearActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableClearActionDefinition");
-        t.name = s.name + "::Clear";
-        t.isContainedRelationAction = true;
-
-        log.debug("AccessTableTableClearActionDefinition: " + t.name);
 }
 
 @lazy
@@ -666,7 +175,7 @@ rule AccessTableTableAddSelectorPageDefinition
 
     t.name = s.getFqName() + "::AddSelectorPage";
 
-    t.container = s.equivalent("AccessTableTableAddSelectorPageContainer");
+    t.container = s.referenceType.equivalent("TableAddSelectorPageContainer");
     t.dataElement = s.actorAccess.target.equivalent("RelationType");
     t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
     t.openInDialog = true;
@@ -689,7 +198,7 @@ rule AccessTableTableAddSelectorAddAction
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorAddAction");
  		t.name = s.getFqName() + "::AddSelector::Add";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
-        t.actionDefinition = s.equivalent("AccessTableTableAddSelectorTableAddSelectorAddActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("TableAddSelectorAddActionDefinition");
 
         log.debug("AccessTableTableAddSelectorAddAction: " + t.name);
 }
@@ -701,7 +210,7 @@ rule AccessTableTableAddSelectorBackAction
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorBackAction");
  		t.name = s.getFqName() + "::AddSelector::Back";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
-        t.actionDefinition = s.equivalent("AccessTableTableAddSelectorTableBackActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("TableAddSelectorTableBackActionDefinition");
 
         log.debug("AccessTableTableAddSelectorBackAction: " + t.name);
 }
@@ -714,7 +223,7 @@ rule AccessTableTableAddSelectorTableFilterAction
  		t.name = s.getFqName() + "::AddSelector::Table::Filter";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.targetDataElement = s.actorAccess.target.equivalent("RelationType");
-        t.actionDefinition = s.equivalent("AccessTableTableAddSelectorTableTableFilterActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("TableAddSelectorTableTableFilterActionDefinition");
 
         log.debug("AccessTableTableAddSelectorTableFilterAction: " + t.name);
 }
@@ -727,239 +236,121 @@ rule AccessTableTableAddSelectorTableRangeAction
  		t.name = s.getFqName() + "::AddSelector::Table::Range";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.targetDataElement = s.actorAccess.target.equivalent("RelationType");
-        t.actionDefinition = s.equivalent("AccessTableTableAddSelectorTableRangeActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("TableAddSelectorTableRangeActionDefinition");
 
         log.debug("AccessTableTableAddSelectorTableRangeAction: " + t.name);
 }
 
-@lazy
-rule AccessTableTableAddSelectorPageContainer
+rule AccessTableViewPageDefinition
     transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::PageContainer {
+    to t: UI!ui::PageDefinition {
+        guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorPageContainer");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewPageDefinition");
 
-        t.name = s.getFqName() + "::AddSelector::PageContainer";
-        t.label = s.getLabelWithNameFallback();
-        t.titleFrom = UI!ui::TitleFrom#LABEL;
-        t.type = UI!ui::PageContainerType#TABLE;
-        t.onInit = s.equivalent("AccessTableTableAddSelectorTableRangeActionDefinition");
+        t.name = s.getFqName() + "::AccessTableViewPage";
+        t.container = s.getUpdateViewModifier().view.equivalent("ViewPageContainer");
 
-        t.children.add(s.equivalent("AccessTableTableAddSelectorTableAddSelectorVisualElement"));
-        t.actionButtonGroup = s.equivalent("AccessTableTableAddSelectorTableAddSelectorButtonGroup");
-        t.dataElement = s.actorAccess.target.referenceType.equivalent("ClassType");
-        t.isSelector = true;
-        t.isRelationSelector = true;
+        rootMenu.equivalent("Application").pages.add(t);
 
-        rootMenu.equivalent("Application").pageContainers.add(t);
+        t.dataElement = s.actorAccess.target.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
 
-        log.debug("AccessTableTableAddSelectorPageContainer: " + t.name);
-}
+        // var relations = s.referenceType.getDirectRelations();
 
-@lazy
-rule AccessTableTableAddSelectorTableRangeActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::SelectorRangeActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableRangeActionDefinition");
-
-        t.name = s.getFqName() + "::AddSelector::Table::Range";
-        t.targetType = s.referenceType.map.transfer.equivalent("ClassType");
-
-        log.debug("AccessTableTableAddSelectorTableRangeActionDefinition: " + t.name);
-}
-
-@lazy
-rule AccessTableTableAddSelectorTableAddSelectorButtonGroup
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableAddSelectorButtonGroup");
-        t.name = s.getFqName() + "::AddSelectorTableAddSelectorButtonGroup";
-        t.label = "Actions";
-
-        t.buttons.add(s.equivalent("AccessTableTableAddSelectorTableAddSelectorBackButton"));
-        t.buttons.add(s.equivalent("AccessTableTableAddSelectorTableAddSelectorAddButton"));
-
-        log.debug("AccessTableTableAddSelectorTableAddSelectorButtonGroup: " + t.name);
-}
-
-@lazy
-rule AccessTableTableAddSelectorTableAddSelectorBackButton
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableAddSelectorBackButton");
-        t.name = s.getFqName() + "::Back";
-        t.label = "Back";
-        t.buttonStyle = "text";
-        t.icon = "arrow-left".createSyntheticIcon(s.getId(), s.getFqName());
-        t.actionDefinition = s.equivalent("AccessTableTableAddSelectorTableBackActionDefinition");
-
-        log.debug("AccessTableTableAddSelectorTableAddSelectorBackButton: " + t.name);
-}
-
-@lazy
-rule AccessTableTableAddSelectorTableBackActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::BackActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableBackActionDefinition");
-        t.name = s.getFqName() + "::Back";
-        log.debug("AccessTableTableAddSelectorTableBackActionDefinition: " + t.name);
-}
-
-@lazy
-rule AccessTableTableAddSelectorTableAddSelectorAddButton
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableAddSelectorAddButton");
-        t.name = s.getFqName() + "::Add";
-        t.label = "Add";
-        t.buttonStyle = "contained";
-        t.icon = "attachment-plus".createSyntheticIcon(s.getId(), s.getFqName());
-        t.actionDefinition = s.equivalent("AccessTableTableAddSelectorTableAddSelectorAddActionDefinition");
-
-        log.debug("AccessTableTableAddSelectorTableAddSelectorAddButton: " + t.name);
-}
-
-@lazy
-rule AccessTableTableAddSelectorTableAddSelectorAddActionDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::AddActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableAddSelectorAddActionDefinition");
-        t.name = s.getFqName() + "::Add";
-        t.targetType = s.referenceType.map.transfer.equivalent("ClassType");
-        log.debug("AccessTableTableAddSelectorTableAddSelectorAddActionDefinition: " + t.name);
-}
-
-@lazy
-rule AccessTableTableAddSelectorTableAddSelectorVisualElement
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Flex {
-        t.~pos = 0;
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableAddSelectorVisualElement");
-        t.name = s.name;
-        t.direction = UI!Axis#VERTICAL;
-        t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
-        t.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
-        t.col = 12d;
-        t.children.add(s.equivalent("AccessTableTableAddSelectorTableTable"));
-        t.frame = s.equivalent("AccessTableTableAddSelectorTableAddSelectorFrame");
-
-        log.debug("AccessTableTableAddSelectorTableAddSelectorVisualElement: " + t.name);
-}
-
-@lazy
-rule AccessTableTableAddSelectorTableAddSelectorFrame
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Frame {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableAddSelectorFrame");
-}
-
-@lazy
-rule AccessTableTableAddSelectorTableTable
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Table {
-        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableTable";
-        t.setId(id);
-        t.col = 12d;
-        t.label = s.getLabelWithNameFallback();
-        t.isSelectorTable = true;
-        t.isRelationSelectorTable = true;
-        t.allowSelectMultiple = true;
-        t.name = s.name + "::Add::Selector";
-        t.relationName = "";
-        t.dataElement = s.referenceType.map.transfer.equivalent("ClassType");
-        t.tableActionButtonGroup = s.equivalent("AccessTableTableAddSelectorTableTableButtonGroup");
-        t.~pos = s.~pos;
-        t.showTotalCount = false;
-        t.selectorRowsPerPage = 10;
-
-        if (s.getRows().isDefined()) {
-            t.rowsPerPage = s.getRows().value.asInteger();
-        } else {
-            t.rowsPerPage = 10;
-        }
-        if (t.~pos.isUndefined()) {
-            t.~pos = 0;
+        /*
+        log.info("===================");
+        log.info(t.name + ":");
+        log.info(relations.collect(r | r.name).concat(", "));
+        log.info("===================");
+        */
+        /*
+        for (link in relations.select(r | r.isKindOf(JSL!UIViewLinkDeclaration))) {
+            t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
         }
 
-        // TODO eventually selector should work?
-        var rowDeclaration = s.referenceType;
+        for (table in relations.select(r | r.isKindOf(JSL!UIViewTableDeclaration))) {
+            var detailLink = table.getDetailLink();
 
-        var primitiveFields = rowDeclaration.members.select(m | m.isTypeOf(JSL!RowFieldDeclaration) and m.referenceType.`primitive`.isDefined());
-        // var links = rowDeclaration.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
-
-        for (field in primitiveFields) {
-            var col = field.equivalentDiscriminated("TablePrimitiveColumn", id);
-            t.columns.add(col);
-            if (col.attributeType.isFilterable) {
-               t.filters.add(field.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
+            if (detailLink.isDefined()) {
+                t.actions.add(table.equivalent("ViewTableDeclarationOpenPageAction"));
             }
         }
-/*
-        for (link in links) {
-            if (link.getDetail().isUndefined()) {
-                var col = link.equivalentDiscriminated("RowLinkDerivedColumn", id);
-                t.columns.add(col);
-                if (col.attributeType.isFilterable) {
-                   t.filters.add(link.equivalentDiscriminated("RowLinkDerivedColumnFilter", id));
-                }
-            } else {
-                // TODO generate open action from link with detail modifier
-            }
+        */
 
+        t.actions.add(s.equivalent("AccessTableViewBackAction"));
+        if (s.actorAccess.target.isRefreshAllowed()) {
+            t.actions.add(s.equivalent("AccessTableViewRefreshAction"));
         }
-*/
-        log.debug("AccessTableTableAddSelectorTableTable: " + t.name);
+        if (s.actorAccess.target.isUpdateAllowed()) {
+            t.actions.add(s.equivalent("AccessTableViewCancelAction"));
+            t.actions.add(s.equivalent("AccessTableViewUpdateAction"));
+        }
+        if (s.actorAccess.target.isDeleteAllowed()) {
+            t.actions.add(s.equivalent("AccessTableViewDeleteAction"));
+        }
+
+        log.debug("Create AccessTableViewPageDefinition: " + t.name);
 }
 
 @lazy
-rule AccessTableTableAddSelectorTableTableButtonGroup
+rule AccessTableViewBackAction
     transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::ButtonGroup {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableTableButtonGroup");
- 		t.name = s.getFqName() + "::AddSelectorTableActions";
- 		t.label = "Actions";
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewBackAction");
+ 		t.name = s.getFqName() + "::Back";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerBackActionDefinition");
 
-    	t.buttons.add(s.equivalent("AccessTableTableAddSelectorTableTableFilterButton"));
-    	t.buttons.add(s.equivalent("TransferObjectTableAddSelectorTableRefreshButton"));
-
-        log.debug("AccessTableTableAddSelectorTableTableButtonGroup: " + t.name);
+        log.debug("AccessTableViewBackAction: " + t.name);
 }
 
 @lazy
-rule AccessTableTableAddSelectorTableTableFilterButton
+rule AccessTableViewRefreshAction
     transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableTableFilterButton");
- 		t.name = s.getFqName() + "::AddSelector::Table::Filter";
-    	t.label = "Set Filters";
-    	t.buttonStyle = "text";
-    	t.icon = "filter".createSyntheticIcon(s.getId(), s.getFqName());
-    	t.actionDefinition = s.equivalent("AccessTableTableAddSelectorTableTableFilterActionDefinition");
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewRefreshAction");
+ 		t.name = s.getFqName() + "::Refresh";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerRefreshActionDefinition");
 
-        log.debug("AccessTableTableAddSelectorTableTableFilterButton: " + t.name);
+        log.debug("AccessTableViewRefreshAction: " + t.name);
 }
 
 @lazy
-rule AccessTableTableAddSelectorTableTableFilterActionDefinition
+rule AccessTableViewCancelAction
     transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::FilterActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableTableFilterActionDefinition");
-        t.name = s.getFqName() + "::Table::Filter";
-        log.debug("AccessTableTableAddSelectorTableTableFilterActionDefinition: " + t.name);
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewCancelAction");
+ 		t.name = s.getFqName() + "::Cancel";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerCancelActionDefinition");
+
+        log.debug("AccessTableViewCancelAction: " + t.name);
 }
 
 @lazy
-rule TransferObjectTableAddSelectorTableRefreshButton
+rule AccessTableViewUpdateAction
     transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Button {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TransferObjectTableAddSelectorTableRefreshButton");
- 		t.name = s.getFqName() + "::AddSelector::Table::Refresh";
-    	t.label = "Refresh";
-    	t.buttonStyle = "text";
-    	t.icon = "refresh".createSyntheticIcon(s.getId(), s.getFqName());
-    	t.actionDefinition = s.equivalent("AccessTableTableAddSelectorTableRangeActionDefinition");
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewUpdateAction");
+ 		t.name = s.getFqName() + "::Update";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerUpdateActionDefinition");
 
-        log.debug("TransferObjectTableAddSelectorTableRefreshButton: " + t.name);
+        log.debug("AccessTableViewUpdateAction: " + t.name);
+}
+
+@lazy
+rule AccessTableViewDeleteAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewDeleteAction");
+ 		t.name = s.getFqName() + "::Delete";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerDeleteActionDefinition");
+
+        log.debug("AccessTableViewDeleteAction: " + t.name);
 }
 
 rule AccessTableCreateFormPageDefinition
@@ -1017,116 +408,4 @@ rule AccessTableCreateFormCreateAction
         t.targetPageDefinition = s.getCreateFormModifier().form.equivalent("AccessTableViewPageDefinition");
 
         log.debug("AccessTableCreateFormCreateAction: " + t.name);
-}
-
-rule AccessTableViewPageDefinition
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::PageDefinition {
-        guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
-
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewPageDefinition");
-
-        t.name = s.getFqName() + "::AccessViewPage";
-        t.container = s.getUpdateViewModifier().view.equivalent("ViewPageContainer");
-
-        rootMenu.equivalent("Application").pages.add(t);
-
-        t.dataElement = s.actorAccess.target.equivalent("RelationType");
-        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
-
-        // var relations = s.referenceType.getDirectRelations();
-
-        /*
-        log.info("===================");
-        log.info(t.name + ":");
-        log.info(relations.collect(r | r.name).concat(", "));
-        log.info("===================");
-        */
-        /*
-        for (link in relations.select(r | r.isKindOf(JSL!UIViewLinkDeclaration))) {
-            t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
-        }
-
-        for (table in relations.select(r | r.isKindOf(JSL!UIViewTableDeclaration))) {
-            var detailLink = table.getDetailLink();
-
-            if (detailLink.isDefined()) {
-                t.actions.add(table.equivalent("ViewTableDeclarationOpenPageAction"));
-            }
-        }
-        */
-
-        t.actions.add(s.equivalent("AccessViewBackAction"));
-        if (s.actorAccess.target.isRefreshAllowed()) {
-            t.actions.add(s.equivalent("AccessViewRefreshAction"));
-        }
-        if (s.actorAccess.target.isUpdateAllowed()) {
-            t.actions.add(s.equivalent("AccessViewCancelAction"));
-            t.actions.add(s.equivalent("AccessViewUpdateAction"));
-        }
-        if (s.actorAccess.target.isDeleteAllowed()) {
-            t.actions.add(s.equivalent("AccessViewDeleteAction"));
-        }
-
-        log.debug("Create AccessTableViewPageDefinition: " + t.name);
-}
-
-@lazy
-rule AccessViewBackAction
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewBackAction");
- 		t.name = s.getFqName() + "::Back";
-        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
-        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerBackActionDefinition");
-
-        log.debug("AccessViewBackAction: " + t.name);
-}
-
-@lazy
-rule AccessViewRefreshAction
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewRefreshAction");
- 		t.name = s.getFqName() + "::Refresh";
-        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
-        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerRefreshActionDefinition");
-
-        log.debug("AccessViewRefreshAction: " + t.name);
-}
-
-@lazy
-rule AccessViewCancelAction
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewCancelAction");
- 		t.name = s.getFqName() + "::Cancel";
-        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
-        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerCancelActionDefinition");
-
-        log.debug("AccessViewCancelAction: " + t.name);
-}
-
-@lazy
-rule AccessViewUpdateAction
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewUpdateAction");
- 		t.name = s.getFqName() + "::Update";
-        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
-        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerUpdateActionDefinition");
-
-        log.debug("AccessViewUpdateAction: " + t.name);
-}
-
-@lazy
-rule AccessViewDeleteAction
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewDeleteAction");
- 		t.name = s.getFqName() + "::Delete";
-        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
-        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerDeleteActionDefinition");
-
-        log.debug("AccessViewDeleteAction: " + t.name);
 }

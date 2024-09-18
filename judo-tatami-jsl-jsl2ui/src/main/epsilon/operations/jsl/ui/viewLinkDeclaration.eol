@@ -21,6 +21,9 @@ operation JSL!UIViewLinkDeclaration getExposedVisualElements(): Set {
     var ves = new Set();
     var viewDeclaration = self.referenceType;
 
+    ves.add(self);
+    ves.add(viewDeclaration);
+
     for (link in self.members.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
         ves.addAll(link.getExposedVisualElements());
     }

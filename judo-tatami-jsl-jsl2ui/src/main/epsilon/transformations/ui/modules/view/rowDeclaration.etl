@@ -1,0 +1,462 @@
+rule TablePageContainer
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::PageContainer {
+        guard: rootMenu.containsVisualElement(s)
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainer");
+        t.name = s.getFqName() + "::Table::PageContainer";
+        t.label = s.getLabelWithNameFallback();
+        t.titleFrom = UI!ui::TitleFrom#LABEL;
+        t.type = UI!ui::PageContainerType#TABLE;
+        t.children.add(s.equivalent("TablePageContainerVisualElement"));
+        t.actionButtonGroup = s.equivalent("TablePageContainerButtonGroup");
+        t.dataElement = s.map.transfer.equivalent("ClassType");
+        t.onInit = s.equivalent("TableTableRefreshActionDefinition");
+
+        rootMenu.equivalent("Application").pageContainers.add(t);
+
+        /*
+        for (dataFeature in s.additionalMaskFeatures) {
+            var attributeType = dataFeature.getMember().mapAttributeType(s.eContainer.equivalent("ClassType"));
+            t.additionalMaskAttributes.add(attributeType);
+        }
+        */
+
+        log.debug("Create TablePageContainer: " + t.name);
+}
+
+
+@lazy
+rule TablePageContainerButtonGroup
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::ButtonGroup {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerButtonGroup");
+ 		t.name = s.getFqName() + "::PageActions";
+ 		t.label = "Actions";
+
+ 		t.buttons.add(s.equivalent("TablePageContainerBackButton"));
+
+        log.debug("TablePageContainerButtonGroup: " + t.name);
+}
+
+@lazy
+rule TablePageContainerBackButtonIcon
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Icon {
+    	t.iconName = "arrow-left";
+    	t.name = s.name + "BackIcon";
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerBackButtonIcon");
+}
+
+@lazy
+rule TablePageContainerBackActionDefinition
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::BackActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerBackActionDefinition");
+ 		t.name = s.getFqName() + "::Back";
+        log.debug("TablePageContainerBackActionDefinition: " + t.name);
+}
+
+@lazy
+rule TablePageContainerBackButton
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerBackButton");
+ 		t.name = s.getFqName() + "::Back";
+    	t.label = "Back";
+    	t.buttonStyle = "text";
+    	t.icon = s.equivalent("TablePageContainerBackButtonIcon");
+    	t.actionDefinition = s.equivalent("TablePageContainerBackActionDefinition");
+        log.debug("TablePageContainerBackButton: " + t.name);
+}
+
+@lazy
+rule TablePageContainerVisualElement
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Flex {
+        t.~pos = 0;
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerVisualElement");
+        t.name = s.name;
+        t.direction = UI!Axis#VERTICAL;
+        t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        t.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        t.col = 12d;
+        t.children.add(s.equivalent("TableTable"));
+        t.frame = s.equivalent("TableFrame");
+
+        log.debug("TablePageContainerVisualElement: " + t.name);
+}
+
+@lazy
+rule TableFrame
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Frame {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableFrame");
+}
+
+@lazy
+rule TableTable
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Table {
+        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/TableTable";
+        t.setId(id);
+        t.col = 12d;
+        t.label = s.getLabelWithNameFallback();
+        t.name = s.name + "::Table";
+        t.dataElement = s.map.transfer.equivalent("ClassType");
+        t.relationName = "";
+        if (t.~pos.isUndefined()) {
+            t.~pos = 0;
+        }
+
+        var primitiveFields = s.members.select(m | m.transferField.isDefined() and m.transferField.target.referenceType.`primitive`.isDefined());
+
+        for (field in primitiveFields) {
+            var col = field.equivalentDiscriminated("RowColumnDeclarationPrimitiveColumn", id);
+            t.columns.add(col);
+            if (col.attributeType.isFilterable) {
+               t.filters.add(field.equivalentDiscriminated("RowColumnDeclarationPrimitiveColumnFilter", id));
+            }
+        }
+
+        t.tableActionButtonGroup = s.equivalent("TableTableButtonGroup");
+        t.rowActionButtonGroup = s.equivalent("TableRowButtonGroup");
+
+        // TODO transform selector row per page
+        t.selectorRowsPerPage = 10;
+
+        log.debug("TableTable: " + t.name);
+}
+
+@lazy
+rule TableTableButtonGroup
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::ButtonGroup {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableButtonGroup");
+        t.name = s.name + "::TableTableButtonGroup";
+        t.label = "Actions";
+
+        // TODO add buttons
+
+        t.buttons.add(s.equivalent("TableTableFilterButton"));
+        t.buttons.add(s.equivalent("TableTableRefreshButton"));
+        t.buttons.add(s.equivalent("TableTableOpenCreateButton"));
+        t.buttons.add(s.equivalent("TableTableOpenAddSelectorButton"));
+        t.buttons.add(s.equivalent("TableTableClearButton"));
+        t.buttons.add(s.equivalent("TableTableBulkRemoveButton"));
+
+        log.debug("TableTableButtonGroup: " + t.name);
+}
+
+@lazy
+rule TableRowButtonGroup
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::ButtonGroup {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowButtonGroup");
+        t.name = s.name + "TableRowButtonGroup";
+        t.label = "Actions";
+
+        // TODO add buttons
+
+        t.buttons.add(s.equivalent("TableRowOpenPageButton"));
+        t.buttons.add(s.equivalent("TableRowDeleteButton"));
+
+        log.debug("TableRowButtonGroup: " + t.name);
+}
+
+
+@lazy
+rule TableTableFilterButton
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableFilterButton");
+        t.name = s.name + "::Filter";
+        t.icon = s.equivalent("TableTableFilterButtonIcon");
+        t.label = "Filter";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("TableTableFilterActionDefinition");
+
+        log.debug("TableTableFilterButton: " + t.name);
+}
+
+@lazy
+rule TableTableFilterButtonIcon
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableFilterButtonIcon");
+        t.name = s.name + "FilterIcon";
+        t.iconName = "filter";
+
+        log.debug("TableTableFilterButtonIcon: " + t.name);
+}
+
+@lazy
+rule TableTableFilterActionDefinition
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::FilterActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableFilterActionDefinition");
+        t.name = s.name + "::Filter";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+
+        log.debug("TableTableFilterActionDefinition: " + t.name);
+}
+
+@lazy
+rule TableTableRefreshButton
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableRefreshButton");
+        t.name = s.name + "::Refresh";
+        t.icon = s.equivalent("TableTableRefreshButtonIcon");
+        t.label = "Refresh";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("TableTableRefreshActionDefinition");
+
+        log.debug("TableTableRefreshButton: " + t.name);
+}
+
+@lazy
+rule TableTableRefreshButtonIcon
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableRefreshButtonIcon");
+        t.name = s.name + "RefreshIcon";
+        t.iconName = "refresh";
+
+        log.debug("TableTableRefreshButtonIcon: " + t.name);
+}
+
+@lazy
+rule TableTableRefreshActionDefinition
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::RefreshActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableRefreshActionDefinition");
+        t.name = s.name + "::Refresh";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+
+        log.debug("TableTableRefreshActionDefinition: " + t.name);
+}
+
+@lazy
+rule TableTableOpenCreateButton
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableOpenCreateButton");
+        t.name = s.name + "::OpenCreate";
+        t.icon = s.equivalent("TableTableOpenCreateButtonIcon");
+        t.label = "Create";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("TableTableOpenCreateActionDefinition");
+
+        log.debug("TableTableOpenCreateButton: " + t.name);
+}
+
+@lazy
+rule TableTableOpenCreateButtonIcon
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableOpenCreateButtonIcon");
+        t.name = s.name + "OpenCreateIcon";
+        t.iconName = "file-document-plus";
+
+        log.debug("TableTableFilterButtonIcon: " + t.name);
+}
+
+@lazy
+rule TableTableOpenCreateActionDefinition
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::OpenCreateFormActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableOpenCreateActionDefinition");
+        t.name = s.name + "::OpenCreate";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+
+        log.debug("TableTableOpenCreateActionDefinition: " + t.name);
+}
+
+@lazy
+rule TableRowOpenPageButton
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowOpenPageButton");
+        t.name = s.name + "::View";
+        t.icon = s.equivalent("TableRowOpenPageButtonIcon");
+        t.label = "View";
+        t.buttonStyle = "contained";
+        t.actionDefinition = s.equivalent("TableRowOpenPageActionDefinition");
+
+        log.debug("TableRowOpenPageButton: " + t.name);
+}
+
+@lazy
+rule TableRowOpenPageButtonIcon
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowOpenPageButtonIcon");
+        t.name = s.name + "RowOpenIcon";
+        t.iconName = "visibility";
+
+        log.debug("TableRowOpenPageButtonIcon: " + t.name);
+}
+
+@lazy
+rule TableRowOpenPageActionDefinition
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::OpenPageActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowOpenPageActionDefinition");
+        t.name = s.name + "::View";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+
+        //var rowLinks = s.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
+
+        //t.linkRelation = rowLinks.selectOne(l | l.getDetail().isDefined()).equivalent("RelationType");
+
+        log.debug("TableRowOpenPageActionDefinition: " + t.name);
+}
+
+@lazy
+rule TableRowDeleteButton
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowDeleteButton");
+        t.name = s.name + "::RowDelete";
+        t.icon = s.equivalent("TableRowDeleteButtonIcon");
+        t.label = "Delete";
+        t.buttonStyle = "contained";
+        t.actionDefinition = s.equivalent("TableRowDeleteActionDefinition");
+
+        log.debug("TableRowDeleteButton: " + t.name);
+}
+
+@lazy
+rule TableRowDeleteButtonIcon
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowDeleteButtonIcon");
+        t.name = s.name + "RowDeleteIcon";
+        t.iconName = "delete_forever";
+
+        log.debug("TableRowDeleteButtonIcon: " + t.name);
+}
+
+@lazy
+rule TableRowDeleteActionDefinition
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::RowDeleteActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowDeleteActionDefinition");
+        t.name = s.name + "::RowDelete";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+
+        log.debug("TableRowDeleteActionDefinition: " + t.name);
+}
+
+@lazy
+rule TableTableOpenAddSelectorButton
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableOpenAddSelectorButton");
+        t.name = s.name + "::OpenAddSelector";
+        t.icon = s.equivalent("TableTableOpenAddSelectorButtonIcon");
+        t.label = "Add";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("TableTableOpenAddSelectorActionDefinition");
+
+        log.debug("TableTableOpenAddSelectorButton: " + t.name);
+}
+
+@lazy
+rule TableTableOpenAddSelectorButtonIcon
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableOpenAddSelectorButtonIcon");
+        t.name = s.name + "OpenAddSelectorIcon";
+        t.iconName = "attachment-plus";
+
+        log.debug("TableTableOpenAddSelectorButtonIcon: " + t.name);
+}
+
+@lazy
+rule TableTableOpenAddSelectorActionDefinition
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::OpenAddSelectorActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableOpenAddSelectorActionDefinition");
+        t.name = s.name + "::OpenAddSelector";
+        t.isContainedRelationAction = true;
+        t.selectorFor = s.equivalent("TableTableAddSelectorActionDefinition");
+
+        log.debug("TableTableOpenAddSelectorActionDefinition: " + t.name);
+}
+
+@lazy
+rule TableTableBulkRemoveButton
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableBulkRemoveButton");
+        t.name = s.name + "::BulkRemove";
+        t.icon = s.equivalent("TableTableBulkRemoveButtonIcon");
+        t.label = "Remove";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("TableTableBulkRemoveActionDefinition");
+
+        log.debug("TableTableBulkRemoveButton: " + t.name);
+}
+
+@lazy
+rule TableTableBulkRemoveButtonIcon
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableBulkRemoveButtonIcon");
+        t.name = s.name + "RemoveIcon";
+        t.iconName = "link-off";
+
+        log.debug("TableTableBulkRemoveButtonIcon: " + t.name);
+}
+
+@lazy
+rule TableTableBulkRemoveActionDefinition
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::BulkRemoveActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableBulkRemoveActionDefinition");
+        t.name = s.name + "::BulkRemove";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+        t.isContainedRelationAction = true;
+        t.isBulk = true;
+
+        log.debug("TableTableBulkRemoveActionDefinition: " + t.name);
+}
+
+@lazy
+rule TableTableClearButton
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableClearButton");
+        t.name = s.name + "::Clear";
+        t.icon = s.equivalent("TableTableClearButtonIcon");
+        t.label = "Clear";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("TableTableClearActionDefinition");
+
+        log.debug("TableTableClearButton: " + t.name);
+}
+
+@lazy
+rule TableTableClearButtonIcon
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableClearButtonIcon");
+        t.name = s.name + "ClearIcon";
+        t.iconName = "link-off";
+
+        log.debug("TableTableClearButtonIcon: " + t.name);
+}
+
+@lazy
+rule TableTableClearActionDefinition
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::ClearActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableTableClearActionDefinition");
+        t.name = s.name + "::Clear";
+        t.isContainedRelationAction = true;
+
+        log.debug("TableTableClearActionDefinition: " + t.name);
+}
+

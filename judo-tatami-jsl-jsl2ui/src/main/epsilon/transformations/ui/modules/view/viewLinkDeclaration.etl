@@ -259,7 +259,7 @@ rule InlineViewLink
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Link
     extends AbstractViewLinkDeclaration {
-        guard: s.getTransferObjectType().isGenerated()
+        guard: rootMenu.containsVisualElement(s)
 
         var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewLink";
         t.setId(id);

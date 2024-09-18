@@ -16,15 +16,9 @@ operation JSL!UIMenuLinkDeclaration getExposedVisualElements(): Set {
     var ves = new Set();
     var viewDeclaration = self.referenceType;
 
-    for (link in viewDeclaration.members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
-        ves.addAll(link.getExposedVisualElements());
-    }
-
-    for (table in viewDeclaration.members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
-        ves.addAll(table.getExposedVisualElements());
-    }
-
-    ves.addAll(viewDeclaration.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
+    ves.add(self);
+    ves.add(viewDeclaration);
+    ves.addAll(viewDeclaration.getExposedVisualElements());
 
     return ves;
 }

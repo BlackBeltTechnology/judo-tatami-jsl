@@ -110,7 +110,7 @@ rule InlineViewTable
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Table
     extends AbstractViewTableDeclaration {
-        guard: s.getTransferObjectType().isGenerated()
+        guard: rootMenu.containsVisualElement(s)
 
         var id = actorDeclaration.name + "/(jsl/" + s.getId() + ")/InlineViewTable";
         t.setId(id);
@@ -762,7 +762,7 @@ rule ViewTableDeclarationAddSelectorTableFilterAction
  		t.name = s.getFqName() + "::AddSelector::Table::Filter";
         t.ownerDataElement = s.equivalent("RelationType");
         t.targetDataElement = s.equivalent("RelationType");
-        t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableTableFilterActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("ViewTableDeclarationAddSelectorTableTableFilterActionDefinition");
 
         log.debug("ViewTableDeclarationAddSelectorTableFilterAction: " + t.name);
 }
@@ -982,7 +982,7 @@ rule ViewTableDeclarationAddSelectorTableTableFilterButton
     	t.label = "Set Filters";
     	t.buttonStyle = "text";
     	t.icon = "filter".createSyntheticIcon(s.getId(), s.getFqName());
-    	t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableTableFilterActionDefinition");
+    	t.actionDefinition = s.referenceType.equivalent("ViewTableDeclarationAddSelectorTableTableFilterActionDefinition");
 
         log.debug("ViewTableDeclarationAddSelectorTableTableFilterButton: " + t.name);
 }

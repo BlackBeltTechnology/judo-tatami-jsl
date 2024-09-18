@@ -33,6 +33,8 @@ operation JSL!UIViewTableDeclaration getExposedVisualElements(): Set {
     var ves = new Set();
     var rowDeclaration = self.referenceType;
 
+    ves.add(self);
+    ves.add(rowDeclaration);
     ves.addAll(rowDeclaration.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration)).asSet());
 
     return ves;

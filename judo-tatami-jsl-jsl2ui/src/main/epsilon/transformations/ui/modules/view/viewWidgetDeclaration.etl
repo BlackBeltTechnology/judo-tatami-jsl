@@ -118,7 +118,7 @@ rule EnumerationTypeRadio
     to t: UI!ui::EnumerationRadio
     extends AbstractViewWidgetDeclaration {
         guard: s.enumWidget == ESM!esm::ui::EnumWidget#RADIO
-                and s.getTransferObjectType().isGenerated()
+                and rootMenu.containsVisualElement(s)
                 and not s.dataFeature.getMember().isQuery
                 and s.dataFeature.getMember().getDataType().isTypeOf(ESM!esm::type::EnumerationType)
 

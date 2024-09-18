@@ -82,7 +82,7 @@ operation JSL!TransferDeclaration getAllRelations(): Set {
         }
     }
 
-    for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
+    for (member in self.members.select(m | m.isKindOf(JSL!UIViewPanelDeclaration))) {
         relations.addAll(member.getAllRelations());
     }
 */
@@ -98,16 +98,16 @@ operation JSL!TransferDeclaration getAllRelations(): Set {
 operation JSL!TransferDeclaration getDirectRelations(): Set {
     var relations = new Set();
     relations.addAll(self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration)));
-/*
+
     if (self.isKindOf(JSL!ActorDeclaration)) {
         var linkRelations = self.getAllMenuDeclarations();
         relations.addAll(linkRelations);
     }
 
-    for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
+    for (member in self.members.select(m | m.isKindOf(JSL!UIViewPanelDeclaration))) {
         relations.addAll(member.getDirectRelations());
     }
-*/
+
     return relations;
 }
 
@@ -115,11 +115,11 @@ operation JSL!TransferDeclaration getDirectRelations(): Set {
 operation JSL!TransferDeclaration getAllPrimitiveFields(): Set {
     var fields = new Set();
     fields.addAll(self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.referenceType.isDefined() and m.referenceType.`primitive`.isDefined()));
-/*
-    for (member in self.members.select(m | m.isKindOf(JSL!ViewPanelDeclaration))) {
+
+    for (member in self.members.select(m | m.isKindOf(JSL!UIViewPanelDeclaration))) {
         fields.addAll(member.getAllPrimitiveFields());
     }
-*/
+
     return fields;
 }
 

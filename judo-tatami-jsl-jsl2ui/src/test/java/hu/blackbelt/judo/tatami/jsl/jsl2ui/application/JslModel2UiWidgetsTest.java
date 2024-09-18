@@ -78,7 +78,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             }
 
             transfer UserTransfer(User u) {
-                field String email <=> u.email;
+                field String email <=> u.email required;
                 field Binary binary <= u.binary;
                 field String string <= u.string;
                 field Boolean boolean <= u.boolean;
@@ -142,7 +142,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals(2, pageContainers.size());
 
         PageContainer dashboard = pageContainers.stream().filter(c -> c.getName().equals("BasicWidgetsTestModel::WidgetsApp::Dashboard")).findFirst().orElseThrow();
-        PageContainer user = pageContainers.stream().filter(c -> c.getName().equals("BasicWidgetsTestModel::WidgetsApp::user::View::PageContainer")).findFirst().orElseThrow();
+        PageContainer user = pageContainers.stream().filter(c -> c.getName().equals("BasicWidgetsTestModel::UserView::View::PageContainer")).findFirst().orElseThrow();
 
         // Dashboard
         assertEquals(0, dashboard.getChildren().size());
@@ -154,7 +154,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         // Root Flex
         Flex rootFlex = (Flex) user.getChildren().get(0);
 
-        assertEquals("user", rootFlex.getName());
+        assertEquals("UserView", rootFlex.getName());
         assertNull(rootFlex.getLabel());
         assertEquals(12, rootFlex.getCol());
         assertEquals(Axis.VERTICAL, rootFlex.getDirection());

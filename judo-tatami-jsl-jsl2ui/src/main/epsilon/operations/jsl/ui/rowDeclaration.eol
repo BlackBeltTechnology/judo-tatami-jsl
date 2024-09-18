@@ -1,0 +1,12 @@
+@cached
+operation JSL!UIRowDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!UIRowDeclaration getFqName(): String {
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
+    }
+    return self.name;
+}

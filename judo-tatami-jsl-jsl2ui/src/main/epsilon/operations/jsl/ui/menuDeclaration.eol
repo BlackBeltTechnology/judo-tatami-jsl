@@ -25,6 +25,8 @@ operation JSL!UIMenuDeclaration getActorDeclaration(): JSL!ActorDeclaration {
 operation JSL!UIMenuDeclaration getExposedVisualElements(): Set {
     var ves = new Set();
 
+    ves.add(self);
+
     for (link in self.members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
         ves.add(link);
         ves.addAll(link.getExposedVisualElements());

@@ -3,6 +3,7 @@ import "menuDeclaration.eol";
 import "menuLinkDeclaration.eol";
 import "menuTableDeclaration.eol";
 import "rowColumnDeclaration.eol";
+import "rowDeclaration.eol";
 import "viewActionDeclaration.eol";
 import "viewDeclaration.eol";
 import "viewGroupDeclaration.eol";

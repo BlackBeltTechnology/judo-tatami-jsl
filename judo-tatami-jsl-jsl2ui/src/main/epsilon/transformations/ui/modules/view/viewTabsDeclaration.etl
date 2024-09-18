@@ -1,10 +1,9 @@
-/*
 rule TabBarVisualElement
-    transform s: JSL!ViewTabsDeclaration
+    transform s: JSL!UIViewTabsDeclaration
     to t: UI!ui::TabController {
-        guard: s.getTransferObjectType().isGenerated()
+        guard: rootMenu.containsVisualElement(s)
 
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TabBarVisualElement");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TabBarVisualElement");
         t.name = s.name;
         t.~pos = s.~pos;
         t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12d;
@@ -25,26 +24,26 @@ rule TabBarVisualElement
         log.debug("TabBarVisualElement: " + t.name);
 }
 
-rule GroupTab
-    transform s: JSL!ViewGroupDeclaration
+@greedy
+rule SubTab
+    transform s: JSL!UIViewTabsDeclaration
     to t: UI!ui::Tab {
-        guard: s.eContainer.isKindOf(JSL!ViewTabsDeclaration) and s.getTransferObjectType().isGenerated()
+        guard: s.eContainer.isKindOf(JSL!UIViewTabsDeclaration) and rootMenu.containsVisualElement(s)
 
         s.eContainer.equivalent("TabBarVisualElement").tabs.add(t);
-        t.element = s.equivalent("GroupVisualElement");
+        t.element = s.equivalent("TabBarVisualElement");
         t.name = t.element.name;
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/GroupTab");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/SubTab");
 
-        log.debug("GroupTab: " + t.name);
+        log.debug("SubTab: " + t.name);
 }
 
 @lazy
 @greedy
 rule TabsIcon
-    transform s: JSL!ViewTabsDeclaration
+    transform s: JSL!UIViewTabsDeclaration
     to t: UI!ui::Icon {
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "TabsIcon";
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/TabsIcon");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TabsIcon");
 }
-*/

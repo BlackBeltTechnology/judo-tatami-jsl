@@ -1,29 +1,45 @@
-/*
 @cached
-operation JSL!ViewTabsDeclaration getId(): String {
+operation JSL!UIViewTabsDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
 
 @cached
-operation JSL!ViewTabsDeclaration getFqName(): String {
+operation JSL!UIViewTabsDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "::" + self.name;
 }
 
 @cached
-operation JSL!ViewTabsDeclaration getTransferObjectType(): JSL!TransferDeclaration {
-    var to = self.eContainer;
-    while (to.isDefined() and not to.isKindOf(JSL!TransferDeclaration)) {
-        to = to.eContainer;
-    }
-    return to;
-}
-
-@cached
-operation JSL!ViewTabsDeclaration isFrame(): Boolean {
+operation JSL!UIViewTabsDeclaration isFrame(): Boolean {
     return false;
 }
 
-operation JSL!ViewTabsDeclaration uiContainer() : UI!ui::VisualElement {
+operation JSL!UIViewTabsDeclaration uiContainer() : UI!ui::VisualElement {
     return self.equivalent("TabBarVisualElement");
 }
-*/
+
+@cached
+operation JSL!UIViewTabsDeclaration getExposedVisualElements(): Set {
+    var ves = new Set();
+
+    ves.add(self);
+
+    for (link in self.panels.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
+        ves.addAll(link.getExposedVisualElements());
+    }
+
+    for (table in self.panels.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
+        ves.addAll(table.getExposedVisualElements());
+    }
+
+    for (group in self.panels.select(m | m.isKindOf(JSL!UIViewGroupDeclaration)).asSet()) {
+        ves.addAll(group.getExposedVisualElements());
+    }
+
+    for (tab in self.panels.select(m | m.isKindOf(JSL!UIViewTabsDeclaration)).asSet()) {
+        ves.addAll(tab.getExposedVisualElements());
+    }
+
+    ves.addAll(self.panels.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
+
+    return ves;
+}
