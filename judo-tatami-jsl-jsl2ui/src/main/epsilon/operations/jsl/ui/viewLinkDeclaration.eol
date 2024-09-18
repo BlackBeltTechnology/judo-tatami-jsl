@@ -24,15 +24,17 @@ operation JSL!UIViewLinkDeclaration getExposedVisualElements(): Set {
     ves.add(self);
     ves.add(viewDeclaration);
 
-    for (link in self.members.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
-        ves.addAll(link.getExposedVisualElements());
+    if (s.getCreateFormModifier().isDefined()) {
+        ves.addAll(s.getCreateFormModifier().form.getExposedVisualElements());
     }
 
-    for (table in self.members.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
-        ves.addAll(table.getExposedVisualElements());
+    if (s.getUpdateViewModifier().isDefined()) {
+        ves.addAll(s.getUpdateViewModifier().view.getExposedVisualElements());
     }
 
-    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
+    if (s.getSelectorTableModifier().isDefined()) {
+        ves.addAll(s.getSelectorTableModifier().row.getExposedVisualElements());
+    }
 
     return ves;
 }

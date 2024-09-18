@@ -161,3 +161,8 @@ operation JSL!Modifiable getCreateFormModifier(): JSL!Modifier {
 operation JSL!Modifiable getUpdateViewModifier(): JSL!Modifier {
     return self.modifiers.selectOne(m | m.isTypeOf(JSL!UpdateViewModifier));
 }
+
+@cached
+operation JSL!Modifiable getSelectorTableModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!SelectorTableModifier));
+}
