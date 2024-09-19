@@ -75,7 +75,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         ClassType actor = app1.getActor();
 
-        assertEquals("ApplicationTestModel::AppActor::ClassType", actor.getName());
+        assertEquals("ApplicationTestModel::AppActor", actor.getName());
         assertEquals("AppActor", actor.getSimpleName());
         assertTrue(actor.isIsActor());
 
@@ -301,7 +301,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         ClassType actor = app1.getActor();
 
-        assertEquals("MultipleActorsTestModel::Actor1::ClassType", actor.getName());
+        assertEquals("MultipleActorsTestModel::Actor1", actor.getName());
         assertEquals("Actor1", actor.getSimpleName());
         assertTrue(actor.isIsActor());
 
@@ -314,7 +314,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         ClassType actor2 = app2.getActor();
 
-        assertEquals("MultipleActorsTestModel::Actor2::ClassType", actor2.getName());
+        assertEquals("MultipleActorsTestModel::Actor2", actor2.getName());
         assertEquals("Actor2", actor2.getSimpleName());
         assertTrue(actor2.isIsActor());
 
@@ -363,12 +363,12 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         Set<String> relations1Names = relationTypes.stream().map(c -> c.getFQName()).collect(Collectors.toSet());
 
         assertEquals(Set.of(
-                "MultipleActorsTestModel::ProductTransfer::ClassType",
-                "MultipleActorsTestModel::Actor1::ClassType"
+                "MultipleActorsTestModel::ProductTransfer",
+                "MultipleActorsTestModel::Actor1"
         ), class1Names);
 
         assertEquals(Set.of(
-                "Actor1::MultipleActorsTestModel::Actor1::ClassType::products"
+                "Actor1::MultipleActorsTestModel::Actor1::products"
         ), relations1Names);
 
         List<DataType> dataTypes1 = app1.getDataTypes();
@@ -394,12 +394,12 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         Set<String> relations2Names = relationsTypes2.stream().map(c -> c.getFQName()).collect(Collectors.toSet());
 
         assertEquals(Set.of(
-                "MultipleActorsTestModel::Product2Transfer::ClassType",
-                "MultipleActorsTestModel::Actor2::ClassType"
+                "MultipleActorsTestModel::Product2Transfer",
+                "MultipleActorsTestModel::Actor2"
         ), class2Names);
 
         assertEquals(Set.of(
-                "Actor2::MultipleActorsTestModel::Actor2::ClassType::products2"
+                "Actor2::MultipleActorsTestModel::Actor2::products2"
         ), relations2Names);
 
         // Pages
@@ -463,7 +463,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         ClassType actor = apps.get(0).getActor();
 
         assertNotNull(actor);
-        assertEquals("SecurityTestModel::Actor::ClassType", actor.getName());
+        assertEquals("SecurityTestModel::Actor", actor.getName());
         assertEquals("Actor", actor.getSimpleName());
 
         // Principal
@@ -471,7 +471,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         ClassType principal = apps.get(0).getPrincipal();
 
         assertNotNull(principal);
-        assertEquals("SecurityTestModel::UserTransfer::ClassType", principal.getName());
+        assertEquals("SecurityTestModel::UserTransfer", principal.getName());
         assertEquals("UserTransfer", principal.getSimpleName());
         assertTrue(principal.isIsPrincipal());
 

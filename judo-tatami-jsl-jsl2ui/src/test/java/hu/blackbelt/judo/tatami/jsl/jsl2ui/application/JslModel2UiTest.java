@@ -132,9 +132,9 @@ public class JslModel2UiTest extends AbstractTest  {
         ), relationTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "Car::CarTransfer::ClassType",
-                "Car::UserActor::ClassType",
-                "Car::UserTransfer::ClassType"
+                "Car::CarTransfer",
+                "Car::UserActor",
+                "Car::UserTransfer"
         ), classTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(

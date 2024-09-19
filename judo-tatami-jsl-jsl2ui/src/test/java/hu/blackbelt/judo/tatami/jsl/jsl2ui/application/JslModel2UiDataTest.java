@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.Application;
+import hu.blackbelt.judo.meta.ui.NamedElement;
 import hu.blackbelt.judo.meta.ui.data.*;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
@@ -184,9 +185,9 @@ public class JslModel2UiDataTest extends AbstractTest {
 
         // Attributes
 
-        AttributeAssertion asserter = new AttributeAssertion("Actor::BasicDataTestModel::UserTransfer::ClassType::");
+        AttributeAssertion asserter = new AttributeAssertion("Actor::BasicDataTestModel::UserTransfer::");
 
-        ClassType userTransfer = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataTestModel::UserTransfer::ClassType")).findFirst().orElseThrow();
+        ClassType userTransfer = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataTestModel::UserTransfer")).findFirst().orElseThrow();
         assertNotNull(userTransfer);
         assertEquals(23, userTransfer.getAttributes().size());
 
@@ -314,16 +315,16 @@ public class JslModel2UiDataTest extends AbstractTest {
         Application app = apps.get(0);
 
         assertEquals(Set.of(
-            "Actor1::BasicDataCrossTransfersTestModel::Actor1::ClassType",
-            "Actor1::BasicDataCrossTransfersTestModel::Transfer1::ClassType",
-            "Actor1::BasicDataCrossTransfersTestModel::Transfer2::ClassType"
+            "Actor1::BasicDataCrossTransfersTestModel::Actor1",
+            "Actor1::BasicDataCrossTransfersTestModel::Transfer1",
+            "Actor1::BasicDataCrossTransfersTestModel::Transfer2"
         ), app.getClassTypes().stream().map(c -> ((ClassType) c).getFQName()).collect(Collectors.toSet()));
 
-        ClassType transfer1Row = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataCrossTransfersTestModel::Transfer1::ClassType")).findFirst().orElseThrow();
+        ClassType transfer1Row = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataCrossTransfersTestModel::Transfer1")).findFirst().orElseThrow();
         assertNotNull(transfer1Row);
         assertEquals(2, transfer1Row.getAttributes().size());
 
-        AttributeAssertion tr1Asserter = new AttributeAssertion("Actor1::BasicDataCrossTransfersTestModel::Transfer1::ClassType::");
+        AttributeAssertion tr1Asserter = new AttributeAssertion("Actor1::BasicDataCrossTransfersTestModel::Transfer1::");
 
         AttributeType string = transfer1Row.getAttributes().stream().filter(a -> a.getName().equals("string")).findFirst().orElseThrow();
         tr1Asserter.assertAttributeType(string, "string", "String", MemberType.DERIVED, false, true, true);
@@ -331,11 +332,11 @@ public class JslModel2UiDataTest extends AbstractTest {
         AttributeType booleanAttr = transfer1Row.getAttributes().stream().filter(a -> a.getName().equals("boolean")).findFirst().orElseThrow();
         tr1Asserter.assertAttributeType(booleanAttr, "boolean", "Boolean", MemberType.DERIVED, false, true, true);
 
-        ClassType transfer2Row = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataCrossTransfersTestModel::Transfer2::ClassType")).findFirst().orElseThrow();
+        ClassType transfer2Row = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataCrossTransfersTestModel::Transfer2")).findFirst().orElseThrow();
         assertNotNull(transfer2Row);
         assertEquals(1, transfer2Row.getAttributes().size());
 
-        AttributeAssertion tr2Asserter = new AttributeAssertion("Actor1::BasicDataCrossTransfersTestModel::Transfer2::ClassType::");
+        AttributeAssertion tr2Asserter = new AttributeAssertion("Actor1::BasicDataCrossTransfersTestModel::Transfer2::");
 
         AttributeType integer = transfer2Row.getAttributes().stream().filter(a -> a.getName().equals("integer")).findFirst().orElseThrow();
         tr2Asserter.assertAttributeType(integer, "integer", "Integer", MemberType.DERIVED, false, true, true);
@@ -372,8 +373,8 @@ public class JslModel2UiDataTest extends AbstractTest {
 
                 relation EntityRelatedTransfer association <= u.association create:true update:true delete:true;
                 relation EntityRelatedTransfer[] associationCollection <= u.associationCollection create:true update:true delete:true;
-                relation EntityRelatedTransfer eagerAssociation <= u.association create:true update:true delete:true eager:true;
-                relation EntityRelatedTransfer[] eagerAssociationCollection <= u.associationCollection create:true update:true delete:true eager:true;
+                relation EntityRelatedTransfer eagerAssociation <= u.association eager:true;
+                relation EntityRelatedTransfer[] eagerAssociationCollection <= u.associationCollection eager:true;
                 relation EntityRelatedTransfer userRelatedOpposite <= u.userRelatedOpposite create:true update:true delete:true;
 
                 relation EntityRelatedTransfer containment <= u.containment;
@@ -471,182 +472,185 @@ public class JslModel2UiDataTest extends AbstractTest {
 
         Application app1 = apps.get(0);
 
-        assertEquals(7, app1.getClassTypes().size());
-        assertEquals(26, app1.getRelationTypes().size());
+        assertEquals(Set.of(
+                "Actor::RelationsTestModel::UserTransfer",
+                "Actor::RelationsTestModel::EntityRelatedTransfer",
+                "Actor::RelationsTestModel::Actor"
+        ), app1.getClassTypes().stream().map(c -> ((ClassType) c).getFQName()).collect(Collectors.toSet()));
 
-        RelationType users = (RelationType) app1.getRelationTypes().stream().filter(r -> ((RelationType) r).getName().equals("users")).findFirst().orElseThrow();
+        assertEquals(Set.of(
+                "Actor::RelationsTestModel::Actor::user",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyCollectionStaticEager",
+                "Actor::RelationsTestModel::UserTransfer::lazyTransientWithDefault",
+                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainment",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyCollectionStatic",
+                "Actor::RelationsTestModel::UserTransfer::associationCollection",
+                "Actor::RelationsTestModel::UserTransfer::containmentCollection",
+                "Actor::RelationsTestModel::UserTransfer::lazyTransientCollectionWithDefault",
+                "Actor::RelationsTestModel::UserTransfer::userRelatedOpposite",
+                "Actor::RelationsTestModel::UserTransfer::containment",
+                "Actor::RelationsTestModel::UserTransfer::eagerAssociation",
+                "Actor::RelationsTestModel::UserTransfer::association",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyStaticEager",
+                "Actor::RelationsTestModel::UserTransfer::unmappedRequired",
+                "Actor::RelationsTestModel::UserTransfer::derivedContainment",
+                "Actor::RelationsTestModel::UserTransfer::derivedContainmentCollection",
+                "Actor::RelationsTestModel::UserTransfer::eagerAssociationCollection",
+                "Actor::RelationsTestModel::UserTransfer::unmappedCollection",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyStatic",
+                "Actor::RelationsTestModel::UserTransfer::unmapped",
+                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainmentCollection"
+        ), app1.getRelationTypes().stream().map(c -> ((RelationType) c).getFQName()).collect(Collectors.toSet()));
 
-        ClassType userTransfer = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::UserTransfer::ClassType")).findFirst().orElseThrow();
-        ClassType userView = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::UserView::ClassType")).findFirst().orElseThrow();
-        ClassType mappedRelated = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::MappedRelated::ClassType")).findFirst().orElseThrow();
-        ClassType mappedRelatedRow = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::MappedRelatedRow::ClassType")).findFirst().orElseThrow();
-        ClassType unmappedRelated = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::UnmappedRelated::ClassType")).findFirst().orElseThrow();
-        ClassType unmappedRelatedRow = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::UnmappedRelatedTable::ClassType")).findFirst().orElseThrow();
+        RelationType user = (RelationType) app1.getRelationTypes().stream().filter(r -> ((RelationType) r).getName().equals("user")).findFirst().orElseThrow();
 
-        assertEquals(userView, users.getTarget());
+        ClassType actorTransfer = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::Actor")).findFirst().orElseThrow();
+        ClassType userTransfer = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::UserTransfer")).findFirst().orElseThrow();
+        ClassType entityRelatedTransfer = (ClassType) app1.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelationsTestModel::EntityRelatedTransfer")).findFirst().orElseThrow();
 
-        List<RelationType> userViewRelations = userView.getRelations();
+        assertEquals(userTransfer, user.getTarget());
 
-        assertEquals(25, userViewRelations.size());
+        List<RelationType> userViewRelations = userTransfer.getRelations();
+
+        assertEquals(Set.of(
+                "Actor::RelationsTestModel::UserTransfer::derivedContainmentCollection",
+                "Actor::RelationsTestModel::UserTransfer::containment",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyStatic",
+                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainment",
+                "Actor::RelationsTestModel::UserTransfer::association",
+                "Actor::RelationsTestModel::UserTransfer::eagerAssociation",
+                "Actor::RelationsTestModel::UserTransfer::unmappedRequired",
+                "Actor::RelationsTestModel::UserTransfer::unmapped",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyCollectionStaticEager",
+                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainmentCollection",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyStaticEager",
+                "Actor::RelationsTestModel::UserTransfer::lazyTransientWithDefault",
+                "Actor::RelationsTestModel::UserTransfer::unmappedCollection",
+                "Actor::RelationsTestModel::UserTransfer::userRelatedOpposite",
+                "Actor::RelationsTestModel::UserTransfer::associationCollection",
+                "Actor::RelationsTestModel::UserTransfer::containmentCollection",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyCollectionStatic",
+                "Actor::RelationsTestModel::UserTransfer::lazyTransientCollectionWithDefault",
+                "Actor::RelationsTestModel::UserTransfer::eagerAssociationCollection",
+                "Actor::RelationsTestModel::UserTransfer::derivedContainment"
+        ), userTransfer.getRelations().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         // According to JSLUtils, transients are always aggregation regardless of what we model.
-        RelationType unmappedLazy = userViewRelations.stream().filter(r -> r.getName().equals("unmappedLazy")).findFirst().orElseThrow();
-        assertRelationType(unmappedLazy, unmappedRelated, RelationKind.AGGREGATION, MemberType.TRANSIENT, false, true, false, false, Set.of());
+        RelationType unmapped = userViewRelations.stream().filter(r -> r.getName().equals("unmapped")).findFirst().orElseThrow();
+        assertRelationType(unmapped, entityRelatedTransfer, RelationKind.AGGREGATION, MemberType.TRANSIENT, false, true, false, false, Set.of(RelationBehaviourType.TEMPLATE));
 
-        RelationType unmappedLazyRequired = userViewRelations.stream().filter(r -> r.getName().equals("unmappedLazyRequired")).findFirst().orElseThrow();
-        assertRelationType(unmappedLazyRequired, unmappedRelated, RelationKind.AGGREGATION, MemberType.TRANSIENT, false, false, false, false, Set.of());
+        RelationType unmappedRequired = userViewRelations.stream().filter(r -> r.getName().equals("unmappedRequired")).findFirst().orElseThrow();
+        assertRelationType(unmappedRequired, entityRelatedTransfer, RelationKind.AGGREGATION, MemberType.TRANSIENT, false, false, false, false, Set.of(RelationBehaviourType.TEMPLATE));
 
-        RelationType unmappedLazyCollection = userViewRelations.stream().filter(r -> r.getName().equals("unmappedLazyCollection")).findFirst().orElseThrow();
-        assertRelationType(unmappedLazyCollection, unmappedRelatedRow, RelationKind.AGGREGATION, MemberType.TRANSIENT, true, true, false, false, Set.of());
+        RelationType unmappedCollection = userViewRelations.stream().filter(r -> r.getName().equals("unmappedCollection")).findFirst().orElseThrow();
+        assertRelationType(unmappedCollection, entityRelatedTransfer, RelationKind.AGGREGATION, MemberType.TRANSIENT, true, true, false, false, Set.of(RelationBehaviourType.TEMPLATE));
 
-        RelationType lazyAssociation = userViewRelations.stream().filter(r -> r.getName().equals("lazyAssociation")).findFirst().orElseThrow();
-        assertRelationType(lazyAssociation, mappedRelated, RelationKind.ASSOCIATION, MemberType.STORED, false, true, true, true, Set.of(
+        RelationType association = userViewRelations.stream().filter(r -> r.getName().equals("association")).findFirst().orElseThrow();
+        assertRelationType(association, entityRelatedTransfer, RelationKind.ASSOCIATION, MemberType.STORED, false, true, true, true, Set.of(
+                RelationBehaviourType.TEMPLATE,
                 RelationBehaviourType.VALIDATE_CREATE,
                 RelationBehaviourType.CREATE,
                 RelationBehaviourType.VALIDATE_UPDATE,
                 RelationBehaviourType.UPDATE,
                 RelationBehaviourType.DELETE,
                 RelationBehaviourType.REFRESH,
-                RelationBehaviourType.LIST
+                RelationBehaviourType.LIST,
+                RelationBehaviourType.SET,
+                RelationBehaviourType.UNSET
         ));
 
-        RelationType lazyAssociationOpposite = userViewRelations.stream().filter(r -> r.getName().equals("lazyAssociationOpposite")).findFirst().orElseThrow();
-        assertRelationType(lazyAssociationOpposite, mappedRelated, RelationKind.ASSOCIATION, MemberType.STORED, false, true, true, true, Set.of(
+        RelationType userRelatedOpposite = userViewRelations.stream().filter(r -> r.getName().equals("userRelatedOpposite")).findFirst().orElseThrow();
+        assertRelationType(userRelatedOpposite, entityRelatedTransfer, RelationKind.ASSOCIATION, MemberType.STORED, false, true, true, true, Set.of(
+                RelationBehaviourType.TEMPLATE,
                 RelationBehaviourType.VALIDATE_CREATE,
                 RelationBehaviourType.CREATE,
                 RelationBehaviourType.VALIDATE_UPDATE,
                 RelationBehaviourType.UPDATE,
                 RelationBehaviourType.DELETE,
                 RelationBehaviourType.REFRESH,
-                RelationBehaviourType.LIST
+                RelationBehaviourType.LIST,
+                RelationBehaviourType.SET,
+                RelationBehaviourType.UNSET
         ));
 
-        RelationType derivedLazyContainment = userViewRelations.stream().filter(r -> r.getName().equals("derivedLazyContainment")).findFirst().orElseThrow();
-        assertRelationType(derivedLazyContainment, mappedRelated, RelationKind.ASSOCIATION, MemberType.DERIVED, false, true, true, true, Set.of(
+        RelationType containment = userViewRelations.stream().filter(r -> r.getName().equals("containment")).findFirst().orElseThrow();
+        assertRelationType(containment, entityRelatedTransfer, RelationKind.ASSOCIATION, MemberType.DERIVED, false, true, true, true, Set.of(
                 RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
+                RelationBehaviourType.REFRESH,
+                RelationBehaviourType.TEMPLATE
         ));
 
-        RelationType derivedLazyContainmentCollection = userViewRelations.stream().filter(r -> r.getName().equals("derivedLazyContainmentCollection")).findFirst().orElseThrow();
-        assertRelationType(derivedLazyContainmentCollection, mappedRelatedRow, RelationKind.ASSOCIATION, MemberType.DERIVED, true, true, true, true, Set.of(
+        RelationType containmentCollection = userViewRelations.stream().filter(r -> r.getName().equals("containmentCollection")).findFirst().orElseThrow();
+        assertRelationType(containmentCollection, entityRelatedTransfer, RelationKind.ASSOCIATION, MemberType.DERIVED, true, true, true, true, Set.of(
                 RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
+                RelationBehaviourType.REFRESH,
+                RelationBehaviourType.TEMPLATE
         ));
 
         RelationType derivedEagerContainment = userViewRelations.stream().filter(r -> r.getName().equals("derivedEagerContainment")).findFirst().orElseThrow();
-        assertRelationType(derivedEagerContainment, mappedRelated, RelationKind.AGGREGATION, MemberType.DERIVED, false, true, true, true, Set.of(
+        assertRelationType(derivedEagerContainment, entityRelatedTransfer, RelationKind.AGGREGATION, MemberType.DERIVED, false, true, true, true, Set.of(
                 RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
+                RelationBehaviourType.REFRESH,
+                RelationBehaviourType.TEMPLATE
         ));
 
         RelationType derivedEagerContainmentCollection = userViewRelations.stream().filter(r -> r.getName().equals("derivedEagerContainmentCollection")).findFirst().orElseThrow();
-        assertRelationType(derivedEagerContainmentCollection, mappedRelatedRow, RelationKind.AGGREGATION, MemberType.DERIVED, true, true, true, true, Set.of(
+        assertRelationType(derivedEagerContainmentCollection, entityRelatedTransfer, RelationKind.AGGREGATION, MemberType.DERIVED, true, true, true, true, Set.of(
                 RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
+                RelationBehaviourType.REFRESH,
+                RelationBehaviourType.TEMPLATE
         ));
 
-        RelationType derivedLazyAssociation = userViewRelations.stream().filter(r -> r.getName().equals("derivedLazyAssociation")).findFirst().orElseThrow();
-        assertRelationType(derivedLazyAssociation, mappedRelated, RelationKind.ASSOCIATION, MemberType.DERIVED, false, true, true, true, Set.of(
+        RelationType eagerAssociation = userViewRelations.stream().filter(r -> r.getName().equals("eagerAssociation")).findFirst().orElseThrow();
+        assertRelationType(eagerAssociation, entityRelatedTransfer, RelationKind.AGGREGATION, MemberType.DERIVED, false, true, true, true, Set.of(
                 RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
+                RelationBehaviourType.REFRESH,
+                RelationBehaviourType.TEMPLATE
         ));
 
-        RelationType derivedLazyAssociationCollection = userViewRelations.stream().filter(r -> r.getName().equals("derivedLazyAssociationCollection")).findFirst().orElseThrow();
-        assertRelationType(derivedLazyAssociationCollection, mappedRelatedRow, RelationKind.ASSOCIATION, MemberType.DERIVED, true, true, true, true, Set.of(
+        RelationType eagerAssociationCollection = userViewRelations.stream().filter(r -> r.getName().equals("eagerAssociationCollection")).findFirst().orElseThrow();
+        assertRelationType(eagerAssociationCollection, entityRelatedTransfer, RelationKind.AGGREGATION, MemberType.DERIVED, true, true, true, true, Set.of(
                 RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
-        ));
-
-        RelationType derivedEagerAssociation = userViewRelations.stream().filter(r -> r.getName().equals("derivedEagerAssociation")).findFirst().orElseThrow();
-        assertRelationType(derivedEagerAssociation, mappedRelated, RelationKind.AGGREGATION, MemberType.DERIVED, false, true, true, true, Set.of(
-                RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
-        ));
-
-        RelationType derivedEagerAssociationCollection = userViewRelations.stream().filter(r -> r.getName().equals("derivedEagerAssociationCollection")).findFirst().orElseThrow();
-        assertRelationType(derivedEagerAssociationCollection, mappedRelatedRow, RelationKind.AGGREGATION, MemberType.DERIVED, true, true, true, true, Set.of(
-                RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
+                RelationBehaviourType.REFRESH,
+                RelationBehaviourType.TEMPLATE
         ));
 
         RelationType derivedLazyStatic = userViewRelations.stream().filter(r -> r.getName().equals("derivedLazyStatic")).findFirst().orElseThrow();
-        assertRelationType(derivedLazyStatic, mappedRelated, RelationKind.ASSOCIATION, MemberType.DERIVED, false, true, true, true, Set.of(
+        assertRelationType(derivedLazyStatic, entityRelatedTransfer, RelationKind.ASSOCIATION, MemberType.DERIVED, false, true, true, true, Set.of(
                 RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
+                RelationBehaviourType.REFRESH,
+                RelationBehaviourType.TEMPLATE
         ));
 
         RelationType derivedLazyCollectionStatic = userViewRelations.stream().filter(r -> r.getName().equals("derivedLazyCollectionStatic")).findFirst().orElseThrow();
-        assertRelationType(derivedLazyCollectionStatic, mappedRelatedRow, RelationKind.ASSOCIATION, MemberType.DERIVED, true, true, true, true, Set.of(
-                RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
-        ));
-
-        RelationType derivedEagerStatic = userViewRelations.stream().filter(r -> r.getName().equals("derivedEagerStatic")).findFirst().orElseThrow();
-        assertRelationType(derivedEagerStatic, mappedRelated, RelationKind.AGGREGATION, MemberType.DERIVED, false, true, true, true, Set.of(
-                RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
-        ));
-
-        RelationType derivedEagerCollectionStatic = userViewRelations.stream().filter(r -> r.getName().equals("derivedEagerCollectionStatic")).findFirst().orElseThrow();
-        assertRelationType(derivedEagerCollectionStatic, mappedRelatedRow, RelationKind.AGGREGATION, MemberType.DERIVED, true, true, true, true, Set.of(
-                RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
-        ));
-
-        RelationType mappedLazyAssociationDerived = userViewRelations.stream().filter(r -> r.getName().equals("mappedLazyAssociationDerived")).findFirst().orElseThrow();
-        assertRelationType(mappedLazyAssociationDerived, mappedRelated, RelationKind.ASSOCIATION, MemberType.DERIVED, false, true, true, true, Set.of(
-                RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
-        ));
-
-        RelationType mappedLazyAssociationCollectionDerived = userViewRelations.stream().filter(r -> r.getName().equals("mappedLazyAssociationCollectionDerived")).findFirst().orElseThrow();
-        assertRelationType(mappedLazyAssociationCollectionDerived, mappedRelatedRow, RelationKind.ASSOCIATION, MemberType.DERIVED, true, true, true, true, Set.of(
-                RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH
-        ));
-
-        RelationType lazyAssociationWithChoicesAndDefault = userViewRelations.stream().filter(r -> r.getName().equals("lazyAssociationWithChoicesAndDefault")).findFirst().orElseThrow();
-        assertRelationType(lazyAssociationWithChoicesAndDefault, mappedRelated, RelationKind.ASSOCIATION, MemberType.STORED, false, true, true, true, Set.of(
+        assertRelationType(derivedLazyCollectionStatic, entityRelatedTransfer, RelationKind.ASSOCIATION, MemberType.DERIVED, true, true, true, true, Set.of(
                 RelationBehaviourType.LIST,
                 RelationBehaviourType.REFRESH,
-                RelationBehaviourType.RANGE,
-                RelationBehaviourType.TEMPLATE,
-                RelationBehaviourType.CREATE,
-                RelationBehaviourType.VALIDATE_CREATE
+                RelationBehaviourType.TEMPLATE
         ));
 
-        RelationType lazyAssociationCollectionWithChoicesAndDefault = userViewRelations.stream().filter(r -> r.getName().equals("lazyAssociationCollectionWithChoicesAndDefault")).findFirst().orElseThrow();
-        assertRelationType(lazyAssociationCollectionWithChoicesAndDefault, mappedRelatedRow, RelationKind.ASSOCIATION, MemberType.STORED, true, true, true, true, Set.of(
+        RelationType derivedLazyStaticEager = userViewRelations.stream().filter(r -> r.getName().equals("derivedLazyStaticEager")).findFirst().orElseThrow();
+        assertRelationType(derivedLazyStaticEager, entityRelatedTransfer, RelationKind.AGGREGATION, MemberType.DERIVED, false, true, true, true, Set.of(
                 RelationBehaviourType.LIST,
                 RelationBehaviourType.REFRESH,
-                RelationBehaviourType.RANGE,
-                RelationBehaviourType.TEMPLATE,
-                RelationBehaviourType.CREATE,
-                RelationBehaviourType.VALIDATE_CREATE
+                RelationBehaviourType.TEMPLATE
         ));
 
-        RelationType lazyAssociationOppositeWithChoicesAndDefault = userViewRelations.stream().filter(r -> r.getName().equals("lazyAssociationOppositeWithChoicesAndDefault")).findFirst().orElseThrow();
-        assertRelationType(lazyAssociationOppositeWithChoicesAndDefault, mappedRelated, RelationKind.ASSOCIATION, MemberType.STORED, false, true, true, true, Set.of(
+        RelationType derivedLazyCollectionStaticEager = userViewRelations.stream().filter(r -> r.getName().equals("derivedLazyCollectionStaticEager")).findFirst().orElseThrow();
+        assertRelationType(derivedLazyCollectionStaticEager, entityRelatedTransfer, RelationKind.AGGREGATION, MemberType.DERIVED, true, true, true, true, Set.of(
                 RelationBehaviourType.LIST,
                 RelationBehaviourType.REFRESH,
-                RelationBehaviourType.RANGE
-        ));
-
-        RelationType lazyAssociationOppositeCollectionWithChoicesAndDefault = userViewRelations.stream().filter(r -> r.getName().equals("lazyAssociationOppositeCollectionWithChoicesAndDefault")).findFirst().orElseThrow();
-        assertRelationType(lazyAssociationOppositeCollectionWithChoicesAndDefault, mappedRelatedRow, RelationKind.ASSOCIATION, MemberType.STORED, true, true, true, true, Set.of(
-                RelationBehaviourType.LIST,
-                RelationBehaviourType.REFRESH,
-                RelationBehaviourType.RANGE
+                RelationBehaviourType.TEMPLATE
         ));
 
         // According to JSLUtils, transients are always aggregation regardless of what we model.
         RelationType lazyTransientWithDefault = userViewRelations.stream().filter(r -> r.getName().equals("lazyTransientWithDefault")).findFirst().orElseThrow();
-        assertRelationType(lazyTransientWithDefault, mappedRelated, RelationKind.AGGREGATION, MemberType.TRANSIENT, false, true, false, false, Set.of(
+        assertRelationType(lazyTransientWithDefault, entityRelatedTransfer, RelationKind.AGGREGATION, MemberType.TRANSIENT, false, true, false, false, Set.of(
                 RelationBehaviourType.TEMPLATE
         ));
 
         RelationType lazyTransientCollectionWithDefault = userViewRelations.stream().filter(r -> r.getName().equals("lazyTransientCollectionWithDefault")).findFirst().orElseThrow();
-        assertRelationType(lazyTransientCollectionWithDefault, mappedRelatedRow, RelationKind.AGGREGATION, MemberType.TRANSIENT, true, true, false, false, Set.of(
+        assertRelationType(lazyTransientCollectionWithDefault, entityRelatedTransfer, RelationKind.AGGREGATION, MemberType.TRANSIENT, true, true, false, false, Set.of(
                 RelationBehaviourType.TEMPLATE
         ));
     }
