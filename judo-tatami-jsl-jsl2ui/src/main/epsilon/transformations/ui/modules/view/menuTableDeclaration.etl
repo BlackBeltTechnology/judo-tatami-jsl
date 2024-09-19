@@ -73,7 +73,7 @@ rule AccessTableBackAction
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableBackAction");
         t.name = s.name + "::Back";
-        t.actionDefinition = s.referenceType.equivalent("AccessTablePageContainerBackActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("TablePageContainerBackActionDefinition");
 
         log.debug("AccessTableBackAction: " + t.name);
 }

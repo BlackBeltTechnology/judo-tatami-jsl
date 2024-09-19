@@ -150,14 +150,14 @@ rule TableAddSelectorTableTable
         // TODO eventually selector should work?
         var rowDeclaration = s.referenceType;
 
-        var primitiveFields = rowDeclaration.members.select(m | m.isTypeOf(JSL!RowFieldDeclaration) and m.referenceType.`primitive`.isDefined());
-        // var links = rowDeclaration.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
+        var primitiveFields = s.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration) and m.referenceType.`primitive`.isDefined());
+        // var links = s.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
 
         for (field in primitiveFields) {
-            var col = field.equivalentDiscriminated("TablePrimitiveColumn", id);
+            var col = field.transferField.target.equivalentDiscriminated("TablePrimitiveColumn", id);
             t.columns.add(col);
             if (col.attributeType.isFilterable) {
-               t.filters.add(field.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
+               t.filters.add(field.transferField.target.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
             }
         }
 /*

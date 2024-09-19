@@ -41,3 +41,13 @@ operation JSL!UIViewDeclaration getExposedVisualElements(): Set {
 
     return ves;
 }
+
+@cached
+operation JSL!UIViewDeclaration getAllLinks(): Set {
+    return self.getExposedVisualElements().select(v | v.isKindOf(JSL!UIViewLinkDeclaration)).asSet();
+}
+
+@cached
+operation JSL!UIViewDeclaration getAllTables(): Set {
+    return self.getExposedVisualElements().select(v | v.isKindOf(JSL!UIViewTableDeclaration)).asSet();
+}

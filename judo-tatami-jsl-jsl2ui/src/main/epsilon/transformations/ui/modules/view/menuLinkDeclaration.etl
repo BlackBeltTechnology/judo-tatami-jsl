@@ -45,75 +45,74 @@ rule AccessViewPageDefinition
 
         t.dataElement = relation.equivalent("RelationType");
 
-        // var relations = s.referenceType.getDirectRelations();
-
         /*
         log.info("===================");
         log.info(t.name + ":");
         log.info(relations.collect(r | r.name).concat(", "));
         log.info("===================");
         */
-/*
-        for (link in relations.select(r | r.isKindOf(JSL!ViewLinkDeclaration))) {
+
+        for (link in s.referenceType.getAllLinks()) {
+            var lRelation = link.transferRelation.target;
+
             t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", "AccessPageDefinition"));
-            if (link.isRefreshAllowed() and not link.isEager()) {
+            if (lRelation.isRefreshAllowed() and not lRelation.isEager()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", "AccessPageDefinition"));
             }
-            if (link.isCreateAllowed()) {
+            if (lRelation.isCreateAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", "AccessPageDefinition"));
             }
-            if (link.isDeleteAllowed()) {
+            if (lRelation.isDeleteAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", "AccessPageDefinition"));
             }
-            if (link.isSetReferenceAllowed()) {
+            if (lRelation.isSetReferenceAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", "AccessPageDefinition"));
             }
-            if (link.isUnsetReferenceAllowed()) {
+            if (lRelation.isUnsetReferenceAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", "AccessPageDefinition"));
             }
         }
 
-        for (table in relations.select(r | r.isKindOf(JSL!ViewTableDeclaration))) {
+        for (table in s.referenceType.getAllTables()) {
+            var tRelation = table.transferRelation.target;
+            /*
             var detailLink = table.getDetailLink();
 
             if (detailLink.isDefined()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", "AccessPageDefinition"));
             }
-            if (table.isFilterSupported()) {
+            */
+            if (tRelation.isFilterSupported()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationFilterAction", "AccessPageDefinition"));
             }
-            if (table.isRefreshAllowed()) {
+            if (tRelation.isRefreshAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", "AccessPageDefinition"));
             }
-            if (table.isCreateAllowed()) {
+            if (tRelation.isCreateAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", "AccessPageDefinition"));
             }
-            if (table.isDeleteAllowed()) {
+            if (tRelation.isDeleteAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "AccessPageDefinition"));
             }
-            if (table.isAddReferenceAllowed()) {
+            if (tRelation.isAddReferenceAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", "AccessPageDefinition"));
             }
-            if (table.isRemoveReferenceAllowed()) {
+            if (tRelation.isRemoveReferenceAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", "AccessPageDefinition"));
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", "AccessPageDefinition"));
             }
         }
-*/
-/*
+
         t.actions.add(s.equivalent("AccessViewBackAction"));
         if (relation.isRefreshAllowed()) {
             t.actions.add(s.equivalent("AccessViewRefreshAction"));
         }
-*/
-        /*
         if (relation.isUpdateAllowed()) {
-            t.actions.add(s.equivalent("ViewLinkPageDefinitionUpdateAction"));
+            t.actions.add(s.equivalent("AccessViewUpdateAction"));
         }
         if (relation.isDeleteAllowed()) {
-            t.actions.add(s.equivalent("ViewLinkPageDefinitionDeleteAction"));
+            t.actions.add(s.equivalent("AccessViewDeleteAction"));
         }
-        */
 
         log.debug("Create AccessViewPageDefinition: " + t.name);
 }
@@ -127,4 +126,40 @@ rule AccessViewBackAction
         t.actionDefinition = s.equivalent("AccessViewPageContainerBackActionDefinition");
 
         log.debug("AccessTableBackAction: " + t.name);
+}
+
+@lazy
+rule AccessViewRefreshAction
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewRefreshAction");
+ 		t.name = s.getFqName() + "::Refresh";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.referenceType.equivalent("ViewPageContainerRefreshActionDefinition");
+
+        log.debug("AccessViewRefreshAction: " + t.name);
+}
+
+@lazy
+rule AccessViewUpdateAction
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewUpdateAction");
+ 		t.name = s.getFqName() + "::Update";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.referenceType.equivalent("ViewPageContainerUpdateActionDefinition");
+
+        log.debug("AccessViewUpdateAction: " + t.name);
+}
+
+@lazy
+rule AccessViewDeleteAction
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewDeleteAction");
+ 		t.name = s.getFqName() + "::Delete";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.referenceType.equivalent("ViewPageContainerDeleteActionDefinition");
+
+        log.debug("AccessViewDeleteAction: " + t.name);
 }
