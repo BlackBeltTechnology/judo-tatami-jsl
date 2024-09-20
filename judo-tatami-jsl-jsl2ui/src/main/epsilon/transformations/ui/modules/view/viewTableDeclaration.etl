@@ -762,7 +762,7 @@ rule ViewTableDeclarationAddSelectorTableFilterAction
  		t.name = s.getFqName() + "::AddSelector::Table::Filter";
         t.ownerDataElement = s.equivalent("RelationType");
         t.targetDataElement = s.equivalent("RelationType");
-        t.actionDefinition = s.referenceType.equivalent("ViewTableDeclarationAddSelectorTableTableFilterActionDefinition");
+        t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableTableFilterActionDefinition");
 
         log.debug("ViewTableDeclarationAddSelectorTableFilterAction: " + t.name);
 }

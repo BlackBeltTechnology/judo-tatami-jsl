@@ -121,11 +121,11 @@ rule AccessViewPageDefinition
 rule AccessViewBackAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableBackAction");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewBackAction");
         t.name = s.name + "::Back";
-        t.actionDefinition = s.equivalent("AccessViewPageContainerBackActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("ViewPageContainerBackActionDefinition");
 
-        log.debug("AccessTableBackAction: " + t.name);
+        log.debug("AccessViewBackAction: " + t.name);
 }
 
 @lazy
