@@ -27,10 +27,10 @@ rule RowLinkPageDefinition
             if (link.isDeleteAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", "RowLinkPageDefinition"));
             }
-            if (link.isSetReferenceAllowed()) {
+            if (link.getSelectorTableModifier().isDefined()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", "RowLinkPageDefinition"));
             }
-            if (link.isUnsetReferenceAllowed()) {
+            if (link.getSelectorTableModifier().isDefined()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", "RowLinkPageDefinition"));
             }
         }

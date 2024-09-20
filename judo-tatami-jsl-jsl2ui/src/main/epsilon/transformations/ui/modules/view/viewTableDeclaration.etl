@@ -114,18 +114,18 @@ rule InlineViewTable
 
         var id = rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTable";
         t.setId(id);
-        t.dataElement = s.equivalent("RelationType");
+        t.dataElement = s.transferRelation.target.equivalent("RelationType");
 
         s.eContainer.uiContainer().children.add(t);
 
-        var primitiveFields = s.referenceType.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration) and m.referenceType.`primitive`.isDefined());
+        var columns = s.referenceType.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration) and m.referenceType.`primitive`.isDefined());
         // var links = s.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
 
-        for (field in primitiveFields) {
-            var col = field.transferField.target.equivalentDiscriminated("TablePrimitiveColumn", id);
+        for (column in columns) {
+            var col = column.equivalentDiscriminated("TablePrimitiveColumn", id);
             t.columns.add(col);
             if (col.attributeType.isFilterable) {
-               t.filters.add(field.transferField.target.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
+               t.filters.add(column.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
             }
         }
 /*
@@ -154,7 +154,7 @@ rule InlineViewTable
 @lazy
 @greedy
 rule TablePrimitiveColumn
-    transform s: JSL!TransferFieldDeclaration
+    transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Column {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumn");
         t.name = s.name;
@@ -172,7 +172,7 @@ rule TablePrimitiveColumn
 @lazy
 @greedy
 rule ColumnIcon
-    transform s: JSL!TransferFieldDeclaration
+    transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Icon {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
         t.iconName = s.getIconModifier().value.value;
@@ -185,7 +185,7 @@ rule ColumnIcon
 @lazy
 @greedy
 rule TablePrimitiveColumnFilter
-    transform s: JSL!TransferFieldDeclaration
+    transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Filter {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumnFilter");
         t.name = s.name + "Filter";
@@ -300,7 +300,7 @@ rule InlineViewTableRowButtonGroup
         // TODO add buttons
 
         if (s.getUpdateViewModifier().isDefined()) {
-            t.buttons.add(s.equivalent("ViewTableDeclarationRowOpenPageButton"));
+            t.buttons.add(s.equivalent("ViewTableDeclarationOpenPageButton"));
         }
         if (s.transferRelation.target.isDeleteAllowed()) {
             t.buttons.add(s.equivalent("ViewTableDeclarationRowDeleteButton"));
@@ -453,42 +453,39 @@ rule ViewTableDeclarationOpenCreateAction
 }
 
 @lazy
-rule ViewTableDeclarationRowOpenPageButton
+rule ViewTableDeclarationOpenPageButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowOpenPageButton");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageButton");
         t.name = s.name + "::View";
-        t.icon = s.equivalent("ViewTableDeclarationRowOpenPageButtonIcon");
+        t.icon = s.equivalent("ViewTableDeclarationOpenPageButtonIcon");
         t.label = "View";
         t.buttonStyle = "contained";
-        t.actionDefinition = s.equivalent("ViewTableDeclarationRowOpenPageActionDefinition");
+        t.actionDefinition = s.equivalent("ViewTableDeclarationOpenPageActionDefinition");
 
-        log.debug("ViewTableDeclarationRowOpenPageButton: " + t.name);
+        log.debug("ViewTableDeclarationOpenPageButton: " + t.name);
 }
 
 @lazy
-rule ViewTableDeclarationRowOpenPageButtonIcon
+rule ViewTableDeclarationOpenPageButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowOpenPageButtonIcon");
-        t.name = s.name + "RowOpenIcon";
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageButtonIcon");
+        t.name = s.name + "OpenPageIcon";
         t.iconName = "visibility";
 
-        log.debug("ViewTableDeclarationRowOpenPageButtonIcon: " + t.name);
+        log.debug("ViewTableDeclarationOpenPageButtonIcon: " + t.name);
 }
 
 @lazy
-rule ViewTableDeclarationRowOpenPageActionDefinition
+rule ViewTableDeclarationOpenPageActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::RowOpenPageActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowOpenPageActionDefinition");
+    to t: UI!ui::OpenPageActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageActionDefinition");
         t.name = s.name + "::View";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
-        // var rowLinks = s.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
-        // t.linkRelation = rowLinks.selectOne(l | l.getDetail().isDefined()).equivalent("RelationType");
-
-        log.debug("ViewTableDeclarationRowOpenPageActionDefinition: " + t.name);
+        log.debug("ViewTableDeclarationOpenPageActionDefinition: " + t.name);
 }
 
 @lazy
@@ -499,8 +496,8 @@ rule ViewTableDeclarationOpenPageAction
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageAction");
 
-         t.name = s.name + "::OpenPage";
-        t.actionDefinition = s.equivalent("ViewTableDeclarationRowOpenPageActionDefinition");
+        t.name = s.name + "::OpenPage";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationOpenPageActionDefinition");
 
         t.targetPageDefinition = s.getDetailLink().equivalent("RowLinkPageDefinition");
 
@@ -650,8 +647,8 @@ rule ViewTableDeclarationBulkRemoveAction
         t.name = s.name + "::BulkRemove";
         t.actionDefinition = s.equivalent("ViewTableDeclarationBulkRemoveActionDefinition");
 
-        t.ownerDataElement = s.equivalent("RelationType");
-        t.targetDataElement = s.equivalent("RelationType");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewTableDeclarationBulkRemoveAction: " + t.name);
 }
@@ -700,8 +697,8 @@ rule ViewTableDeclarationClearAction
         t.name = s.name + "::Clear";
         t.actionDefinition = s.equivalent("ViewTableDeclarationClearActionDefinition");
 
-        t.ownerDataElement = s.equivalent("RelationType");
-        t.targetDataElement = s.equivalent("RelationType");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewTableDeclarationClearAction: " + t.name);
 }
@@ -716,7 +713,7 @@ rule ViewTableDeclarationAddSelectorPageDefinition
     t.name = s.getFqName() + "::AddSelectorPage";
 
     t.container = s.equivalent("ViewTableDeclarationAddSelectorPageContainer");
-    t.dataElement = s.equivalent("RelationType");
+    t.dataElement = s.transferRelation.target.equivalent("RelationType");
     t.openInDialog = true;
     t.dialogSize = UI!ui::DialogSize#MD;
 
@@ -736,7 +733,7 @@ rule ViewTableDeclarationAddSelectorAddAction
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorAddAction");
  		t.name = s.getFqName() + "::AddSelector::Add";
-        t.ownerDataElement = s.equivalent("RelationType");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
         t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition");
 
         log.debug("ViewTableDeclarationAddSelectorAddAction: " + t.name);
@@ -748,7 +745,7 @@ rule ViewTableDeclarationAddSelectorBackAction
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorBackAction");
  		t.name = s.getFqName() + "::AddSelector::Back";
-        t.ownerDataElement = s.equivalent("RelationType");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
         t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableBackActionDefinition");
 
         log.debug("ViewTableDeclarationAddSelectorBackAction: " + t.name);
@@ -760,8 +757,8 @@ rule ViewTableDeclarationAddSelectorTableFilterAction
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableFilterAction");
  		t.name = s.getFqName() + "::AddSelector::Table::Filter";
-        t.ownerDataElement = s.equivalent("RelationType");
-        t.targetDataElement = s.equivalent("RelationType");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
         t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableTableFilterActionDefinition");
 
         log.debug("ViewTableDeclarationAddSelectorTableFilterAction: " + t.name);
@@ -773,8 +770,8 @@ rule ViewTableDeclarationAddSelectorTableRangeAction
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableRangeAction");
  		t.name = s.getFqName() + "::AddSelector::Table::Range";
-        t.ownerDataElement = s.equivalent("RelationType");
-        t.targetDataElement = s.equivalent("RelationType");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
         t.actionDefinition = s.equivalent("ViewTableDeclarationAddSelectorTableRangeActionDefinition");
 
         log.debug("ViewTableDeclarationAddSelectorTableRangeAction: " + t.name);
@@ -795,7 +792,7 @@ rule ViewTableDeclarationAddSelectorPageContainer
 
         t.children.add(s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorVisualElement"));
         t.actionButtonGroup = s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorButtonGroup");
-        t.dataElement = s.referenceType.equivalent("ClassType");
+        t.dataElement = s.referenceType.map.transfer.equivalent("ClassType");
         t.isSelector = true;
         t.isRelationSelector = true;
 
@@ -914,7 +911,7 @@ rule ViewTableDeclarationAddSelectorTableTable
         t.allowSelectMultiple = true;
         t.name = s.name + "::Add::Selector";
         t.relationName = s.name;
-        t.dataElement = s.referenceType.equivalent("ClassType");
+        t.dataElement = s.referenceType.map.transfer.equivalent("ClassType");
         t.tableActionButtonGroup = s.equivalent("ViewTableDeclarationAddSelectorTableTableButtonGroup");
         t.~pos = s.~pos;
         t.showTotalCount = false;
@@ -930,16 +927,16 @@ rule ViewTableDeclarationAddSelectorTableTable
         }
 
         // TODO eventually selector should work?
-        var rowDeclaration = s.referenceType;
+        var rowDeclaration = s.getSelectorTableModifier().row;
 
-        var primitiveFields = rowDeclaration.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration) and m.referenceType.`primitive`.isDefined());
+        var columns = rowDeclaration.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration) and m.referenceType.`primitive`.isDefined());
         // var links = rowDeclaration.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
 
-        for (field in primitiveFields) {
-            var col = field.transferField.target.equivalentDiscriminated("TablePrimitiveColumn", id);
+        for (column in columns) {
+            var col = column.equivalentDiscriminated("TablePrimitiveColumn", id);
             t.columns.add(col);
             if (col.attributeType.isFilterable) {
-               t.filters.add(field.transferField.target.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
+               t.filters.add(column.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
             }
         }
 /*

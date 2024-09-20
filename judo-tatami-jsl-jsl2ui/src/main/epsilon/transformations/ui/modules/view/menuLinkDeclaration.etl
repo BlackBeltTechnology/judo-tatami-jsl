@@ -65,10 +65,10 @@ rule AccessViewPageDefinition
             if (lRelation.isDeleteAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", "AccessPageDefinition"));
             }
-            if (lRelation.isSetReferenceAllowed()) {
+            if (link.getSelectorTableModifier().isDefined()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", "AccessPageDefinition"));
             }
-            if (lRelation.isUnsetReferenceAllowed()) {
+            if (link.getSelectorTableModifier().isDefined()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", "AccessPageDefinition"));
             }
         }

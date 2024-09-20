@@ -32,10 +32,10 @@ rule ViewLinkPageDefinition
             if (link.isDeleteAllowed()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", "ViewLinkPageDefinition"));
             }
-            if (link.isSetReferenceAllowed()) {
+            if (link.getSelectorTableModifier().isDefined()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", "ViewLinkPageDefinition"));
             }
-            if (link.isUnsetReferenceAllowed()) {
+            if (link.getSelectorTableModifier().isDefined()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", "ViewLinkPageDefinition"));
             }
         }
@@ -325,10 +325,10 @@ rule InlineViewLinkButtonGroup
         if (s.transferRelation.target.isDeleteAllowed()) {
             t.buttons.add(s.equivalent("ViewLinkDeclarationDeleteButton"));
         }
-        if (s.transferRelation.target.isSetReferenceAllowed()) {
+        if (s.getSelectorTableModifier().isDefined()) {
             t.buttons.add(s.equivalent("ViewLinkDeclarationOpenSetSelectorButton"));
         }
-        if (s.transferRelation.target.isUnsetReferenceAllowed()) {
+        if (s.getSelectorTableModifier().isDefined()) {
             t.buttons.add(s.equivalent("ViewLinkDeclarationUnsetButton"));
         }
 
@@ -718,7 +718,7 @@ rule ViewLinkDeclarationSetSelectorTable
         t.allowSelectMultiple = false;
         t.name = s.name + "::Set::Selector";
         t.relationName = s.name;
-        t.dataElement = s.referenceType.equivalent("ClassType");
+        t.dataElement = s.transferRelation.target.referenceType.equivalent("ClassType");
         t.tableActionButtonGroup = s.equivalent("ViewLinkDeclarationSetSelectorTableButtonGroup");
         t.~pos = s.~pos;
         t.showTotalCount = false;
@@ -735,14 +735,15 @@ rule ViewLinkDeclarationSetSelectorTable
 
         // TODO eventually selector should work?
         var targetDeclaration = s.referenceType;
+        var rowDeclaration = s.getSelectorTableModifier().row;
 
-        var primitiveFields = targetDeclaration.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration) and m.referenceType.`primitive`.isDefined());
+        var columns = rowDeclaration.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration) and m.referenceType.`primitive`.isDefined());
 
-        for (field in primitiveFields) {
-            var col = field.transferField.target.equivalentDiscriminated("TablePrimitiveColumn", id);
+        for (column in columns) {
+            var col = column.equivalentDiscriminated("TablePrimitiveColumn", id);
             t.columns.add(col);
             if (col.attributeType.isFilterable) {
-               t.filters.add(field.transferField.target.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
+               t.filters.add(column.equivalentDiscriminated("TablePrimitiveColumnFilter", id));
             }
         }
 

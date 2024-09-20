@@ -40,7 +40,7 @@ rule AccessTablePageDefinition
         t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
 
         if (s.getUpdateViewModifier().isDefined()) {
-            t.actions.add(s.equivalent("AccessTableRowOpenPageAction"));
+            t.actions.add(s.equivalent("AccessTableOpenPageAction"));
         }
         if (relation.isRefreshAllowed()) {
             t.actions.add(s.equivalent("AccessTableTableRefreshAction"));
@@ -114,17 +114,17 @@ rule AccessTableTableFilterAction
 }
 
 @lazy
-rule AccessTableRowOpenPageAction
+rule AccessTableOpenPageAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowOpenPageAction");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableOpenPageAction");
 
         t.name = s.name + "::OpenPage";
-        t.actionDefinition = s.referenceType.equivalent("TableRowOpenPageActionDefinition");
+        t.actionDefinition = s.referenceType.equivalent("TableOpenPageActionDefinition");
 
         t.targetPageDefinition = s.equivalent("AccessTableViewPageDefinition");
 
-        log.debug("AccessTableRowOpenPageAction: " + t.name);
+        log.debug("AccessTableOpenPageAction: " + t.name);
 }
 
 @lazy

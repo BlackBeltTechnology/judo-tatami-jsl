@@ -158,7 +158,7 @@ rule TableRowButtonGroup
 
         // TODO add buttons
 
-        t.buttons.add(s.equivalent("TableRowOpenPageButton"));
+        t.buttons.add(s.equivalent("TableOpenPageButton"));
         t.buttons.add(s.equivalent("TableRowDeleteButton"));
 
         log.debug("TableRowButtonGroup: " + t.name);
@@ -274,43 +274,39 @@ rule TableTableOpenCreateActionDefinition
 }
 
 @lazy
-rule TableRowOpenPageButton
+rule TableOpenPageButton
     transform s: JSL!UIRowDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowOpenPageButton");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableOpenPageButton");
         t.name = s.name + "::View";
-        t.icon = s.equivalent("TableRowOpenPageButtonIcon");
+        t.icon = s.equivalent("TableOpenPageButtonIcon");
         t.label = "View";
         t.buttonStyle = "contained";
-        t.actionDefinition = s.equivalent("TableRowOpenPageActionDefinition");
+        t.actionDefinition = s.equivalent("TableOpenPageActionDefinition");
 
-        log.debug("TableRowOpenPageButton: " + t.name);
+        log.debug("TableOpenPageButton: " + t.name);
 }
 
 @lazy
-rule TableRowOpenPageButtonIcon
+rule TableOpenPageButtonIcon
     transform s: JSL!UIRowDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowOpenPageButtonIcon");
-        t.name = s.name + "RowOpenIcon";
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableOpenPageButtonIcon");
+        t.name = s.name + "OpenPageIcon";
         t.iconName = "visibility";
 
-        log.debug("TableRowOpenPageButtonIcon: " + t.name);
+        log.debug("TableOpenPageButtonIcon: " + t.name);
 }
 
 @lazy
-rule TableRowOpenPageActionDefinition
+rule TableOpenPageActionDefinition
     transform s: JSL!UIRowDeclaration
     to t: UI!ui::OpenPageActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowOpenPageActionDefinition");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableOpenPageActionDefinition");
         t.name = s.name + "::View";
         t.targetType = s.map.transfer.equivalent("ClassType");
 
-        //var rowLinks = s.referenceType.members.select(m | m.isTypeOf(JSL!RowLinkDeclaration));
-
-        //t.linkRelation = rowLinks.selectOne(l | l.getDetail().isDefined()).equivalent("RelationType");
-
-        log.debug("TableRowOpenPageActionDefinition: " + t.name);
+        log.debug("TableOpenPageActionDefinition: " + t.name);
 }
 
 @lazy
