@@ -51,13 +51,13 @@ rule AccessTablePageDefinition
         if (relation.isFilterSupported()) {
             t.actions.add(s.equivalent("AccessTableTableFilterAction"));
         }
-        if (relation.isCreateAllowed()) {
+        if (s.getCreateFormModifier().isDefined()) {
             t.actions.add(s.equivalent("AccessTableTableOpenCreateAction"));
         }
-        if (relation.isAddReferenceAllowed()) {
+        if (s.getSelectorTableModifier().isDefined()) {
             t.actions.add(table.equivalent("ViewTableDeclarationOpenAddSelectorAction"));
         }
-        if (relation.isRemoveReferenceAllowed()) {
+        if (s.getSelectorTableModifier().isDefined()) {
             t.actions.add(table.equivalent("AccessTableTableClearAction"));
             t.actions.add(table.equivalent("AccessTableTableBulkRemoveAction"));
         }

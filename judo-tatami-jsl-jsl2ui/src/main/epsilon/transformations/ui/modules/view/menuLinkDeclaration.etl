@@ -88,16 +88,16 @@ rule AccessViewPageDefinition
             if (tRelation.isRefreshAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", "AccessPageDefinition"));
             }
-            if (tRelation.isCreateAllowed()) {
+            if (table.getCreateFormModifier().isDefined()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", "AccessPageDefinition"));
             }
             if (tRelation.isDeleteAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "AccessPageDefinition"));
             }
-            if (tRelation.isAddReferenceAllowed()) {
+            if (table.getSelectorTableModifier().isDefined()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", "AccessPageDefinition"));
             }
-            if (tRelation.isRemoveReferenceAllowed()) {
+            if (table.getSelectorTableModifier().isDefined()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", "AccessPageDefinition"));
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", "AccessPageDefinition"));
             }

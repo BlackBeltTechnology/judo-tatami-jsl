@@ -44,16 +44,16 @@ rule RowLinkPageDefinition
             if (table.isRefreshAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", "RowLinkPageDefinition"));
             }
-            if (table.isCreateAllowed()) {
+            if (table.getCreateFormModifier().isDefined()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", "RowLinkPageDefinition"));
             }
             if (table.isDeleteAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "RowLinkPageDefinition"));
             }
-            if (table.isAddReferenceAllowed()) {
+            if (table.getSelectorTableModifier().isDefined()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", "RowLinkPageDefinition"));
             }
-            if (table.isRemoveReferenceAllowed()) {
+            if (table.getSelectorTableModifier().isDefined())) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", "RowLinkPageDefinition"));
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", "RowLinkPageDefinition"));
             }

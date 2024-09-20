@@ -52,16 +52,16 @@ rule ViewLinkPageDefinition
             if (table.isRefreshAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", "ViewLinkPageDefinition"));
             }
-            if (table.isCreateAllowed()) {
+            if (table.getCreateFormModifier().isDefined()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", "ViewLinkPageDefinition"));
             }
             if (table.isDeleteAllowed()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "ViewLinkPageDefinition"));
             }
-            if (table.isAddReferenceAllowed()) {
+            if (table.getSelectorTableModifier().isDefined()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", "ViewLinkPageDefinition"));
             }
-            if (table.isRemoveReferenceAllowed()) {
+            if (table.getSelectorTableModifier().isDefined()) {
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", "ViewLinkPageDefinition"));
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", "ViewLinkPageDefinition"));
             }
