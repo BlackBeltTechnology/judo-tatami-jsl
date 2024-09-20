@@ -22,14 +22,10 @@ operation JSL!UIViewLinkDeclaration getExposedVisualElements(): Set {
     var viewDeclaration = self.referenceType;
 
     ves.add(self);
-    ves.add(viewDeclaration);
+    ves.addAll(viewDeclaration.getExposedVisualElements());
 
     if (s.getCreateFormModifier().isDefined()) {
         ves.addAll(s.getCreateFormModifier().form.getExposedVisualElements());
-    }
-
-    if (s.getUpdateViewModifier().isDefined()) {
-        ves.addAll(s.getUpdateViewModifier().view.getExposedVisualElements());
     }
 
     if (s.getSelectorTableModifier().isDefined()) {

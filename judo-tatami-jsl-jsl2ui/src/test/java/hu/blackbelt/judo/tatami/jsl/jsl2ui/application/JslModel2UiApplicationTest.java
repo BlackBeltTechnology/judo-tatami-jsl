@@ -408,16 +408,20 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         assertEquals(Set.of(
                 "MultipleActorsTestModel::App1::allProducts::AccessTablePage",
+                "MultipleActorsTestModel::App1::allProducts::AccessTableViewPage",
                 "MultipleActorsTestModel::App1::DashboardPage",
+                "MultipleActorsTestModel::App1::first::products1::AccessTableViewPage",
                 "MultipleActorsTestModel::App1::first::products1::AccessTablePage"
-        ), pages.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+                ), pages.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         List<PageDefinition> pages2 = app2.getPages();
 
         assertEquals(Set.of(
                 "MultipleActorsTestModel::App2::allProducts2::AccessTablePage",
+                "MultipleActorsTestModel::App2::allProducts2::AccessTableViewPage",
                 "MultipleActorsTestModel::App2::DashboardPage",
-                "MultipleActorsTestModel::App2::first::products2::AccessTablePage"
+                "MultipleActorsTestModel::App2::first::products2::AccessTablePage",
+                "MultipleActorsTestModel::App2::first::products2::AccessTableViewPage"
         ), pages2.stream().map(NamedElement::getName).collect(Collectors.toSet()));
     }
 

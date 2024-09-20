@@ -1,0 +1,57 @@
+
+rule AccessTableCreateFormPageDefinition
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableCreateFormPageDefinition");
+        t.openInDialog = true;
+        t.name = s.getFqName() + "::AccessFormPage";
+        t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
+        t.dataElement = s.actorAccess.target.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
+
+        t.actions.add(s.equivalent("AccessTableCreateFormBackAction"));
+        t.actions.add(s.equivalent("AccessTableCreateFormCreateAction"));
+        if (s.actorAccess.target.isTemplateAllowed()) {
+            t.actions.add(s.equivalent("AccessTableCreateFormGetTemplateAction"));
+        }
+
+        rootMenu.equivalent("Application").pages.add(t);
+
+        log.debug("Create AccessTableCreateFormPageDefinition: " + t.name);
+}
+
+@lazy
+rule AccessTableCreateFormBackAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableCreateFormBackAction");
+        t.name = s.name + "::Back";
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerBackActionDefinition");
+
+        log.debug("AccessTableCreateFormBackAction: " + t.name);
+}
+
+@lazy
+rule AccessTableCreateFormGetTemplateAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableCreateFormGetTemplateAction");
+ 		t.name = s.name + "::GetTemplate";
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerGetTemplateActionDefinition");
+        log.debug("AccessTableCreateFormGetTemplateAction: " + t.name);
+}
+
+@lazy
+rule AccessTableCreateFormCreateAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableCreateFormCreateAction");
+        t.name = s.name + "::Create";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerCreateActionDefinition");
+        t.targetPageDefinition = s.getCreateFormModifier().form.equivalent("AccessTableViewPageDefinition");
+
+        log.debug("AccessTableCreateFormCreateAction: " + t.name);
+}

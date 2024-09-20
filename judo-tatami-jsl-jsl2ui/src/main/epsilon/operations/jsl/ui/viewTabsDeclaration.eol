@@ -22,6 +22,7 @@ operation JSL!UIViewTabsDeclaration getExposedVisualElements(): Set {
     var ves = new Set();
 
     ves.add(self);
+    ves.addAll(self.panels.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
 
     for (link in self.panels.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
         ves.addAll(link.getExposedVisualElements());
@@ -38,8 +39,6 @@ operation JSL!UIViewTabsDeclaration getExposedVisualElements(): Set {
     for (tab in self.panels.select(m | m.isKindOf(JSL!UIViewTabsDeclaration)).asSet()) {
         ves.addAll(tab.getExposedVisualElements());
     }
-
-    ves.addAll(self.panels.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
 
     return ves;
 }

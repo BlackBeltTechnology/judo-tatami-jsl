@@ -1,4 +1,29 @@
 @lazy
+rule AccessTableTableAddSelectorPageDefinition
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::PageDefinition {
+
+    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorPageDefinition");
+
+    t.name = s.getFqName() + "::AddSelectorPage";
+
+    t.container = s.referenceType.equivalent("TableAddSelectorPageContainer");
+    t.dataElement = s.actorAccess.target.equivalent("RelationType");
+    t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
+    t.openInDialog = true;
+    t.dialogSize = UI!ui::DialogSize#MD;
+
+    t.actions.add(s.equivalent("AccessTableTableAddSelectorAddAction"));
+    t.actions.add(s.equivalent("AccessTableTableAddSelectorBackAction"));
+    t.actions.add(s.equivalent("AccessTableTableAddSelectorTableFilterAction"));
+    t.actions.add(s.equivalent("AccessTableTableAddSelectorTableRangeAction"));
+
+    rootMenu.equivalent("Application").pages.add(t);
+
+    log.debug("AccessTableTableAddSelectorPageDefinition: " + t.name);
+}
+
+@lazy
 rule TableAddSelectorPageContainer
     transform s: JSL!UIRowDeclaration
     to t: UI!ui::PageContainer {
@@ -226,4 +251,55 @@ rule TransferObjectTableAddSelectorTableRefreshButton
     	t.actionDefinition = s.equivalent("TableAddSelectorTableRangeActionDefinition");
 
         log.debug("TransferObjectTableAddSelectorTableRefreshButton: " + t.name);
+}
+
+
+@lazy
+rule AccessTableTableAddSelectorAddAction
+	transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorAddAction");
+ 		t.name = s.getFqName() + "::AddSelector::Add";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.referenceType.equivalent("TableAddSelectorAddActionDefinition");
+
+        log.debug("AccessTableTableAddSelectorAddAction: " + t.name);
+}
+
+@lazy
+rule AccessTableTableAddSelectorBackAction
+	transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorBackAction");
+ 		t.name = s.getFqName() + "::AddSelector::Back";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.referenceType.equivalent("TableAddSelectorTableBackActionDefinition");
+
+        log.debug("AccessTableTableAddSelectorBackAction: " + t.name);
+}
+
+@lazy
+rule AccessTableTableAddSelectorTableFilterAction
+	transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableFilterAction");
+ 		t.name = s.getFqName() + "::AddSelector::Table::Filter";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.targetDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.referenceType.equivalent("TableAddSelectorTableTableFilterActionDefinition");
+
+        log.debug("AccessTableTableAddSelectorTableFilterAction: " + t.name);
+}
+
+@lazy
+rule AccessTableTableAddSelectorTableRangeAction
+	transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableRangeAction");
+ 		t.name = s.getFqName() + "::AddSelector::Table::Range";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.targetDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.referenceType.equivalent("TableAddSelectorTableRangeActionDefinition");
+
+        log.debug("AccessTableTableAddSelectorTableRangeAction: " + t.name);
 }

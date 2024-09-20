@@ -20,5 +20,10 @@ operation JSL!UIMenuLinkDeclaration getExposedVisualElements(): Set {
     ves.add(viewDeclaration);
     ves.addAll(viewDeclaration.getExposedVisualElements());
 
+    if (self.getCreateFormModifier().isDefined()) {
+        ves.add(self.getCreateFormModifier().form);
+        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements());
+    }
+
     return ves;
 }
