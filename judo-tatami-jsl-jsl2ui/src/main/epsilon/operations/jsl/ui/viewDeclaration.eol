@@ -47,6 +47,46 @@ operation JSL!UIViewDeclaration getAllLinks(): Set {
 }
 
 @cached
+operation JSL!UIViewDeclaration getOwnLinks(): Set {
+    var all = self.getExposedVisualElements().select(v | v.isKindOf(JSL!UIViewLinkDeclaration)).asSet();
+    var res = new Set();
+
+    for (link in all) {
+        var parent: Any = link.eContainer;
+        while (not parent.isTypeOf(JSL!UIViewDeclaration) and parent.isDefined()) {
+            if (not parent.isTypeOf(JSL!UIViewDeclaration)) {
+                parent = parent.eContainer;
+            }
+        }
+        if (parent == self) {
+            res.add(link);
+        }
+    }
+
+    return res;
+}
+
+@cached
 operation JSL!UIViewDeclaration getAllTables(): Set {
     return self.getExposedVisualElements().select(v | v.isKindOf(JSL!UIViewTableDeclaration)).asSet();
+}
+
+@cached
+operation JSL!UIViewDeclaration getOwnTables(): Set {
+    var all = self.getExposedVisualElements().select(v | v.isKindOf(JSL!UIViewTableDeclaration)).asSet();
+    var res = new Set();
+
+    for (table in all) {
+        var parent: Any = table.eContainer;
+        while (not parent.isTypeOf(JSL!UIViewDeclaration) and parent.isDefined()) {
+            if (not parent.isTypeOf(JSL!UIViewDeclaration)) {
+                parent = parent.eContainer;
+            }
+        }
+        if (parent == self) {
+            res.add(table);
+        }
+    }
+
+    return res;
 }

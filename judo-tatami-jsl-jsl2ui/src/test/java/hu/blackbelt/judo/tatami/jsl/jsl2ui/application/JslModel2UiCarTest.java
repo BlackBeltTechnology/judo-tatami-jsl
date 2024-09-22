@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
-public class JslModel2UiTest extends AbstractTest  {
+public class JslModel2UiCarTest extends AbstractTest  {
     private static final String TARGET_TEST_CLASSES = "target/test-classes/car";
 
     @Override

@@ -161,7 +161,7 @@ rule ViewLinkDeclarationOpenPageActionDefinition
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageActionDefinition");
         t.name = s.name + "::View";
         t.isContainedRelationAction = true;
-        t.targetType = s.referenceType.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewLinkDeclarationOpenPageActionDefinition: " + t.name);
 }

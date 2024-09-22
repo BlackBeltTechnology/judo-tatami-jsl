@@ -18,51 +18,51 @@ rule ViewLinkPageDefinition
         log.info("===================");
         */
 
-        for (link in s.referenceType.getAllLinks()) {
+        for (link in s.referenceType.getOwnLinks()) {
             var lRelation = link.transferRelation.target;
 
-            t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", "ViewLinkPageDefinition"));
+            t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", s.getId()));
             if (lRelation.isRefreshAllowed() and not lRelation.isEager()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", "ViewLinkPageDefinition"));
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", s.getId()));
             }
             if (link.getCreateFormModifier().isDefined()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", "ViewLinkPageDefinition"));
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", s.getId()));
             }
             if (lRelation.isDeleteAllowed()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", "ViewLinkPageDefinition"));
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", s.getId()));
             }
             if (link.getSelectorTableModifier().isDefined()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", "ViewLinkPageDefinition"));
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", s.getId()));
             }
             if (link.getSelectorTableModifier().isDefined()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", "ViewLinkPageDefinition"));
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", s.getId()));
             }
         }
 
-        for (table in s.referenceType.getAllTables()) {
+        for (table in s.referenceType.getOwnTables()) {
             var tRelation = table.transferRelation.target;
 
             if (table.getUpdateViewModifier().isDefined()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", "ViewLinkPageDefinition"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", s.getId()));
             }
             if (tRelation.isFilterSupported()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationFilterAction", "ViewLinkPageDefinition"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationFilterAction", s.getId()));
             }
             if (tRelation.isRefreshAllowed()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", "ViewLinkPageDefinition"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", s.getId()));
             }
             if (table.getCreateFormModifier().isDefined()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", "ViewLinkPageDefinition"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", s.getId()));
             }
             if (tRelation.isDeleteAllowed()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", "ViewLinkPageDefinition"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", s.getId()));
             }
             if (table.getSelectorTableModifier().isDefined()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", "ViewLinkPageDefinition"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", s.getId()));
             }
             if (table.getSelectorTableModifier().isDefined()) {
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", "ViewLinkPageDefinition"));
-                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", "ViewLinkPageDefinition"));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", s.getId()));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", s.getId()));
             }
         }
 
