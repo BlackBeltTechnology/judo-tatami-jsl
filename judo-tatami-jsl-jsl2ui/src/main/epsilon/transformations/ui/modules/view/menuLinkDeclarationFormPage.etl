@@ -1,0 +1,56 @@
+rule AccessLinkCreateFormPageDefinition
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewCreateFormPageDefinition");
+        t.openInDialog = true;
+        t.name = s.getFqName() + "::AccessFormPage";
+        t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
+        t.dataElement = s.actorAccess.target.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
+
+        t.actions.add(s.equivalent("AccessLinkCreateFormBackAction"));
+        t.actions.add(s.equivalent("AccessLinkCreateFormCreateAction"));
+        if (s.actorAccess.target.isTemplateAllowed()) {
+            t.actions.add(s.equivalent("AccessLinkCreateFormGetTemplateAction"));
+        }
+
+        rootMenu.equivalent("Application").pages.add(t);
+
+        log.debug("Create AccessViewCreateFormPageDefinition: " + t.name);
+}
+
+@lazy
+rule AccessLinkCreateFormBackAction
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessLinkCreateFormBackAction");
+        t.name = s.name + "::Back";
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerBackActionDefinition");
+
+        log.debug("AccessLinkCreateFormBackAction: " + t.name);
+}
+
+@lazy
+rule AccessLinkCreateFormGetTemplateAction
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessLinkCreateFormGetTemplateAction");
+ 		t.name = s.name + "::GetTemplate";
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerGetTemplateActionDefinition");
+        log.debug("AccessLinkCreateFormGetTemplateAction: " + t.name);
+}
+
+@lazy
+rule AccessLinkCreateFormCreateAction
+    transform s: JSL!UIMenuLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessLinkCreateFormCreateAction");
+        t.name = s.name + "::Create";
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerCreateActionDefinition");
+        t.targetPageDefinition = s.getCreateFormModifier().form.equivalent("AccessLinkViewPageDefinition");
+
+        log.debug("AccessLinkCreateFormCreateAction: " + t.name);
+}

@@ -1,4 +1,3 @@
-
 rule AccessTableCreateFormPageDefinition
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::PageDefinition {

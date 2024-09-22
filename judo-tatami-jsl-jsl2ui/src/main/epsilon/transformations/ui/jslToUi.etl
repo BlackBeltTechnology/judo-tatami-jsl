@@ -14,6 +14,7 @@ import "modules/type/type.etl";
 import "modules/view/enumLiteral.etl";
 import "modules/view/menuDeclaration.etl";
 import "modules/view/menuLinkDeclaration.etl";
+import "modules/view/menuLinkDeclarationFormPage.etl";
 import "modules/view/menuLinkDeclarationViewPage.etl";
 import "modules/view/menuTableDeclaration.etl";
 import "modules/view/menuTableDeclarationAddSelectorPage.etl";

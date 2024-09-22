@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -120,12 +121,19 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 }
             }
 
+            form UserForm(UserTransfer u) {
+                widget String email <= u.email icon:"text" label: "My Email";
+                group level1 label:"Yo" icon:"text" {
+                    widget Timestamp timestampDerived <= u.timestamp icon:"timestamp" label:"Timestamp Derived";
+                }
+            }
+
             actor WidgetsActor {
                 access UserTransfer user <= User.any() create delete update;
             }
 
             menu WidgetsApp(WidgetsActor a) {
-                link UserView user <= a.user label:"User" icon:"tools";
+                link UserView user <= a.user label:"User" icon:"tools" form:UserForm;
             }
         """));
 
@@ -139,20 +147,25 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
         List<PageContainer> pageContainers = app.getPageContainers();
 
-        assertEquals(2, pageContainers.size());
+        assertEquals(Set.of(
+                "WidgetsActor::BasicWidgetsTestModel::UserView::View::PageContainer",
+                "WidgetsActor::BasicWidgetsTestModel::UserForm::Create::PageContainer",
+                "WidgetsActor::BasicWidgetsTestModel::WidgetsApp::Dashboard"
+        ), pageContainers.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         PageContainer dashboard = pageContainers.stream().filter(c -> c.getName().equals("BasicWidgetsTestModel::WidgetsApp::Dashboard")).findFirst().orElseThrow();
-        PageContainer user = pageContainers.stream().filter(c -> c.getName().equals("BasicWidgetsTestModel::UserView::View::PageContainer")).findFirst().orElseThrow();
+        PageContainer userView = pageContainers.stream().filter(c -> c.getName().equals("BasicWidgetsTestModel::UserView::View::PageContainer")).findFirst().orElseThrow();
+        PageContainer userForm = pageContainers.stream().filter(c -> c.getName().equals("BasicWidgetsTestModel::UserForm::Create::PageContainer")).findFirst().orElseThrow();
 
         // Dashboard
         assertEquals(0, dashboard.getChildren().size());
 
         // User
 
-        assertEquals(1, user.getChildren().size());
+        assertEquals(1, userView.getChildren().size());
 
         // Root Flex
-        Flex rootFlex = (Flex) user.getChildren().get(0);
+        Flex rootFlex = (Flex) userView.getChildren().get(0);
 
         assertEquals("UserView", rootFlex.getName());
         assertNull(rootFlex.getLabel());
@@ -318,6 +331,33 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("MyEnum", mappedEnum.getAttributeType().getDataType().getName());
         assertFalse(mappedEnum.getAttributeType().isIsRequired());
         assertFalse(mappedEnum.getAttributeType().isIsReadOnly());
+
+        // User Form
+
+        Flex formFlex = (Flex) userForm.getChildren().get(0);
+
+        assertNotNull(formFlex);
+
+        assertEquals(Set.of(
+                "WidgetsActor::BasicWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1",
+                "WidgetsActor::BasicWidgetsTestModel::UserForm::Create::PageContainer::UserForm::email"
+        ), formFlex.getChildren().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        VisualElement formLevel1Group = formFlex.getChildren().get(0);
+        assertEquals("level1", formLevel1Group.getName());
+        assertTrue(formLevel1Group instanceof Flex);
+
+        assertEquals(Set.of(
+                "WidgetsActor::BasicWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::timestampDerived"
+        ), ((Flex) formLevel1Group).getChildren().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        VisualElement formLevel1Timestamp = ((Flex) formLevel1Group).getChildren().get(0);
+        assertEquals("timestampDerived", formLevel1Timestamp.getName());
+        assertTrue(formLevel1Timestamp instanceof DateTimeInput);
+
+        VisualElement formEmail = formFlex.getChildren().get(1);
+        assertEquals("email", formEmail.getName());
+        assertTrue(formEmail instanceof TextInput);
     }
 
     @Test
@@ -345,9 +385,9 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 field String email <= u.email required;
                 field Numeric numeric <= u.numeric;
     
-                relation RelatedTransfer related <= u.related eager:true create:true update:true delete:true;
-                relation RelatedTransfer relatedAssociation <= u.relatedAssociation choices:Related.all() create:true update:true delete:true;
-                relation RelatedTransfer[] relatedCollection <= u.relatedCollection choices:Related.all() create:true update:true delete:true;
+                relation RelatedTransfer related <= u.related eager:true create update delete;
+                relation RelatedTransfer relatedAssociation <= u.relatedAssociation choices:Related.all() create update delete;
+                relation RelatedTransfer[] relatedCollection <= u.relatedCollection choices:Related.all() create update delete;
     
                 event create onCreate;
                 event update onUpdate;
@@ -382,6 +422,13 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 }
             }
 
+            form UserForm(UserTransfer u) {
+                group level1 label:"Yo" icon:"text" {
+                    link RelatedView related <= u.related icon:"related" label:"Related" width:6;
+                }
+                table RelatedTable relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" width:6 selector:RelatedTable view:RelatedView;
+            }
+
             table RelatedTable(RelatedTransfer r) {
                 column String first <= r.first label:"First";
                 column Numeric second <= r.second label:"Second";
@@ -393,11 +440,11 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             }
 
             actor RelationWidgetsActor {
-                access UserTransfer user <= User.any();
+                access UserTransfer user <= User.any() create;
             }
 
             menu RelationWidgets(RelationWidgetsActor a) {
-                link UserView user <= a.user label:"User" icon:"tools";
+                link UserView user <= a.user label:"User" icon:"tools" form:UserForm;
             }
         """));
 
@@ -412,6 +459,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         List<ClassType> classTypes = application.getClassTypes();
         List<Link> links = application.getLinks();
         List<Table> tables = application.getTables();
+        List<PageDefinition> pages = application.getPages();
 
         assertEquals(Set.of(
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserTransfer",
@@ -419,11 +467,25 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 "RelationWidgetsActor::RelationWidgetsTestModel::RelationWidgetsActor"
         ), classTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
+        assertEquals(Set.of(
+                "RelationWidgetsTestModel::UserForm::relatedCollection::ViewPage",
+                "RelationWidgetsTestModel::UserForm::level1::related::ViewPage",
+                "RelationWidgetsTestModel::UserView::level1::level2::relatedAssociation::SetSelectorPage",
+                "RelationWidgetsTestModel::UserView::level1::level2::relatedAssociation::ViewPage",
+                "RelationWidgetsTestModel::UserView::level1::level2::related::ViewPage",
+                "RelationWidgetsTestModel::UserView::level1::tabs0::tab2::relatedCollection::AddSelectorPage",
+                "RelationWidgetsTestModel::UserView::level1::tabs0::tab2::relatedCollection::ViewPage",
+                "RelationWidgetsTestModel::RelationWidgets::user::AccessViewPage",
+                "RelationWidgetsTestModel::RelationWidgets::user::AccessFormPage",
+                "RelationWidgetsTestModel::RelationWidgets::DashboardPage"
+        ), pages.stream().map(PageDefinition::getName).collect(Collectors.toSet()));
+
         // Links
 
         assertEquals(Set.of(
-            "RelationWidgetsActor::RelationWidgetsTestModel::UserView::View::PageContainer::UserView::level1::level2::related",
-            "RelationWidgetsActor::RelationWidgetsTestModel::UserView::View::PageContainer::UserView::level1::level2::relatedAssociation"
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::related",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserView::View::PageContainer::UserView::level1::level2::related",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserView::View::PageContainer::UserView::level1::level2::relatedAssociation"
         ), links.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         ClassType relatedViewClassType = classTypes.stream().filter(c -> c.getName().equals("RelationWidgetsTestModel::RelatedTransfer")).findFirst().orElseThrow();
@@ -451,19 +513,22 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         // Tables
 
         assertEquals(Set.of(
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection",
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserView::level1::level2::relatedAssociation::SetSelector::PageContainer::relatedAssociation::relatedAssociation::Set::Selector",
                 "RelationWidgetsActor::RelationWidgetsTestModel::RelatedTable::Table::PageContainer::RelatedTable::RelatedTable::Table",
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserView::level1::tabs0::tab2::relatedCollection::AddSelector::PageContainer::relatedCollection::relatedCollection::Add::Selector",
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserView::View::PageContainer::UserView::level1::tabs0::tab2::tab2::relatedCollection"
         ), tables.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
-        Table table = tables.stream().filter(t -> t.getName().equals("relatedCollection")).findFirst().orElseThrow();
-        RelationType tableRelation = (RelationType) table.getDataElement();
+        PageDefinition userView = application.getPages().stream().filter(p -> p.getName().equals("RelationWidgetsTestModel::RelationWidgets::user::AccessViewPage")).findFirst().orElseThrow();
+
+        Table userViewTable = ((Collection<Table>) userView.getContainer().getTables()).stream().filter(t -> t.getName().equals("relatedCollection")).findFirst().orElseThrow();
+        RelationType tableRelation = (RelationType) userViewTable.getDataElement();
         ClassType relatedRowClassType = classTypes.stream().filter(c -> c.getName().equals("RelationWidgetsTestModel::RelatedTransfer")).findFirst().orElseThrow();
 
-        assertEquals("Related Collection", table.getLabel());
-        assertEquals(12, table.getCol());
-        assertEquals("relatedCollection", table.getRelationName());
+        assertEquals("Related Collection", userViewTable.getLabel());
+        assertEquals(12, userViewTable.getCol());
+        assertEquals("relatedCollection", userViewTable.getRelationName());
         assertEquals("relatedCollection", tableRelation.getName());
         assertEquals(relatedRowClassType, tableRelation.getTarget());
 
@@ -483,7 +548,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
         // Columns
 
-        List<Column> columns =  table.getColumns();
+        List<Column> columns =  userViewTable.getColumns();
 
         assertEquals(Set.of(
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserView::View::PageContainer::UserView::level1::tabs0::tab2::tab2::relatedCollection::second",
@@ -532,7 +597,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
         // Filters
 
-        List<Filter> filters =  table.getFilters();
+        List<Filter> filters =  userViewTable.getFilters();
 
         assertEquals(Set.of(
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserView::View::PageContainer::UserView::level1::tabs0::tab2::tab2::relatedCollection::firstFilter",
@@ -561,5 +626,120 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals(List.of("first", "second"), relatedAssociationSetSelectorFilters.stream().map(c -> c.getAttributeType().getName()).toList());
         assertEquals(List.of("String", "Numeric"), relatedAssociationSetSelectorFilters.stream().map(c -> c.getAttributeType().getDataType().getName()).toList());
         assertEquals(List.of(true, true), relatedAssociationSetSelectorFilters.stream().map(c -> c.getAttributeType().isIsFilterable()).toList());
+
+        // User Form
+
+        PageDefinition userForm = application.getPages().stream().filter(p -> p.getName().equals("RelationWidgetsTestModel::RelationWidgets::user::AccessFormPage")).findFirst().orElseThrow();
+
+        List<VisualElement> formChildren = ((Flex) userForm.getContainer().getChildren().get(0)).getChildren();
+
+        assertEquals(Set.of(
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection"
+        ), formChildren.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        // group level1
+
+        Flex formLevel1 = (Flex) formChildren.get(0);
+        assertEquals("level1", formLevel1.getName());
+        assertEquals("Yo", formLevel1.getLabel());
+        assertEquals("text", formLevel1.getIcon().getIconName());
+
+        assertEquals(Set.of(
+            "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::related"
+        ), formLevel1.getChildren().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        Link formLevel1Related = (Link) formLevel1.getChildren().get(0);
+        assertEquals("related", formLevel1Related.getName());
+        assertEquals(Set.of(
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::related::related::Actions::related::Delete",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::related::related::Actions::related::View"
+        ), formLevel1Related.getActionButtonGroup().getButtons().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        Button userFormRelatedView = formLevel1Related.getActionButtonGroup().getButtons().get(0);
+        assertEquals("related::View", userFormRelatedView.getName());
+        assertEquals("View", userFormRelatedView.getLabel());
+        assertEquals("contained", userFormRelatedView.getButtonStyle());
+        assertTrue(userFormRelatedView.getActionDefinition().getIsOpenPageAction());
+
+        Button userFormRelatedDelete = formLevel1Related.getActionButtonGroup().getButtons().get(1);
+        assertEquals("related::Delete", userFormRelatedDelete.getName());
+        assertEquals("Delete", userFormRelatedDelete.getLabel());
+        assertEquals("contained", userFormRelatedDelete.getButtonStyle());
+        assertTrue(userFormRelatedDelete.getActionDefinition().getIsRowDeleteAction());
+
+        // table
+
+        Table formRelatedCollection = (Table) formChildren.get(1);
+        assertEquals("relatedCollection", formRelatedCollection.getName());
+        assertEquals(Set.of(
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::first",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::second"
+        ), formRelatedCollection.getColumns().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+        assertEquals(Set.of(
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::firstFilter",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::secondFilter"
+        ), formRelatedCollection.getFilters().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+        assertEquals(Set.of(
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::relatedCollection::InlineViewTableButtonGroup::relatedCollection::Clear",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::relatedCollection::InlineViewTableButtonGroup::relatedCollection::OpenAddSelector",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::relatedCollection::InlineViewTableButtonGroup::relatedCollection::Refresh",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::relatedCollection::InlineViewTableButtonGroup::relatedCollection::BulkRemove",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::relatedCollection::InlineViewTableButtonGroup::relatedCollection::Filter",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::relatedCollection::InlineViewTableButtonGroup::relatedCollection::OpenCreate"
+        ), formRelatedCollection.getTableActionButtonGroup().getButtons().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        Button formRelatedCollectionFilter = formRelatedCollection.getTableActionButtonGroup().getButtons().get(0);
+        assertEquals("relatedCollection::Filter", formRelatedCollectionFilter.getName());
+        assertEquals("Filter", formRelatedCollectionFilter.getLabel());
+        assertEquals("text", formRelatedCollectionFilter.getButtonStyle());
+        assertTrue(formRelatedCollectionFilter.getActionDefinition().getIsFilterAction());
+
+        Button formRelatedCollectionRefresh = formRelatedCollection.getTableActionButtonGroup().getButtons().get(1);
+        assertEquals("relatedCollection::Refresh", formRelatedCollectionRefresh.getName());
+        assertEquals("Refresh", formRelatedCollectionRefresh.getLabel());
+        assertEquals("text", formRelatedCollectionRefresh.getButtonStyle());
+        assertTrue(formRelatedCollectionRefresh.getActionDefinition().getIsRefreshAction());
+
+        Button formRelatedCollectionOpenCreate = formRelatedCollection.getTableActionButtonGroup().getButtons().get(2);
+        assertEquals("relatedCollection::OpenCreate", formRelatedCollectionOpenCreate.getName());
+        assertEquals("Create", formRelatedCollectionOpenCreate.getLabel());
+        assertEquals("text", formRelatedCollectionOpenCreate.getButtonStyle());
+        assertTrue(formRelatedCollectionOpenCreate.getActionDefinition().getIsOpenCreateFormAction());
+
+        Button formRelatedCollectionOpenAddSelector = formRelatedCollection.getTableActionButtonGroup().getButtons().get(3);
+        assertEquals("relatedCollection::OpenAddSelector", formRelatedCollectionOpenAddSelector.getName());
+        assertEquals("Add", formRelatedCollectionOpenAddSelector.getLabel());
+        assertEquals("text", formRelatedCollectionOpenAddSelector.getButtonStyle());
+        assertTrue(formRelatedCollectionOpenAddSelector.getActionDefinition().getIsOpenAddSelectorAction());
+
+        Button formRelatedCollectionClear = formRelatedCollection.getTableActionButtonGroup().getButtons().get(4);
+        assertEquals("relatedCollection::Clear", formRelatedCollectionClear.getName());
+        assertEquals("Clear", formRelatedCollectionClear.getLabel());
+        assertEquals("text", formRelatedCollectionClear.getButtonStyle());
+        assertTrue(formRelatedCollectionClear.getActionDefinition().getIsClearAction());
+
+        Button formRelatedCollectionBulkRemove = formRelatedCollection.getTableActionButtonGroup().getButtons().get(5);
+        assertEquals("relatedCollection::BulkRemove", formRelatedCollectionBulkRemove.getName());
+        assertEquals("Remove", formRelatedCollectionBulkRemove.getLabel());
+        assertEquals("text", formRelatedCollectionBulkRemove.getButtonStyle());
+        assertTrue(formRelatedCollectionBulkRemove.getActionDefinition().getIsBulkRemoveAction());
+
+        assertEquals(Set.of(
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::relatedCollectionInlineViewTableRowButtonGroup::relatedCollection::RowDelete",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::relatedCollectionInlineViewTableRowButtonGroup::relatedCollection::View"
+        ), formRelatedCollection.getRowActionButtonGroup().getButtons().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+
+        Button formRelatedCollectionRowView = formRelatedCollection.getRowActionButtonGroup().getButtons().get(0);
+        assertEquals("relatedCollection::View", formRelatedCollectionRowView.getName());
+        assertEquals("View", formRelatedCollectionRowView.getLabel());
+        assertEquals("contained", formRelatedCollectionRowView.getButtonStyle());
+        assertTrue(formRelatedCollectionRowView.getActionDefinition().getIsOpenPageAction());
+
+        Button formRelatedCollectionRowDelete = formRelatedCollection.getRowActionButtonGroup().getButtons().get(1);
+        assertEquals("relatedCollection::RowDelete", formRelatedCollectionRowDelete.getName());
+        assertEquals("Delete", formRelatedCollectionRowDelete.getLabel());
+        assertEquals("contained", formRelatedCollectionRowDelete.getButtonStyle());
+        assertTrue(formRelatedCollectionRowDelete.getActionDefinition().getIsRowDeleteAction());
     }
 }
