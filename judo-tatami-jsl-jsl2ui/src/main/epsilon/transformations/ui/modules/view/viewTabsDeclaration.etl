@@ -5,7 +5,7 @@ rule TabBarVisualElement
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TabBarVisualElement");
         t.name = s.name;
-        t.~pos = s.~pos;
+        t.~pos = s.getPos();
         t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12d;
         t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {

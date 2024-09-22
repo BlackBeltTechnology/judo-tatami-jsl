@@ -10,12 +10,19 @@ rule AbstractViewWidgetDeclaration
             t.icon = s.equivalent("ViewWidgetIcon");
         }
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
+        t.isReadOnly = s.bind.isUndefined();
+        /*
         if (s.eContainer.isKindOf(JSL!UIViewDeclaration)) {
             t.~pos = s.eContainer.members.indexOf(s);
+        } else if (s.eContainer.isKindOf(JSL!UIViewGroupDeclaration)) {
+            t.~pos = s.eContainer.members.indexOf(s);
+        } else if (s.eContainer.isKindOf(JSL!UIViewTabsDeclaration)) {
+            t.~pos = s.eContainer.panels.indexOf(s);
         } else {
             t.~pos = s.~pos.isDefined() ? s.~pos : 0;
         }
-
+        */
+        t.~pos = s.getPos();
 }
 
 @lazy

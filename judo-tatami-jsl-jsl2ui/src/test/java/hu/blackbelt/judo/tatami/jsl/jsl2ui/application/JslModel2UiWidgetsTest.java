@@ -343,7 +343,11 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 "WidgetsActor::BasicWidgetsTestModel::UserForm::Create::PageContainer::UserForm::email"
         ), formFlex.getChildren().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
-        VisualElement formLevel1Group = formFlex.getChildren().get(0);
+        VisualElement formEmail = formFlex.getChildren().get(0);
+        assertEquals("email", formEmail.getName());
+        assertTrue(formEmail instanceof TextInput);
+
+        VisualElement formLevel1Group = formFlex.getChildren().get(1);
         assertEquals("level1", formLevel1Group.getName());
         assertTrue(formLevel1Group instanceof Flex);
 
@@ -354,10 +358,6 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         VisualElement formLevel1Timestamp = ((Flex) formLevel1Group).getChildren().get(0);
         assertEquals("timestampDerived", formLevel1Timestamp.getName());
         assertTrue(formLevel1Timestamp instanceof DateTimeInput);
-
-        VisualElement formEmail = formFlex.getChildren().get(1);
-        assertEquals("email", formEmail.getName());
-        assertTrue(formEmail instanceof TextInput);
     }
 
     @Test
@@ -427,6 +427,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             }
 
             form UserForm(UserTransfer u) {
+                widget String emailReadOnly <= u.email icon:"text" label:"Readonly Email";
+                widget String emailWritable <=> u.email icon:"text" label:"Writable Email";
                 group level1 label:"Yo" icon:"text" {
                     link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm;
                 }
@@ -639,13 +641,29 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         List<VisualElement> formChildren = ((Flex) usersForm.getContainer().getChildren().get(0)).getChildren();
 
         assertEquals(Set.of(
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::emailReadOnly",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::emailWritable",
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1",
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection"
         ), formChildren.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
+        // primitives
+
+        TextInput formEmailReadonly = (TextInput) formChildren.get(0);
+        assertEquals("emailReadOnly", formEmailReadonly.getName());
+        assertEquals("Readonly Email", formEmailReadonly.getLabel());
+        assertEquals("text", formEmailReadonly.getIcon().getIconName());
+        assertTrue(formEmailReadonly.isIsReadOnly());
+
+        TextInput formEmailWritable = (TextInput) formChildren.get(1);
+        assertEquals("emailWritable", formEmailWritable.getName());
+        assertEquals("Writable Email", formEmailWritable.getLabel());
+        assertEquals("text", formEmailWritable.getIcon().getIconName());
+        assertFalse(formEmailWritable.isIsReadOnly());
+
         // group level1
 
-        Flex formLevel1 = (Flex) formChildren.get(0);
+        Flex formLevel1 = (Flex) formChildren.get(2);
         assertEquals("level1", formLevel1.getName());
         assertEquals("Yo", formLevel1.getLabel());
         assertEquals("text", formLevel1.getIcon().getIconName());
@@ -682,7 +700,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
         // table
 
-        Table formRelatedCollection = (Table) formChildren.get(1);
+        Table formRelatedCollection = (Table) formChildren.get(3);
         assertEquals("relatedCollection", formRelatedCollection.getName());
         assertEquals(Set.of(
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection::first",
