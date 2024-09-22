@@ -148,11 +148,6 @@ operation JSL!Modifiable getRows(): JSL!Modifier {
 }
 
 @cached
-operation JSL!Modifiable getSelector(): JSL!Modifier {
-    return (self.modifiers.selectOne(m | m.type == "selector"));
-}
-
-@cached
 operation JSL!Modifiable getCreateFormModifier(): JSL!Modifier {
     return self.modifiers.selectOne(m | m.isTypeOf(JSL!CreateFormModifier));
 }

@@ -48,12 +48,8 @@ rule ViewTableCreateFormCreateAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormCreateAction");
-
-        var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
-        var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
-
         t.name = s.name + "::Create";
-        t.actionDefinition = targetContainer.equivalent("TransferDeclarationCreateActionDefinition");
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerCreateActionDefinition");
 
         log.debug("ViewTableCreateFormCreateAction: " + t.name);
 }
@@ -64,12 +60,8 @@ rule ViewTableCreateFormBackAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormBackAction");
-
-        var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
-        var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
-
         t.name = s.name + "::Back";
-        t.actionDefinition = targetContainer.equivalent("TransferDeclarationBackActionDefinition");
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerBackActionDefinition");
 
         log.debug("ViewTableCreateFormBackAction: " + t.name);
 }

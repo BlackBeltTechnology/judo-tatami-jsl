@@ -93,5 +93,5 @@ operation JSL!TransferFieldDeclaration getTransferFieldDeclarationEquivalent(): 
     if (self.maps()) {
         return self.equivalent("CreateMappedTransferAttribute");
     }
-    throw "Could not determinate attribute type: " + s.fqName();
+    throw "Could not determinate attribute type: " + self.fqName();
 }

@@ -10,3 +10,13 @@ operation JSL!UIRowDeclaration getFqName(): String {
     }
     return self.name;
 }
+
+@cached
+operation JSL!UIRowDeclaration getExposedVisualElements(): Set {
+    var ves = new Set();
+
+    ves.add(self);
+    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration)).asSet());
+
+    return ves;
+}

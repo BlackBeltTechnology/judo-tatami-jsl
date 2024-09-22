@@ -47,12 +47,8 @@ rule ViewLinkCreateFormCreateAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormCreateAction");
-
-        var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
-        var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
-
         t.name = s.name + "::Create";
-        t.actionDefinition = targetContainer.equivalent("TransferDeclarationCreateActionDefinition");
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerCreateActionDefinition");
 
         log.debug("ViewLinkCreateFormCreateAction: " + t.name);
 }
@@ -63,12 +59,8 @@ rule ViewLinkCreateFormBackAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormBackAction");
-
-        var targetCreateEvent = s.referenceType.getCreateEventDeclaration();
-        var targetContainer = targetCreateEvent.parameterType.isDefined() ? targetCreateEvent.parameterType : s.referenceType;
-
         t.name = s.name + "::Back";
-        t.actionDefinition = targetContainer.equivalent("TransferDeclarationBackActionDefinition");
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerBackActionDefinition");
 
         log.debug("ViewLinkCreateFormBackAction: " + t.name);
 }

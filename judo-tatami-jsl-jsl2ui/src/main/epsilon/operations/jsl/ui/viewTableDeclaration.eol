@@ -37,16 +37,19 @@ operation JSL!UIViewTableDeclaration getExposedVisualElements(): Set {
     ves.add(rowDeclaration);
     ves.addAll(rowDeclaration.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration)).asSet());
 
-    if (s.getCreateFormModifier().isDefined()) {
-        ves.addAll(s.getCreateFormModifier().form.getExposedVisualElements());
+    if (self.getCreateFormModifier().isDefined()) {
+        ves.add(self.getCreateFormModifier().form);
+        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements());
     }
 
-    if (s.getUpdateViewModifier().isDefined()) {
-        ves.addAll(s.getUpdateViewModifier().view.getExposedVisualElements());
+    if (self.getUpdateViewModifier().isDefined()) {
+        ves.add(self.getUpdateViewModifier().view);
+        ves.addAll(self.getUpdateViewModifier().view.getExposedVisualElements());
     }
 
-    if (s.getSelectorTableModifier().isDefined()) {
-        ves.addAll(s.getSelectorTableModifier().row.getExposedVisualElements());
+    if (self.getSelectorTableModifier().isDefined()) {
+        ves.add(self.getSelectorTableModifier().row);
+        ves.addAll(self.getSelectorTableModifier().row.getExposedVisualElements());
     }
 
     return ves;
