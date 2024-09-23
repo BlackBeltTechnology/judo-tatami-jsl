@@ -5,8 +5,8 @@ operation JSL!UIViewTableDeclaration getId(): String {
 
 @cached
 operation JSL!UIViewTableDeclaration getFqName(): String {
-    if (self.getTransferContainer().isDefined()) {
-        return self.getTransferContainer().getFqName() + "::" + self.name;
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
     }
     return self.name;
 }
@@ -33,7 +33,24 @@ operation JSL!UIViewTableDeclaration getExposedVisualElements(): Set {
     var ves = new Set();
     var rowDeclaration = self.referenceType;
 
+    ves.add(self);
+    ves.add(rowDeclaration);
     ves.addAll(rowDeclaration.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration)).asSet());
+
+    if (self.getCreateFormModifier().isDefined()) {
+        ves.add(self.getCreateFormModifier().form);
+        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements());
+    }
+
+    if (self.getUpdateViewModifier().isDefined()) {
+        ves.add(self.getUpdateViewModifier().view);
+        ves.addAll(self.getUpdateViewModifier().view.getExposedVisualElements());
+    }
+
+    if (self.getSelectorTableModifier().isDefined()) {
+        ves.add(self.getSelectorTableModifier().row);
+        ves.addAll(self.getSelectorTableModifier().row.getExposedVisualElements());
+    }
 
     return ves;
 }

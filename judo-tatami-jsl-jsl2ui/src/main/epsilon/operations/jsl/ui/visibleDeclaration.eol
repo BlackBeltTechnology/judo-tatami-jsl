@@ -9,3 +9,14 @@ operation JSL!VisibleDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "::" + self.name;
 }
 */
+
+operation Any getPos(): Integer {
+    if (self.eContainer.isKindOf(JSL!UIViewDeclaration)) {
+        return self.eContainer.members.indexOf(self);
+    } else if (self.eContainer.isKindOf(JSL!UIViewGroupDeclaration)) {
+        return self.eContainer.members.indexOf(self);
+    } else if (self.eContainer.isKindOf(JSL!UIViewTabsDeclaration)) {
+        return self.eContainer.panels.indexOf(self);
+    }
+    return self.~pos.isDefined() ? self.~pos : 0;
+}

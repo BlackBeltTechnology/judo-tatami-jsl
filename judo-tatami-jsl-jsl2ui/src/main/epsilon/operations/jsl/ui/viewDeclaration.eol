@@ -19,15 +19,74 @@ operation JSL!UIViewDeclaration uiContainer() : UI!ui::VisualElement {
 operation JSL!UIViewDeclaration getExposedVisualElements(): Set {
     var ves = new Set();
 
-    for (link in self.members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
+    ves.add(self);
+    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
+
+    for (link in self.members.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
         ves.addAll(link.getExposedVisualElements());
     }
 
-    for (table in self.members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
+    for (table in self.members.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
         ves.addAll(table.getExposedVisualElements());
     }
 
-    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
+    for (group in self.members.select(m | m.isKindOf(JSL!UIViewGroupDeclaration)).asSet()) {
+        ves.addAll(group.getExposedVisualElements());
+    }
+
+    for (tab in self.members.select(m | m.isKindOf(JSL!UIViewTabsDeclaration)).asSet()) {
+        ves.addAll(tab.getExposedVisualElements());
+    }
 
     return ves;
+}
+
+@cached
+operation JSL!UIViewDeclaration getAllLinks(): Set {
+    return self.getExposedVisualElements().select(v | v.isKindOf(JSL!UIViewLinkDeclaration)).asSet();
+}
+
+@cached
+operation JSL!UIViewDeclaration getOwnLinks(): Set {
+    var all = self.getExposedVisualElements().select(v | v.isKindOf(JSL!UIViewLinkDeclaration)).asSet();
+    var res = new Set();
+
+    for (link in all) {
+        var parent: Any = link.eContainer;
+        while (not parent.isTypeOf(JSL!UIViewDeclaration) and parent.isDefined()) {
+            if (not parent.isTypeOf(JSL!UIViewDeclaration)) {
+                parent = parent.eContainer;
+            }
+        }
+        if (parent == self) {
+            res.add(link);
+        }
+    }
+
+    return res;
+}
+
+@cached
+operation JSL!UIViewDeclaration getAllTables(): Set {
+    return self.getExposedVisualElements().select(v | v.isKindOf(JSL!UIViewTableDeclaration)).asSet();
+}
+
+@cached
+operation JSL!UIViewDeclaration getOwnTables(): Set {
+    var all = self.getExposedVisualElements().select(v | v.isKindOf(JSL!UIViewTableDeclaration)).asSet();
+    var res = new Set();
+
+    for (table in all) {
+        var parent: Any = table.eContainer;
+        while (not parent.isTypeOf(JSL!UIViewDeclaration) and parent.isDefined()) {
+            if (not parent.isTypeOf(JSL!UIViewDeclaration)) {
+                parent = parent.eContainer;
+            }
+        }
+        if (parent == self) {
+            res.add(table);
+        }
+    }
+
+    return res;
 }

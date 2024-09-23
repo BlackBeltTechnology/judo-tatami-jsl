@@ -3,7 +3,7 @@ rule AbstractCreateTransferAttribute
     transform s: JSL!TransferFieldDeclaration
     to t: UI!ui::data::AttributeType {
         guard: s.referenceType.isKindOf(JSL!PrimitiveDeclaration)
-            and actorDeclaration.getExposedTransferObjects().includes(s.getTransferContainer())
+            and actorDeclaration.getExposedTransferObjects().includes(s.eContainer)
 
         t.name = s.name;
 

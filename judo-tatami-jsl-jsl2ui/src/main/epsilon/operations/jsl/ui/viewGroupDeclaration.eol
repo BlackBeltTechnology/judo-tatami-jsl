@@ -1,30 +1,46 @@
-/*
 @cached
-operation JSL!ViewGroupDeclaration getId(): String {
+operation JSL!UIViewGroupDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
 
 @cached
-operation JSL!ViewGroupDeclaration getFqName(): String {
+operation JSL!UIViewGroupDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "::" + self.name;
 }
 
 @cached
-operation JSL!ViewGroupDeclaration getTransferObjectType(): JSL!TransferDeclaration {
-    var to = self.eContainer;
-    while (to.isDefined() and not to.isKindOf(JSL!TransferDeclaration)) {
-        to = to.eContainer;
-    }
-    return to;
-}
-
-@cached
-operation JSL!ViewGroupDeclaration isFrame(): Boolean {
+operation JSL!UIViewGroupDeclaration isFrame(): Boolean {
     var frame = self.getFrame();
     return frame.isDefined() and frame.isTrue();
 }
 
-operation JSL!ViewGroupDeclaration uiContainer() : UI!ui::VisualElement {
+operation JSL!UIViewGroupDeclaration uiContainer() : UI!ui::VisualElement {
     return self.equivalent("GroupVisualElement");
 }
-*/
+
+@cached
+operation JSL!UIViewGroupDeclaration getExposedVisualElements(): Set {
+    var ves = new Set();
+
+    ves.add(self);
+
+    for (link in self.members.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
+        ves.addAll(link.getExposedVisualElements());
+    }
+
+    for (table in self.members.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
+        ves.addAll(table.getExposedVisualElements());
+    }
+
+    for (group in self.members.select(m | m.isKindOf(JSL!UIViewGroupDeclaration)).asSet()) {
+        ves.addAll(group.getExposedVisualElements());
+    }
+
+    for (tab in self.members.select(m | m.isKindOf(JSL!UIViewTabsDeclaration)).asSet()) {
+        ves.addAll(tab.getExposedVisualElements());
+    }
+
+    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
+
+    return ves;
+}

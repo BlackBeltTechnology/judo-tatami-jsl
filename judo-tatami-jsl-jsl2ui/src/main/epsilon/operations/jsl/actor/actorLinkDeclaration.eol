@@ -1,19 +1,28 @@
-/*
 @cached
-operation JSL!ActorLinkDeclaration getFqName(): String {
-    if (self.getTransferContainer().isDefined()) {
-        return self.getTransferContainer().getFqName() + "::" + self.name;
+operation JSL!UIMenuLinkDeclaration getFqName(): String {
+    if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration) or self.eContainer.isTypeOf(JSL!UIMenuDeclaration)) {
+        return self.eContainer.getFqName() + "::" + self.name;
     }
     return self.name;
 }
 
 @cached
-operation JSL!ActorLinkDeclaration getActorDeclaration(): JSL!ActorDeclaration {
-    if (self.eContainer.isTypeOf(JSL!ActorGroupDeclaration)) {
-        return self.eContainer.getActorDeclaration();
-    } else if (self.eContainer.isTypeOf(JSL!ActorDeclaration)) {
-        return self.eContainer;
+operation JSL!UIMenuLinkDeclaration getRootMenu(): JSL!UIMenuDeclaration {
+    if (self.eContainer.isDefined()) {
+        if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration)) {
+            return self.eContainer.getRootMenu();
+        } else if (self.eContainer.isTypeOf(JSL!UIMenuDeclaration)) {
+            return self.eContainer;
+        }
     }
     return null;
 }
-*/
+
+@cached
+operation JSL!UIMenuLinkDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    var root = self.getRootMenu();
+        if (root.isDefined()) {
+            return root.getActorDeclaration();
+        }
+        return null;
+}

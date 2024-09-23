@@ -11,5 +11,5 @@ operation JSL!UIRowColumnDeclaration getTransferFieldDeclarationEquivalent(): UI
     if (field.maps()) {
         return field.equivalent("CreateMappedTransferAttribute");
     }
-    throw "Could not determinate attribute type: " + s.fqName();
+    throw "Could not determinate attribute type: " + self.fqName();
 }
