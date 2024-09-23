@@ -98,7 +98,7 @@ rule AccessViewRefreshAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewRefreshAction");
- 		t.name = s.getFqName() + "::Refresh";
+ 		t.name = s.name + "::Refresh";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerRefreshActionDefinition");
 
@@ -110,7 +110,7 @@ rule AccessViewUpdateAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewUpdateAction");
- 		t.name = s.getFqName() + "::Update";
+ 		t.name = s.name + "::Update";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerUpdateActionDefinition");
 
@@ -122,7 +122,7 @@ rule AccessViewDeleteAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewDeleteAction");
- 		t.name = s.getFqName() + "::Delete";
+ 		t.name = s.name + "::Delete";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerDeleteActionDefinition");
 

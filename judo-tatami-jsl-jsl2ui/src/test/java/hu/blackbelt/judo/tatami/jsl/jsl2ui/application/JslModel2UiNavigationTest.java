@@ -265,7 +265,7 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         List<Action> userAccessPageActions = userAccessPage.getActions();
 
         assertEquals(Set.of(
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::NavigationTestModel::NavigationApp::user::Refresh",
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::user::Refresh",
                 "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::user::Back",
                 "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::relatedCollection::OpenPage",
                 "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::related::OpenPage",

@@ -198,13 +198,13 @@ rule InlineViewTableButtonGroup
         if (relation.isRefreshAllowed()) {
             t.buttons.add(s.equivalent("ViewTableDeclarationRefreshButton"));
         }
-        if (relation.isCreateAllowed()) {
+        if (s.getCreateFormModifier().isDefined()) {
             t.buttons.add(s.equivalent("ViewTableDeclarationOpenCreateButton"));
         }
-        if (relation.isAddReferenceAllowed()) {
+        if (s.getSelectorTableModifier().isDefined()) {
             t.buttons.add(s.equivalent("ViewTableDeclarationOpenAddSelectorButton"));
         }
-        if (relation.isRemoveReferenceAllowed()) {
+        if (s.getSelectorTableModifier().isDefined()) {
             t.buttons.add(s.equivalent("ViewTableDeclarationClearButton"));
             t.buttons.add(s.equivalent("ViewTableDeclarationBulkRemoveButton"));
         }

@@ -56,7 +56,7 @@ rule AccessTableViewBackAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewBackAction");
- 		t.name = s.getFqName() + "::Back";
+ 		t.name = s.name + "::Back";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerBackActionDefinition");
 
@@ -68,7 +68,7 @@ rule AccessTableViewRefreshAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewRefreshAction");
- 		t.name = s.getFqName() + "::Refresh";
+ 		t.name = s.name + "::Refresh";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerRefreshActionDefinition");
 
@@ -80,7 +80,7 @@ rule AccessTableViewCancelAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewCancelAction");
- 		t.name = s.getFqName() + "::Cancel";
+ 		t.name = s.name + "::Cancel";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerCancelActionDefinition");
 
@@ -92,7 +92,7 @@ rule AccessTableViewUpdateAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewUpdateAction");
- 		t.name = s.getFqName() + "::Update";
+ 		t.name = s.name + "::Update";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerUpdateActionDefinition");
 
