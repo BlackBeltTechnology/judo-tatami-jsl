@@ -58,8 +58,7 @@ rule AccessTableTableOpenCreateAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenCreateAction");
         t.name = s.name + "::OpenCreate";
         t.actionDefinition = s.referenceType.equivalent("TableTableOpenCreateActionDefinition");
-
-        t.targetPageDefinition = s.getCreateFormModifier().form.equivalent("AccessTableCreateFormPageDefinition");
+        t.targetPageDefinition = s.equivalent("AccessTableCreateFormPageDefinition");
 
         log.debug("AccessTableTableOpenCreateAction: " + t.name);
 }

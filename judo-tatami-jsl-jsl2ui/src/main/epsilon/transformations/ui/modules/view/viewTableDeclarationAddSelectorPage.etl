@@ -53,7 +53,7 @@ rule ViewTableDeclarationAddSelectorTableRangeActionDefinition
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableRangeActionDefinition");
 
         t.name = s.getFqName() + "::AddSelector::Table::Range";
-        t.targetType = s.referenceType.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewTableDeclarationAddSelectorTableRangeActionDefinition: " + t.name);
 }
@@ -115,7 +115,7 @@ rule ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition
     to t: UI!ui::AddActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition");
         t.name = s.getFqName() + "::Add";
-        t.targetType = s.referenceType.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
         log.debug("ViewTableDeclarationAddSelectorTableAddSelectorAddActionDefinition: " + t.name);
 }
 

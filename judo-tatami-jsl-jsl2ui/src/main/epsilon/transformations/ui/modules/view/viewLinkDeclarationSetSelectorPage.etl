@@ -32,7 +32,7 @@ rule ViewLinkDeclarationSetSelectorPageContainer
 
         t.children.add(s.equivalent("ViewLinkDeclarationSetSelectorVisualElement"));
         t.actionButtonGroup = s.equivalent("ViewLinkDeclarationSetSelectorButtonGroup");
-        t.dataElement = s.referenceType.equivalent("ClassType");
+        t.dataElement = s.transferRelation.target.referenceType.equivalent("ClassType");
         t.isSelector = true;
         t.isRelationSelector = true;
 

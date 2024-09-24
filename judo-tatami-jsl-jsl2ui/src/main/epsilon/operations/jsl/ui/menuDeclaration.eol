@@ -28,14 +28,17 @@ operation JSL!UIMenuDeclaration getExposedVisualElements(): Set {
     ves.add(self);
 
     for (link in self.members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
+        ves.add(link);
         ves.addAll(link.getExposedVisualElements());
     }
 
     for (table in self.members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
+        ves.add(table);
         ves.addAll(table.getExposedVisualElements());
     }
 
     for (group in self.members.select(m | m.isTypeOf(JSL!UIMenuGroupDeclaration)).asSet()) {
+        ves.add(group);
         ves.addAll(group.getExposedVisualElements());
     }
 
