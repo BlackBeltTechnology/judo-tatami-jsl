@@ -5,7 +5,7 @@ rule AbstractViewTableDeclaration
         guard: rootMenu.containsVisualElement(s)
 
         t.name = s.name;
-        t.relationName = s.name;
+        t.relationName = s.transferRelation.target.name;
         t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("TableIcon");
@@ -263,7 +263,7 @@ rule ViewTableDeclarationFilterActionDefinition
     to t: UI!ui::FilterActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterActionDefinition");
         t.name = s.name + "::Filter";
-        t.targetType = s.referenceType.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewTableDeclarationFilterActionDefinition: " + t.name);
 }
@@ -299,7 +299,7 @@ rule ViewTableDeclarationRefreshActionDefinition
     to t: UI!ui::RefreshActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshActionDefinition");
         t.name = s.name + "::Refresh";
-        t.targetType = s.referenceType.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewTableDeclarationRefreshActionDefinition: " + t.name);
 }
@@ -335,7 +335,7 @@ rule ViewTableDeclarationOpenCreateActionDefinition
     to t: UI!ui::OpenCreateFormActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateActionDefinition");
         t.name = s.name + "::OpenCreate";
-        t.targetType = s.referenceType.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewTableDeclarationOpenCreateActionDefinition: " + t.name);
 }
@@ -406,8 +406,8 @@ rule ViewTableDeclarationRowDeleteActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::RowDeleteActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteActionDefinition");
-         t.name = s.name + "::RowDelete";
-         t.targetType = s.referenceType.equivalent("ClassType");
+        t.name = s.name + "::RowDelete";
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewTableDeclarationRowDeleteActionDefinition: " + t.name);
 }
@@ -480,7 +480,7 @@ rule ViewTableDeclarationBulkRemoveActionDefinition
     to t: UI!ui::BulkRemoveActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveActionDefinition");
         t.name = s.name + "::BulkRemove";
-        t.targetType = s.referenceType.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
         t.isContainedRelationAction = true;
         t.isBulk = true;
 

@@ -5,7 +5,7 @@ rule AbstractViewLinkDeclaration
         guard: rootMenu.containsVisualElement(s)
 
         t.name = s.name;
-        t.relationName = s.name;
+        t.relationName = s.transferRelation.target.name;
         t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("LinkIcon");
@@ -58,10 +58,8 @@ rule InlineViewLink
 
         t.actionButtonGroup = s.equivalent("InlineViewLinkButtonGroup");
 
-        /*
-        t.autocompleteRangeActionDefinition = s.equivalent("TabularReferenceFieldLinkAutocompleteRangeActionDefinition");
-        t.autocompleteSetActionDefinition = s.equivalent("TabularReferenceFieldLinkAutocompleteSetActionDefinition");
-        */
+        t.autocompleteRangeActionDefinition = s.equivalent("ViewLinkDeclarationAutocompleteRangeActionDefinition");
+        t.autocompleteSetActionDefinition = s.equivalent("ViewLinkDeclarationAutocompleteSetActionDefinition");
 
         if (s.transferRelation.target.isRefreshAllowed() and not s.transferRelation.target.isEager()) {
             t.refreshActionDefinition = s.equivalent("ViewLinkDeclarationRefreshActionDefinition");
@@ -235,7 +233,7 @@ rule ViewLinkDeclarationRowDeleteActionDefinition
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteActionDefinition");
         t.name = s.name + "::Delete";
         t.isContainedRelationAction = true;
-        t.targetType = s.referenceType.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewLinkDeclarationRowDeleteActionDefinition: " + t.name);
 }
@@ -261,7 +259,7 @@ rule ViewLinkDeclarationUnsetActionDefinition
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetActionDefinition");
  		t.name = s.name + "::Unset";
  		t.isContainedRelationAction = true;
- 		t.targetType = s.referenceType.equivalent("ClassType");
+ 		t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewLinkDeclarationUnsetActionDefinition: " + t.name);
 }
@@ -290,4 +288,54 @@ rule ViewLinkDeclarationOpenSetSelectorActionDefinition
  		t.selectorFor = s.equivalent("ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition");
 
         log.debug("ViewLinkDeclarationOpenSetSelectorActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationAutocompleteRangeAction
+    transform s: JSL!UIViewLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationAutocompleteRangeAction");
+ 		t.name = s.name + "::AutocompleteRangeAction";
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationAutocompleteRangeActionDefinition");
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.targetDataElement = s.equivalent("RelationType");
+
+        log.debug("ViewLinkDeclarationAutocompleteRangeAction: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationAutocompleteRangeActionDefinition
+    transform s: JSL!UIViewLinkDeclaration
+    to t: UI!ui::AutocompleteRangeActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationAutocompleteRangeActionDefinition");
+ 		t.name = s.name + "::Autocomplete";
+ 		t.isContainedRelationAction = true;
+		t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
+
+        log.debug("ViewLinkDeclarationAutocompleteRangeActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationAutocompleteSetAction
+    transform s: JSL!UIViewLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TViewLinkDeclarationAutocompleteSetAction");
+ 		t.name = s.name + "::AutocompleteSetAction";
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationAutocompleteSetActionDefinition");
+        t.ownerDataElement = s.equivalent("RelationType");
+        t.targetDataElement = s.equivalent("RelationType");
+
+        log.debug("TViewLinkDeclarationAutocompleteSetAction: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationAutocompleteSetActionDefinition
+    transform s: JSL!UIViewLinkDeclaration
+    to t: UI!ui::AutocompleteSetActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationAutocompleteSetActionDefinition");
+ 		t.name = s.name + "::AutocompleteSet";
+ 		t.isContainedRelationAction = true;
+ 		t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
+
+        log.debug("ViewLinkDeclarationAutocompleteSetActionDefinition: " + t.name);
 }

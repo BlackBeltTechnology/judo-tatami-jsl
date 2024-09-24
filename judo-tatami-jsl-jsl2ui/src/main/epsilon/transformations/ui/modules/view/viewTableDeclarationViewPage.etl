@@ -114,7 +114,6 @@ rule ViewTableViewPageDefinitionUpdateAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionUpdateAction");
-
         t.name = s.name + "::Update";
         t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerUpdateActionDefinition");
 
@@ -127,7 +126,6 @@ rule ViewTableViewPageDefinitionDeleteAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionDeleteAction");
-
         t.name = s.name + "::Delete";
         t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerDeleteActionDefinition");
 
@@ -152,6 +150,8 @@ rule ViewTableDeclarationRefreshAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshAction");
         t.name = s.name + "::Refresh";
         t.actionDefinition = s.equivalent("ViewTableDeclarationRefreshActionDefinition");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewTableDeclarationRefreshAction: " + t.name);
 }
@@ -163,7 +163,6 @@ rule ViewTableDeclarationOpenCreateAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateAction");
         t.name = s.name + "::OpenCreate";
         t.actionDefinition = s.equivalent("ViewTableDeclarationOpenCreateActionDefinition");
-
         t.targetPageDefinition = s.equivalent("ViewTableCreateFormPageDefinition");
 
         log.debug("ViewTableDeclarationOpenCreateAction: " + t.name);
@@ -176,10 +175,8 @@ rule ViewTableDeclarationOpenPageAction
         var row = s.referenceType;
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageAction");
-
         t.name = s.name + "::OpenPage";
         t.actionDefinition = s.equivalent("ViewTableDeclarationOpenPageActionDefinition");
-
         t.targetPageDefinition = s.equivalent("ViewTableViewPageDefinition");
 
         log.debug("ViewTableDeclarationOpenPageAction: " + t.name);
@@ -190,7 +187,7 @@ rule ViewTableDeclarationRowDeleteAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteAction");
-         t.name = s.name + "::RowDelete";
+        t.name = s.name + "::RowDelete";
         t.actionDefinition = s.equivalent("ViewTableDeclarationRowDeleteActionDefinition");
 
         log.debug("ViewTableDeclarationRowDeleteAction: " + t.name);
@@ -203,7 +200,6 @@ rule ViewTableDeclarationOpenAddSelectorAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorAction");
         t.name = s.name + "::OpenAddSelector";
         t.actionDefinition = s.equivalent("ViewTableDeclarationOpenAddSelectorActionDefinition");
-
         t.targetPageDefinition = s.equivalent("ViewTableDeclarationAddSelectorPageDefinition");
 
         log.debug("ViewTableDeclarationOpenAddSelectorAction: " + t.name);
@@ -216,7 +212,6 @@ rule ViewTableDeclarationBulkRemoveAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveAction");
         t.name = s.name + "::BulkRemove";
         t.actionDefinition = s.equivalent("ViewTableDeclarationBulkRemoveActionDefinition");
-
         t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
         t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
@@ -230,7 +225,6 @@ rule ViewTableDeclarationClearAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearAction");
         t.name = s.name + "::Clear";
         t.actionDefinition = s.equivalent("ViewTableDeclarationClearActionDefinition");
-
         t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
         t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 

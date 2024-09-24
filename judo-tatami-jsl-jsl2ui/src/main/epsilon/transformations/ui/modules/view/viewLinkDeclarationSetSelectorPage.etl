@@ -77,7 +77,7 @@ rule ViewLinkDeclarationSetSelectorTable
         t.isRelationSelectorTable = true;
         t.allowSelectMultiple = false;
         t.name = s.name + "::Set::Selector";
-        t.relationName = s.name;
+        t.relationName = s.transferRelation.target.name;
         t.dataElement = s.transferRelation.target.referenceType.equivalent("ClassType");
         t.tableActionButtonGroup = s.equivalent("ViewLinkDeclarationSetSelectorTableButtonGroup");
         t.~pos = s.~pos;
@@ -168,7 +168,7 @@ rule ViewLinkDeclarationSetSelectorTableRangeActionDefinition
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableRangeActionDefinition");
 
         t.name = s.getFqName() + "::SetSelector::Table::Range";
-        t.targetType = s.referenceType.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewLinkDeclarationSetSelectorTableRangeActionDefinition: " + t.name);
 }
@@ -230,7 +230,7 @@ rule ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition
     to t: UI!ui::SetActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition");
         t.name = s.getFqName() + "::Set";
-        t.targetType = s.referenceType.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition: " + t.name);
 }

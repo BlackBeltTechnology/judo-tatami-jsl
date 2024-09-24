@@ -245,6 +245,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         assertEquals(Set.of(
                 "NavigationActor::SummaryCRUD::UserView::level::related::SetSelectorPage::SummaryCRUD::UserView::level::related::SetSelector::Set",
+                "NavigationActor::SummaryCRUD::UserView::level::related::ViewPage::readOnlyJumper::AutocompleteRangeAction",
+                "NavigationActor::SummaryCRUD::UserView::level::related::ViewPage::readOnlyJumper::AutocompleteSetAction",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::readOnlyJumper::FormPage::readOnlyJumper::Back",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumpers::FormPage::myJumpers::Back",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumpers::AddSelectorPage::SummaryCRUD::RelatedView::g1::myJumpers::AddSelector::Table::Filter",
@@ -252,6 +254,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumpers::AddSelectorPage::SummaryCRUD::RelatedView::g1::myJumpers::AddSelector::Table::Range",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::FormPage::myJumper::Back",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::ViewPage::myJumper::Update",
+                "NavigationActor::SummaryCRUD::UserView::level::related::ViewPage::myJumper::AutocompleteRangeAction",
+                "NavigationActor::SummaryCRUD::UserView::level::related::ViewPage::myJumper::AutocompleteSetAction",
                 "NavigationActor::SummaryCRUD::UserView::level::related::ViewPage::readOnlyJumper::RowDelete",
                 "NavigationActor::SummaryCRUD::UserView::level::related::ViewPage::myJumpers::OpenCreate",
                 "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::ViewPage::myJumpers::OpenPage",
@@ -506,6 +510,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::myJumper::Refresh",
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::myJumper::RowDelete",
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::myJumper::Unset",
+                "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::myJumper::AutocompleteRangeAction",
+                "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::myJumper::AutocompleteSetAction",
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::myJumpers::BulkRemove",
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::myJumpers::Clear",
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::myJumpers::Filter",
@@ -520,6 +526,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::readOnlyJumper::Refresh",
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::readOnlyJumper::RowDelete",
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::readOnlyJumper::Unset",
+                "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::readOnlyJumper::AutocompleteRangeAction",
+                "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::readOnlyJumper::AutocompleteSetAction",
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::related::Back",
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::related::Delete",
                 "NavigationActor::SingleRelationViewCRUD::UserView::level::related::ViewPage::related::Refresh",
@@ -821,7 +829,6 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         PageDefinition jumperRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedRowDetailViewCRUD::RelatedView::g1::myJumpers::ViewPage")).findFirst().orElseThrow();
 
-        assertEquals(24, pageDefinition.getActions().size());
         assertEquals(2, pageContainer.getLinks().size());
         assertEquals(1, pageContainer.getTables().size());
 
@@ -832,6 +839,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::myJumper::Refresh",
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::myJumper::RowDelete",
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::myJumper::Unset",
+                "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::myJumper::AutocompleteRangeAction",
+                "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::myJumper::AutocompleteSetAction",
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::myJumpers::BulkRemove",
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::myJumpers::Clear",
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::myJumpers::Filter",
@@ -845,6 +854,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::readOnlyJumper::OpenSetSelector",
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::readOnlyJumper::Refresh",
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::readOnlyJumper::RowDelete",
+                "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::readOnlyJumper::AutocompleteRangeAction",
+                "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::readOnlyJumper::AutocompleteSetAction",
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::readOnlyJumper::Unset",
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::related::Back",
                 "NavigationActor::RelatedRowDetailViewCRUD::UserView::level::related::ViewPage::related::Delete",

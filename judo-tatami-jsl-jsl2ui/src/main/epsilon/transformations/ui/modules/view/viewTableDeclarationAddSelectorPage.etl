@@ -155,7 +155,7 @@ rule ViewTableDeclarationAddSelectorTableTable
         t.isRelationSelectorTable = true;
         t.allowSelectMultiple = true;
         t.name = s.name + "::Add::Selector";
-        t.relationName = s.name;
+        t.relationName = s.transferRelation.target.name;
         t.dataElement = s.referenceType.map.transfer.equivalent("ClassType");
         t.tableActionButtonGroup = s.equivalent("ViewTableDeclarationAddSelectorTableTableButtonGroup");
         t.~pos = s.~pos;

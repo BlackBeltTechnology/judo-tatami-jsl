@@ -37,6 +37,12 @@ rule ViewLinkPageDefinition
             if (link.getSelectorTableModifier().isDefined()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", s.getId()));
             }
+            if (lRelation.isGetRangeAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationAutocompleteRangeAction", s.getId()));
+            }
+            if (lRelation.isSetReferenceAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationAutocompleteSetAction", s.getId()));
+            }
         }
 
         for (table in s.referenceType.getOwnTables()) {
@@ -114,7 +120,6 @@ rule ViewLinkPageDefinitionUpdateAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionUpdateAction");
-
         t.name = s.name + "::Update";
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerUpdateActionDefinition");
 
@@ -127,7 +132,6 @@ rule ViewLinkPageDefinitionDeleteAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkPageDefinitionDeleteAction");
-
         t.name = s.name + "::Delete";
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerDeleteActionDefinition");
 
@@ -142,6 +146,8 @@ rule ViewLinkDeclarationRefreshAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRefreshAction");
         t.name = s.name + "::Refresh";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationRefreshActionDefinition");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewLinkDeclarationRefreshAction: " + t.name);
 }
@@ -152,10 +158,8 @@ rule ViewLinkDeclarationOpenPageAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageAction");
-
         t.name = s.name + "::OpenPage";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenPageActionDefinition");
-
         t.targetPageDefinition = s.equivalent("ViewLinkPageDefinition");
 
         log.debug("ViewLinkDeclarationOpenPageAction: " + t.name);
@@ -167,10 +171,8 @@ rule ViewLinkDeclarationOpenFormAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormAction");
-
         t.name = s.name + "::OpenForm";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenCreateFormActionDefinition");
-
         t.targetPageDefinition = s.equivalent("ViewLinkCreateFormPageDefinition");
 
         log.debug("ViewLinkDeclarationOpenFormAction: " + t.name);
@@ -182,7 +184,6 @@ rule ViewLinkDeclarationRowDeleteAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteAction");
-
         t.name = s.name + "::RowDelete";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationRowDeleteActionDefinition");
 

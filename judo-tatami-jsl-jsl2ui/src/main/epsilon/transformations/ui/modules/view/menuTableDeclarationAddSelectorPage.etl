@@ -54,7 +54,7 @@ rule TableAddSelectorTableRangeActionDefinition
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableAddSelectorTableRangeActionDefinition");
 
         t.name = s.getFqName() + "::AddSelector::Table::Range";
-        t.targetType = s.referenceType.map.transfer.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("TableAddSelectorTableRangeActionDefinition: " + t.name);
 }
@@ -116,7 +116,8 @@ rule TableAddSelectorAddActionDefinition
     to t: UI!ui::AddActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableAddSelectorAddActionDefinition");
         t.name = s.getFqName() + "::Add";
-        t.targetType = s.referenceType.map.transfer.equivalent("ClassType");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
+
         log.debug("TableAddSelectorAddActionDefinition: " + t.name);
 }
 
