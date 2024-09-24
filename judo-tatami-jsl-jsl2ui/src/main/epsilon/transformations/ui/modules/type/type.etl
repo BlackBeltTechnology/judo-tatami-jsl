@@ -4,7 +4,7 @@ rule CreateNumericType
     to t: UI!ui::data::NumericType {
         guard: s.`primitive` == "numeric"
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateNumericType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId().purify() + ")/CreateNumericType");
         t.name = s.name;
         t.precision = s.getPrecision().value.intValue();
         t.scale = s.getScale().value.intValue();
@@ -19,7 +19,7 @@ rule CreateDateType
     to t: UI!ui::data::DateType {
         guard: s.`primitive` == "date"
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateDateType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId().purify() + ")/CreateDateType");
         t.name = s.name;
         t.operator = actorDeclaration.equivalent("NumericOperation");
         rootMenu.equivalent("Application").dataTypes.add(t);
@@ -32,7 +32,7 @@ rule CreateTimeType
     to t: UI!ui::data::TimeType {
         guard: s.`primitive` == "time"
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateTimeType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId().purify() + ")/CreateTimeType");
         t.name = s.name;
         t.operator = actorDeclaration.equivalent("NumericOperation");
         rootMenu.equivalent("Application").dataTypes.add(t);
@@ -45,7 +45,7 @@ rule CreateTimestampType
     to t: UI!ui::data::TimestampType {
         guard: s.`primitive` == "timestamp"
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateTimestampType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId().purify() + ")/CreateTimestampType");
         t.name = s.name;
         t.operator = actorDeclaration.equivalent("NumericOperation");
         rootMenu.equivalent("Application").dataTypes.add(t);
@@ -56,7 +56,7 @@ rule CreateTimestampType
 rule CreateEnumerationType
     transform s: JSL!EnumDeclaration
     to t: UI!ui::data::EnumerationType {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateEnumerationType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId().purify() + ")/CreateEnumerationType");
         t.name = s.name;
         t.operator = actorDeclaration.equivalent("EnumerationOperation");
         rootMenu.equivalent("Application").dataTypes.add(t);
@@ -67,7 +67,7 @@ rule CreateEnumerationType
 rule CreateEnumerationMember
     transform s: JSL!EnumLiteral
     to t: UI!ui::data::EnumerationMember {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateEnumerationMember");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId().purify() + ")/CreateEnumerationMember");
         t.name = s.name;
         t.ordinal = s.value.intValue();
         s.eContainer.equivalent("CreateEnumerationType").members.add(t);
@@ -80,7 +80,7 @@ rule CreateBooleanType
     to t : UI!ui::data::BooleanType {
         guard: s.`primitive` == "boolean"
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateBooleanType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId().purify() + ")/CreateBooleanType");
         t.name = s.name;
         rootMenu.equivalent("Application").dataTypes.add(t);
         t.operator = actorDeclaration.equivalent("BooleanOperation");
@@ -93,7 +93,7 @@ rule CreateStringType
     to t : UI!ui::data::StringType {
         guard: s.`primitive` == "string"
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateStringType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId().purify() + ")/CreateStringType");
         t.name = s.name;
         t.maxLength = s.getMaxSize().value.intValue();
 
@@ -126,7 +126,7 @@ rule CreateBinaryType
     to t : UI!ui::data::BinaryType {
         guard: s.`primitive` == "binary"
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CreateBinaryType");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId().purify() + ")/CreateBinaryType");
         t.name = s.name;
 
         if (s.getMimeType().isDefined()) {
