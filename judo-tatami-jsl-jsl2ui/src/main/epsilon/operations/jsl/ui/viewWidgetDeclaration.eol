@@ -9,28 +9,6 @@ operation JSL!UIViewWidgetDeclaration getFqName(): String {
 }
 
 @cached
-operation JSL!UIViewWidgetDeclaration getTransferObjectType(): JSL!TransferDeclaration {
-    /*
-    var to = self.eContainer;
-    while (to.isDefined() and not to.isKindOf(JSL!TransferDeclaration)) {
-        to = to.eContainer;
-    }
-    return to;
-    */
-    return self.referenceType.eContainer;
-}
-
-operation JSL!UIViewWidgetDeclaration uiContainer() : UI!ui::VisualElement {
-    if (self.eContainer.isKindOf(JSL!UIViewDeclaration)) {
-        if (self.eContainer.form.isDefined() and self.form) {
-            return self.eContainer.equivalent("FormPageContainerVisualElement");
-        }
-        return self.eContainer.equivalent("ViewPageContainerVisualElement");
-    }
-    throw "Could not map container for uiContainer()";
-}
-
-@cached
 operation JSL!UIViewWidgetDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
     var primitive = self.transferField.target;
 
@@ -43,5 +21,5 @@ operation JSL!UIViewWidgetDeclaration getTransferFieldDeclarationEquivalent(): U
     if (primitive.maps()) {
         return primitive.equivalent("CreateMappedTransferAttribute");
     }
-    throw "Could not determinate attribute type: " + s.fqName();
+    throw "Could not determinate attribute type: " + self.fqName();
 }

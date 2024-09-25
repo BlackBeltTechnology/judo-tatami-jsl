@@ -5,8 +5,8 @@ operation JSL!UIViewLinkDeclaration getId(): String {
 
 @cached
 operation JSL!UIViewLinkDeclaration getFqName(): String {
-    if (self.getTransferContainer().isDefined()) {
-        return self.getTransferContainer().getFqName() + "::" + self.name;
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
     }
     return self.name;
 }
@@ -21,15 +21,19 @@ operation JSL!UIViewLinkDeclaration getExposedVisualElements(): Set {
     var ves = new Set();
     var viewDeclaration = self.referenceType;
 
-    for (link in self.members.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
-        ves.addAll(link.getExposedVisualElements());
+    ves.add(self);
+    ves.add(viewDeclaration);
+    ves.addAll(viewDeclaration.getExposedVisualElements());
+
+    if (self.getCreateFormModifier().isDefined()) {
+        ves.add(self.getCreateFormModifier().form);
+        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements());
     }
 
-    for (table in self.members.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
-        ves.addAll(table.getExposedVisualElements());
+    if (self.getSelectorTableModifier().isDefined()) {
+        ves.add(self.getSelectorTableModifier().row);
+        ves.addAll(self.getSelectorTableModifier().row.getExposedVisualElements());
     }
-
-    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
 
     return ves;
 }

@@ -1,0 +1,236 @@
+rule ViewTableViewPageDefinition
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: rootMenu.containsVisualElement(s) and s.getUpdateViewModifier().isDefined()
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinition");
+        t.name = s.getFqName() + "::ViewPage";
+        t.container = s.getUpdateViewModifier().view.equivalent("ViewPageContainer");
+
+        rootMenu.equivalent("Application").pages.add(t);
+
+        t.dataElement = s.transferRelation.target.equivalent("RelationType");
+
+        /*
+        log.info("===================");
+        log.info(t.name + ":");
+        log.info(relations.collect(r | r.name).concat(", "));
+        log.info("===================");
+        */
+
+        for (link in s.getUpdateViewModifier().view.getOwnLinks()) {
+            var lRelation = link.transferRelation.target;
+
+            t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", s.getId()));
+            if (lRelation.isRefreshAllowed() and not lRelation.isEager()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", s.getId()));
+            }
+            if (link.getCreateFormModifier().isDefined()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", s.getId()));
+            }
+            if (lRelation.isDeleteAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", s.getId()));
+            }
+            if (link.getSelectorTableModifier().isDefined()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", s.getId()));
+            }
+            if (link.getSelectorTableModifier().isDefined()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", s.getId()));
+            }
+        }
+
+        for (table in s.getUpdateViewModifier().view.getOwnTables()) {
+            var tRelation = table.transferRelation.target;
+
+            if (table.getUpdateViewModifier().isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", s.getId()));
+            }
+            if (tRelation.isFilterSupported()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationFilterAction", s.getId()));
+            }
+            if (tRelation.isRefreshAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRefreshAction", s.getId()));
+            }
+            if (table.getCreateFormModifier().isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenCreateAction", s.getId()));
+            }
+            if (tRelation.isDeleteAllowed()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationRowDeleteAction", s.getId()));
+            }
+            if (table.getSelectorTableModifier().isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", s.getId()));
+            }
+            if (table.getSelectorTableModifier().isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", s.getId()));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", s.getId()));
+            }
+        }
+
+        t.actions.add(s.equivalent("ViewTableViewPageDefinitionBackAction"));
+        if (s.transferRelation.target.isRefreshAllowed()) {
+            t.actions.add(s.equivalent("ViewTableViewPageDefinitionRefreshAction"));
+        }
+        if (s.transferRelation.target.isUpdateAllowed()) {
+            t.actions.add(s.equivalent("ViewTableViewPageDefinitionUpdateAction"));
+        }
+        if (s.transferRelation.target.isDeleteAllowed()) {
+            t.actions.add(s.equivalent("ViewTableViewPageDefinitionDeleteAction"));
+        }
+
+        log.debug("Create ViewTableViewPageDefinition: " + t.name);
+}
+
+@lazy
+@greedy
+rule ViewTableViewPageDefinitionRefreshAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        guard: rootMenu.containsVisualElement(s)
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionRefreshAction");
+        t.name = s.name + "::Refresh";
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerRefreshActionDefinition");
+
+        log.debug("ViewTableViewPageDefinitionRefreshAction: " + t.name);
+}
+
+@lazy
+@greedy
+rule ViewTableViewPageDefinitionBackAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        guard: rootMenu.containsVisualElement(s)
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionBackAction");
+        t.name = s.name + "::Back";
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerBackActionDefinition");
+
+        log.debug("ViewTableViewPageDefinitionBackAction: " + t.name);
+}
+
+@lazy
+@greedy
+rule ViewTableViewPageDefinitionUpdateAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionUpdateAction");
+        t.name = s.name + "::Update";
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerUpdateActionDefinition");
+
+        log.debug("ViewTableViewPageDefinitionUpdateAction: " + t.name);
+}
+
+@lazy
+@greedy
+rule ViewTableViewPageDefinitionDeleteAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionDeleteAction");
+        t.name = s.name + "::Delete";
+        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerDeleteActionDefinition");
+
+        log.debug("ViewTableViewPageDefinitionDeleteAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationFilterAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterAction");
+        t.name = s.name + "::Filter";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationFilterActionDefinition");
+
+        log.debug("ViewTableDeclarationFilterAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationRefreshAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshAction");
+        t.name = s.name + "::Refresh";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationRefreshActionDefinition");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
+
+        log.debug("ViewTableDeclarationRefreshAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationOpenCreateAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateAction");
+        t.name = s.name + "::OpenCreate";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationOpenCreateActionDefinition");
+        t.targetPageDefinition = s.equivalent("ViewTableCreateFormPageDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
+
+        log.debug("ViewTableDeclarationOpenCreateAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationOpenPageAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        var row = s.referenceType;
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageAction");
+        t.name = s.name + "::OpenPage";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationOpenPageActionDefinition");
+        t.targetPageDefinition = s.equivalent("ViewTableViewPageDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
+
+        log.debug("ViewTableDeclarationOpenPageAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationRowDeleteAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteAction");
+        t.name = s.name + "::RowDelete";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationRowDeleteActionDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
+
+        log.debug("ViewTableDeclarationRowDeleteAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationOpenAddSelectorAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorAction");
+        t.name = s.name + "::OpenAddSelector";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationOpenAddSelectorActionDefinition");
+        t.targetPageDefinition = s.equivalent("ViewTableDeclarationAddSelectorPageDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
+
+        log.debug("ViewTableDeclarationOpenAddSelectorAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationBulkRemoveAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveAction");
+        t.name = s.name + "::BulkRemove";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationBulkRemoveActionDefinition");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
+
+        log.debug("ViewTableDeclarationBulkRemoveAction: " + t.name);
+}
+
+@lazy
+rule ViewTableDeclarationClearAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearAction");
+        t.name = s.name + "::Clear";
+        t.actionDefinition = s.equivalent("ViewTableDeclarationClearActionDefinition");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
+
+        log.debug("ViewTableDeclarationClearAction: " + t.name);
+}

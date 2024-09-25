@@ -16,15 +16,14 @@ operation JSL!UIMenuLinkDeclaration getExposedVisualElements(): Set {
     var ves = new Set();
     var viewDeclaration = self.referenceType;
 
-    for (link in viewDeclaration.members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
-        ves.addAll(link.getExposedVisualElements());
-    }
+    ves.add(self);
+    ves.add(viewDeclaration);
+    ves.addAll(viewDeclaration.getExposedVisualElements());
 
-    for (table in viewDeclaration.members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
-        ves.addAll(table.getExposedVisualElements());
+    if (self.getCreateFormModifier().isDefined()) {
+        ves.add(self.getCreateFormModifier().form);
+        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements());
     }
-
-    ves.addAll(viewDeclaration.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
 
     return ves;
 }

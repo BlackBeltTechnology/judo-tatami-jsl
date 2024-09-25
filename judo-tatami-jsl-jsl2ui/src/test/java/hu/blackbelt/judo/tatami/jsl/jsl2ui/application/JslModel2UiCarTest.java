@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
-public class JslModel2UiTest extends AbstractTest  {
+public class JslModel2UiCarTest extends AbstractTest  {
     private static final String TARGET_TEST_CLASSES = "target/test-classes/car";
 
     @Override
@@ -86,11 +86,7 @@ public class JslModel2UiTest extends AbstractTest  {
                 event delete deleteCar;
             }
 
-            actor UserActor
-                realm: "COMPANY"
-                claim: "email"
-                identity: UserTransfer::email
-            {
+            actor UserActor realm: "COMPANY" claim: "email" identity: UserTransfer::email {
                 access CarTransfer[] cars <= Car.all() create delete update;
             }
 
@@ -136,21 +132,21 @@ public class JslModel2UiTest extends AbstractTest  {
         ), relationTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "Car::CarTransfer::ClassType",
-                "Car::UserActor::ClassType",
-                "Car::UserTransfer::ClassType"
+                "Car::CarTransfer",
+                "Car::UserActor",
+                "Car::UserTransfer"
         ), classTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
                 "Car::CarView::View::PageContainer",
-                "Car::CarApp::cars::Table::PageContainer",
+                "Car::CarTable::Table::PageContainer",
                 "Car::CarApp::Dashboard",
                 "Car::CarForm::Create::PageContainer"
         ), pageContainers.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
+                "Car::CarApp::cars::AccessTableViewPage",
                 "Car::CarApp::cars::AccessFormPage",
-                "Car::CarApp::cars::AccessViewPage",
                 "Car::CarApp::DashboardPage",
                 "Car::CarApp::cars::AccessTablePage"
         ), pages.stream().map(NamedElement::getName).collect(Collectors.toSet()));
@@ -158,7 +154,7 @@ public class JslModel2UiTest extends AbstractTest  {
         assertEquals(Set.of(), links.stream().map(NamedElement::getName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "cars::Table"
+                "CarTable::Table"
         ), tables.stream().map(NamedElement::getName).collect(Collectors.toSet()));
     }
 }

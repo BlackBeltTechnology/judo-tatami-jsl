@@ -1,18 +1,22 @@
-rule MenuTableNavigationItem
-    transform s: JSL!UIMenuTableDeclaration
+rule MenuLinkNavigationItem
+    transform s: JSL!UIMenuLinkDeclaration
     to t : UI!ui::NavigationItem {
         guard: rootMenu.containsVisualElement(s)
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/MenuTableNavigationItem");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/MenuLinkNavigationItem");
         t.name = s.getFqName();
-        t.label = s.getLabelWithNameFallback();
+
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
 
         var icon = s.getIconModifier();
         if (icon.isDefined()) {
             t.icon = icon.equivalent("IconModifierIcon");
         }
 
-        t.target = s.equivalent("AccessTablePageDefinition");
+        t.target = s.equivalent("AccessViewPageDefinition");
 
         if (s.eContainer.isKindOf(JSL!UIMenuGroupDeclaration)) {
             s.eContainer.equivalent("MenuItemGroup").items.add(t);
@@ -23,5 +27,5 @@ rule MenuTableNavigationItem
             t.~pos = s.eContainer.members.indexOf(s);
         }
 
-        log.debug("MenuTableNavigationItem: " + s.name);
+        log.debug("MenuLinkNavigationItem: " + s.name);
 }

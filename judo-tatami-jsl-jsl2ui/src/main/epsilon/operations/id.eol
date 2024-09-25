@@ -30,3 +30,8 @@ operation Any getId() : String {
 
     return r.getId(self);
 }
+
+operation String purify() : String {
+    // e.g. xmiids do not like such characters
+    return self.replace("::", "/");
+}

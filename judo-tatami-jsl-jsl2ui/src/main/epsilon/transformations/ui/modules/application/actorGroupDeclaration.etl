@@ -1,0 +1,33 @@
+rule MenuItemGroup
+    transform s: JSL!UIMenuGroupDeclaration
+    to t : UI!ui::NavigationItem {
+        guard: s.getRootMenu() == rootMenu
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/MenuItemGroup");
+        t.name = s.getFqName();
+
+        log.debug("Create Navigation Group: " + s.name );
+
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+
+        var icon = s.getIconModifier();
+        if (icon.isDefined()) {
+            t.icon = icon.equivalent("IconModifierIcon");
+        }
+
+        /*if (s.hiddenBy.isDefined()) {
+            t.hiddenBy = s.hiddenBy.name;
+        }*/
+
+        if (s.eContainer.isKindOf(JSL!UIMenuGroupDeclaration)) {
+            s.eContainer.equivalent("MenuItemGroup").items.add(t);
+            t.~pos = s.eContainer.members.indexOf(s);
+        } else {
+            var navigationController = rootMenu.equivalent("Application").navigationController;
+            navigationController.items.add(t);
+            t.~pos = s.eContainer.members.indexOf(s);
+        }
+}

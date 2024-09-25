@@ -2,7 +2,6 @@ import "../../operations/_importAll.eol";
 
 import "modules/application/actorDeclaration.etl";
 import "modules/application/actorGroupDeclaration.etl";
-import "modules/application/actorLinkDeclaration.etl";
 import "modules/application/modifiable.etl";
 
 import "modules/structure/transferDeclaration.etl";
@@ -14,13 +13,27 @@ import "modules/type/type.etl";
 
 import "modules/view/enumLiteral.etl";
 import "modules/view/menuDeclaration.etl";
+import "modules/view/menuLinkDeclaration.etl";
+import "modules/view/menuLinkDeclarationFormPage.etl";
+import "modules/view/menuLinkDeclarationViewPage.etl";
 import "modules/view/menuTableDeclaration.etl";
+import "modules/view/menuTableDeclarationAddSelectorPage.etl";
+import "modules/view/menuTableDeclarationFormPage.etl";
+import "modules/view/menuTableDeclarationTablePage.etl";
+import "modules/view/menuTableDeclarationViewPage.etl";
 import "modules/view/rowColumnDeclaration.etl";
-import "modules/view/rowLinkDeclaration.etl";
+import "modules/view/rowDeclaration.etl";
 import "modules/view/viewDeclaration.etl";
+import "modules/view/viewDeclarationForm.etl";
 import "modules/view/viewGroupDeclaration.etl";
 import "modules/view/viewLinkDeclaration.etl";
+import "modules/view/viewLinkDeclarationFormPage.etl";
+import "modules/view/viewLinkDeclarationSetSelectorPage.etl";
+import "modules/view/viewLinkDeclarationViewPage.etl";
 import "modules/view/viewTableDeclaration.etl";
+import "modules/view/viewTableDeclarationAddSelectorPage.etl";
+import "modules/view/viewTableDeclarationFormPage.etl";
+import "modules/view/viewTableDeclarationViewPage.etl";
 import "modules/view/viewTabsDeclaration.etl";
 import "modules/view/viewWidgetDeclaration.etl";
 
@@ -29,27 +42,30 @@ pre {
     var __cacheMap = new ConcurrentMap();
     var __originalMap = new ConcurrentMap();
     var System = Native("java.lang.System");
-/*
-    for (container : JSL!ViewPanelDeclaration in JSL!ViewPanelDeclaration.all()) {
-        if (container.isTypeOf(JSL!ViewGroupDeclaration)) {
+
+    for (container : JSL!UIViewPanelDeclaration in JSL!UIViewPanelDeclaration.all()) {
+        if (container.isTypeOf(JSL!UIViewGroupDeclaration)) {
             for (member in container.members) {
                 member.~pos = container.members.indexOf(member) + 1;
             }
-        } else if (container.isTypeOf(JSL!ViewTabsDeclaration)) {
-           for (group in container.groups) {
-               group.~pos = container.groups.indexOf(group) + 1;
+        } else if (container.isTypeOf(JSL!UIViewTabsDeclaration)) {
+           for (panel in container.panels) {
+               panel.~pos = container.panels.indexOf(panel) + 1;
            }
        }
     }
 
-    for (visible : JSL!VisibleDeclaration in JSL!VisibleDeclaration.all()) {
-        if (visible.isTypeOf(JSL!ViewDeclaration) or visible.isTypeOf(JSL!RowDeclaration)) {
-            for (member in visible.members) {
-                member.~pos = visible.members.indexOf(member) + 1;
-            }
+    for (visible : JSL!UIRowDeclaration in JSL!UIRowDeclaration.all()) {
+        for (member in visible.members) {
+            member.~pos = visible.members.indexOf(member) + 1;
         }
     }
-*/
+
+    for (visible : JSL!UIViewDeclaration in JSL!UIViewDeclaration.all()) {
+        for (member in visible.members) {
+            member.~pos = visible.members.indexOf(member) + 1;
+        }
+    }
 }
 
 post {

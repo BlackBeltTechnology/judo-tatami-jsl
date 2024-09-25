@@ -1,11 +1,10 @@
-
 rule Actor
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::ClassType {
         guard: s = actorDeclaration
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Actor");
 
-        t.name = s.getFqName() + "::ClassType";
+        t.name = s.getFqName();
         t.simpleName = s.name;
         //t.setPackageNameTokens(s);
         t.packageNameTokens.add(0, defaultModelName);
