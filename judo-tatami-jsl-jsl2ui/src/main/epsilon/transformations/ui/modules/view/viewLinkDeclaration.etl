@@ -196,7 +196,6 @@ rule ViewLinkDeclarationOpenCreateFormActionDefinition
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenCreateFormActionDefinition");
         t.name = s.name + "::OpenCreate";
         t.isContainedRelationAction = true;
-        // t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewLinkDeclarationOpenCreateFormActionDefinition: " + t.name);
 }

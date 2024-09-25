@@ -335,7 +335,6 @@ rule ViewTableDeclarationOpenCreateActionDefinition
     to t: UI!ui::OpenCreateFormActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateActionDefinition");
         t.name = s.name + "::OpenCreate";
-        // t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
         log.debug("ViewTableDeclarationOpenCreateActionDefinition: " + t.name);
 }
