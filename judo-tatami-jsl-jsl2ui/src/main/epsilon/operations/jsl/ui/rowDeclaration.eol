@@ -1,0 +1,22 @@
+@cached
+operation JSL!UIRowDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!UIRowDeclaration getFqName(): String {
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
+    }
+    return self.name;
+}
+
+@cached
+operation JSL!UIRowDeclaration getExposedVisualElements(): Set {
+    var ves = new Set();
+
+    ves.add(self);
+    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration)).asSet());
+
+    return ves;
+}

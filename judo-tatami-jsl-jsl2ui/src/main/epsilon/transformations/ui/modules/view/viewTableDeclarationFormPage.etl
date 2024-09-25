@@ -1,0 +1,65 @@
+@greedy
+rule ViewTableCreateFormPageDefinition
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
+
+        rootMenu.equivalent("Application").pages.add(t);
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormPageDefinition");
+        t.name = s.getFqName() + "::FormPage";
+        t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
+        t.dataElement = s.transferRelation.target.equivalent("RelationType");
+        t.openInDialog = true;
+
+        // var relations = s.referenceType.getDirectRelations();
+
+        /*
+        log.info("===================");
+        log.info(t.name + ":");
+        log.info(relations.collect(r | r.name).concat(", "));
+        log.info("===================");
+        */
+        /*
+        for (link in relations.select(r | r.isKindOf(JSL!UIViewLinkDeclaration))) {
+            t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
+        }
+
+        for (table in relations.select(r | r.isKindOf(JSL!UIViewTableDeclaration))) {
+            var detailLink = table.getDetailLink();
+
+            if (detailLink.isDefined()) {
+                t.actions.add(table.equivalent("ViewTableDeclarationOpenPageAction"));
+            }
+        }
+        */
+
+        t.actions.add(s.equivalent("ViewTableCreateFormBackAction"));
+        t.actions.add(s.equivalent("ViewTableCreateFormCreateAction"));
+
+        log.debug("Create ViewTableCreateFormPageDefinition: " + t.name);
+}
+
+@greedy
+@lazy
+rule ViewTableCreateFormCreateAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormCreateAction");
+        t.name = s.name + "::Create";
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerCreateActionDefinition");
+
+        log.debug("ViewTableCreateFormCreateAction: " + t.name);
+}
+
+@greedy
+@lazy
+rule ViewTableCreateFormBackAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormBackAction");
+        t.name = s.name + "::Back";
+        t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerBackActionDefinition");
+
+        log.debug("ViewTableCreateFormBackAction: " + t.name);
+}

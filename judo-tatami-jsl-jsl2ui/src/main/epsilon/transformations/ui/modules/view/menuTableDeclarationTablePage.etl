@@ -1,0 +1,139 @@
+
+rule AccessTablePageDefinition
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: rootMenu.containsVisualElement(s)
+
+        var relation = s.actorAccess.target;
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageDefinition");
+        t.name = s.getFqName() + "::AccessTablePage";
+        t.container = s.referenceType.equivalent("TablePageContainer");
+        t.dataElement = relation.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
+
+        if (s.getUpdateViewModifier().isDefined()) {
+            t.actions.add(s.equivalent("AccessTableOpenPageAction"));
+        }
+        if (relation.isRefreshAllowed()) {
+            t.actions.add(s.equivalent("AccessTableTableRefreshAction"));
+        }
+        if (relation.isDeleteAllowed()) {
+            t.actions.add(s.equivalent("AccessTableRowDeleteAction"));
+        }
+        if (relation.isFilterSupported()) {
+            t.actions.add(s.equivalent("AccessTableTableFilterAction"));
+        }
+        if (s.getCreateFormModifier().isDefined()) {
+            t.actions.add(s.equivalent("AccessTableTableOpenCreateAction"));
+        }
+        if (s.getSelectorTableModifier().isDefined()) {
+            t.actions.add(table.equivalent("ViewTableDeclarationOpenAddSelectorAction"));
+        }
+        if (s.getSelectorTableModifier().isDefined()) {
+            t.actions.add(table.equivalent("AccessTableTableClearAction"));
+            t.actions.add(table.equivalent("AccessTableTableBulkRemoveAction"));
+        }
+
+        rootMenu.equivalent("Application").pages.add(t);
+
+        log.debug("Create AccessTablePageDefinition: " + t.name);
+}
+
+@lazy
+rule AccessTableBackAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableBackAction");
+        t.name = s.name + "::Back";
+        t.actionDefinition = s.referenceType.equivalent("TablePageContainerBackActionDefinition");
+
+        log.debug("AccessTableBackAction: " + t.name);
+}
+
+@lazy
+rule AccessTableTableOpenCreateAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenCreateAction");
+        t.name = s.name + "::OpenCreate";
+        t.actionDefinition = s.referenceType.equivalent("TableTableOpenCreateActionDefinition");
+        t.targetPageDefinition = s.equivalent("AccessTableCreateFormPageDefinition");
+
+        log.debug("AccessTableTableOpenCreateAction: " + t.name);
+}
+
+@lazy
+rule AccessTableTableRefreshAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableRefreshAction");
+        t.name = s.name + "::Refresh";
+        t.actionDefinition = s.referenceType.equivalent("TableTableRefreshActionDefinition");
+
+        log.debug("AccessTableTableRefreshAction: " + t.name);
+}
+
+@lazy
+rule AccessTableTableFilterAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableFilterAction");
+        t.name = s.name + "::Filter";
+        t.actionDefinition = s.referenceType.equivalent("TableTableFilterActionDefinition");
+
+        log.debug("AccessTableTableFilterAction: " + t.name);
+}
+
+@lazy
+rule AccessTableOpenPageAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableOpenPageAction");
+
+        t.name = s.name + "::OpenPage";
+        t.actionDefinition = s.referenceType.equivalent("TableOpenPageActionDefinition");
+
+        t.targetPageDefinition = s.equivalent("AccessTableViewPageDefinition");
+
+        log.debug("AccessTableOpenPageAction: " + t.name);
+}
+
+@lazy
+rule AccessTableRowDeleteAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowDeleteAction");
+        t.name = s.name + "::RowDelete";
+        t.actionDefinition = s.referenceType.equivalent("TableRowDeleteActionDefinition");
+
+        log.debug("AccessTableRowDeleteAction: " + t.name);
+}
+
+@lazy
+rule AccessTableTableBulkRemoveAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableBulkRemoveAction");
+        t.name = s.name + "::BulkRemove";
+        t.actionDefinition = s.equivalent("AccessTableTableBulkRemoveActionDefinition");
+
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.targetDataElement = s.actorAccess.target.equivalent("RelationType");
+
+        log.debug("AccessTableTableBulkRemoveAction: " + t.name);
+}
+
+@lazy
+rule AccessTableTableClearAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableClearAction");
+        t.name = s.name + "::Clear";
+        t.actionDefinition = s.equivalent("AccessTableTableClearActionDefinition");
+
+        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
+        t.targetDataElement = s.actorAccess.target.equivalent("RelationType");
+
+        log.debug("AccessTableTableClearAction: " + t.name);
+}
