@@ -5,7 +5,7 @@ rule ViewLinkDeclarationSetSelectorPageDefinition
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorPageDefinition");
         t.name = s.getFqName() + "::SetSelectorPage";
         t.container = s.equivalent("ViewLinkDeclarationSetSelectorPageContainer");
-        t.dataElement = s.equivalent("RelationType");
+        t.dataElement = s.transferRelation.target.equivalent("RelationType");
         t.openInDialog = true;
         t.dialogSize = UI!ui::DialogSize#MD;
 
@@ -241,7 +241,7 @@ rule ViewLinkDeclarationSetSelectorSetAction
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetAction");
  		t.name = s.getFqName() + "::SetSelector::Set";
-        t.ownerDataElement = s.equivalent("RelationType");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
         t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition");
 
         log.debug("ViewLinkDeclarationSetSelectorSetAction: " + t.name);
@@ -253,7 +253,7 @@ rule ViewLinkDeclarationSetSelectorBackAction
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorBackAction");
  		t.name = s.getFqName() + "::SetSelector::Back";
-        t.ownerDataElement = s.equivalent("RelationType");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
         t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorBackActionDefinition");
 
         log.debug("ViewLinkDeclarationSetSelectorBackAction: " + t.name);
@@ -265,8 +265,8 @@ rule ViewLinkDeclarationSetSelectorTableFilterAction
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableFilterAction");
  		t.name = s.getFqName() + "::SetSelector::Table::Filter";
-        t.ownerDataElement = s.equivalent("RelationType");
-        t.targetDataElement = s.equivalent("RelationType");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
         t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorTableFilterActionDefinition");
 
         log.debug("ViewLinkDeclarationSetSelectorTableFilterAction: " + t.name);
@@ -278,8 +278,8 @@ rule ViewLinkDeclarationSetSelectorTableRangeAction
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableRangeAction");
  		t.name = s.getFqName() + "::SetSelector::Table::Range";
-        t.ownerDataElement = s.equivalent("RelationType");
-        t.targetDataElement = s.equivalent("RelationType");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
         t.actionDefinition = s.equivalent("ViewLinkDeclarationSetSelectorTableRangeActionDefinition");
 
         log.debug("ViewLinkDeclarationSetSelectorTableRangeAction: " + t.name);

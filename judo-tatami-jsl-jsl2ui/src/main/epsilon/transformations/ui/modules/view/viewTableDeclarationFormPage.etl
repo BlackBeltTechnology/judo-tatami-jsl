@@ -4,15 +4,13 @@ rule ViewTableCreateFormPageDefinition
     to t: UI!ui::PageDefinition {
         guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormPageDefinition");
-
-        t.name = s.getFqName() + "::FormPage";
-
-        t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
-
         rootMenu.equivalent("Application").pages.add(t);
 
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormPageDefinition");
+        t.name = s.getFqName() + "::FormPage";
+        t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
+        t.openInDialog = true;
 
         // var relations = s.referenceType.getDirectRelations();
 

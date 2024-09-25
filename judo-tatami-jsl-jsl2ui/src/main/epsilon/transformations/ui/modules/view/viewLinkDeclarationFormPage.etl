@@ -5,10 +5,9 @@ rule ViewLinkCreateFormPageDefinition
         guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormPageDefinition");
-
         t.name = s.getFqName() + "::FormPage";
-
         t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
+        t.openInDialog = true;
 
         rootMenu.equivalent("Application").pages.add(t);
 

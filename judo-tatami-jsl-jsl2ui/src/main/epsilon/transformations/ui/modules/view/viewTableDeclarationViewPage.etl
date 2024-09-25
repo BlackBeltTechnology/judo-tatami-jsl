@@ -164,6 +164,7 @@ rule ViewTableDeclarationOpenCreateAction
         t.name = s.name + "::OpenCreate";
         t.actionDefinition = s.equivalent("ViewTableDeclarationOpenCreateActionDefinition");
         t.targetPageDefinition = s.equivalent("ViewTableCreateFormPageDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewTableDeclarationOpenCreateAction: " + t.name);
 }
@@ -178,6 +179,7 @@ rule ViewTableDeclarationOpenPageAction
         t.name = s.name + "::OpenPage";
         t.actionDefinition = s.equivalent("ViewTableDeclarationOpenPageActionDefinition");
         t.targetPageDefinition = s.equivalent("ViewTableViewPageDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewTableDeclarationOpenPageAction: " + t.name);
 }
@@ -189,6 +191,7 @@ rule ViewTableDeclarationRowDeleteAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteAction");
         t.name = s.name + "::RowDelete";
         t.actionDefinition = s.equivalent("ViewTableDeclarationRowDeleteActionDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewTableDeclarationRowDeleteAction: " + t.name);
 }
@@ -201,6 +204,7 @@ rule ViewTableDeclarationOpenAddSelectorAction
         t.name = s.name + "::OpenAddSelector";
         t.actionDefinition = s.equivalent("ViewTableDeclarationOpenAddSelectorActionDefinition");
         t.targetPageDefinition = s.equivalent("ViewTableDeclarationAddSelectorPageDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewTableDeclarationOpenAddSelectorAction: " + t.name);
 }

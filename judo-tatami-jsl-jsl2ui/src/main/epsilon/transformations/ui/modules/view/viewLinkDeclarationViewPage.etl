@@ -161,6 +161,7 @@ rule ViewLinkDeclarationOpenPageAction
         t.name = s.name + "::OpenPage";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenPageActionDefinition");
         t.targetPageDefinition = s.equivalent("ViewLinkPageDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewLinkDeclarationOpenPageAction: " + t.name);
 }
@@ -174,6 +175,7 @@ rule ViewLinkDeclarationOpenFormAction
         t.name = s.name + "::OpenForm";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenCreateFormActionDefinition");
         t.targetPageDefinition = s.equivalent("ViewLinkCreateFormPageDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewLinkDeclarationOpenFormAction: " + t.name);
 }
@@ -186,6 +188,7 @@ rule ViewLinkDeclarationRowDeleteAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteAction");
         t.name = s.name + "::RowDelete";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationRowDeleteActionDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewLinkDeclarationRowDeleteAction: " + t.name);
 }
@@ -197,6 +200,7 @@ rule ViewLinkDeclarationUnsetAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetAction");
         t.name = s.name + "::Unset";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationUnsetActionDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewLinkDeclarationUnsetAction: " + t.name);
 }
@@ -209,6 +213,7 @@ rule ViewLinkDeclarationOpenSetSelectorDialogAction
         t.name = s.name + "::OpenSetSelector";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenSetSelectorActionDefinition");
         t.targetPageDefinition = s.equivalent("ViewLinkDeclarationSetSelectorPageDefinition");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewLinkDeclarationOpenSetSelectorDialogAction: " + t.name);
 }

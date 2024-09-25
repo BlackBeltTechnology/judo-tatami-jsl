@@ -382,7 +382,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             }
 
             transfer UserTransfer(User u) {
-                field String email <= u.email required;
+                field String emailReadOnly <= u.email;
+                field String emailWritable <=> u.email required;
                 field Numeric numeric <= u.numeric;
     
                 relation RelatedTransfer related <= u.related eager create update delete;
@@ -404,7 +405,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             }
 
             table UserTable(UserTransfer u) {
-                column String email <= u.email;
+                column String email <= u.emailReadOnly;
             }
 
             view UserView(UserTransfer u) {
@@ -416,7 +417,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
     
                     tabs tabs0 orientation:horizontal width:6 {
                         group tab1 label:"Tab1" icon:"numbers" h-align:left {
-                            widget String email <= u.email icon:"text" label:"My Email";
+                            widget String email <= u.emailReadOnly icon:"text" label:"My Email";
                         }
         
                         group tab2 label:"Tab2" icon:"numbers" h-align:right {
@@ -427,8 +428,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             }
 
             form UserForm(UserTransfer u) {
-                widget String emailReadOnly <= u.email icon:"text" label:"Readonly Email";
-                widget String emailWritable <=> u.email icon:"text" label:"Writable Email";
+                widget String emailReadOnly <= u.emailReadOnly icon:"text" label:"Readonly Email";
+                widget String emailWritable <=> u.emailWritable icon:"text" label:"Writable Email";
                 group level1 label:"Yo" icon:"text" {
                     link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm;
                 }
