@@ -52,6 +52,8 @@
 
         <!--suppress UnresolvedMavenProperty -->
         <logback-test-config>${maven.multiModuleProjectDirectory}/logback-test.xml</logback-test-config>
+        <logback-version>1.5.12</logback-version>
+        <lombok-version>1.18.34</lombok-version>
 
         <slf4j-version>2.0.16</slf4j-version>
         <junit-version>5.5.1</junit-version>
@@ -116,7 +118,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+            <version>${lombok-version}</version>
         </dependency>
 
         <dependency>
@@ -128,7 +130,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.11</version>
+            <version>${logback-version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -736,7 +738,7 @@
                     <dependency>
                         <groupId>org.projectlombok</groupId>
                         <artifactId>lombok</artifactId>
-                        <version>1.18.24</version>
+                        <version>${lombok-version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
