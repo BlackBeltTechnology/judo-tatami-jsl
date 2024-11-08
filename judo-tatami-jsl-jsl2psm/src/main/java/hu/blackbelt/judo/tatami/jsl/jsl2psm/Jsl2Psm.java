@@ -162,6 +162,10 @@ public class Jsl2Psm {
         @NonNull
         Boolean generateBehaviours = false;
 
+        @Builder.Default
+        @NonNull
+        Boolean useCahe = false;
+
     }
 
 
@@ -190,12 +194,15 @@ public class Jsl2Psm {
                                     .log(log)
                                     .name("JSL")
                                     .resource(parameter.jslModel.getResource())
+                                    .useCache(parameter.useCahe)
                                     .build()
                                     )
                             .add(wrappedEmfModelContextBuilder()
                                     .log(log)
                                     .name("JUDOPSM")
                                     .resource(parameter.psmModel.getResource())
+                                    .validateModel(false)
+                                    .useCache(false)
                                     .build()
                             )
                             .build()
