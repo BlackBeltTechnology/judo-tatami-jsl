@@ -17,7 +17,7 @@ rule AbstractViewGroupDeclaration
         }
 
         t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12d;
-        t.~pos = s.getPos();
+        __pos.put(t, s.getPos());
 
         if (s.getOrientationModifier().isDefined()) {
             t.direction = s.getOrientationModifier().isVertical() ? UI!Axis#VERTICAL : UI!Axis#HORIZONTAL;

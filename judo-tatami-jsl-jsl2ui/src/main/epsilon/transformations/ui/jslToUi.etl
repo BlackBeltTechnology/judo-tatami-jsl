@@ -42,7 +42,7 @@ pre {
     var __cacheMap = new ConcurrentMap();
     var __originalMap = new ConcurrentMap();
     var System = Native("java.lang.System");
-
+    var __pos = new ConcurrentMap();
     for (container : JSL!UIViewPanelDeclaration in JSL!UIViewPanelDeclaration.all()) {
         if (container.isTypeOf(JSL!UIViewGroupDeclaration)) {
             for (member in container.members) {
@@ -57,7 +57,7 @@ pre {
 
     for (visible : JSL!UIRowDeclaration in JSL!UIRowDeclaration.all()) {
         for (member in visible.members) {
-            member.~pos = visible.members.indexOf(member) + 1;
+            __pos.put(member, visible.members.indexOf(member) + 1);
         }
     }
 
@@ -79,6 +79,9 @@ post {
     }
 
     for (group : UI!ui::NavigationItem in UI!ui::NavigationItem.all()) {
+        for (item in group.items) {
+            item.~pos = __pos.get(item);
+        }
         group.items = group.items.sortBy(e | e.~pos);
     }
 
