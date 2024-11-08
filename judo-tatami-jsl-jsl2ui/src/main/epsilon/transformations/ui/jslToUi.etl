@@ -46,11 +46,11 @@ pre {
     for (container : JSL!UIViewPanelDeclaration in JSL!UIViewPanelDeclaration.all()) {
         if (container.isTypeOf(JSL!UIViewGroupDeclaration)) {
             for (member in container.members) {
-                member.~pos = container.members.indexOf(member) + 1;
+                __pos.put(member, container.members.indexOf(member) + 1);
             }
         } else if (container.isTypeOf(JSL!UIViewTabsDeclaration)) {
            for (panel in container.panels) {
-               panel.~pos = container.panels.indexOf(panel) + 1;
+               __pos.put(panel, container.panels.indexOf(panel) + 1);
            }
        }
     }
@@ -63,7 +63,7 @@ pre {
 
     for (visible : JSL!UIViewDeclaration in JSL!UIViewDeclaration.all()) {
         for (member in visible.members) {
-            member.~pos = visible.members.indexOf(member) + 1;
+            __pos.put(member, visible.members.indexOf(member) + 1);
         }
     }
 }
@@ -72,6 +72,9 @@ post {
     var application = rootMenu.equivalent("Application");
 
     for (navigationController : UI!ui::NavigationController in UI!ui::NavigationController.all()) {
+        for (item in navigationController.items) {
+            item.~pos = __pos.get(item);
+        }
         navigationController.items = navigationController.items.sortBy(e | e.~pos);
     }
 
@@ -81,6 +84,9 @@ post {
 
     for (container : UI!ui::Container in UI!ui::Container.all().select(a | a.getRootApplication() == application)) {
         var missingPos = false;
+        for (item in container.children) {
+            item.~pos = __pos.get(item);
+        }
         for (child in container.children) {
             if (child.~pos.isUndefined()) {
                 missingPos = true;
