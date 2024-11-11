@@ -97,6 +97,8 @@ public abstract class AbstractTatamiPipelineWorkflow {
                 .createSimpleName(parameters.getRdbmsCreateSimpleName())
                 .nameSize(parameters.getRdbmsNameSize())
                 .shortNameSize(parameters.getRdbmsShortNameSize())
+                .tableNameMaxSize(parameters.getRdbmsTableNameMaxSize())
+                .columnMaxNameSize(parameters.getRdbmsColumnMaxNameSize())
                 .tablePrefix(parameters.getRdbmsTablePrefix())
                 .columnPrefix(parameters.getRdbmsColumnPrefix())
                 .foreignKeyPrefix(parameters.getRdbmsForeignKeyPrefix())
