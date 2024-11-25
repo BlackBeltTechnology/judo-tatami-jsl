@@ -97,10 +97,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testNoDefaultTransferObject() throws Exception {
-        testName = "TestNoDefaultTransferObject";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
@@ -116,10 +113,8 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testEntityPrefix() throws Exception {
-        testName = "TestEntityPrefix";
 
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
@@ -136,10 +131,8 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testEntityPostfix() throws Exception {
-        testName = "TestEntityPostfix";
 
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
@@ -157,10 +150,8 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testTransferObjectPrefix() throws Exception {
-        testName = "TestTransferObjectPrefix";
 
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
@@ -177,10 +168,8 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testTransferObjectPostfix() throws Exception {
-        testName = "TestTransferObjectPostfix";
 
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
@@ -197,10 +186,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultDefaultNamePrefix() throws Exception {
-        testName = "TestDefaultDefaultNamePrefix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +
@@ -221,10 +207,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultDefaultNameMidfix() throws Exception {
-        testName = "TestDefaultDefaultNameMidfix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +
@@ -245,10 +228,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultDefaultNamePostfix() throws Exception {
-        testName = "TestDefaultDefaultNamePostfix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +
@@ -269,10 +249,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultReadsNamePrefix() throws Exception {
-        testName = "TestDefaultReadsNamePrefix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +
@@ -296,10 +273,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultReadsNameMidfix() throws Exception {
-        testName = "TestDefaultReadsNameMidfix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +
@@ -322,10 +296,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultReadsNamePostfix() throws Exception {
-        testName = "TestDefaultReadsNamePostfix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +

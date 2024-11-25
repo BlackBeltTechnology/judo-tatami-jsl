@@ -66,10 +66,8 @@ public class JslEntityDerivedRelation2PsmRelationTest extends AbstractTest {
 
     @Test
     void testDerivedRelationDeclarationModel() throws Exception {
-        testName = "TestDerivedRelationModel";
 
         jslModel = JslParser.getModelFromFiles(
-                "DerivedRelationModel",
                 List.of(new File("src/test/resources/derived/TestDerivedRelationModel.jsl"))
         );
 

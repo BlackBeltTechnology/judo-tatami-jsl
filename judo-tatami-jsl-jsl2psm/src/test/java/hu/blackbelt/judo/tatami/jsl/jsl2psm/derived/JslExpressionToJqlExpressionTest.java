@@ -66,10 +66,8 @@ public class JslExpressionToJqlExpressionTest extends AbstractTest {
 
     @Test
     void testDerivedExpressionModel() throws Exception {
-        testName = "TestDerivedExpressionModel";
 
         jslModel = JslParser.getModelFromFiles(
-                "TestDerivedExpressionModel",
                 List.of(new File("src/test/resources/derived/TestDerivedExpressionModel.jsl"), new File("src/test/resources/derived/TestDerivedExpressionModelInherited.jsl"))
         );
 

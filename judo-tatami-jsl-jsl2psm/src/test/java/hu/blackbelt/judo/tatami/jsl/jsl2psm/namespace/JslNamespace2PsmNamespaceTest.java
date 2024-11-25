@@ -67,10 +67,8 @@ public class JslNamespace2PsmNamespaceTest extends AbstractTest {
 
     @Test
     void testCreateModel() throws Exception {
-        testName = "CreateModel";
 
         jslModel = JslParser.getModelFromStrings(
-                "TestModel",
                 List.of("model TestModel;"));
 
         transform();

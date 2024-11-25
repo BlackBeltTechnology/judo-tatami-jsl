@@ -81,7 +81,6 @@ public class JslAction2PsmOperationTest extends AbstractTest {
     void testActions() throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
-                "ActionsTestModel",
                 List.of(new File("src/test/resources/operation/ActionsTestModel.jsl"))
         );
 

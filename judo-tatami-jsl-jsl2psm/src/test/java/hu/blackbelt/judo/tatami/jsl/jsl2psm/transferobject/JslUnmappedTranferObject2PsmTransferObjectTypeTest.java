@@ -71,11 +71,8 @@ public class JslUnmappedTranferObject2PsmTransferObjectTypeTest extends Abstract
 
     @Test
     void testCreateUnmappedTransferObjectType() throws Exception {
-        testName = "TestCreateUnmappedTransferObjectType";
-
 
         jslModel = JslParser.getModelFromFiles(
-                "UnmappedTransferObjectTypeModel",
                 List.of(new File("src/test/resources/transferobject/TestCreateUnmappedTransferObjectTypeModel.jsl"))
         );
 

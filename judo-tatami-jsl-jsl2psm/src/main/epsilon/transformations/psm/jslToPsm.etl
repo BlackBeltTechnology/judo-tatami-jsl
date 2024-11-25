@@ -52,13 +52,13 @@ pre {
     var __cacheMap = new ConcurrentMap();
     var __originalMap = new ConcurrentMap();
 
-    JUDOPSM.target.resource.contents.add(defaultModelName.equivalent("CreateRootModel"));
+    JUDOPSM.resource.contents.add(defaultModelName.equivalent("CreateRootModel"));
 }
 
 post {
-    for (c in JUDOPSM!Cardinality.all()) {
-        c.setId(c.eContainer.getId()+"/cardinality");
-    }
+    //for (c in JUDOPSM!Cardinality.all()) {
+    //    c.setId(c.eContainer.getId()+"/cardinality");
+    //}
 
     // Collect primitive types which are not directly referenced as field types
     for (c in JSL!NavigationBaseDeclarationReference.all().select(n | n.reference.isKindOf(JSL!PrimitiveDeclaration))) {

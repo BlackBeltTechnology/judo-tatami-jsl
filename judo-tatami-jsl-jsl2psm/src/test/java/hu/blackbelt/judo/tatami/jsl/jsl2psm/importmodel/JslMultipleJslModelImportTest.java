@@ -73,9 +73,9 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
 
     @Test
     void testImportModel() throws Exception {
-        testName = "TestImportModelTest";
 
-        jslModel = JslParser.getModelFromStrings("ns2::c", ImmutableList.of(
+        jslModel = JslParser.getModelFromStrings("ns2::c",
+                ImmutableList.of(
                 "model ns1::a;\n"
                 + "\n"
                 + "type string String min-size:0 max-size:32;",
