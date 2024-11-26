@@ -82,7 +82,6 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
     void testBehaviours() throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
-                "CrudBehaviourTestModel",
                 List.of(new File("src/test/resources/operation/CrudBehaviourTestModel.jsl"))
         );
 

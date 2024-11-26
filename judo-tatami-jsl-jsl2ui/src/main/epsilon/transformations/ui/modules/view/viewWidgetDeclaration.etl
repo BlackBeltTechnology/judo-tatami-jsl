@@ -22,7 +22,7 @@ rule AbstractViewWidgetDeclaration
             t.~pos = s.~pos.isDefined() ? s.~pos : 0;
         }
         */
-        t.~pos = s.getPos();
+        __pos.put(t, s.getPos());
 }
 
 @lazy

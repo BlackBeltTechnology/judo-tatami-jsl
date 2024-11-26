@@ -52,7 +52,7 @@ pre {
     var __cacheMap = new ConcurrentMap();
     var __originalMap = new ConcurrentMap();
 
-    JUDOPSM.target.resource.contents.add(defaultModelName.equivalent("CreateRootModel"));
+    JUDOPSM.resource.contents.add(defaultModelName.equivalent("CreateRootModel"));
 }
 
 post {

@@ -12,9 +12,10 @@ rule AbstractViewTableDeclaration
         }
         t.row = 1d;
         t.col = s.width.isDefined() ? s.width.asReal() : 12d;
-        t.~pos = s.~pos;
-        if (t.~pos.isUndefined()) {
-            t.~pos = 0;
+        if (__pos.get(s).isDefined()) {
+            __pos.put(t, __pos.get(s));
+        } else {
+            __pos.put(t, 0);
         }
 }
 

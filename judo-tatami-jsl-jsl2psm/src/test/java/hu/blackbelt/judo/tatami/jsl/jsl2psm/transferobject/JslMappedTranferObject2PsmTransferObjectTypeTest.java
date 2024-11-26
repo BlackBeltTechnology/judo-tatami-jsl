@@ -72,11 +72,7 @@ public class JslMappedTranferObject2PsmTransferObjectTypeTest extends AbstractTe
 
     @Test
     void testCreateMappedTransferObjectType() throws Exception {
-        testName = "TestCreateMappedTransferObjectType";
-
-
         jslModel = JslParser.getModelFromFiles(
-                "MappedTransferObjectTypeModel",
                 List.of(new File("src/test/resources/transferobject/TestCreateMappedTransferObjectTypeModel.jsl"))
         );
 

@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext.ExecutionContextBuilder;
+import hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext;
 import org.slf4j.Logger;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
@@ -45,9 +46,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
-import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
-import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.getTransformationTraceFromEtlExecutionContext;
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace.JSL_2_PSM_URI_POSTFIX;
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace.resolveJsl2PsmTrace;
@@ -162,6 +160,10 @@ public class Jsl2Psm {
         @NonNull
         Boolean generateBehaviours = false;
 
+        @Builder.Default
+        @NonNull
+        Boolean useCache = true;
+
     }
 
 
@@ -181,21 +183,25 @@ public class Jsl2Psm {
         EtlExecutionContext etlExecutionContext;
         try {
             // Execution context
-            ExecutionContextBuilder executionContextBuilder = executionContextBuilder();
+            ExecutionContextBuilder executionContextBuilder = ExecutionContext.executionContextBuilder();
 
             ExecutionContext executionContext = executionContextBuilder
                     .log(log)
                     .modelContexts(ImmutableList.<ModelContext>builder()
-                            .add(wrappedEmfModelContextBuilder()
+                            .add(WrappedEmfModelContext.wrappedEmfModelContextBuilder()
                                     .log(log)
                                     .name("JSL")
                                     .resource(parameter.jslModel.getResource())
+                                    .useCache(parameter.useCache)
+                                    .validateModel(false)
                                     .build()
                                     )
-                            .add(wrappedEmfModelContextBuilder()
+                            .add(WrappedEmfModelContext.wrappedEmfModelContextBuilder()
                                     .log(log)
                                     .name("JUDOPSM")
                                     .resource(parameter.psmModel.getResource())
+                                    .validateModel(false)
+                                    .useCache(parameter.useCache)
                                     .build()
                             )
                             .build()
@@ -227,12 +233,13 @@ public class Jsl2Psm {
                             .put("ecoreUtil", new EcoreUtil())
                             .put("jslUtils", new JslDslModelExtension())
                             .put("psmUtils", new PsmUtils(parameter.psmModel.getResourceSet())).build())
+                    .useCache(parameter.useCache)
                     .build();
 
             // run the model / metadata loading
             executionContext.load();
 
-            etlExecutionContext = etlExecutionContextBuilder()
+            etlExecutionContext = EtlExecutionContext.etlExecutionContextBuilder()
                     .source(UriUtil.resolve("jslToPsm.etl", parameter.scriptUri))
                     .parallel(parameter.parallel)
                     .build();

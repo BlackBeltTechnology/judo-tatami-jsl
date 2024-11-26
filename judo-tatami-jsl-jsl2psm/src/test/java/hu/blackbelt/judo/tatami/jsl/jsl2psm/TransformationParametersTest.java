@@ -68,28 +68,27 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Override
     public Jsl2PsmParameterBuilder addTransformationParameters(String testName, Jsl2PsmParameterBuilder parameters) {
-
-        if (testName.equals("TestNoDefaultTransferObject")) {
+        if (testName.equals(this.getClass().getSimpleName() + ".testNoDefaultTransferObject")) {
             return parameters.generateDefaultTransferObject(false);
-        } else if (testName.equals("TestEntityPrefix")) {
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testEntityPrefix")) {
             return parameters.entityNamePrefix("_Entity_");
-        } else if (testName.equals("TestEntityPostfix")) {
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testEntityPostfix")) {
             return parameters.entityNamePrefix("").entityNamePostfix("_Entity");
-        } else if (testName.equals("TestTransferObjectPrefix")) {
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testTransferObjectPrefix")) {
             return parameters.defaultTransferObjectNamePrefix("_DefaultTransferObject");
-        } else if (testName.equals("TestTransferObjectPostfix")) {
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testTransferObjectPostfix")) {
             return parameters.defaultTransferObjectNamePostfix("_DefaultTransferObject");
-        } else if (testName.equals("TestDefaultDefaultNamePrefix")) {
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultDefaultNamePrefix")) {
             return parameters.defaultDefaultNamePrefix("_pre_");
-        } else if (testName.equals("TestDefaultDefaultNameMidfix")) {
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultDefaultNameMidfix")) {
             return parameters.defaultDefaultNameMidfix("_mid_");
-        } else if (testName.equals("TestDefaultDefaultNamePostfix")) {
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultDefaultNamePostfix")) {
             return parameters.defaultDefaultNamePostfix("_post");
-        } else if (testName.equals("TestDefaultReadsNamePrefix")) {
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultReadsNamePrefix")) {
             return parameters.defaultReadsNamePrefix("_pre_");
-        } else if (testName.equals("TestDefaultReadsNameMidfix")) {
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultReadsNameMidfix")) {
             return parameters.defaultReadsNameMidfix("_mid_");
-        } else if (testName.equals("TestDefaultReadsNamePostfix")) {
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultReadsNamePostfix")) {
             return parameters.defaultReadsNamePostfix("_post");
         }
         return parameters;
@@ -97,10 +96,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testNoDefaultTransferObject() throws Exception {
-        testName = "TestNoDefaultTransferObject";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
@@ -116,10 +112,8 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testEntityPrefix() throws Exception {
-        testName = "TestEntityPrefix";
 
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
@@ -136,10 +130,8 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testEntityPostfix() throws Exception {
-        testName = "TestEntityPostfix";
 
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
@@ -157,10 +149,8 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testTransferObjectPrefix() throws Exception {
-        testName = "TestTransferObjectPrefix";
 
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
@@ -177,10 +167,8 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testTransferObjectPostfix() throws Exception {
-        testName = "TestTransferObjectPostfix";
 
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "entity T {\n" +
@@ -197,10 +185,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultDefaultNamePrefix() throws Exception {
-        testName = "TestDefaultDefaultNamePrefix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +
@@ -221,10 +206,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultDefaultNameMidfix() throws Exception {
-        testName = "TestDefaultDefaultNameMidfix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +
@@ -245,10 +227,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultDefaultNamePostfix() throws Exception {
-        testName = "TestDefaultDefaultNamePostfix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +
@@ -269,10 +248,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultReadsNamePrefix() throws Exception {
-        testName = "TestDefaultReadsNamePrefix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +
@@ -296,10 +272,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultReadsNameMidfix() throws Exception {
-        testName = "TestDefaultReadsNameMidfix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +
@@ -322,10 +295,7 @@ public class TransformationParametersTest extends AbstractTest {
 
     @Test
     void testDefaultReadsNamePostfix() throws Exception {
-        testName = "TestDefaultReadsNamePostfix";
-
         jslModel = JslParser.getModelFromStrings(
-                "Test",
                 List.of("model Test;\n" +
                         "\n" +
                         "type string String min-size:0 max-size:32;\n" +
@@ -347,3 +317,4 @@ public class TransformationParametersTest extends AbstractTest {
     }
 
 }
+

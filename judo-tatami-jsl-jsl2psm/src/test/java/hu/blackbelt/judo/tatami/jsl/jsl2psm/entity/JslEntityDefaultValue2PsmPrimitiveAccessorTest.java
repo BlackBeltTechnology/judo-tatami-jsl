@@ -69,10 +69,7 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
 
     @Test
     void testDefaultValues() throws Exception {
-        testName = "TestDefaultValues";
-
         jslModel = JslParser.getModelFromFiles(
-                "TestDefaultExpressionModel",
                 List.of(new File("src/test/resources/entity/TestDefaultExpressionModel.jsl"))
         );
 

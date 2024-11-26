@@ -63,10 +63,8 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
     @Test
     void testDeclaration() throws Exception {
-        testName = "TestDeclaration";
 
         jslModel = JslParser.getModelFromStrings(
-                "DeclarationModel",
                 List.of("model DeclarationModel;\n" +
                         "\n" +
                         "type numeric MyNumber precision:12 scale:5;\n"
@@ -82,10 +80,8 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
     @Test
     void testEntityMember() throws Exception {
-        testName = "TestEntityMember";
 
         jslModel = JslParser.getModelFromStrings(
-                "EntityMemberModel",
                 List.of("model EntityMemberModel;\n" +
                         "\n" +
                         "type numeric Height precision:3 scale:0;\n" +
@@ -109,10 +105,8 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
     @Test
     void testEntityMemberRequired() throws Exception {
-        testName = "TestEntityMemberRequired";
 
         jslModel = JslParser.getModelFromStrings(
-                "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel;\n" +
                         "\n" +
                         "type numeric Height precision:3 scale:0;\n" +
@@ -136,10 +130,8 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
     @Test
     void testEntityMemberInheritance() throws Exception {
-        testName = "TestEntityMemberInheritance";
 
         jslModel = JslParser.getModelFromStrings(
-                "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel;\n" +
                         "\n" +
                         "type numeric Height precision:3 scale:0;\n" +
@@ -166,10 +158,8 @@ public class JslNumericTypeDeclaration2PsmNumericTypeTest extends AbstractTest {
 
     @Test
     void testEntityMemberIdentifier() throws Exception {
-        testName = "TestEntityMemberIdentifier";
 
         jslModel = JslParser.getModelFromStrings(
-                "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
                         "type numeric Height precision:3 scale:0;\n" +
