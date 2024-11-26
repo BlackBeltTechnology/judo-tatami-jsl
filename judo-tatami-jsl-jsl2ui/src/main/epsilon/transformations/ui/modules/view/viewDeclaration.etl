@@ -4,8 +4,8 @@ rule ViewPageContainer
         guard: rootMenu.containsVisualElement(s) and (s.form.isUndefined() or not s.form)
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainer");
-        if (t.~pos.isUndefined()) {
-            t.~pos = 0;
+        if (__pos.get(t).isUndefined()) {
+            __pos.put(t, 0);
         }
         t.name = s.getFqName() + "::View::PageContainer";
         t.children.add(s.equivalent("ViewPageContainerVisualElement"));
@@ -25,7 +25,7 @@ rule ViewPageContainerVisualElement
     to t: UI!ui::Flex {
         guard: rootMenu.containsVisualElement(s) and (s.form.isUndefined() or not s.form)
 
-        t.~pos = 0;
+        __pos.put(t, 0);
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerVisualElement");
         t.name = s.name;
         t.direction = UI!Axis#VERTICAL;

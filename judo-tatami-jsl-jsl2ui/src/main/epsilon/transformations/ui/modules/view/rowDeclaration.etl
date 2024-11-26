@@ -74,7 +74,7 @@ rule TablePageContainerBackButton
 rule TablePageContainerVisualElement
     transform s: JSL!UIRowDeclaration
     to t: UI!ui::Flex {
-        t.~pos = 0;
+        __pos.put(t, 0);
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerVisualElement");
         t.name = s.name;
         t.direction = UI!Axis#VERTICAL;
@@ -105,8 +105,8 @@ rule TableTable
         t.name = s.name + "::Table";
         t.dataElement = s.map.transfer.equivalent("ClassType");
         t.relationName = "";
-        if (t.~pos.isUndefined()) {
-            t.~pos = 0;
+        if (__pos.get(t).isUndefined()) {
+            __pos.put(t, 0);
         }
 
         var primitiveFields = s.members.select(m | m.transferField.isDefined() and m.transferField.target.referenceType.`primitive`.isDefined());
