@@ -72,10 +72,8 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
 
     @Test
     void testEntityUnidirectionalCompositionRelationType() throws Exception {
-        testName = "TestEntityUnidirectionalCompositionRelationType";
 
         jslModel = JslParser.getModelFromStrings(
-                "EntityUnidirectionalCompositionRelationTypeModel",
                 List.of("model EntityUnidirectionalCompositionRelationTypeModel;\n" +
                         "\n" +
                         "entity SalesPerson {\n" +
@@ -127,10 +125,8 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
 
     @Test
     void testEntityUnidirectionalCompositionInheritedRelationType() throws Exception {
-        testName = "TestEntityUnidirectionalCompositionInheritedRelationType";
 
         jslModel = JslParser.getModelFromStrings(
-                "EntityUnidirectionalCompositionInheritedRelationTypeModel",
                 List.of("model EntityUnidirectionalCompositionInheritedRelationTypeModel;\n" +
                         "\n" +
                         "entity SalesPerson {\n" +
@@ -184,7 +180,6 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
 
     @Test
     void testEntityAsssociationRelation() throws Exception {
-        testName = "AssociationRelationTest";
 
         jslModel = JslParser.getModelFromFiles(
                 "AssociationRelationTestModel",

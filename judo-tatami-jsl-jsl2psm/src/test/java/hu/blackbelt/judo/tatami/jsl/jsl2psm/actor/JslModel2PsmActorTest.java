@@ -82,7 +82,6 @@ public class JslModel2PsmActorTest extends AbstractTest {
     void testActors() throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
-                "ActorTestModel",
                 List.of(new File("src/test/resources/actor/ActorTestModel.jsl"))
         );
 

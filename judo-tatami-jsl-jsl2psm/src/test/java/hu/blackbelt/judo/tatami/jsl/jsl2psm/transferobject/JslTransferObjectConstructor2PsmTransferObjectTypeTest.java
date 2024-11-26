@@ -73,11 +73,8 @@ public class JslTransferObjectConstructor2PsmTransferObjectTypeTest extends Abst
 
     @Test
     void testTransferObjectConstructorModel() throws Exception {
-        testName = "TestTransferObjectConstructor";
 
-        
         jslModel = JslParser.getModelFromFiles(
-                "TransferObjectConstructorModel",
                 List.of(new File("src/test/resources/transferobject/TestTransferObjectConstructorModel.jsl"))
         );
 

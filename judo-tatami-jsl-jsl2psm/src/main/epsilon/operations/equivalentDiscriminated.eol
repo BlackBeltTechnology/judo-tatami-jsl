@@ -3,7 +3,7 @@ operation Any equivalentDiscriminated(transformation : String, id : String, disc
 	    	throw "Transformation called in empty object: " + id + " / " + discriminator + " Transformation: " + transformation;		
 	}
 	var targetId = id + "/(discriminator/" + discriminator + ")";
-    var r = JSL.target.resource;
+    var r = JSL.resource;
 
     // Find the discriminated id in cahe first
 	var f = __cacheMap.get(targetId);
