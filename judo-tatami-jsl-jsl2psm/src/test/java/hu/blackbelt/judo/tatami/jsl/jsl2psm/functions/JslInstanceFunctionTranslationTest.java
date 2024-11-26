@@ -71,6 +71,7 @@ public class JslInstanceFunctionTranslationTest extends AbstractTest {
     void testInstanceFunctionTest() throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
+                "TestInstanceFunctionModel",
                 List.of(new File("src/test/resources/function/TestInstanceFunctionModel.jsl"), new File("src/test/resources/function/ImportedTestInstanceFunctionModel.jsl"))
         );
 

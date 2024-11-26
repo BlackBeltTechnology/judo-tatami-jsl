@@ -187,13 +187,13 @@ public class Jsl2Psm {
 
             ExecutionContext executionContext = executionContextBuilder
                     .log(log)
-                    .parallel(true)
                     .modelContexts(ImmutableList.<ModelContext>builder()
                             .add(WrappedEmfModelContext.wrappedEmfModelContextBuilder()
                                     .log(log)
                                     .name("JSL")
                                     .resource(parameter.jslModel.getResource())
                                     .useCache(parameter.useCache)
+                                    .validateModel(false)
                                     .build()
                                     )
                             .add(WrappedEmfModelContext.wrappedEmfModelContextBuilder()
@@ -201,7 +201,7 @@ public class Jsl2Psm {
                                     .name("JUDOPSM")
                                     .resource(parameter.psmModel.getResource())
                                     .validateModel(false)
-                                    .useCache(false)
+                                    .useCache(parameter.useCache)
                                     .build()
                             )
                             .build()

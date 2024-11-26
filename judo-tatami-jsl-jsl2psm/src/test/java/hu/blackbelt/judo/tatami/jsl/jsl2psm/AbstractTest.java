@@ -158,8 +158,8 @@ abstract public class AbstractTest {
                 .log(slf4jlog)
                 .jslModel(jslModel)
                 .psmModel(psmModel)
-//                .parallel(true)
-//                .useCache(true)
+                .parallel(true)
+                .useCache(true)
                 .generateBehaviours(generateBehaviours())
                 .createTrace(true)));
 
