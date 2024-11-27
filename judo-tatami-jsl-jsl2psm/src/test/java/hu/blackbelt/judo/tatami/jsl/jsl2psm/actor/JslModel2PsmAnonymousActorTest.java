@@ -80,7 +80,6 @@ public class JslModel2PsmAnonymousActorTest extends AbstractTest {
     void testActors() throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
-                "AnonymousActorTestModel",
                 List.of(new File("src/test/resources/actor/AnonymousActorTestModel.jsl"))
         );
 

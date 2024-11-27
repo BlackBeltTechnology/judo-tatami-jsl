@@ -79,7 +79,6 @@ public class JslTransferObjectChoices2PsmTransferObjectTypeTest extends Abstract
 
         
         jslModel = JslParser.getModelFromFiles(
-                "TransferObjectChoicesModel",
                 List.of(new File("src/test/resources/transferobject/TestTransferObjectChoicesModel.jsl"))
         );
 

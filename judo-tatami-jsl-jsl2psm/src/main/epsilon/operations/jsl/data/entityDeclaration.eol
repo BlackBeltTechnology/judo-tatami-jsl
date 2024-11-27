@@ -15,8 +15,8 @@ operation JSL!EntityDeclaration getModelRoot(): JUDOPSM!Package {
 
 
 @cached
-operation JSL!EntityDeclaration getInheritedMembers(): Sequence<EntityMemberDeclaration> {
-    var members = new Sequence<EntityMemberDeclaration>();
+operation JSL!EntityDeclaration getInheritedMembers(): Sequence {
+    var members = new Sequence();
 
     for (member in self.members) {
         members.add(member);

@@ -67,10 +67,8 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
 
     @Test
     void testCreateErrorType() throws Exception {
-        testName = "ErrorTypeCreateModel";
 
         jslModel = JslParser.getModelFromFiles(
-                "ErrorTypeCreateModel",
                 List.of(new File("src/test/resources/error/ErrorTestModel.jsl"))
         );
 

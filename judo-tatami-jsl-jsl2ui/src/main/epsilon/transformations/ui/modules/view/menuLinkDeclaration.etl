@@ -20,11 +20,11 @@ rule MenuLinkNavigationItem
 
         if (s.eContainer.isKindOf(JSL!UIMenuGroupDeclaration)) {
             s.eContainer.equivalent("MenuItemGroup").items.add(t);
-            t.~pos = s.eContainer.members.indexOf(s);
+            __pos.put(t, s.eContainer.members.indexOf(s));
         } else {
             var navigationController = rootMenu.equivalent("Application").navigationController;
             navigationController.items.add(t);
-            t.~pos = s.eContainer.members.indexOf(s);
+            __pos.put(t, s.eContainer.members.indexOf(s));
         }
 
         log.debug("MenuLinkNavigationItem: " + s.name);

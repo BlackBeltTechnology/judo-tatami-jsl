@@ -65,11 +65,8 @@ public class JslEntityDeclaration2PsmDefaultTransferObjectTypeTest extends Abstr
 
     @Test
     void testCreateDefaultTransferObjectType() throws Exception {
-        testName = "TestCreateDefaultTransferObjectType";
-
 
         jslModel = JslParser.getModelFromFiles(
-                "DefaultTransferObjectTypeModel",
                 List.of(new File("src/test/resources/transferobject/TestCreateDefaultTransferObjectTypeModel.jsl"))
         );
 

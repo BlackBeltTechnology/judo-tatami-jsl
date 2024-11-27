@@ -70,10 +70,8 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
 
     @Test
     void testCreateEntityType() throws Exception {
-        testName = "TestCreateEntityType";
 
         jslModel = JslParser.getModelFromStrings(
-                "EntityTypeCreateModel",
                 List.of("model EntityTypeCreateModel;\n" +
                         "\n" +
                         "entity Test {\n" +
@@ -104,10 +102,8 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
 
     @Test
     void testEntityLocalName() throws Exception {
-        testName = "TestEntityLocaleName";
 
         jslModel = JslParser.getModelFromStrings(
-                "First::Second::EntityLocaleNameModel",
                 List.of("model First::Second::EntityLocaleNameModel;\n" +
                         "\n" +
                         "entity Test {\n" +

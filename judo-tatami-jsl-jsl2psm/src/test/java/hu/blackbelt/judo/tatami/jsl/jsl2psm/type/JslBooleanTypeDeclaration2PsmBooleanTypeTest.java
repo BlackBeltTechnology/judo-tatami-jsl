@@ -63,10 +63,8 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
     @Test
     void testDeclaration() throws Exception {
-        testName = "TestDeclaration";
 
         jslModel = JslParser.getModelFromStrings(
-                "DeclarationModel",
                 List.of("model DeclarationModel;\n" +
                         "\n" +
                         "type boolean Boolean;\n"
@@ -79,10 +77,8 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
     @Test
     void testEntityMember() throws Exception {
-        testName = "TestEntityMember";
 
         jslModel = JslParser.getModelFromStrings(
-                "EntityMemberModel",
                 List.of("model EntityMemberModel;\n" +
                         "\n" +
                         "type boolean Vaccinated;\n" +
@@ -106,10 +102,8 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
     @Test
     void testEntityMemberRequired() throws Exception {
-        testName = "TestEntityMemberRequired";
 
         jslModel = JslParser.getModelFromStrings(
-                "EntityMemberRequiredModel",
                 List.of("model EntityMemberRequiredModel;\n" +
                         "\n" +
                         "type boolean Vaccinated;\n" +
@@ -133,10 +127,8 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
     @Test
     void testEntityMemberInheritance() throws Exception {
-        testName = "TestEntityMemberInheritance";
 
         jslModel = JslParser.getModelFromStrings(
-                "EntityMemberInheritanceModel",
                 List.of("model EntityMemberInheritanceModel;\n" +
                         "\n" +
                         "type boolean Vaccinated;\n" +
@@ -164,10 +156,8 @@ public class JslBooleanTypeDeclaration2PsmBooleanTypeTest extends AbstractTest {
 
     @Test
     void testEntityMemberIdentifier() throws Exception {
-        testName = "TestEntityMemberIdentifier";
 
         jslModel = JslParser.getModelFromStrings(
-                "EntityMemberIdentifierModel",
                 List.of("model EntityMemberIdentifierModel;\n" +
                         "\n" +
                         "type boolean Vaccinated;\n" +
