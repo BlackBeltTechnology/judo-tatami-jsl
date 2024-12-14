@@ -70,15 +70,15 @@
         <judo-meta-ui-version>1.1.0.20241211_083220_dca9161f_develop</judo-meta-ui-version>
         <judo-meta-psm-version>1.3.0.20241202_042213_d30645b4_develop</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.4.20241202_042151_5d1dcf08_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.5.20241213_141359_3256426f_feature_JNG_6027_Fix_navigation_expression</judo-meta-expression-version>
+        <judo-meta-expression-version>1.0.5.20241213_202708_15dcb464_develop</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.2.20241202_042218_c81e3cad_develop</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.4.20241127_150110_f05e3ff8_develop</judo-dao-api-version>
         <judo-sdk-common-version>1.0.4.20241202_042423_0bcd40fc_develop</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.3.20241127_150146_84f2988d_develop</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20241202_042406_1861c263_develop</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20241213_150615_f0928d17_feature_JNG_6027_Fix_navigation_expression</judo-runtime-core-version>
-        <judo-tatami-base-version>1.1.6.20241213_150149_003db011_feature_JNG_6027_Fix_navigation_expression</judo-tatami-base-version>
+        <judo-runtime-core-version>1.0.6.20241214_041425_daf6e6a0_develop</judo-runtime-core-version>
+        <judo-tatami-base-version>1.1.6.20241214_041006_907bb61c_develop</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20241202_041508_e3484451_develop</judo-tatami-core-version>
 
         <!-- Code Quality-->
