@@ -68,10 +68,8 @@ public class JslEntityDerivedWithParametersTest extends AbstractTest {
 
     @Test
     void testEntityDerivedWithParametersTest() throws Exception {
-        testName = "TestEntityDerivedWithParametersTest";
 
         jslModel = JslParser.getModelFromFiles(
-                "TestDerivedWithParameters",
                 List.of(new File("src/test/resources/derived/TestDerivedWithParametersModel.jsl"))
         );
 

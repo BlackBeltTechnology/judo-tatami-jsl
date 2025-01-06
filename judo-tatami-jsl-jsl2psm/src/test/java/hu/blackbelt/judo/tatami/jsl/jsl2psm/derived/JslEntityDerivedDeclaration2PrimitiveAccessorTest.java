@@ -65,10 +65,8 @@ public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractT
 
     @Test
     void testPrimitiveDerivedDeclarationModel() throws Exception {
-        testName = "TestPrimitiveDerivedDeclarationModel";
 
         jslModel = JslParser.getModelFromStrings(
-                "PrimitiveDerivedDeclarationModel",
                 List.of("model PrimitiveDerivedDeclarationModel;\n" +
                         "\n" +
                         "type numeric Integer precision:9 scale:0;\n" +

@@ -4,8 +4,8 @@ rule FormPageContainer
         guard: rootMenu.containsVisualElement(s) and s.form.isDefined() and s.form
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainer");
-        if (t.~pos.isUndefined()) {
-            t.~pos = 0;
+        if (__pos.get(t).isUndefined()) {
+            __pos.put(t, 0);
         }
         t.label = s.getLabelWithNameFallback();
         t.name = s.getFqName() + "::Create::PageContainer";
@@ -27,7 +27,7 @@ rule FormPageContainerVisualElement
     to t: UI!ui::Flex {
         guard: rootMenu.containsVisualElement(s) and s.form.isDefined() and s.form
 
-        t.~pos = 0;
+        __pos.put(t, 0);
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerVisualElement");
         t.name = s.name;
         t.direction = UI!Axis#VERTICAL;

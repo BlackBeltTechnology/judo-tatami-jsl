@@ -45,7 +45,7 @@ rule ViewLinkDeclarationSetSelectorPageContainer
 rule ViewLinkDeclarationSetSelectorVisualElement
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Flex {
-        t.~pos = 0;
+        __pos.put(t, 0);
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorVisualElement");
         t.name = s.name;
         t.direction = UI!Axis#VERTICAL;
@@ -80,7 +80,11 @@ rule ViewLinkDeclarationSetSelectorTable
         t.relationName = s.transferRelation.target.name;
         t.dataElement = s.transferRelation.target.referenceType.equivalent("ClassType");
         t.tableActionButtonGroup = s.equivalent("ViewLinkDeclarationSetSelectorTableButtonGroup");
-        t.~pos = s.~pos;
+        if (__pos.get(s).isDefined()) {
+            __pos.put(t, __pos.get(s));
+        } else {
+            __pos.put(t, 0);
+        }
         t.showTotalCount = false;
         t.selectorRowsPerPage = 10;
 
@@ -88,9 +92,6 @@ rule ViewLinkDeclarationSetSelectorTable
             t.rowsPerPage = s.getRows().value.asInteger();
         } else {
             t.rowsPerPage = 10;
-        }
-        if (t.~pos.isUndefined()) {
-            t.~pos = 0;
         }
 
         // TODO eventually selector should work?

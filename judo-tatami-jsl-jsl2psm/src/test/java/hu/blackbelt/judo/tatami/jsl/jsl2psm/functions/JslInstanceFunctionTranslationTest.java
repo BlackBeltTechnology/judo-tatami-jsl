@@ -69,7 +69,6 @@ public class JslInstanceFunctionTranslationTest extends AbstractTest {
 
     @Test
     void testInstanceFunctionTest() throws Exception {
-        testName = "TestInstanceFunctionModel";
 
         jslModel = JslParser.getModelFromFiles(
                 "TestInstanceFunctionModel",

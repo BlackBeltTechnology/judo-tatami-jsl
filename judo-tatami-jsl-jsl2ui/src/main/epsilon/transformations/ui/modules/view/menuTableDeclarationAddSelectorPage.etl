@@ -125,7 +125,7 @@ rule TableAddSelectorAddActionDefinition
 rule TableAddSelectorVisualElement
     transform s: JSL!UIRowDeclaration
     to t: UI!ui::Flex {
-        t.~pos = 0;
+        __pos.put(t, 0);
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableAddSelectorVisualElement");
         t.name = s.name;
         t.direction = UI!Axis#VERTICAL;
@@ -160,7 +160,11 @@ rule TableAddSelectorTableTable
         t.relationName = "";
         t.dataElement = s.referenceType.map.transfer.equivalent("ClassType");
         t.tableActionButtonGroup = s.equivalent("TableAddSelectorTableTableButtonGroup");
-        t.~pos = s.~pos;
+        if (__pos.get(s).isDefined()) {
+            __pos.put(t, pos.get(s));
+        } else {
+            __pos.put(t, 0);
+        }
         t.showTotalCount = false;
         t.selectorRowsPerPage = 10;
 
@@ -168,9 +172,6 @@ rule TableAddSelectorTableTable
             t.rowsPerPage = s.getRows().value.asInteger();
         } else {
             t.rowsPerPage = 10;
-        }
-        if (t.~pos.isUndefined()) {
-            t.~pos = 0;
         }
 
         // TODO eventually selector should work?
