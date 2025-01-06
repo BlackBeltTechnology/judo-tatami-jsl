@@ -85,7 +85,6 @@ rule ViewLinkDeclarationSetSelectorTable
         } else {
             __pos.put(t, 0);
         }
-
         t.showTotalCount = false;
         t.selectorRowsPerPage = 10;
 
