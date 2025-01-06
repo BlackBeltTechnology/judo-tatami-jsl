@@ -12,6 +12,7 @@ rule AbstractViewLinkDeclaration
         }
         t.row = 1d;
         t.col = s.width.isDefined() ? s.width.asReal() : 12d;
+
         if (__pos.get(s).isDefined()) {
             __pos.put(t, __pos.get(s));
         } else {

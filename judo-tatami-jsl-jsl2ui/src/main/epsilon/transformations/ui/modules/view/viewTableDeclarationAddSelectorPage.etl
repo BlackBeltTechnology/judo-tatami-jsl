@@ -158,11 +158,13 @@ rule ViewTableDeclarationAddSelectorTableTable
         t.relationName = s.transferRelation.target.name;
         t.dataElement = s.referenceType.map.transfer.equivalent("ClassType");
         t.tableActionButtonGroup = s.equivalent("ViewTableDeclarationAddSelectorTableTableButtonGroup");
+
         if (__pos.get(s).isDefined()) {
             __pos.put(t, __pos.get(s));
         } else {
             __pos.put(t, 0);
         }
+
         t.showTotalCount = false;
         t.selectorRowsPerPage = 10;
 

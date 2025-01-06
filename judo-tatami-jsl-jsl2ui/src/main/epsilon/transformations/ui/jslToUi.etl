@@ -42,7 +42,9 @@ pre {
     var __cacheMap = new ConcurrentMap();
     var __originalMap = new ConcurrentMap();
     var System = Native("java.lang.System");
+
     var __pos = new ConcurrentMap();
+
     for (container : JSL!UIViewPanelDeclaration in JSL!UIViewPanelDeclaration.all()) {
         if (container.isTypeOf(JSL!UIViewGroupDeclaration)) {
             for (member in container.members) {

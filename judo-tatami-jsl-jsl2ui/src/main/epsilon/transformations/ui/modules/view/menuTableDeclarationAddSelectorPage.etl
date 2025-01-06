@@ -173,6 +173,7 @@ rule TableAddSelectorTableTable
         } else {
             t.rowsPerPage = 10;
         }
+
         // TODO eventually selector should work?
         var rowDeclaration = s.referenceType;
 

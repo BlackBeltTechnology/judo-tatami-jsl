@@ -127,34 +127,34 @@ public class JslModel2UiCarTest extends AbstractTest  {
         List<Table> tables = application.getTables();
         List<Action> allActions = application.getPages().stream().flatMap(ps -> ps.getActions().stream()).toList();
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
                 "cars"
-        ), relationTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+        ), relationTypes.stream().map(NamedElement::getName).sorted().toList());
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
                 "Car::CarTransfer",
                 "Car::UserActor",
                 "Car::UserTransfer"
-        ), classTypes.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+        ), classTypes.stream().map(NamedElement::getName).sorted().toList());
 
-        assertEquals(Set.of(
-                "Car::CarView::View::PageContainer",
-                "Car::CarTable::Table::PageContainer",
+        assertEquals(List.of(
                 "Car::CarApp::Dashboard",
-                "Car::CarForm::Create::PageContainer"
-        ), pageContainers.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+                "Car::CarForm::Create::PageContainer",
+                "Car::CarTable::Table::PageContainer",
+                "Car::CarView::View::PageContainer"
+        ), pageContainers.stream().map(NamedElement::getName).sorted().toList());
 
-        assertEquals(Set.of(
-                "Car::CarApp::cars::AccessTableViewPage",
-                "Car::CarApp::cars::AccessFormPage",
+        assertEquals(List.of(
                 "Car::CarApp::DashboardPage",
-                "Car::CarApp::cars::AccessTablePage"
-        ), pages.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+                "Car::CarApp::cars::AccessFormPage",
+                "Car::CarApp::cars::AccessTablePage",
+                "Car::CarApp::cars::AccessTableViewPage"
+        ), pages.stream().map(NamedElement::getName).sorted().toList());
 
-        assertEquals(Set.of(), links.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+        assertEquals(List.of(), links.stream().map(NamedElement::getName).sorted().toList());
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
                 "CarTable::Table"
-        ), tables.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+        ), tables.stream().map(NamedElement::getName).sorted().toList());
     }
 }
