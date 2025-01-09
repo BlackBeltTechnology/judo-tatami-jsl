@@ -159,9 +159,8 @@ rule CreateDefaultNavigationPropertyForDefaultTransferObject
         t.setId("(jsl/" + s.eContainer.getId() + ")/CreateDefaultNavigationPropertyForDefaultTransferObject");
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.target = s.eContainer.getReferenceType().getEntityDeclarationEquivalent();
-        //t.target = s.eContainer.getReferenceType().equivalent("CreateEntityDefaultTransferObjectType").entityType;
 
-  	    t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForRelationDeclaration", t.getId());
+        t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForRelationDeclaration", t.getId());
         s.eContainer.eContainer.getEntityDeclarationEquivalent().navigationProperties.add(t);
 
         log.debug("Created NavigationProperty for Transfer Object Default Value: " + s);
