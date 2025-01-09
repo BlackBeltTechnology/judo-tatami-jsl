@@ -7,7 +7,7 @@ rule CreateDefaultValueAnnotationForEntityRelationDeclaration
 
         t.setId("(jsl/" + s.eContainer.getId() + ")/CreateDefaultValueAnnotationForEntityRelationDeclaration");
         t.name = "DefaultValue";
-        s.equivalent("CreateDefaultNavigationPropertyForDefaultTransferObjectConstructor").annotations.add(t);
+        s.equivalent("CreateDefaultNavigationPropertyForDefaultTransferObject").annotations.add(t);
         log.debug("Create default value Annotation for default entity relation declaration: " + t.name);
     }
 

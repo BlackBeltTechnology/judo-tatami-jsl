@@ -17,7 +17,6 @@ rule AbstractCreateTransferObjectRelationFromEntityFieldForDefaultTransferObject
 
         t.embedded = s.isEager();
         t.binding = s.equivalent("CreateContainmentFromField");
-        
 }
 
 rule CreateTransferObjectRelationFromEntityFieldForDefaultTransferObjectType
@@ -213,8 +212,6 @@ rule CloneTransferObjectDerivedRelationForDefaultTransferObjectType
 // Default relation
 ///////////////////////////////////////////////////////////////////////////
 
-// TODO Abstract and clone
-
 @abstract
 rule AbstractCreateDefaultTransferObjectRelationFromEntityRelationForDefaultTransferObjectType
     transform s : JSL!DefaultModifier
@@ -255,5 +252,5 @@ rule CloneDefaultTransferObjectRelationFromEntityRelationForDefaultTransferObjec
 
         t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForDefaultTransferObjectType");
         t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForRelationDeclaration", t.getId());
-        log.debug("Clone TransferAttribute Default Value (Field) for DefaultTransferObjectType: [" + t.name + "]");
+        log.debug("Clone DefaultTransferObjectRelation for DefaultTransferObjectType: [" + t.name + "]");
 }
