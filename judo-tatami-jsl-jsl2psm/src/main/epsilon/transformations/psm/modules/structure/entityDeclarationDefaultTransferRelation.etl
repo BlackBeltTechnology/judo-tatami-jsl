@@ -224,8 +224,13 @@ rule AbstractCreateDefaultTransferObjectRelationFromEntityRelationForDefaultTran
         t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
         t.target = s.eContainer.getReferenceType().equivalent("CreateEntityDefaultTransferObjectType");
 
+        t.embeddedCreate = false;
+        t.embeddedUpdate = false;
+        t.embeddedDelete = false;
+
         t.binding = s.equivalent("CreateDefaultNavigationPropertyForDefaultTransferObjectConstructor");
-        
+        t.embedded = false;
+
 }
 
 @greedy
@@ -246,6 +251,9 @@ rule CloneDefaultTransferObjectRelationFromEntityRelationForDefaultTransferObjec
     transform s: JSL!DefaultModifier
     to t: JUDOPSM!TransferObjectRelation
     extends AbstractCreateDefaultTransferObjectRelationFromEntityRelationForDefaultTransferObjectType {
+        guard: generateDefaultTransferObject and s.eContainer.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.eContainer.isCalculated()
+
         t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForDefaultTransferObjectType");
+        t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForRelationDeclaration", t.getId());
         log.debug("Clone TransferAttribute Default Value (Field) for DefaultTransferObjectType: [" + t.name + "]");
 }
