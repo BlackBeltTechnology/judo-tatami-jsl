@@ -145,7 +145,7 @@ rule CreateDefaultReferenceExpressionTypeForDefaultTransferObject
 
         t.setId("(jsl/" + s.eContainer.getId() + ")/CreateDefaultReferenceExpressionTypeForDefaultTransferObject");
         t.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
-        s.equivalent("CreateDefaultNavigationPropertyForDefaultTransferObjectConstructor").getterExpression = t;
+        s.equivalent("CreateDefaultNavigationPropertyForDefaultTransferObject").getterExpression = t;
 
         log.debug("Created ReferenceExpressionType for Transfer Object Default Value: " + t.expression);
     }
