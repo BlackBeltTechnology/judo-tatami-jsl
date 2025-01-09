@@ -131,3 +131,38 @@ rule CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor
         
         log.debug("Created StaticNavigation for Transfer Object Default Value: " + s);
     }
+
+
+//////////////////////////////////////////////////////////////////
+// Default Transfer Object Relation Default Expression
+//////////////////////////////////////////////////////////////////   
+
+@greedy
+rule CreateDefaultReferenceExpressionTypeForDefaultTransferObjectConstuctor
+    transform s : JSL!DefaultModifier
+    to t: JUDOPSM!ReferenceExpressionType {
+        guard: s.eContainer.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.eContainer.isCalculated()
+
+        t.setId("(jsl/" + s.eContainer.getId() + ")/CreateDefaultReferenceExpressionTypeForDefaultTransferObjectConstuctor");
+        t.expression = expressionUtils.getJqlForExpression(s.expression, entityNamePrefix, entityNamePostfix);
+        s.equivalent("CreateDefaultNavigationPropertyForDefaultTransferObjectConstructor").getterExpression = t;
+
+        log.debug("Created ReferenceExpressionType for Transfer Object Default Value: " + t.expression);
+    }
+
+@greedy
+rule CreateDefaultNavigationPropertyForDefaultTransferObjectConstructor
+    transform s : JSL!DefaultModifier
+    to t: JUDOPSM!NavigationProperty {
+        guard: s.eContainer.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.eContainer.isCalculated()
+
+        t.setId("(jsl/" + s.eContainer.getId() + ")/CreateDefaultNavigationPropertyForDefaultTransferObjectConstructor");
+        t.name = defaultDefaultNamePrefix + s.eContainer.name + defaultDefaultNameMidfix + s.eContainer.eContainer.name + defaultDefaultNamePostfix;
+        t.target = s.eContainer.getReferenceType().getEntityDeclarationEquivalent();
+        //t.target = s.eContainer.getReferenceType().equivalent("CreateEntityDefaultTransferObjectType").entityType;
+
+  	    t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForRelationDeclaration", t.getId());
+        s.eContainer.eContainer.getEntityDeclarationEquivalent().navigationProperties.add(t);
+
+        log.debug("Created NavigationProperty for Transfer Object Default Value: " + s);
+    }
