@@ -1,3 +1,16 @@
+
+@greedy
+rule CreateDefaultValueAnnotationForEntityRelationDeclaration
+    transform s : JSL!DefaultModifier
+    to t : JUDOPSM!Annotation {
+        guard: s.eContainer.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.eContainer.isCalculated()
+
+        t.setId("(jsl/" + s.eContainer.getId() + ")/CreateDefaultValueAnnotationForEntityRelationDeclaration");
+        t.name = "DefaultValue";
+        s.equivalent("CreateDefaultNavigationPropertyForDefaultTransferObject").annotations.add(t);
+        log.debug("Create default value Annotation for default entity relation declaration: " + t.name);
+    }
+
 rule CreateNamedOppositeAssociationEnd
     transform s: JSL!EntityRelationOppositeInjected
     to t: JUDOPSM!AssociationEnd

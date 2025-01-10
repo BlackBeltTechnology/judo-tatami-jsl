@@ -37,6 +37,9 @@ rule CreateEntityDefaultTransferObjectType
                 // Relations
                 } else if (im.isKindOf(JSL!EntityRelationDeclaration) and not im.isCalculated()) {
                     t.relations.add(im.equivalentDiscriminated("CloneTransferObjectRelationFromEntityRelationForDefaultTransferObjectType", t.getId()));
+                    if (im.getDefault().isDefined()) {
+                        t.relations.add(im.getDefault().equivalentDiscriminated("CloneDefaultTransferObjectRelationFromEntityRelationForDefaultTransferObjectType", t.getId()));
+                    }
                 // Prmitive Calculated
                 } else if (im.isKindOf(JSL!EntityFieldDeclaration) and im.isCalculated()) {
                 	if (not im.isEager()) {
