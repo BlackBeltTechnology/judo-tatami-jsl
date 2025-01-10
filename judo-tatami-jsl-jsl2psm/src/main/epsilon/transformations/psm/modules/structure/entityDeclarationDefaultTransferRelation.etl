@@ -250,7 +250,7 @@ rule CloneDefaultTransferObjectRelationFromEntityRelationForDefaultTransferObjec
     extends AbstractCreateDefaultTransferObjectRelationFromEntityRelationForDefaultTransferObjectType {
         guard: generateDefaultTransferObject and s.eContainer.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.eContainer.isCalculated()
 
-        t.setId("(jsl/" + s.getId() + ")/CloneTransferDefaultValueAttributeForDefaultTransferObjectType");
+        t.setId("(jsl/" + s.getId() + ")/CloneDefaultTransferObjectRelationFromEntityRelationForDefaultTransferObjectType");
         t.cardinality = s.eContainer.equivalentDiscriminated("CreateCardinalityForRelationDeclaration", t.getId());
         log.debug("Clone DefaultTransferObjectRelation for DefaultTransferObjectType: [" + t.name + "]");
 }
