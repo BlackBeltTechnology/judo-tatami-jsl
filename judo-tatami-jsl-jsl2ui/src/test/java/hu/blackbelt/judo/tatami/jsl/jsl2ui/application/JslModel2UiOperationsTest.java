@@ -2,6 +2,11 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.Application;
+import hu.blackbelt.judo.meta.ui.NamedElement;
+import hu.blackbelt.judo.meta.ui.data.AttributeType;
+import hu.blackbelt.judo.meta.ui.data.ClassType;
+import hu.blackbelt.judo.meta.ui.data.OperationParameterType;
+import hu.blackbelt.judo.meta.ui.data.OperationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,8 +17,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class JslModel2UiOperationsTest extends AbstractTest {
@@ -135,5 +141,148 @@ public class JslModel2UiOperationsTest extends AbstractTest {
         assertEquals(1, apps.size());
 
         Application application = apps.get(0);
+
+        // DataElements
+
+        assertEquals(List.of(
+                "A::OperationsOnViews::A",
+                "A::OperationsOnViews::Error1",
+                "A::OperationsOnViews::ErrorWithDefaults",
+                "A::OperationsOnViews::Transfer1",
+                "A::OperationsOnViews::Transfer2",
+                "A::OperationsOnViews::TransferX"
+        ), application.getDataElements().stream().map(NamedElement::getFQName).sorted().toList());
+
+        assertEquals(List.of(
+                "A::OperationsOnViews::M::DashboardPage",
+                "A::OperationsOnViews::M::vxs::AccessFormPage",
+                "A::OperationsOnViews::M::vxs::AccessTablePage",
+                "A::OperationsOnViews::M::vxs::AccessTableViewPage",
+                "A::OperationsOnViews::ViewX::myAction2::OperationInputSelector",
+                "A::OperationsOnViews::ViewX::myAction3::OperationInputForm",
+                "A::myAction2::OperationOutput",
+                "A::myAction3::OperationOutput"
+        ), application.getPages().stream().map(NamedElement::getFQName).sorted().toList());
+
+        // Error(s)
+
+        ClassType errorWithDefaults = (ClassType) application.getDataElements().stream()
+                .filter(e -> Objects.equals(e.getFQName(), "A::OperationsOnViews::ErrorWithDefaults"))
+                .findFirst().orElseThrow();
+
+        assertEquals(List.of(
+            "A::OperationsOnViews::ErrorWithDefaults::withDefault"
+        ), errorWithDefaults.getAttributes().stream().map(NamedElement::getFQName).sorted().toList());
+
+        AttributeType withDefault = errorWithDefaults.getAttributes().stream()
+                .filter(e -> Objects.equals(e.getFQName(), "A::OperationsOnViews::ErrorWithDefaults::withDefault"))
+                .findFirst().orElseThrow();
+
+        assertEquals("String", withDefault.getDataType().getName());
+
+        // ClassTypes
+
+        List<ClassType> classTypes = application.getClassTypes();
+
+        assertEquals(List.of(
+                "A::OperationsOnViews::A",
+                "A::OperationsOnViews::Error1",
+                "A::OperationsOnViews::ErrorWithDefaults",
+                "A::OperationsOnViews::Transfer1",
+                "A::OperationsOnViews::Transfer2",
+                "A::OperationsOnViews::TransferX"
+        ), classTypes.stream().map(NamedElement::getFQName).sorted().toList());
+
+        ClassType transferX = classTypes.stream()
+                .filter(c -> c.getFQName().equals("A::OperationsOnViews::TransferX"))
+                .findFirst().orElseThrow();
+
+        List<OperationType> transferXOperationTypes = transferX.getOperations();
+
+        assertEquals(List.of(
+                "A::OperationsOnViews::TransferX::myAction1",
+                "A::OperationsOnViews::TransferX::myAction2",
+                "A::OperationsOnViews::TransferX::myAction3"
+        ), transferXOperationTypes.stream().map(NamedElement::getFQName).sorted().toList());
+
+        // operations
+
+        List<OperationType> allOperations = classTypes.stream()
+                .flatMap(c -> c.getOperations().stream())
+                .toList();
+
+        assertEquals(List.of(
+                "A::OperationsOnViews::TransferX::myAction1",
+                "A::OperationsOnViews::TransferX::myAction2",
+                "A::OperationsOnViews::TransferX::myAction3"
+        ), allOperations.stream().map(NamedElement::getFQName).sorted().toList());
+    }
+
+    @Test
+    void testParameterlessVoidOperationsOnViews() throws Exception {
+        jslModel = JslParser.getModelFromStrings("ParameterlessVoidOperationsOnViews", List.of(createModelString("ParameterlessVoidOperationsOnViews")));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        assertEquals(1, apps.size());
+
+        Application application = apps.get(0);
+
+        List<ClassType> classTypes = application.getClassTypes();
+
+        ClassType transferX = classTypes.stream()
+                .filter(c -> c.getFQName().equals("A::ParameterlessVoidOperationsOnViews::TransferX"))
+                .findFirst().orElseThrow();
+
+        OperationType myAction1 = transferX.getOperations().stream()
+                .filter(o -> o.getFQName().equals("A::ParameterlessVoidOperationsOnViews::TransferX::myAction1"))
+                .findFirst().orElseThrow();
+
+        assertNull(myAction1.getInput());
+        assertNull(myAction1.getOutput());
+
+        List<OperationParameterType> myAction1Faults = myAction1.getFaults();
+
+        assertEquals(List.of(
+                "A::ParameterlessVoidOperationsOnViews::TransferX::myAction1::Error1",
+                "A::ParameterlessVoidOperationsOnViews::TransferX::myAction1::ErrorWithDefaults"
+        ), myAction1Faults.stream().map(NamedElement::getFQName).sorted().toList());
+
+    }
+
+    @Test
+    void testOperationsOnViewsWithInputSelectors() throws Exception {
+        jslModel = JslParser.getModelFromStrings("OperationsOnViewsWithInputSelectors", List.of(createModelString("OperationsOnViewsWithInputSelectors")));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        assertEquals(1, apps.size());
+
+        Application application = apps.get(0);
+
+        List<ClassType> classTypes = application.getClassTypes();
+
+        ClassType transferX = classTypes.stream()
+                .filter(c -> c.getFQName().equals("A::OperationsOnViewsWithInputSelectors::TransferX"))
+                .findFirst().orElseThrow();
+
+        OperationType myAction2 = transferX.getOperations().stream()
+                .filter(o -> o.getFQName().equals("A::OperationsOnViewsWithInputSelectors::TransferX::myAction2"))
+                .findFirst().orElseThrow();
+
+        OperationParameterType myAction2Input = myAction2.getInput();
+        OperationParameterType myAction2Output = myAction2.getOutput();
+
+        assertEquals("A::OperationsOnViewsWithInputSelectors::TransferX::myAction2::input", myAction2Input.getFQName());
+        assertEquals("A::OperationsOnViewsWithInputSelectors::TransferX::myAction2::output", myAction2Output.getFQName());
+
+        List<OperationParameterType> myAction2Faults = myAction2.getFaults();
+
+        assertEquals(List.of(), myAction2Faults.stream().map(NamedElement::getFQName).sorted().toList());
+
     }
 }
