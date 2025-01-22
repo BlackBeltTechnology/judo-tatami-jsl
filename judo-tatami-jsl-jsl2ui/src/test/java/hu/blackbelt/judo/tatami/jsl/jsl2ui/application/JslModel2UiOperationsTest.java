@@ -46,8 +46,6 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                 field String withDefault default:"Hello!";
             }
 
-            // mapped transfer
-
             entity Entity1 {
                 field Integer number;
             }
@@ -74,6 +72,10 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                 widget Integer number <=> t2.number;
             }
 
+            form Form2(Transfer2 t2) {
+                widget Integer number <=> t2.number;
+            }
+
             // test
 
             transfer TransferX(Entity1 e1) {
@@ -81,7 +83,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
 
                 action void myAction1() throws Error1,ErrorWithDefaults;
                 action Transfer1 myAction2(Transfer1 input choices:Entity1.all());
-                // action Transfer2 myAction3(Transfer2 input);
+                action Transfer2 myAction3(Transfer2 input);
 
                 event create createTX;
                 event update updateTX;
@@ -91,10 +93,10 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                 widget Integer number <=> tx.number;
 
                 group level1 label:"Yo" icon:"text" {
-                    action void myAction1() <= tx.myAction1;
+                    action void myAction1() <= tx.myAction1 label:"my action 1" icon:"flower";
                 }
-                action View1 myAction2(View1 input selector:Table1) <= tx.myAction2;
-                // action View2 myAction3(View2 input) <= tx.myAction3;
+                action View1 myAction2(View1 input selector:Table1) <= tx.myAction2  label:"my action 2";
+                action View2 myAction3(Form2 input) <= tx.myAction3 label:"my action 3";
             }
 
             form FormX(TransferX tx) {

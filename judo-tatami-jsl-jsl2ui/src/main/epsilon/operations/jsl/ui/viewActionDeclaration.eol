@@ -24,7 +24,7 @@ operation JSL!UIViewActionDeclaration isOpenOperationSelectorAction(): Boolean {
 @cached
 operation JSL!UIViewActionDeclaration isOpenOperationFormAction(): Boolean {
     if (self.parameterType.isDefined()) {
-        return not self.transferAction.map.isDefined();
+        return self.parameterType.form;
     }
     return false;
 }
