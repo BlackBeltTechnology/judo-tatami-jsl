@@ -4,6 +4,7 @@ import "enumDeclaration.eol";
 import "enumLiteral.eol";
 import "primitiveDeclaration.eol";
 import "simpleTransferDeclaration.eol";
+import "transferActionDeclaration.eol";
 import "transferDeclaration.eol";
 import "transferFieldDeclaration.eol";
 import "transferRelationDeclaration.eol";

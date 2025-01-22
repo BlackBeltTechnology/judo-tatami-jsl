@@ -45,6 +45,34 @@ operation JSL!UIViewGroupDeclaration getExposedVisualElements(): Set {
     }
 
     ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
+    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewActionDeclaration)).asSet());
+
+    return ves;
+}
+
+@cached
+operation JSL!UIViewGroupDeclaration getAllActionDeclarations() : Set {
+    var ves = new Set();
+
+    /*
+    for (link in self.members.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
+        ves.addAll(link.getAllActionDeclarations());
+    }
+
+    for (table in self.members.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
+        ves.addAll(table.getAllActionDeclarations());
+    }
+    */
+
+    for (group in self.members.select(m | m.isKindOf(JSL!UIViewGroupDeclaration)).asSet()) {
+        ves.addAll(group.getAllActionDeclarations());
+    }
+
+    for (tab in self.members.select(m | m.isKindOf(JSL!UIViewTabsDeclaration)).asSet()) {
+        ves.addAll(tab.getAllActionDeclarations());
+    }
+
+    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewActionDeclaration)).asSet());
 
     return ves;
 }

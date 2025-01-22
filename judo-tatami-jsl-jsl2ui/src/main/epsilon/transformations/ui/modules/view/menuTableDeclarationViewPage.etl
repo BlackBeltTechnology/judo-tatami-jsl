@@ -69,6 +69,20 @@ rule AccessTableViewPageDefinition
             }
         }
 
+        for (actionDeclaration in s.getUpdateViewModifier().view.getAllActionDeclarations()) {
+            var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
+            if (actionDeclaration.isOpenOperationSelectorAction()) {
+                viewAction.actionDefinition = actionDeclaration.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
+            } else if (actionDeclaration.isOpenOperationFormAction()) {
+                viewAction.actionDefinition = actionDeclaration.equivalent("ViewActionDeclarationOpenFormActionDefinition");
+            } else {
+                viewAction.actionDefinition = actionDeclaration.equivalent("ViewActionDeclarationCallOperationActionDefinition");
+            }
+            viewAction.ownerDataElement = relation.equivalent("RelationType");
+            viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
+            t.actions.add(viewAction);
+        }
+
         t.actions.add(s.equivalent("AccessTableViewBackAction"));
         if (s.actorAccess.target.isRefreshAllowed()) {
             t.actions.add(s.equivalent("AccessTableViewRefreshAction"));

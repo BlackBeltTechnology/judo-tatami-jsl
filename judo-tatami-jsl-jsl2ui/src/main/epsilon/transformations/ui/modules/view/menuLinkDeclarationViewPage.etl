@@ -79,6 +79,20 @@ rule AccessViewPageDefinition
             t.actions.add(s.equivalent("AccessViewDeleteAction"));
         }
 
+        for (actionDeclaration in s.referenceType.getAllActionDeclarations()) {
+            var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
+            if (actionDeclaration.isOpenOperationSelectorAction()) {
+                viewAction.actionDefinition = actionDeclaration.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
+            } else if (actionDeclaration.isOpenOperationFormAction()) {
+                viewAction.actionDefinition = actionDeclaration.equivalent("ViewActionDeclarationOpenFormActionDefinition");
+            } else {
+                viewAction.actionDefinition = actionDeclaration.equivalent("ViewActionDeclarationCallOperationActionDefinition");
+            }
+            viewAction.ownerDataElement = relation.equivalent("RelationType");
+            viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
+            t.actions.add(viewAction);
+        }
+
         log.debug("Create AccessViewPageDefinition: " + t.name);
 }
 

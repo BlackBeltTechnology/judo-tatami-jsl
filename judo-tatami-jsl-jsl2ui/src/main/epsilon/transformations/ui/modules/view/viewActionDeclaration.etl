@@ -1,0 +1,99 @@
+rule ViewActionDeclarationButton
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Button {
+        guard: rootMenu.containsVisualElement(s)
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationButton");
+        t.name = s.name;
+        t.label = s.getLabelModifier();
+        t.icon = s.getIconModifier();
+        t.dataElement = s.equivalent("OperationType");
+
+        if (t.label.isUndefined() and t.icon.isUndefined()) {
+            t.label = t.name;
+        }
+
+        if (__pos.get(s).isDefined()) {
+            __pos.put(t, __pos.get(s));
+        } else {
+            __pos.put(t, 0);
+        }
+
+
+        if (s.isOpenOperationSelectorAction()) {
+            t.actionDefinition = s.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
+        } else if (s.isOpenOperationFormAction()) {
+            t.actionDefinition = s.equivalent("ViewActionDeclarationOpenFormActionDefinition");
+        } else {
+            t.actionDefinition = s.equivalent("ViewActionDeclarationCallOperationActionDefinition");
+        }
+
+        /*if (s.parameterType.isDefined()) {
+            if (s.transferAction.map.isDefined()) {
+                t.actionDefinition = s.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
+            } else {
+                t.actionDefinition = s.equivalent("ViewActionDeclarationOpenFormActionDefinition");
+            }
+        } else {
+            t.actionDefinition = s.equivalent("ViewActionDeclarationCallOperationActionDefinition");
+        }*/
+
+        s.eContainer.uiContainer().children.add(t);
+
+        log.debug("Create ViewActionDeclarationButton: " + t.name);
+}
+
+@lazy
+@greedy
+rule ViewActionDeclarationCallOperationActionDefinition
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::ParameterlessCallOperationActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationCallOperationActionDefinition");
+    	t.name = s.getFqName() + "::Call";
+    	t.`operation` = s.transferAction.target.equivalent("OperationType");
+    	t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+
+        log.debug("ViewActionDeclarationCallOperationActionDefinition: " + t.name);
+}
+
+@lazy
+@greedy
+rule ViewActionDeclarationOpenSelectorActionDefinition
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::OpenOperationInputSelectorActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenSelectorActionDefinition");
+ 		t.name = s.getFqName() + "::Open::Selector";
+        t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+ 		// t.selectorFor = s.equivalent("ViewActionDeclarationOpenSelectorCallOperationActionDefinition");
+        log.debug("ViewActionDeclarationOpenSelectorActionDefinition: " + t.name);
+}
+
+@lazy
+@greedy
+rule ViewActionDeclarationOpenFormActionDefinition
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::OpenOperationInputFormActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenFormActionDefinition");
+    	t.name = s.getFqName() + "::Open::Operation::Form";
+        t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+        log.debug("ViewActionDeclarationOpenFormActionDefinition: " + t.name);
+}
+
+@greedy
+@lazy
+rule ViewAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+   	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewAction");
+ 		t.name = s.getFqName() + "::Action";
+
+		if (s.isOpenOperationSelectorAction()) {
+            t.targetPageDefinition = s.equivalent("OperationInputSelectorPageDefinition");
+        } else if (s.isOpenOperationFormAction()) {
+            t.targetPageDefinition = s.equivalent("OperationInputFormPageDefinition");
+        } else if (s.hasOutput()) {
+            t.targetPageDefinition = s.equivalent("OperationOutputViewPageDefinition");
+        }
+
+        log.debug("ViewAction: " + t.name);
+}
