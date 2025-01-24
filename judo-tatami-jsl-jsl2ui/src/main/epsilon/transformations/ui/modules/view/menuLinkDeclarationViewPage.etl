@@ -1,12 +1,12 @@
-rule AccessViewPageDefinition
+rule AccessLinkViewPageDefinition
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::PageDefinition {
         guard: rootMenu.containsVisualElement(s)
 
         var relation = s.actorAccess.target;
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageDefinition");
-        t.name = s.getFqName() + "::AccessViewPage";
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessLinkViewPageDefinition");
+        t.name = s.getFqName() + "::AccessLinkViewPage";
         t.container = s.referenceType.equivalent("ViewPageContainer");
 
         rootMenu.equivalent("Application").pages.add(t);
@@ -68,15 +68,15 @@ rule AccessViewPageDefinition
             }
         }
 
-        t.actions.add(s.equivalent("AccessViewBackAction"));
+        t.actions.add(s.equivalent("AccessLinkViewBackAction"));
         if (relation.isRefreshAllowed()) {
-            t.actions.add(s.equivalent("AccessViewRefreshAction"));
+            t.actions.add(s.equivalent("AccessLinkViewRefreshAction"));
         }
         if (relation.isUpdateAllowed()) {
-            t.actions.add(s.equivalent("AccessViewUpdateAction"));
+            t.actions.add(s.equivalent("AccessLinkViewUpdateAction"));
         }
         if (relation.isDeleteAllowed()) {
-            t.actions.add(s.equivalent("AccessViewDeleteAction"));
+            t.actions.add(s.equivalent("AccessLinkViewDeleteAction"));
         }
 
         for (actionDeclaration in s.referenceType.getAllActionDeclarations()) {
@@ -93,52 +93,52 @@ rule AccessViewPageDefinition
             t.actions.add(viewAction);
         }
 
-        log.debug("Create AccessViewPageDefinition: " + t.name);
+        log.debug("Create AccessLinkViewPageDefinition: " + t.name);
 }
 
 @lazy
-rule AccessViewBackAction
+rule AccessLinkViewBackAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewBackAction");
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessLinkViewBackAction");
         t.name = s.name + "::Back";
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerBackActionDefinition");
 
-        log.debug("AccessViewBackAction: " + t.name);
+        log.debug("AccessLinkViewBackAction: " + t.name);
 }
 
 @lazy
-rule AccessViewRefreshAction
+rule AccessLinkViewRefreshAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewRefreshAction");
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessLinkViewRefreshAction");
  		t.name = s.name + "::Refresh";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerRefreshActionDefinition");
 
-        log.debug("AccessViewRefreshAction: " + t.name);
+        log.debug("AccessLinkViewRefreshAction: " + t.name);
 }
 
 @lazy
-rule AccessViewUpdateAction
+rule AccessLinkViewUpdateAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewUpdateAction");
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessLinkViewUpdateAction");
  		t.name = s.name + "::Update";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerUpdateActionDefinition");
 
-        log.debug("AccessViewUpdateAction: " + t.name);
+        log.debug("AccessLinkViewUpdateAction: " + t.name);
 }
 
 @lazy
-rule AccessViewDeleteAction
+rule AccessLinkViewDeleteAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewDeleteAction");
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessLinkViewDeleteAction");
  		t.name = s.name + "::Delete";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerDeleteActionDefinition");
 
-        log.debug("AccessViewDeleteAction: " + t.name);
+        log.debug("AccessLinkViewDeleteAction: " + t.name);
 }

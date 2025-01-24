@@ -482,7 +482,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         ), classTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         assertEquals(Set.of(
-                "RelationWidgetsTestModel::RelationWidgets::user::AccessViewPage",
+                "RelationWidgetsTestModel::RelationWidgets::user::AccessLinkViewPage",
                 "RelationWidgetsTestModel::UserForm::relatedCollection::ViewPage",
                 "RelationWidgetsTestModel::UserForm::relatedCollection::FormPage",
                 "RelationWidgetsTestModel::UserForm::level1::related::FormPage",
@@ -541,7 +541,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserView::View::PageContainer::UserView::level1::tabs0::tab2::tab2::relatedCollection"
         ), tables.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
-        PageDefinition userView = application.getPages().stream().filter(p -> p.getName().equals("RelationWidgetsTestModel::RelationWidgets::user::AccessViewPage")).findFirst().orElseThrow();
+        PageDefinition userView = application.getPages().stream().filter(p -> p.getName().equals("RelationWidgetsTestModel::RelationWidgets::user::AccessLinkViewPage")).findFirst().orElseThrow();
 
         Table userViewTable = ((Collection<Table>) userView.getContainer().getTables()).stream().filter(t -> t.getName().equals("relatedCollection")).findFirst().orElseThrow();
         RelationType tableRelation = (RelationType) userViewTable.getDataElement();

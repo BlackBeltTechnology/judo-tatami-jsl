@@ -153,7 +153,7 @@ public class JslModel2UiNavigationTest extends AbstractTest {
 
         assertEquals(Set.of(
                 "NavigationActor::NavigationTestModel::NavigationApp::DashboardPage",
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage",
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessLinkViewPage",
                 "NavigationActor::NavigationTestModel::UserView::level1::relatedCollection::ViewPage",
                 "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage",
                 "NavigationActor::NavigationTestModel::RelatedView::myJumpers::ViewPage",
@@ -261,16 +261,16 @@ public class JslModel2UiNavigationTest extends AbstractTest {
 
         // - User access
 
-        PageDefinition userAccessPage = pages.stream().filter(p -> p.getName().equals("NavigationTestModel::NavigationApp::user::AccessViewPage")).findFirst().orElseThrow();
+        PageDefinition userAccessPage = pages.stream().filter(p -> p.getName().equals("NavigationTestModel::NavigationApp::user::AccessLinkViewPage")).findFirst().orElseThrow();
         List<Action> userAccessPageActions = userAccessPage.getActions();
 
         assertEquals(Set.of(
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::user::Refresh",
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::user::Back",
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::relatedCollection::OpenPage",
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::related::OpenPage",
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::relatedCollection::Filter",
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::relatedCollection::Refresh"
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessLinkViewPage::user::Refresh",
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessLinkViewPage::user::Back",
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessLinkViewPage::relatedCollection::OpenPage",
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessLinkViewPage::related::OpenPage",
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessLinkViewPage::relatedCollection::Filter",
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessLinkViewPage::relatedCollection::Refresh"
         ), userAccessPageActions.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
         Action backAction = userAccessPageActions.stream().filter(a -> a.getName().equals("user::Back")).findFirst().orElseThrow();

@@ -361,4 +361,51 @@ public class JslModel2UiOperationsTest extends AbstractTest {
         assertEquals(myAction2Operation, myAction2OutputRefreshAction.getOwnerDataElement());
 
     }
+
+    @Test
+    void testOperationsOnViewsWithInputForms() throws Exception {
+        jslModel = JslParser.getModelFromStrings("OperationsOnViewsWithInputForms", List.of(createModelString("OperationsOnViewsWithInputForms")));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        assertEquals(1, apps.size());
+
+        Application application = apps.get(0);
+
+        List<ClassType> classTypes = application.getClassTypes();
+
+        ClassType transferX = classTypes.stream()
+                .filter(c -> c.getFQName().equals("A::OperationsOnViewsWithInputForms::TransferX"))
+                .findFirst().orElseThrow();
+
+        OperationType myAction3Operation = transferX.getOperations().stream()
+                .filter(o -> o.getFQName().equals("A::OperationsOnViewsWithInputForms::TransferX::myAction3"))
+                .findFirst().orElseThrow();
+
+        OperationParameterType myAction3Input = myAction3Operation.getInput();
+        OperationParameterType myAction3Output = myAction3Operation.getOutput();
+
+        assertEquals("A::OperationsOnViewsWithInputForms::TransferX::myAction3::input", myAction3Input.getFQName());
+        assertEquals("A::OperationsOnViewsWithInputForms::TransferX::myAction3::output", myAction3Output.getFQName());
+
+        PageDefinition inputPage = application.getPages().stream().filter(p -> p.getFQName().equals("A::OperationsOnViewsWithInputForms::ViewX::myAction3::OperationInputForm")).findFirst().orElseThrow();
+        PageDefinition outputPage = application.getPages().stream().filter(p -> p.getFQName().equals("A::myAction3::OperationOutput")).findFirst().orElseThrow();
+
+        assertEquals(myAction3Input, inputPage.getDataElement());
+
+        List<Action> inputPageActions = inputPage.getActions();
+
+        assertEquals(List.of(
+                "A::OperationsOnViewsWithInputForms::ViewX::myAction3::OperationInputForm::myAction3::Back",
+                "A::OperationsOnViewsWithInputForms::ViewX::myAction3::OperationInputForm::myAction3::CallOperation",
+                "A::OperationsOnViewsWithInputForms::ViewX::myAction3::OperationInputForm::myAction3::GetTemplate"
+        ), inputPageActions.stream().map(NamedElement::getFQName).sorted().toList());
+
+        Action callOperationAction = inputPageActions.stream().filter(a -> a.getFQName().equals("A::OperationsOnViewsWithInputForms::ViewX::myAction3::OperationInputForm::myAction3::CallOperation")).findFirst().orElseThrow();
+
+        assertEquals(myAction3Operation, callOperationAction.getTargetDataElement());
+        assertEquals(outputPage, callOperationAction.getTargetPageDefinition());
+    }
 }

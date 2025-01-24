@@ -99,6 +99,10 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             table UserTable(UserTransfer u) {
                 column String email <= u.email;
             }
+
+            form UserForm(UserTransfer u) {
+                widget String email <= u.email;
+            }
         
             view UserView(UserTransfer u) {
                 widget String email <= u.email label:"Email";
@@ -144,13 +148,13 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             }
         
             actor NavigationActor {
-                access UserTransfer user <= User.any() update delete;
-                access UserTransfer[] users <= User.all() update delete;
+                access UserTransfer user <= User.any() create update delete;
+                access UserTransfer[] users <= User.all() create update delete;
             }
         
             menu NavigationApp(NavigationActor a) {
-                link UserView user <= a.user label:"User" icon:"tools" view:UserView;
-                table UserTable users <= a.users label:"Users" icon:"people" view:UserView;
+                link UserView user <= a.user label:"User" icon:"tools" form:UserForm view:UserView;
+                table UserTable users <= a.users label:"Users" icon:"people" form:UserForm view:UserView;
             }
         """.formatted(name);
     }
@@ -211,6 +215,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::SetSelector::PageContainer",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumpers::AddSelector::PageContainer",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::readOnlyJumper::SetSelector::PageContainer",
+                "NavigationActor::SummaryCRUD::UserForm::Create::PageContainer",
                 "NavigationActor::SummaryCRUD::UserTable::Table::PageContainer",
                 "NavigationActor::SummaryCRUD::UserView::View::PageContainer",
                 "NavigationActor::SummaryCRUD::UserView::level::related::SetSelector::PageContainer"
@@ -218,7 +223,9 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         assertEquals(List.of(
                 "NavigationActor::SummaryCRUD::NavigationApp::DashboardPage",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::FormPage",
@@ -255,19 +262,26 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         ), tables.stream().map(NamedElement::getFQName).sorted().toList());
 
         assertEquals(List.of(
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::related::OpenForm",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::related::OpenPage",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::related::OpenSetSelector",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::related::RowDelete",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::related::Unset",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::relatedCollection::Filter",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::relatedCollection::OpenPage",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::relatedCollection::Refresh",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::user::Back",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::user::Delete",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::user::Refresh",
-                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::user::Update",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::user::Back",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::user::Create",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::user::GetTemplate",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::related::OpenForm",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::related::OpenPage",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::related::OpenSetSelector",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::related::RowDelete",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::related::Unset",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::relatedCollection::Filter",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::relatedCollection::OpenPage",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::relatedCollection::Refresh",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::user::Back",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::user::Delete",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::user::Refresh",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessLinkViewPage::user::Update",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::users::Back",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::users::Create",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::users::GetTemplate",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage::users::Filter",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage::users::OpenCreate",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage::users::OpenPage",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage::users::Refresh",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage::users::RowDelete",
@@ -375,6 +389,37 @@ public class JslModel2UiCRUDTest extends AbstractTest {
     }
 
     @Test
+    void testAccessFormCRUD() throws Exception {
+        jslModel = JslParser.getModelFromStrings("AccessFormCRUD", List.of(createModelString("AccessFormCRUD")));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        Application application = apps.get(0);
+
+        List<PageDefinition> pages = application.getPages();
+
+        RelationType userRelation = (RelationType) application.getRelationTypes().stream().filter(r -> ((RelationType) r).getFQName().equals("NavigationActor::AccessFormCRUD::NavigationActor::user")).findFirst().orElseThrow();
+        RelationType usersRelation = (RelationType) application.getRelationTypes().stream().filter(r -> ((RelationType) r).getFQName().equals("NavigationActor::AccessFormCRUD::NavigationActor::users")).findFirst().orElseThrow();
+
+        PageDefinition accessLinkForm = pages.stream().filter(p -> p.getFQName().equals("NavigationActor::AccessFormCRUD::NavigationApp::user::AccessFormPage")).findFirst().orElseThrow();
+        PageDefinition accessTableForm = pages.stream().filter(p -> p.getFQName().equals("NavigationActor::AccessFormCRUD::NavigationApp::users::AccessFormPage")).findFirst().orElseThrow();
+
+        Action linkFormCreateAction = accessLinkForm.getActions().stream().filter(Action::getIsCreateAction).findFirst().orElseThrow();
+        PageDefinition linkFormViewPage = linkFormCreateAction.getTargetPageDefinition();
+
+        assertEquals(userRelation, linkFormCreateAction.getOwnerDataElement());
+        assertEquals(linkFormViewPage, linkFormCreateAction.getTargetPageDefinition());
+
+        Action tableFormCreateAction = accessTableForm.getActions().stream().filter(Action::getIsCreateAction).findFirst().orElseThrow();
+        PageDefinition tableFormViewPage = tableFormCreateAction.getTargetPageDefinition();
+
+        assertEquals(usersRelation, tableFormCreateAction.getOwnerDataElement());
+        assertEquals(tableFormViewPage, tableFormCreateAction.getTargetPageDefinition());
+    }
+
+    @Test
     void testAccessViewCRUD() throws Exception {
         jslModel = JslParser.getModelFromStrings("AccessViewCRUD", List.of(createModelString("AccessViewCRUD")));
 
@@ -386,7 +431,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         List<PageDefinition> pages = application.getPages();
 
-        PageDefinition pageDefinition = pages.stream().filter(p -> p.getName().equals("AccessViewCRUD::NavigationApp::user::AccessViewPage")).findFirst().orElseThrow();
+        PageDefinition pageDefinition = pages.stream().filter(p -> p.getName().equals("AccessViewCRUD::NavigationApp::user::AccessLinkViewPage")).findFirst().orElseThrow();
         PageDefinition userViewRelatedViewPageDefinition = pages.stream().filter(p -> p.getName().equals("AccessViewCRUD::UserView::level::related::ViewPage")).findFirst().orElseThrow();
         PageDefinition userViewRelatedCreatePageDefinition = pages.stream().filter(p -> p.getName().equals("AccessViewCRUD::UserView::level::related::FormPage")).findFirst().orElseThrow();
         PageDefinition relatedRowDetailViewPageDefinition = pages.stream().filter(p -> p.getName().equals("AccessViewCRUD::UserView::level::relatedCollection::ViewPage")).findFirst().orElseThrow();
@@ -394,18 +439,18 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         PageContainer pageContainer = pageDefinition.getContainer();
 
         assertEquals(List.of(
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::related::OpenForm",
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::related::OpenPage",
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::related::OpenSetSelector",
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::related::RowDelete",
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::related::Unset",
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::relatedCollection::Filter",
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::relatedCollection::OpenPage",
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::relatedCollection::Refresh",
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::user::Back",
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::user::Delete",
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::user::Refresh",
-                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::user::Update"
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::related::OpenForm",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::related::OpenPage",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::related::OpenSetSelector",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::related::RowDelete",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::related::Unset",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::relatedCollection::Filter",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::relatedCollection::OpenPage",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::relatedCollection::Refresh",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::user::Back",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::user::Delete",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::user::Refresh",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessLinkViewPage::user::Update"
         ), pageDefinition.getActions().stream().map(NamedElement::getFQName).sorted().toList());
 
         assertEquals(List.of(

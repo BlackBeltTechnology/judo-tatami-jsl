@@ -67,7 +67,7 @@ rule ViewActionDeclarationOpenFormActionDefinition
     to t: UI!ui::OpenOperationInputFormActionDefinition {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenFormActionDefinition");
     	t.name = s.getFqName() + "::Open::Operation::Form";
-        t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+        // t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
         log.debug("ViewActionDeclarationOpenFormActionDefinition: " + t.name);
 }
 
@@ -103,7 +103,7 @@ rule OperationInputFormPageDefinition
         t.openInDialog = true;
         t.name = s.getFqName() + "::OperationInputForm";
         t.container = s.parameterType.equivalent("FormPageContainer");
-        t.dataElement = s.equivalent("OperationInputParameterType");
+        t.dataElement = s.transferAction.target.equivalent("OperationInputParameterType");
 
         t.actions.add(s.equivalent("OperationInputFormBackAction"));
         t.actions.add(s.equivalent("OperationInputFormCallAction"));
@@ -199,6 +199,10 @@ rule OperationInputSelectorPageDefinition
         t.name = s.getFqName() + "::OperationInputSelector";
         t.openInDialog = true;
         t.container = s.getSelectorTableModifier().row.equivalent("TablePageContainer");
+        // TODO: fix transformation and generator to use same table to reduce code generation. Right now we generate
+        // dedicated selector containers instead of preparing them to handle the actual use-case....
+        // Maybe we could move the isSelector flag to the PageDefinition level...
+        // t.container.isSelector = true;
         t.container.actionButtonGroup.buttons.add(s.equivalent("OperationInputSelectorCallActionButton"));
         t.dataElement = s.transferAction.target.equivalent("OperationType").input;
 
@@ -237,7 +241,7 @@ rule OperationInputSelectorCallActionButton
 @lazy
 rule OperationInputSelectorCallActionDefinition
     transform s: JSL!UIViewActionDeclaration
-    to t: UI!ui::InputFormCallOperationActionDefinition {
+    to t: UI!ui::InputSelectorCallOperationActionDefinition {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallActionDefinition");
     	t.name = s.getFqName() + "::SelectorCall";
     	t.`operation` = s.transferAction.target.equivalent("OperationType");
