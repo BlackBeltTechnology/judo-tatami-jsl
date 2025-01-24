@@ -74,10 +74,13 @@ rule OperationInputParameterType
         t.isCollection = false;
         t.isOptional = false;
         t.target = s.parameterType.equivalent("ClassType");
-        t.isOrderable = s.parameterType.hasSortableField();
-        t.isFilterable = s.parameterType.hasFilterableField();
 
-        log.debug("Created OperationOutputParameterType: " + t.name);
+        if (not s.parameterType.form.isDefined() or s.parameterType.form == false) {
+            t.isOrderable = s.parameterType.hasSortableField();
+            t.isFilterable = s.parameterType.hasFilterableField();
+        }
+
+        log.debug("Created OperationInputParameterType: " + t.name);
 }
 
 @lazy

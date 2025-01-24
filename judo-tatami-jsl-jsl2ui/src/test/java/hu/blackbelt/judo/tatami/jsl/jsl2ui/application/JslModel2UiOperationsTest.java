@@ -1,12 +1,8 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
-import hu.blackbelt.judo.meta.ui.Application;
-import hu.blackbelt.judo.meta.ui.NamedElement;
-import hu.blackbelt.judo.meta.ui.data.AttributeType;
-import hu.blackbelt.judo.meta.ui.data.ClassType;
-import hu.blackbelt.judo.meta.ui.data.OperationParameterType;
-import hu.blackbelt.judo.meta.ui.data.OperationType;
+import hu.blackbelt.judo.meta.ui.*;
+import hu.blackbelt.judo.meta.ui.data.*;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -164,6 +160,10 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                 "A::myAction3::OperationOutput"
         ), application.getPages().stream().map(NamedElement::getFQName).sorted().toList());
 
+        assertEquals(List.of(
+                "A::OperationsOnViews::A::txs"
+        ), application.getRelationTypes().stream().map(r -> ((RelationType) r).getFQName()).sorted().toList());
+
         // Error(s)
 
         ClassType errorWithDefaults = (ClassType) application.getDataElements().stream()
@@ -270,19 +270,95 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                 .filter(c -> c.getFQName().equals("A::OperationsOnViewsWithInputSelectors::TransferX"))
                 .findFirst().orElseThrow();
 
-        OperationType myAction2 = transferX.getOperations().stream()
+        OperationType myAction2Operation = transferX.getOperations().stream()
                 .filter(o -> o.getFQName().equals("A::OperationsOnViewsWithInputSelectors::TransferX::myAction2"))
                 .findFirst().orElseThrow();
 
-        OperationParameterType myAction2Input = myAction2.getInput();
-        OperationParameterType myAction2Output = myAction2.getOutput();
+        OperationParameterType myAction2Input = myAction2Operation.getInput();
+        OperationParameterType myAction2Output = myAction2Operation.getOutput();
 
         assertEquals("A::OperationsOnViewsWithInputSelectors::TransferX::myAction2::input", myAction2Input.getFQName());
         assertEquals("A::OperationsOnViewsWithInputSelectors::TransferX::myAction2::output", myAction2Output.getFQName());
 
-        List<OperationParameterType> myAction2Faults = myAction2.getFaults();
+        assertTrue(myAction2Input.isIsOrderable());
+        assertTrue(myAction2Input.isIsFilterable());
+
+        assertEquals(List.of(
+                "REFRESH"
+        ), myAction2Output.getBehaviours().stream().map(OperationTargetBehaviourType::getName).sorted().toList());
+
+        List<OperationParameterType> myAction2Faults = myAction2Operation.getFaults();
 
         assertEquals(List.of(), myAction2Faults.stream().map(NamedElement::getFQName).sorted().toList());
+
+        PageDefinition accessTableViewPage = application.getPages().stream().filter(p -> p.getFQName().equals("A::OperationsOnViewsWithInputSelectors::M::vxs::AccessTableViewPage")).findFirst().orElseThrow();
+
+        List<Action> accessTableViewPageActions = accessTableViewPage.getActions();
+
+        PageDefinition myAction2InputSelectorPage = application.getPages().stream().filter(p -> p.getFQName().equals("A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationInputSelector")).findFirst().orElseThrow();
+        PageDefinition myAction2OutputPage = application.getPages().stream().filter(p -> p.getFQName().equals("A::myAction2::OperationOutput")).findFirst().orElseThrow();
+
+        Action myAction2 = accessTableViewPageActions.stream().filter( a -> a.getFQName().equals("A::OperationsOnViewsWithInputSelectors::M::vxs::AccessTableViewPage::OperationsOnViewsWithInputSelectors::ViewX::myAction2::Action")).findFirst().orElseThrow();
+
+        RelationType txs = (RelationType) application.getRelationTypes().stream().filter(r -> ((RelationType) r).getFQName().equals("A::OperationsOnViewsWithInputSelectors::A::txs")).findFirst().orElseThrow();
+
+        assertEquals("OperationsOnViewsWithInputSelectors::ViewX::myAction2::Action", myAction2.getName());
+        assertEquals(myAction2Operation, myAction2.getTargetDataElement());
+        assertEquals(txs, myAction2.getOwnerDataElement());
+        assertEquals(myAction2InputSelectorPage, myAction2.getTargetPageDefinition());
+        assertTrue(myAction2InputSelectorPage.isOpenInDialog());
+        assertTrue(myAction2InputSelectorPage.getContainer().isTable());
+
+        Table selectorTable = (Table) myAction2InputSelectorPage.getContainer().getTables().get(0);
+
+        assertEquals(List.of(
+                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::number"
+        ), selectorTable.getColumns().stream().map(NamedElement::getFQName).sorted().toList());
+
+        Column selectorTableNumberColumn = selectorTable.getColumns().stream().filter(c -> c.getFQName().equals("A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::number")).findFirst().orElseThrow();
+
+        assertEquals("Integer", selectorTableNumberColumn.getAttributeType().getDataType().getName());
+        assertEquals("number", selectorTableNumberColumn.getAttributeType().getName());
+        assertEquals(Sort.NONE, selectorTableNumberColumn.getSort());
+
+        List<Button> selectorTableButtons = selectorTable.getTableActionButtonGroup().getButtons();
+        List<Button> selectorTableRowButtons = selectorTable.getRowActionButtonGroup().getButtons();
+
+        assertEquals(List.of(
+                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::BulkRemove",
+                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::Clear",
+                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::Filter",
+                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::OpenAddSelector",
+                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::OpenCreate",
+                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::Refresh"
+        ), selectorTableButtons.stream().map(NamedElement::getFQName).sorted().toList());
+
+        assertEquals(List.of(
+                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1TableRowButtonGroup::Table1::RowDelete",
+                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1TableRowButtonGroup::Table1::View"
+        ), selectorTableRowButtons.stream().map(NamedElement::getFQName).sorted().toList());
+
+        List<Action> myAction2InputActions = myAction2InputSelectorPage.getActions();
+
+        assertEquals(List.of(
+                "A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationInputSelector::myAction2::Back",
+                "A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationInputSelector::myAction2::CallOperation"
+        ), myAction2InputActions.stream().map(NamedElement::getFQName).sorted().toList());
+
+        Action myAction2CallOperationAction = myAction2InputActions.stream().filter(a -> a.getFQName().equals("A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationInputSelector::myAction2::CallOperation")).findFirst().orElseThrow();
+
+        assertEquals(myAction2OutputPage, myAction2CallOperationAction.getTargetPageDefinition());
+        assertEquals(myAction2Operation, myAction2CallOperationAction.getTargetDataElement());
+        assertTrue(myAction2OutputPage.isOpenInDialog());
+
+        assertEquals(List.of(
+                "A::myAction2::OperationOutput::myAction2::Back",
+                "A::myAction2::OperationOutput::myAction2::Refresh"
+        ), myAction2OutputPage.getActions().stream().map(NamedElement::getFQName).sorted().toList());
+
+        Action myAction2OutputRefreshAction = myAction2OutputPage.getActions().stream().filter(a -> a.getFQName().equals("A::myAction2::OperationOutput::myAction2::Refresh")).findFirst().orElseThrow();
+
+        assertEquals(myAction2Operation, myAction2OutputRefreshAction.getOwnerDataElement());
 
     }
 }
