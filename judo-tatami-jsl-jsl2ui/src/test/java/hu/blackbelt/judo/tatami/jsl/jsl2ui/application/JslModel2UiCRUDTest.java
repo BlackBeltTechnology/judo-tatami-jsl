@@ -778,8 +778,9 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         Table myJumpersAddSelector = (Table) myJumpersAddSelectorPageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("myJumpers::Add::Selector")).findFirst().orElseThrow();
         assertEquals("SingleRelationViewCRUD::JumperTransfer", myJumpersAddSelector.getDataElement().getName());
         assertTrue(myJumpersAddSelector.isAllowSelectMultiple());
-        assertTrue(myJumpersAddSelector.isIsRelationSelectorTable());
-        assertTrue(myJumpersAddSelector.isIsSelectorTable());
+
+        assertTrue(myJumpersAddSelectorPageDefinition.isIsSelector());
+        assertTrue(myJumpersAddSelectorPageDefinition.isIsRelationSelector());
 
         assertEquals(List.of(
                 "NavigationActor::SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelector::PageContainer::myJumpers::myJumpers::Add::Selector::SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelectorTableActions::SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelector::Table::Filter",
@@ -815,8 +816,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         Table myJumperSetSelector = (Table) myJumperSetSelectorPageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("myJumper::Set::Selector")).findFirst().orElseThrow();
         assertEquals("SingleRelationViewCRUD::JumperTransfer", myJumpersAddSelector.getDataElement().getName());
         assertTrue(myJumpersAddSelector.isAllowSelectMultiple());
-        assertTrue(myJumpersAddSelector.isIsRelationSelectorTable());
-        assertTrue(myJumpersAddSelector.isIsSelectorTable());
+        assertTrue(myJumperSetSelectorPageDefinition.isIsRelationSelector());
+        assertTrue(myJumperSetSelectorPageDefinition.isIsSelector());
 
         assertEquals(List.of(
                 "NavigationActor::SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelector::PageContainer::myJumper::myJumper::Set::Selector::SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelectorTableActions::SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelector::Table::Filter",

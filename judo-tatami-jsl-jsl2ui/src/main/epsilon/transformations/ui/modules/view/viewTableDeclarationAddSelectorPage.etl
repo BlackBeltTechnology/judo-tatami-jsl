@@ -11,6 +11,8 @@ rule ViewTableDeclarationAddSelectorPageDefinition
     t.dataElement = s.transferRelation.target.equivalent("RelationType");
     t.openInDialog = true;
     t.dialogSize = UI!ui::DialogSize#MD;
+    t.isSelector = true;
+    t.isRelationSelector = true;
 
     t.actions.add(s.equivalent("ViewTableDeclarationAddSelectorAddAction"));
     t.actions.add(s.equivalent("ViewTableDeclarationAddSelectorBackAction"));
@@ -38,8 +40,6 @@ rule ViewTableDeclarationAddSelectorPageContainer
         t.children.add(s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorVisualElement"));
         t.actionButtonGroup = s.equivalent("ViewTableDeclarationAddSelectorTableAddSelectorButtonGroup");
         t.dataElement = s.referenceType.map.transfer.equivalent("ClassType");
-        t.isSelector = true;
-        t.isRelationSelector = true;
 
         rootMenu.equivalent("Application").pageContainers.add(t);
 
@@ -151,8 +151,6 @@ rule ViewTableDeclarationAddSelectorTableTable
         t.setId(id);
         t.col = 12d;
         t.label = s.getLabelWithNameFallback();
-        t.isSelectorTable = true;
-        t.isRelationSelectorTable = true;
         t.allowSelectMultiple = true;
         t.name = s.name + "::Add::Selector";
         t.relationName = s.transferRelation.target.name;

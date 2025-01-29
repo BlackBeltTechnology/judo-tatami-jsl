@@ -12,6 +12,8 @@ rule AccessTableTableAddSelectorPageDefinition
     t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
     t.openInDialog = true;
     t.dialogSize = UI!ui::DialogSize#MD;
+    t.isSelector = true;
+    t.isRelationSelector = true;
 
     t.actions.add(s.equivalent("AccessTableTableAddSelectorAddAction"));
     t.actions.add(s.equivalent("AccessTableTableAddSelectorBackAction"));
@@ -39,8 +41,6 @@ rule TableAddSelectorPageContainer
         t.children.add(s.equivalent("TableAddSelectorVisualElement"));
         t.actionButtonGroup = s.equivalent("TableAddSelectorButtonGroup");
         t.dataElement = s.actorAccess.target.referenceType.equivalent("ClassType");
-        t.isSelector = true;
-        t.isRelationSelector = true;
 
         rootMenu.equivalent("Application").pageContainers.add(t);
 
@@ -153,8 +153,6 @@ rule TableAddSelectorTableTable
         t.setId(id);
         t.col = 12d;
         t.label = s.getLabelWithNameFallback();
-        t.isSelectorTable = true;
-        t.isRelationSelectorTable = true;
         t.allowSelectMultiple = true;
         t.name = s.name + "::Add::Selector";
         t.relationName = "";
