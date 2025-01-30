@@ -100,7 +100,7 @@ rule TablePageContainerAddSelectorAddButton
  		t.name = s.getFqName() + "::Add";
     	t.label = "Add";
     	t.buttonStyle = "contained";
-    	t.icon = s.equivalent("TransferObjectTableAddSelectorAddButtonIcon");
+    	t.icon = s.equivalent("TablePageContainerAddSelectorAddButtonIcon");
     	t.actionDefinition = s.equivalent("TablePageContainerAddSelectorAddActionDefinition");
         log.debug("TablePageContainerAddSelectorAddButton: " + t.name);
 }
