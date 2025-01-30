@@ -208,12 +208,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SummaryCRUD::RelatedForm::Create::PageContainer",
                 "NavigationActor::SummaryCRUD::RelatedTable::Table::PageContainer",
                 "NavigationActor::SummaryCRUD::RelatedView::View::PageContainer",
-                "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::SetSelector::PageContainer",
-                "NavigationActor::SummaryCRUD::RelatedView::g1::myJumpers::AddSelector::PageContainer",
-                "NavigationActor::SummaryCRUD::RelatedView::g1::readOnlyJumper::SetSelector::PageContainer",
                 "NavigationActor::SummaryCRUD::UserTable::Table::PageContainer",
-                "NavigationActor::SummaryCRUD::UserView::View::PageContainer",
-                "NavigationActor::SummaryCRUD::UserView::level::related::SetSelector::PageContainer"
+                "NavigationActor::SummaryCRUD::UserView::View::PageContainer"
         ), pageContainers.stream().map(NamedElement::getFQName).sorted().toList());
 
         assertEquals(List.of(
@@ -246,12 +242,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SummaryCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table",
                 "NavigationActor::SummaryCRUD::RelatedTable::Table::PageContainer::RelatedTable::RelatedTable::Table",
                 "NavigationActor::SummaryCRUD::RelatedView::View::PageContainer::RelatedView::g1::myJumpers",
-                "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::SetSelector::PageContainer::myJumper::myJumper::Set::Selector",
-                "NavigationActor::SummaryCRUD::RelatedView::g1::myJumpers::AddSelector::PageContainer::myJumpers::myJumpers::Add::Selector",
-                "NavigationActor::SummaryCRUD::RelatedView::g1::readOnlyJumper::SetSelector::PageContainer::readOnlyJumper::readOnlyJumper::Set::Selector",
                 "NavigationActor::SummaryCRUD::UserTable::Table::PageContainer::UserTable::UserTable::Table",
-                "NavigationActor::SummaryCRUD::UserView::View::PageContainer::UserView::level::relatedCollection",
-                "NavigationActor::SummaryCRUD::UserView::level::related::SetSelector::PageContainer::related::related::Set::Selector"
+                "NavigationActor::SummaryCRUD::UserView::View::PageContainer::UserView::level::relatedCollection"
         ), tables.stream().map(NamedElement::getFQName).sorted().toList());
 
         assertEquals(List.of(
@@ -770,26 +762,29 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(myJumpersAddSelectorFilterAction.getActionDefinition().getIsFilterAction());
 
         Action myJumpersAddSelectorrangeAction = myJumpersAddSelectorPageDefinition.getActions().stream().filter(a -> a.getName().equals("SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelector::Table::Range")).findFirst().orElseThrow();
-        assertTrue(myJumpersAddSelectorrangeAction.getActionDefinition().getIsSelectorRangeAction());
+        assertTrue(myJumpersAddSelectorrangeAction.getActionDefinition().getIsRefreshAction());
 
         Action myJumpersAddSelectorBackAction = myJumpersAddSelectorPageDefinition.getActions().stream().filter(a -> a.getName().equals("SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelector::Back")).findFirst().orElseThrow();
         assertTrue(myJumpersAddSelectorBackAction.getActionDefinition().getIsBackAction());
 
-        Table myJumpersAddSelector = (Table) myJumpersAddSelectorPageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("myJumpers::Add::Selector")).findFirst().orElseThrow();
+        Table myJumpersAddSelector = (Table) myJumpersAddSelectorPageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("JumperTable::Table")).findFirst().orElseThrow();
         assertEquals("SingleRelationViewCRUD::JumperTransfer", myJumpersAddSelector.getDataElement().getName());
-        assertTrue(myJumpersAddSelector.isAllowSelectMultiple());
 
         assertTrue(myJumpersAddSelectorPageDefinition.isIsSelector());
         assertTrue(myJumpersAddSelectorPageDefinition.isIsRelationSelector());
 
         assertEquals(List.of(
-                "NavigationActor::SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelector::PageContainer::myJumpers::myJumpers::Add::Selector::SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelectorTableActions::SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelector::Table::Filter",
-                "NavigationActor::SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelector::PageContainer::myJumpers::myJumpers::Add::Selector::SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelectorTableActions::SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelector::Table::Refresh"
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::BulkRemove",
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::Clear",
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::Filter",
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::OpenAddSelector",
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::OpenCreate",
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::Refresh"
         ), myJumpersAddSelector.getTableActionButtonGroup().getButtons().stream().map(NamedElement::getFQName).sorted().toList());
 
-        Button myJumpersAddSelectorFilter = myJumpersAddSelector.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("SingleRelationViewCRUD::RelatedView::g1::myJumpers::AddSelector::Table::Filter")).findFirst().orElseThrow();
+        Button myJumpersAddSelectorFilter = myJumpersAddSelector.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("JumperTable::Filter")).findFirst().orElseThrow();
         assertTrue(myJumpersAddSelectorFilter.getActionDefinition().getIsFilterAction());
-        assertButtonVisuals(myJumpersAddSelectorFilter, "Set Filters", "filter", "text");
+        assertButtonVisuals(myJumpersAddSelectorFilter, "Filter", "filter", "text");
         assertEquals(myJumpersAddSelectorFilterAction.getActionDefinition(), myJumpersAddSelectorFilter.getActionDefinition());
 
         // set selector - myJumper
@@ -805,7 +800,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(myJumperSetSelectorFilterAction.getActionDefinition().getIsFilterAction());
 
         Action myJumperSetSelectorrangeAction = myJumperSetSelectorPageDefinition.getActions().stream().filter(a -> a.getName().equals("SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelector::Table::Range")).findFirst().orElseThrow();
-        assertTrue(myJumperSetSelectorrangeAction.getActionDefinition().getIsSelectorRangeAction());
+        assertTrue(myJumperSetSelectorrangeAction.getActionDefinition().getIsRefreshAction());
 
         Action myJumperSetSelectorSetAction = myJumperSetSelectorPageDefinition.getActions().stream().filter(a -> a.getName().equals("SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelector::Set")).findFirst().orElseThrow();
         assertTrue(myJumperSetSelectorSetAction.getActionDefinition().getIsSetAction());
@@ -813,24 +808,27 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         Action myJumperSetSelectorBackAction = myJumperSetSelectorPageDefinition.getActions().stream().filter(a -> a.getName().equals("SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelector::Back")).findFirst().orElseThrow();
         assertTrue(myJumperSetSelectorBackAction.getActionDefinition().getIsBackAction());
 
-        Table myJumperSetSelector = (Table) myJumperSetSelectorPageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("myJumper::Set::Selector")).findFirst().orElseThrow();
+        Table myJumperSetSelector = (Table) myJumperSetSelectorPageContainer.getTables().stream().filter(t -> ((Table) t).getName().equals("JumperTable::Table")).findFirst().orElseThrow();
         assertEquals("SingleRelationViewCRUD::JumperTransfer", myJumpersAddSelector.getDataElement().getName());
-        assertTrue(myJumpersAddSelector.isAllowSelectMultiple());
         assertTrue(myJumperSetSelectorPageDefinition.isIsRelationSelector());
         assertTrue(myJumperSetSelectorPageDefinition.isIsSelector());
 
         assertEquals(List.of(
-                "NavigationActor::SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelector::PageContainer::myJumper::myJumper::Set::Selector::SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelectorTableActions::SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelector::Table::Filter",
-                "NavigationActor::SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelector::PageContainer::myJumper::myJumper::Set::Selector::SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelectorTableActions::SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelector::Table::Refresh"
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::BulkRemove",
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::Clear",
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::Filter",
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::OpenAddSelector",
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::OpenCreate",
+                "NavigationActor::SingleRelationViewCRUD::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table::JumperTable::TableTableButtonGroup::JumperTable::Refresh"
         ), myJumperSetSelector.getTableActionButtonGroup().getButtons().stream().map(NamedElement::getFQName).sorted().toList());
 
-        Button myJumperSetSelectorFilter = myJumperSetSelector.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelector::Table::Filter")).findFirst().orElseThrow();
+        Button myJumperSetSelectorFilter = myJumperSetSelector.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("JumperTable::Filter")).findFirst().orElseThrow();
         assertTrue(myJumperSetSelectorFilter.getActionDefinition().getIsFilterAction());
-        assertButtonVisuals(myJumperSetSelectorFilter, "Set Filters", "filter", "text");
+        assertButtonVisuals(myJumperSetSelectorFilter, "Filter", "filter", "text");
         assertEquals(myJumperSetSelectorFilterAction.getActionDefinition(), myJumperSetSelectorFilter.getActionDefinition());
 
-        Button myJumperSetSelectorRefresh = myJumperSetSelector.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("SingleRelationViewCRUD::RelatedView::g1::myJumper::SetSelector::Table::Refresh")).findFirst().orElseThrow();
-        assertTrue(myJumperSetSelectorRefresh.getActionDefinition().getIsSelectorRangeAction());
+        Button myJumperSetSelectorRefresh = myJumperSetSelector.getTableActionButtonGroup().getButtons().stream().filter(b -> b.getName().equals("JumperTable::Refresh")).findFirst().orElseThrow();
+        assertTrue(myJumperSetSelectorRefresh.getActionDefinition().getIsRefreshAction());
         assertButtonVisuals(myJumperSetSelectorRefresh, "Refresh", "refresh", "text");
         assertEquals(myJumperSetSelectorrangeAction.getActionDefinition(), myJumperSetSelectorRefresh.getActionDefinition());
     }
