@@ -130,20 +130,20 @@ public class JslModel2UiDataTest extends AbstractTest {
         TimeType timeType = (TimeType) dataTypes.stream().filter(t -> t instanceof TimeType).findFirst().orElseThrow();
         TimestampType timestampType = (TimestampType) dataTypes.stream().filter(t -> t instanceof TimestampType).findFirst().orElseThrow();
 
-        assertEquals(Set.of(
-                "Actor::Boolean",
-                "Actor::Numeric",
+        assertEquals(List.of(
                 "Actor::Binary",
-                "Actor::MyEnum",
-                "Actor::String",
-                "Actor::Time",
-                "Actor::Timestamp",
-                "Actor::Date",
+                "Actor::Boolean",
                 "Actor::BooleanOperation",
+                "Actor::Date",
+                "Actor::EnumerationOperation",
+                "Actor::MyEnum",
+                "Actor::Numeric",
                 "Actor::NumericOperation",
+                "Actor::String",
                 "Actor::StringOperation",
-                "Actor::EnumerationOperation"
-        ), dataTypes.stream().map(d -> d.getFQName()).collect(Collectors.toSet()));
+                "Actor::Time",
+                "Actor::Timestamp"
+        ), dataTypes.stream().map(d -> d.getFQName()).sorted().toList());
 
         assertNotNull(stringType);
         assertEquals("String", stringType.getName());
@@ -314,11 +314,11 @@ public class JslModel2UiDataTest extends AbstractTest {
 
         Application app = apps.get(0);
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
             "Actor1::BasicDataCrossTransfersTestModel::Actor1",
             "Actor1::BasicDataCrossTransfersTestModel::Transfer1",
             "Actor1::BasicDataCrossTransfersTestModel::Transfer2"
-        ), app.getClassTypes().stream().map(c -> ((ClassType) c).getFQName()).collect(Collectors.toSet()));
+        ), app.getClassTypes().stream().map(c -> ((ClassType) c).getFQName()).sorted().toList());
 
         ClassType transfer1Row = (ClassType) app.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("BasicDataCrossTransfersTestModel::Transfer1")).findFirst().orElseThrow();
         assertNotNull(transfer1Row);
@@ -472,35 +472,35 @@ public class JslModel2UiDataTest extends AbstractTest {
 
         Application app1 = apps.get(0);
 
-        assertEquals(Set.of(
-                "Actor::RelationsTestModel::UserTransfer",
+        assertEquals(List.of(
+                "Actor::RelationsTestModel::Actor",
                 "Actor::RelationsTestModel::EntityRelatedTransfer",
-                "Actor::RelationsTestModel::Actor"
-        ), app1.getClassTypes().stream().map(c -> ((ClassType) c).getFQName()).collect(Collectors.toSet()));
+                "Actor::RelationsTestModel::UserTransfer"
+        ), app1.getClassTypes().stream().map(c -> ((ClassType) c).getFQName()).sorted().toList());
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
                 "Actor::RelationsTestModel::Actor::user",
-                "Actor::RelationsTestModel::UserTransfer::derivedLazyCollectionStaticEager",
-                "Actor::RelationsTestModel::UserTransfer::lazyTransientWithDefault",
-                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainment",
-                "Actor::RelationsTestModel::UserTransfer::derivedLazyCollectionStatic",
-                "Actor::RelationsTestModel::UserTransfer::associationCollection",
-                "Actor::RelationsTestModel::UserTransfer::containmentCollection",
-                "Actor::RelationsTestModel::UserTransfer::lazyTransientCollectionWithDefault",
-                "Actor::RelationsTestModel::UserTransfer::userRelatedOpposite",
-                "Actor::RelationsTestModel::UserTransfer::containment",
-                "Actor::RelationsTestModel::UserTransfer::eagerAssociation",
                 "Actor::RelationsTestModel::UserTransfer::association",
-                "Actor::RelationsTestModel::UserTransfer::derivedLazyStaticEager",
-                "Actor::RelationsTestModel::UserTransfer::unmappedRequired",
+                "Actor::RelationsTestModel::UserTransfer::associationCollection",
+                "Actor::RelationsTestModel::UserTransfer::containment",
+                "Actor::RelationsTestModel::UserTransfer::containmentCollection",
                 "Actor::RelationsTestModel::UserTransfer::derivedContainment",
                 "Actor::RelationsTestModel::UserTransfer::derivedContainmentCollection",
-                "Actor::RelationsTestModel::UserTransfer::eagerAssociationCollection",
-                "Actor::RelationsTestModel::UserTransfer::unmappedCollection",
+                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainment",
+                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainmentCollection",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyCollectionStatic",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyCollectionStaticEager",
                 "Actor::RelationsTestModel::UserTransfer::derivedLazyStatic",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyStaticEager",
+                "Actor::RelationsTestModel::UserTransfer::eagerAssociation",
+                "Actor::RelationsTestModel::UserTransfer::eagerAssociationCollection",
+                "Actor::RelationsTestModel::UserTransfer::lazyTransientCollectionWithDefault",
+                "Actor::RelationsTestModel::UserTransfer::lazyTransientWithDefault",
                 "Actor::RelationsTestModel::UserTransfer::unmapped",
-                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainmentCollection"
-        ), app1.getRelationTypes().stream().map(c -> ((RelationType) c).getFQName()).collect(Collectors.toSet()));
+                "Actor::RelationsTestModel::UserTransfer::unmappedCollection",
+                "Actor::RelationsTestModel::UserTransfer::unmappedRequired",
+                "Actor::RelationsTestModel::UserTransfer::userRelatedOpposite"
+        ), app1.getRelationTypes().stream().map(c -> ((RelationType) c).getFQName()).sorted().toList());
 
         RelationType user = (RelationType) app1.getRelationTypes().stream().filter(r -> ((RelationType) r).getName().equals("user")).findFirst().orElseThrow();
 
@@ -512,28 +512,28 @@ public class JslModel2UiDataTest extends AbstractTest {
 
         List<RelationType> userViewRelations = userTransfer.getRelations();
 
-        assertEquals(Set.of(
-                "Actor::RelationsTestModel::UserTransfer::derivedContainmentCollection",
-                "Actor::RelationsTestModel::UserTransfer::containment",
-                "Actor::RelationsTestModel::UserTransfer::derivedLazyStatic",
-                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainment",
+        assertEquals(List.of(
                 "Actor::RelationsTestModel::UserTransfer::association",
-                "Actor::RelationsTestModel::UserTransfer::eagerAssociation",
-                "Actor::RelationsTestModel::UserTransfer::unmappedRequired",
-                "Actor::RelationsTestModel::UserTransfer::unmapped",
-                "Actor::RelationsTestModel::UserTransfer::derivedLazyCollectionStaticEager",
-                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainmentCollection",
-                "Actor::RelationsTestModel::UserTransfer::derivedLazyStaticEager",
-                "Actor::RelationsTestModel::UserTransfer::lazyTransientWithDefault",
-                "Actor::RelationsTestModel::UserTransfer::unmappedCollection",
-                "Actor::RelationsTestModel::UserTransfer::userRelatedOpposite",
                 "Actor::RelationsTestModel::UserTransfer::associationCollection",
+                "Actor::RelationsTestModel::UserTransfer::containment",
                 "Actor::RelationsTestModel::UserTransfer::containmentCollection",
+                "Actor::RelationsTestModel::UserTransfer::derivedContainment",
+                "Actor::RelationsTestModel::UserTransfer::derivedContainmentCollection",
+                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainment",
+                "Actor::RelationsTestModel::UserTransfer::derivedEagerContainmentCollection",
                 "Actor::RelationsTestModel::UserTransfer::derivedLazyCollectionStatic",
-                "Actor::RelationsTestModel::UserTransfer::lazyTransientCollectionWithDefault",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyCollectionStaticEager",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyStatic",
+                "Actor::RelationsTestModel::UserTransfer::derivedLazyStaticEager",
+                "Actor::RelationsTestModel::UserTransfer::eagerAssociation",
                 "Actor::RelationsTestModel::UserTransfer::eagerAssociationCollection",
-                "Actor::RelationsTestModel::UserTransfer::derivedContainment"
-        ), userTransfer.getRelations().stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "Actor::RelationsTestModel::UserTransfer::lazyTransientCollectionWithDefault",
+                "Actor::RelationsTestModel::UserTransfer::lazyTransientWithDefault",
+                "Actor::RelationsTestModel::UserTransfer::unmapped",
+                "Actor::RelationsTestModel::UserTransfer::unmappedCollection",
+                "Actor::RelationsTestModel::UserTransfer::unmappedRequired",
+                "Actor::RelationsTestModel::UserTransfer::userRelatedOpposite"
+        ), userTransfer.getRelations().stream().map(NamedElement::getFQName).sorted().toList());
 
         // According to JSLUtils, transients are always aggregation regardless of what we model.
         RelationType unmapped = userViewRelations.stream().filter(r -> r.getName().equals("unmapped")).findFirst().orElseThrow();
