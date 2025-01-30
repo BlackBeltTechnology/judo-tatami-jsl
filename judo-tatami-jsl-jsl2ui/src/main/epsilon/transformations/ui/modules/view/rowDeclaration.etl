@@ -68,6 +68,7 @@ rule TablePageContainerSetSelectorSetButton
  		t.name = s.getFqName() + "::Set";
     	t.label = "Set";
     	t.buttonStyle = "contained";
+    	t.dataElement = s.map.transfer.equivalent("ClassType");
     	t.icon = s.equivalent("TablePageContainerSetSelectorSetButtonIcon");
     	t.actionDefinition = s.equivalent("TablePageContainerSetSelectorSetActionDefinition");
         log.debug("TablePageContainerSetSelectorSetButton: " + t.name);
@@ -100,6 +101,7 @@ rule TablePageContainerAddSelectorAddButton
  		t.name = s.getFqName() + "::Add";
     	t.label = "Add";
     	t.buttonStyle = "contained";
+    	t.dataElement = s.map.transfer.equivalent("ClassType");
     	t.icon = s.equivalent("TablePageContainerAddSelectorAddButtonIcon");
     	t.actionDefinition = s.equivalent("TablePageContainerAddSelectorAddActionDefinition");
         log.debug("TablePageContainerAddSelectorAddButton: " + t.name);
