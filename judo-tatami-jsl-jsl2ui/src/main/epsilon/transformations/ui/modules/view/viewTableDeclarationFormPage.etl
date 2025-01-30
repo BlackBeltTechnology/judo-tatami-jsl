@@ -48,6 +48,7 @@ rule ViewTableCreateFormCreateAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormCreateAction");
         t.name = s.name + "::Create";
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerCreateActionDefinition");
+        t.targetPageDefinition = s.equivalent("ViewTableViewPageDefinition");
 
         log.debug("ViewTableCreateFormCreateAction: " + t.name);
 }

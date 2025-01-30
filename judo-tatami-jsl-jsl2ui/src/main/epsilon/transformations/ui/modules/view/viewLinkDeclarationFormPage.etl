@@ -48,6 +48,7 @@ rule ViewLinkCreateFormCreateAction
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormCreateAction");
         t.name = s.name + "::Create";
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerCreateActionDefinition");
+        t.targetPageDefinition = s.equivalent("ViewLinkPageDefinition");
 
         log.debug("ViewLinkCreateFormCreateAction: " + t.name);
 }
