@@ -50,7 +50,7 @@ rule AccessLinkCreateFormCreateAction
         t.name = s.name + "::Create";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerCreateActionDefinition");
-        t.targetPageDefinition = s.getCreateFormModifier().form.equivalent("AccessLinkViewPageDefinition");
+        t.targetPageDefinition = s.equivalent("AccessViewPageDefinition");
 
         log.debug("AccessLinkCreateFormCreateAction: " + t.name);
 }

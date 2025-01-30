@@ -359,29 +359,29 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals(2, classTypes.size());
         assertEquals(1, relationTypes.size());
 
-        Set<String> class1Names = classTypes.stream().map(c -> c.getName()).collect(Collectors.toSet());
-        Set<String> relations1Names = relationTypes.stream().map(c -> c.getFQName()).collect(Collectors.toSet());
+        List<String> class1Names = classTypes.stream().map(c -> c.getName()).sorted().toList();
+        List<String> relations1Names = relationTypes.stream().map(c -> c.getFQName()).sorted().toList();
 
-        assertEquals(Set.of(
-                "MultipleActorsTestModel::ProductTransfer",
-                "MultipleActorsTestModel::Actor1"
+        assertEquals(List.of(
+                "MultipleActorsTestModel::Actor1",
+                "MultipleActorsTestModel::ProductTransfer"
         ), class1Names);
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
                 "Actor1::MultipleActorsTestModel::Actor1::products"
         ), relations1Names);
 
         List<DataType> dataTypes1 = app1.getDataTypes();
 
-        Set<String> dataTypes1Names = dataTypes1.stream().map(c -> c.getName()).collect(Collectors.toSet());
+        List<String> dataTypes1Names = dataTypes1.stream().map(c -> c.getName()).sorted().toList();
 
-        assertEquals(Set.of(
-                "StringOperation",
-                "Integer",
-                "EnumerationOperation",
+        assertEquals(List.of(
                 "BooleanOperation",
+                "EnumerationOperation",
+                "Integer",
+                "NumericOperation",
                 "String",
-                "NumericOperation"
+                "StringOperation"
         ), dataTypes1Names);
 
         List<ClassType> classTypes2 = app2.getClassTypes();
@@ -390,15 +390,15 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals(2, classTypes2.size());
         assertEquals(1, relationsTypes2.size());
 
-        Set<String> class2Names = classTypes2.stream().map(c -> c.getName()).collect(Collectors.toSet());
-        Set<String> relations2Names = relationsTypes2.stream().map(c -> c.getFQName()).collect(Collectors.toSet());
+        List<String> class2Names = classTypes2.stream().map(c -> c.getName()).sorted().toList();
+        List<String> relations2Names = relationsTypes2.stream().map(c -> c.getFQName()).sorted().toList();
 
-        assertEquals(Set.of(
-                "MultipleActorsTestModel::Product2Transfer",
-                "MultipleActorsTestModel::Actor2"
+        assertEquals(List.of(
+                "MultipleActorsTestModel::Actor2",
+                "MultipleActorsTestModel::Product2Transfer"
         ), class2Names);
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
                 "Actor2::MultipleActorsTestModel::Actor2::products2"
         ), relations2Names);
 
@@ -406,23 +406,23 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         List<PageDefinition> pages = app1.getPages();
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
+                "MultipleActorsTestModel::App1::DashboardPage",
                 "MultipleActorsTestModel::App1::allProducts::AccessTablePage",
                 "MultipleActorsTestModel::App1::allProducts::AccessTableViewPage",
-                "MultipleActorsTestModel::App1::DashboardPage",
-                "MultipleActorsTestModel::App1::first::products1::AccessTableViewPage",
-                "MultipleActorsTestModel::App1::first::products1::AccessTablePage"
-                ), pages.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+                "MultipleActorsTestModel::App1::first::products1::AccessTablePage",
+                "MultipleActorsTestModel::App1::first::products1::AccessTableViewPage"
+        ), pages.stream().map(NamedElement::getName).sorted().toList());
 
         List<PageDefinition> pages2 = app2.getPages();
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
+                "MultipleActorsTestModel::App2::DashboardPage",
                 "MultipleActorsTestModel::App2::allProducts2::AccessTablePage",
                 "MultipleActorsTestModel::App2::allProducts2::AccessTableViewPage",
-                "MultipleActorsTestModel::App2::DashboardPage",
                 "MultipleActorsTestModel::App2::first::products2::AccessTablePage",
                 "MultipleActorsTestModel::App2::first::products2::AccessTableViewPage"
-        ), pages2.stream().map(NamedElement::getName).collect(Collectors.toSet()));
+        ), pages2.stream().map(NamedElement::getName).sorted().toList());
     }
 
     @Test

@@ -144,43 +144,43 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         List<Table> tables = application.getTables();
         List<PageDefinition> pages = application.getPages();
 
-        assertEquals(Set.of(
-                "NavigationActor::NavigationTestModel::RelatedTransfer",
+        assertEquals(List.of(
                 "NavigationActor::NavigationTestModel::JumperTransfer",
-                "NavigationActor::NavigationTestModel::UserTransfer",
-                "NavigationActor::NavigationTestModel::NavigationActor"
-        ), classTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "NavigationActor::NavigationTestModel::NavigationActor",
+                "NavigationActor::NavigationTestModel::RelatedTransfer",
+                "NavigationActor::NavigationTestModel::UserTransfer"
+        ), classTypes.stream().map(NamedElement::getFQName).sorted().toList());
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
                 "NavigationActor::NavigationTestModel::NavigationApp::DashboardPage",
                 "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage",
-                "NavigationActor::NavigationTestModel::UserView::level1::relatedCollection::ViewPage",
-                "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage",
+                "NavigationActor::NavigationTestModel::RelatedView::myJumper::ViewPage",
                 "NavigationActor::NavigationTestModel::RelatedView::myJumpers::ViewPage",
-                "NavigationActor::NavigationTestModel::RelatedView::myJumper::ViewPage"
-        ), pages.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage",
+                "NavigationActor::NavigationTestModel::UserView::level1::relatedCollection::ViewPage"
+        ), pages.stream().map(NamedElement::getFQName).sorted().toList());
 
         ClassType relatedTransferClassType = classTypes.stream().filter(c -> c.getName().equals("NavigationTestModel::RelatedTransfer")).findFirst().orElseThrow();
         ClassType jumperTransferClassType = classTypes.stream().filter(c -> c.getName().equals("NavigationTestModel::JumperTransfer")).findFirst().orElseThrow();
 
         // Relations
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
+                "NavigationActor::NavigationTestModel::NavigationActor::user",
                 "NavigationActor::NavigationTestModel::RelatedTransfer::theJumper",
                 "NavigationActor::NavigationTestModel::RelatedTransfer::theJumpersCollection",
                 "NavigationActor::NavigationTestModel::UserTransfer::related",
-                "NavigationActor::NavigationTestModel::UserTransfer::relatedCollection",
-                "NavigationActor::NavigationTestModel::NavigationActor::user"
-        ), relationTypes.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "NavigationActor::NavigationTestModel::UserTransfer::relatedCollection"
+        ), relationTypes.stream().map(NamedElement::getFQName).sorted().toList());
 
         // Tables
 
-        assertEquals(Set.of(
-            "NavigationActor::NavigationTestModel::RelatedView::View::PageContainer::RelatedView::myJumpers",
-            "NavigationActor::NavigationTestModel::UserView::View::PageContainer::UserView::level1::relatedCollection",
-            "NavigationActor::NavigationTestModel::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table",
-            "NavigationActor::NavigationTestModel::RelatedTable::Table::PageContainer::RelatedTable::RelatedTable::Table"
-        ), tables.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+        assertEquals(List.of(
+                "NavigationActor::NavigationTestModel::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table",
+                "NavigationActor::NavigationTestModel::RelatedTable::Table::PageContainer::RelatedTable::RelatedTable::Table",
+                "NavigationActor::NavigationTestModel::RelatedView::View::PageContainer::RelatedView::myJumpers",
+                "NavigationActor::NavigationTestModel::UserView::View::PageContainer::UserView::level1::relatedCollection"
+        ), tables.stream().map(NamedElement::getFQName).sorted().toList());
 
         // - relatedCollection
 
@@ -218,10 +218,10 @@ public class JslModel2UiNavigationTest extends AbstractTest {
 
         // Links
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
             "NavigationActor::NavigationTestModel::RelatedView::View::PageContainer::RelatedView::myJumper",
             "NavigationActor::NavigationTestModel::UserView::View::PageContainer::UserView::level1::related"
-        ), links.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+        ), links.stream().map(NamedElement::getFQName).sorted().toList());
 
         // - related
 
@@ -264,14 +264,14 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         PageDefinition userAccessPage = pages.stream().filter(p -> p.getName().equals("NavigationTestModel::NavigationApp::user::AccessViewPage")).findFirst().orElseThrow();
         List<Action> userAccessPageActions = userAccessPage.getActions();
 
-        assertEquals(Set.of(
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::user::Refresh",
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::user::Back",
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::relatedCollection::OpenPage",
+        assertEquals(List.of(
                 "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::related::OpenPage",
                 "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::relatedCollection::Filter",
-                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::relatedCollection::Refresh"
-        ), userAccessPageActions.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::relatedCollection::OpenPage",
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::relatedCollection::Refresh",
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::user::Back",
+                "NavigationActor::NavigationTestModel::NavigationApp::user::AccessViewPage::user::Refresh"
+        ), userAccessPageActions.stream().map(NamedElement::getFQName).sorted().toList());
 
         Action backAction = userAccessPageActions.stream().filter(a -> a.getName().equals("user::Back")).findFirst().orElseThrow();
         assertTrue(backAction.getIsBackAction());
@@ -291,15 +291,15 @@ public class JslModel2UiNavigationTest extends AbstractTest {
 
         assertEquals(7, relatedViewPageActions.size());
 
-        assertEquals(Set.of(
+        assertEquals(List.of(
+                "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage::myJumper::OpenPage",
+                "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage::myJumper::Refresh",
+                "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage::myJumpers::Filter",
                 "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage::myJumpers::OpenPage",
                 "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage::myJumpers::Refresh",
-                "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage::myJumper::OpenPage",
-                "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage::myJumpers::Filter",
-                "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage::related::Refresh",
                 "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage::related::Back",
-                "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage::myJumper::Refresh"
-        ), relatedViewPageActions.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
+                "NavigationActor::NavigationTestModel::UserView::level1::related::ViewPage::related::Refresh"
+        ), relatedViewPageActions.stream().map(NamedElement::getFQName).sorted().toList());
 
         Action detailBackAction = relatedViewPageActions.stream().filter(a -> a.getName().equals("related::Back")).findFirst().orElseThrow();
         assertTrue(detailBackAction.getIsBackAction());
