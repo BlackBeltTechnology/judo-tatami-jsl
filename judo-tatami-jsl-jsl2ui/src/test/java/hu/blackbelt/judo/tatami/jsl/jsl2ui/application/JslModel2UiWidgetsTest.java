@@ -533,11 +533,9 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         // Tables
 
         assertEquals(Set.of(
-                "RelationWidgetsActor::RelationWidgetsTestModel::UserTable::Table::PageContainer::UserTable::UserTable::Table",
-                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection",
-                "RelationWidgetsActor::RelationWidgetsTestModel::UserView::level1::level2::relatedAssociation::SetSelector::PageContainer::relatedAssociation::relatedAssociation::Set::Selector",
                 "RelationWidgetsActor::RelationWidgetsTestModel::RelatedTable::Table::PageContainer::RelatedTable::RelatedTable::Table",
-                "RelationWidgetsActor::RelationWidgetsTestModel::UserView::level1::tabs0::tab2::relatedCollection::AddSelector::PageContainer::relatedCollection::relatedCollection::Add::Selector",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserTable::Table::PageContainer::UserTable::UserTable::Table",
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserView::View::PageContainer::UserView::level1::tabs0::tab2::tab2::relatedCollection"
         ), tables.stream().map(NamedElement::getFQName).collect(Collectors.toSet()));
 
@@ -553,19 +551,19 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("relatedCollection", tableRelation.getName());
         assertEquals(relatedRowClassType, tableRelation.getTarget());
 
-        Table relatedCollectionAddSelector = tables.stream().filter(t -> t.getName().equals("relatedCollection::Add::Selector")).findFirst().orElseThrow();
+        Table relatedCollectionAddSelector = tables.stream().filter(t -> t.getName().equals("RelatedTable::Table")).findFirst().orElseThrow();
         assertTrue(relatedCollectionAddSelector.getDataElement() instanceof ClassType);
 
-        assertEquals("Related Collection", relatedCollectionAddSelector.getLabel());
+        assertEquals("RelatedTable", relatedCollectionAddSelector.getLabel());
         assertEquals(12, relatedCollectionAddSelector.getCol());
-        assertEquals("relatedCollection", relatedCollectionAddSelector.getRelationName());
+        assertEquals("", relatedCollectionAddSelector.getRelationName());
 
-        Table relatedAssociationSetSelector = tables.stream().filter(t -> t.getName().equals("relatedAssociation::Set::Selector")).findFirst().orElseThrow();
+        Table relatedAssociationSetSelector = tables.stream().filter(t -> t.getName().equals("RelatedTable::Table")).findFirst().orElseThrow();
         assertTrue(relatedAssociationSetSelector.getDataElement() instanceof ClassType);
 
-        assertEquals("Related Association", relatedAssociationSetSelector.getLabel());
+        assertEquals("RelatedTable", relatedAssociationSetSelector.getLabel());
         assertEquals(12, relatedAssociationSetSelector.getCol());
-        assertEquals("relatedAssociation", relatedAssociationSetSelector.getRelationName());
+        assertEquals("", relatedAssociationSetSelector.getRelationName());
 
         // Columns
 
