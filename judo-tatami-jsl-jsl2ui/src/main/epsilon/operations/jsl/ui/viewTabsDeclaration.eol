@@ -65,7 +65,7 @@ operation JSL!UIViewTabsDeclaration getAllActionDeclarations(): Set {
         ves.addAll(tab.getAllActionDeclarations());
     }
 
-    ves.addAll(self.panels.select(m | m.isTypeOf(JSL!UIViewActionDeclaration)).asSet());
+    ves.addAll(self.panels.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet());
 
     return ves;
 }

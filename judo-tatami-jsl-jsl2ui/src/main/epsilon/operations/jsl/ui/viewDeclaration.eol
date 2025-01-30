@@ -20,7 +20,7 @@ operation JSL!UIViewDeclaration getExposedVisualElements(): Set {
     var ves = new Set();
 
     ves.add(self);
-    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewActionDeclaration)).asSet());
+    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet());
     ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
 
     for (link in self.members.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
@@ -115,7 +115,7 @@ operation JSL!UIViewDeclaration getAllActionDeclarations() : List {
         ves.addAll(tab.getAllActionDeclarations());
     }
 
-    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewActionDeclaration)).asSet());
+    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet());
 
     return ves.sortBy(c | c.name + c.getId());
 }

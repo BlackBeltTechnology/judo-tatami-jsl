@@ -1,5 +1,5 @@
 rule ViewActionDeclarationButton
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
         guard: rootMenu.containsVisualElement(s)
 
@@ -40,7 +40,7 @@ rule ViewActionDeclarationButton
 
 @lazy
 rule ViewActionDeclarationCallOperationActionDefinition
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::ParameterlessCallOperationActionDefinition {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationCallOperationActionDefinition");
     	t.name = s.getFqName() + "::Call";
@@ -52,7 +52,7 @@ rule ViewActionDeclarationCallOperationActionDefinition
 
 @lazy
 rule ViewActionDeclarationOpenSelectorActionDefinition
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::OpenOperationInputSelectorActionDefinition {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenSelectorActionDefinition");
  		t.name = s.getFqName() + "::Open::Selector";
@@ -63,7 +63,7 @@ rule ViewActionDeclarationOpenSelectorActionDefinition
 
 @lazy
 rule ViewActionDeclarationOpenFormActionDefinition
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::OpenOperationInputFormActionDefinition {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenFormActionDefinition");
     	t.name = s.getFqName() + "::Open::Operation::Form";
@@ -73,7 +73,7 @@ rule ViewActionDeclarationOpenFormActionDefinition
 
 @lazy
 rule ViewAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
    	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewAction");
  		t.name = s.getFqName() + "::Action";
@@ -97,7 +97,7 @@ rule ViewAction
 
 @lazy
 rule OperationInputFormPageDefinition
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::PageDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormPageDefinition");
         t.openInDialog = true;
@@ -120,7 +120,7 @@ rule OperationInputFormPageDefinition
 
 @lazy
 rule OperationInputFormBackAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormBackAction");
         t.name = s.name + "::Back";
@@ -132,7 +132,7 @@ rule OperationInputFormBackAction
 
 @lazy
 rule OperationInputFormGetTemplateAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormGetTemplateAction");
  		t.name = s.name + "::GetTemplate";
@@ -143,7 +143,7 @@ rule OperationInputFormGetTemplateAction
 
 @lazy
 rule OperationInputFormCallAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallAction");
         t.name = s.name + "::CallOperation";
@@ -158,7 +158,7 @@ rule OperationInputFormCallAction
 
 @lazy
 rule OperationInputFormCallActionButton
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallActionButton");
         t.name = s.getFqName() + "::CallAction";
@@ -182,7 +182,7 @@ rule OperationInputFormCallActionButton
 
 @lazy
 rule OperationInputFormCallActionDefinition
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::InputFormCallOperationActionDefinition {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallActionDefinition");
     	t.name = s.getFqName() + "::FormCall";
@@ -193,7 +193,7 @@ rule OperationInputFormCallActionDefinition
 
 @lazy
 rule OperationInputSelectorPageDefinition
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::PageDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorPageDefinition");
         t.name = s.getFqName() + "::OperationInputSelector";
@@ -216,7 +216,7 @@ rule OperationInputSelectorPageDefinition
 
 @lazy
 rule OperationInputSelectorCallActionButton
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallActionButton");
         t.name = s.getFqName() + "::CallAction";
@@ -240,7 +240,7 @@ rule OperationInputSelectorCallActionButton
 
 @lazy
 rule OperationInputSelectorCallActionDefinition
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::InputSelectorCallOperationActionDefinition {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallActionDefinition");
     	t.name = s.getFqName() + "::SelectorCall";
@@ -251,7 +251,7 @@ rule OperationInputSelectorCallActionDefinition
 
 @lazy
 rule OperationInputSelectorBackAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorBackAction");
         t.name = s.name + "::Back";
@@ -263,7 +263,7 @@ rule OperationInputSelectorBackAction
 
 @lazy
 rule OperationInputSelectorCallAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallAction");
         t.name = s.name + "::CallOperation";
@@ -279,7 +279,7 @@ rule OperationInputSelectorCallAction
 
 @lazy
 rule OperationInputFormCallAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallAction");
         t.name = s.name + "::CallOperation";
@@ -295,7 +295,7 @@ rule OperationInputFormCallAction
 
 @lazy
 rule OperationOutputPageDefinition
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::PageDefinition {
 		var id = rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputPageDefinition";
 		var uiOp = s.transferAction.target.equivalent("OperationType");
@@ -349,7 +349,7 @@ rule OperationOutputPageDefinition
 
 @lazy
 rule OperationOutputBackAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputBackAction");
         t.name = s.name + "::Back";
@@ -361,7 +361,7 @@ rule OperationOutputBackAction
 
 @lazy
 rule OperationOutputRefreshAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputRefreshAction");
  		t.name = s.name + "::Refresh";
@@ -373,7 +373,7 @@ rule OperationOutputRefreshAction
 
 @lazy
 rule OperationOutputCancelAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputCancelAction");
  		t.name = s.name + "::Cancel";
@@ -384,7 +384,7 @@ rule OperationOutputCancelAction
 
 @lazy
 rule OperationOutputUpdateAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputUpdateAction");
  		t.name = s.name + "::Update";
@@ -396,7 +396,7 @@ rule OperationOutputUpdateAction
 
 @lazy
 rule OperationOutputDeleteAction
-    transform s: JSL!UIViewActionDeclaration
+    transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputDeleteAction");
  		t.name = s.getFqName() + "::Delete";
