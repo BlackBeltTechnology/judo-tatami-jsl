@@ -1,0 +1,98 @@
+@abstract
+rule AbstractOperationType
+	transform s: JSL!TransferActionDeclaration
+    to t: UI!ui::data::OperationType {
+        guard: actorDeclaration.getExposedTransferObjects().includes(s.eContainer)
+
+	    t.name = s.name;
+
+	    if (self.eContainer.map.isDefined() and self.isStatic()) {
+            t.operationType = UI!ui::data::OperationTypeEnum#STATIC;
+        } else if (self.eContainer.map.isDefined() and not self.isStatic()) {
+            t.operationType = UI!ui::data::OperationTypeEnum#MAPPED;
+        }
+
+        if (s.parameterType.isDefined()) {
+            t.input = s.equivalent("OperationInputParameterType");
+        }
+
+        if (s.hasOutput()) {
+            t.output = s.equivalent("OperationOutputParameterType");
+        }
+
+        for (error in s.errors) {
+            if (not t.faults.exists(f | f.name == error.name)) {
+                t.faults.add(error.equivalent("OperationFaultParameterType"));
+            }
+        }
+
+        log.debug("Created OperationType [" + s.name + "] from [" + s.eContainer.name + "]");
+}
+
+@cached
+rule OperationType
+    transform s: JSL!TransferActionDeclaration
+    to t: UI!ui::data::OperationType
+    extends AbstractOperationType {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/OperationType");
+        s.eContainer.equivalent("ClassType").operations.add(t);
+
+        log.debug("Created OperationType: " + t.name);
+}
+
+@lazy
+@greedy
+rule OperationOutputParameterType
+    transform s: JSL!TransferActionDeclaration
+    to t: UI!ui::data::OperationParameterType {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/OperationOutputParameterType");
+        t.name = "output";
+        t.isCollection = false;
+        t.isOptional = true;
+        t.target = s.`return`.equivalent("ClassType");
+
+        if (s.`return`.isRefreshSupported()) {
+            t.behaviours.add(UI!ui::data::OperationTargetBehaviourType#REFRESH);
+        }
+        if (s.isUpdateAllowed()) {
+            t.behaviours.add(UI!ui::data::OperationTargetBehaviourType#UPDATE);
+        }
+        if (s.isDeleteAllowed()) {
+            t.behaviours.add(UI!ui::data::OperationTargetBehaviourType#DELETE);
+        }
+
+        log.debug("Created OperationOutputParameterType: " + t.name);
+}
+
+@lazy
+@greedy
+rule OperationInputParameterType
+    transform s: JSL!TransferActionDeclaration
+    to t: UI!ui::data::OperationParameterType {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/OperationInputParameterType");
+        t.name = s.paramaterName;
+        t.isCollection = false;
+        t.isOptional = false;
+        t.target = s.parameterType.equivalent("ClassType");
+
+        if (not s.parameterType.form.isDefined() or s.parameterType.form == false) {
+            t.isOrderable = s.parameterType.hasSortableField();
+            t.isFilterable = s.parameterType.hasFilterableField();
+        }
+
+        log.debug("Created OperationInputParameterType: " + t.name);
+}
+
+@lazy
+@greedy
+rule OperationFaultParameterType
+    transform s: JSL!ErrorDeclaration
+    to t: UI!ui::data::OperationParameterType {
+	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/OperationFaultParameterType");
+        t.name = s.name;
+        t.target = s.equivalent("ClassType");
+        t.isCollection = false;
+        t.isOptional = false;
+
+        log.debug("Created OperationFaultParameterType: " + t.name);
+}

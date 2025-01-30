@@ -1,11 +1,35 @@
-/*
 @cached
-operation JSL!ViewActionDeclaration getId(): String {
+operation JSL!UIViewActionDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
 
 @cached
-operation JSL!ViewActionDeclaration getFqName(): String {
+operation JSL!UIViewActionDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "::" + self.name;
 }
-*/
+
+@cached
+operation JSL!UIViewActionDeclaration isCallAction(): Boolean {
+    return not self.parameterType.isDefined();
+}
+
+@cached
+operation JSL!UIViewActionDeclaration isOpenOperationSelectorAction(): Boolean {
+    if (self.parameterType.isDefined()) {
+        return self.transferAction.map.isDefined();
+    }
+    return false;
+}
+
+@cached
+operation JSL!UIViewActionDeclaration isOpenOperationFormAction(): Boolean {
+    if (self.parameterType.isDefined()) {
+        return self.parameterType.form;
+    }
+    return false;
+}
+
+@cached
+operation JSL!UIViewActionDeclaration hasOutput(): Boolean {
+    return self.transferAction.target.hasOutput();
+}

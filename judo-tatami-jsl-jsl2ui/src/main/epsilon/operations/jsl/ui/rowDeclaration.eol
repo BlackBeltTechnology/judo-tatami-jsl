@@ -20,3 +20,9 @@ operation JSL!UIRowDeclaration getExposedVisualElements(): Set {
 
     return ves;
 }
+
+@cached
+operation JSL!UIRowDeclaration getAllActionDeclarations(): Set {
+    var ves = new Set();
+    return ves;
+}

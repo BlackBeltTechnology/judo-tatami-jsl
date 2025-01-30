@@ -1,0 +1,407 @@
+rule ViewActionDeclarationButton
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Button {
+        guard: rootMenu.containsVisualElement(s)
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationButton");
+        t.name = s.name;
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+        if (t.label.isUndefined() and t.icon.isUndefined()) {
+            t.label = t.name;
+        }
+
+        var icon = s.getIconModifier();
+        if (icon.isDefined()) {
+            t.icon = icon.equivalent("IconModifierIcon");
+        }
+        t.dataElement = s.equivalent("OperationType");
+
+        if (__pos.get(s).isDefined()) {
+            __pos.put(t, __pos.get(s));
+        } else {
+            __pos.put(t, 0);
+        }
+
+        if (s.isOpenOperationFormAction()) {
+            t.actionDefinition = s.equivalent("ViewActionDeclarationOpenFormActionDefinition");
+        } else if (s.isOpenOperationSelectorAction()) {
+            t.actionDefinition = s.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
+        } else {
+            t.actionDefinition = s.equivalent("ViewActionDeclarationCallOperationActionDefinition");
+        }
+
+        s.eContainer.uiContainer().children.add(t);
+
+        log.debug("Create ViewActionDeclarationButton: " + t.name);
+}
+
+@lazy
+rule ViewActionDeclarationCallOperationActionDefinition
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::ParameterlessCallOperationActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationCallOperationActionDefinition");
+    	t.name = s.getFqName() + "::Call";
+    	t.`operation` = s.transferAction.target.equivalent("OperationType");
+    	t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+
+        log.debug("ViewActionDeclarationCallOperationActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewActionDeclarationOpenSelectorActionDefinition
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::OpenOperationInputSelectorActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenSelectorActionDefinition");
+ 		t.name = s.getFqName() + "::Open::Selector";
+        t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+ 		// t.selectorFor = s.equivalent("ViewActionDeclarationOpenSelectorCallOperationActionDefinition");
+        log.debug("ViewActionDeclarationOpenSelectorActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewActionDeclarationOpenFormActionDefinition
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::OpenOperationInputFormActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenFormActionDefinition");
+    	t.name = s.getFqName() + "::Open::Operation::Form";
+        // t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+        log.debug("ViewActionDeclarationOpenFormActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+   	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewAction");
+ 		t.name = s.getFqName() + "::Action";
+
+		if (s.isOpenOperationFormAction()) {
+            t.targetPageDefinition = s.equivalent("OperationInputFormPageDefinition");
+            t.actionDefinition = s.equivalent("ViewActionDeclarationOpenFormActionDefinition");
+            t.actionDefinition.formFor = s.equivalent("OperationInputFormCallActionDefinition");
+        } else if (s.isOpenOperationSelectorAction()) {
+            t.targetPageDefinition = s.equivalent("OperationInputSelectorPageDefinition");
+            t.actionDefinition = s.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
+        } else {
+            if (s.hasOutput()) {
+                t.targetPageDefinition = s.equivalent("OperationOutputViewPageDefinition");
+            }
+            t.actionDefinition = s.equivalent("ViewActionDeclarationCallOperationActionDefinition");
+        }
+
+        log.debug("ViewAction: " + t.name);
+}
+
+@lazy
+rule OperationInputFormPageDefinition
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::PageDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormPageDefinition");
+        t.openInDialog = true;
+        t.name = s.getFqName() + "::OperationInputForm";
+        t.container = s.parameterType.equivalent("FormPageContainer");
+        t.dataElement = s.transferAction.target.equivalent("OperationInputParameterType");
+
+        t.actions.add(s.equivalent("OperationInputFormBackAction"));
+        t.actions.add(s.equivalent("OperationInputFormCallAction"));
+        if (s.transferAction.target.parameterType.isGetTemplateSupported()) {
+            t.actions.add(s.equivalent("OperationInputFormGetTemplateAction"));
+        }
+
+        t.container.actionButtonGroup.buttons.add(s.equivalent("OperationInputFormCallActionButton"));
+
+        rootMenu.equivalent("Application").pages.add(t);
+
+        log.debug("Create OperationInputFormPageDefinition: " + t.name);
+}
+
+@lazy
+rule OperationInputFormBackAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormBackAction");
+        t.name = s.name + "::Back";
+        t.ownerDataElement = s.equivalent("OperationType");
+        t.actionDefinition = s.parameterType.equivalent("FormPageContainerBackActionDefinition");
+
+        log.debug("OperationInputFormBackAction: " + t.name);
+}
+
+@lazy
+rule OperationInputFormGetTemplateAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormGetTemplateAction");
+ 		t.name = s.name + "::GetTemplate";
+        t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.actionDefinition = s.parameterType.equivalent("FormPageContainerGetTemplateActionDefinition");
+        log.debug("OperationInputFormGetTemplateAction: " + t.name);
+}
+
+@lazy
+rule OperationInputFormCallAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallAction");
+        t.name = s.name + "::CallOperation";
+        t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.actionDefinition = s.equivalent("OperationInputFormCallActionDefinition");
+        if (s.hasOutput()) {
+            t.targetPageDefinition = s.equivalent("OperationOutputPageDefinition");
+        }
+
+        log.debug("OperationInputFormCallAction: " + t.name);
+}
+
+@lazy
+rule OperationInputFormCallActionButton
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallActionButton");
+        t.name = s.getFqName() + "::CallAction";
+        t.buttonStyle = "contained";
+        t.actionDefinition = s.equivalent("OperationInputFormCallActionDefinition");
+        var icon = s.getIconModifier();
+        if (icon.isDefined()) {
+            t.iconName = icon.equivalent("IconModifierIcon");
+        }
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+        if (t.label.isUndefined() and t.icon.isUndefined()) {
+            t.label = t.name;
+        }
+
+        log.debug("OperationInputFormCallActionButton: " + t.name);
+
+}
+
+@lazy
+rule OperationInputFormCallActionDefinition
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::InputFormCallOperationActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallActionDefinition");
+    	t.name = s.getFqName() + "::FormCall";
+    	t.`operation` = s.transferAction.target.equivalent("OperationType");
+
+        log.debug("OperationInputFormCallActionDefinition: " + t.name);
+}
+
+@lazy
+rule OperationInputSelectorPageDefinition
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::PageDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorPageDefinition");
+        t.name = s.getFqName() + "::OperationInputSelector";
+        t.openInDialog = true;
+        t.container = s.getSelectorTableModifier().row.equivalent("TablePageContainer");
+        // TODO: fix transformation and generator to use same table to reduce code generation. Right now we generate
+        // dedicated selector containers instead of preparing them to handle the actual use-case....
+        // Maybe we could move the isSelector flag to the PageDefinition level...
+        // t.container.isSelector = true;
+        t.container.actionButtonGroup.buttons.add(s.equivalent("OperationInputSelectorCallActionButton"));
+        t.dataElement = s.transferAction.target.equivalent("OperationType").input;
+
+        t.actions.add(s.equivalent("OperationInputSelectorBackAction"));
+        t.actions.add(s.equivalent("OperationInputSelectorCallAction"));
+
+        rootMenu.equivalent("Application").pages.add(t);
+
+        log.debug("OperationInputSelectorPageDefinition: " + t.name);
+}
+
+@lazy
+rule OperationInputSelectorCallActionButton
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallActionButton");
+        t.name = s.getFqName() + "::CallAction";
+        t.buttonStyle = "contained";
+        t.actionDefinition = s.equivalent("OperationInputSelectorCallActionDefinition");
+        var icon = s.getIconModifier();
+        if (icon.isDefined()) {
+            t.iconName = icon.equivalent("IconModifierIcon");
+        }
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+        if (t.label.isUndefined() and t.icon.isUndefined()) {
+            t.label = t.name;
+        }
+
+        log.debug("OperationInputSelectorCallActionButton: " + t.name);
+
+}
+
+@lazy
+rule OperationInputSelectorCallActionDefinition
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::InputSelectorCallOperationActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallActionDefinition");
+    	t.name = s.getFqName() + "::SelectorCall";
+    	t.`operation` = s.transferAction.target.equivalent("OperationType");
+
+        log.debug("OperationInputSelectorCallActionDefinition: " + t.name);
+}
+
+@lazy
+rule OperationInputSelectorBackAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorBackAction");
+        t.name = s.name + "::Back";
+        t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.actionDefinition = s.getSelectorTableModifier().row.equivalent("TablePageContainerBackActionDefinition");
+
+        log.debug("OperationInputSelectorBackAction: " + t.name);
+}
+
+@lazy
+rule OperationInputSelectorCallAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallAction");
+        t.name = s.name + "::CallOperation";
+        // t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.targetDataElement = s.transferAction.target.equivalent("OperationType");
+        t.actionDefinition = s.equivalent("OperationInputSelectorCallActionDefinition");
+        if (s.hasOutput()) {
+            t.targetPageDefinition = s.equivalent("OperationOutputPageDefinition");
+        }
+
+        log.debug("OperationInputSelectorCallAction: " + t.name);
+}
+
+@lazy
+rule OperationInputFormCallAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallAction");
+        t.name = s.name + "::CallOperation";
+        // t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.targetDataElement = s.transferAction.target.equivalent("OperationType");
+        t.actionDefinition = s.equivalent("OperationInputFormCallActionDefinition");
+        if (s.hasOutput()) {
+            t.targetPageDefinition = s.equivalent("OperationOutputPageDefinition");
+        }
+
+        log.debug("OperationInputFormCallAction: " + t.name);
+}
+
+@lazy
+rule OperationOutputPageDefinition
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::PageDefinition {
+		var id = rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputPageDefinition";
+		var uiOp = s.transferAction.target.equivalent("OperationType");
+
+        t.setId(id);
+	    t.name = s.name + "::OperationOutput";
+	    t.container = s.`return`.equivalent("ViewPageContainer");
+	    t.dataElement = uiOp.output;
+	    t.openInDialog = true;
+	    t.dialogSize = UI!ui::DialogSize#LG;
+
+	    t.actions.add(s.equivalent("OperationOutputBackAction"));
+
+	    if (s.`return`.map.isDefined()) {
+	        if (s.`return`.map.transfer.isRefreshSupported()) {
+	            t.actions.add(s.equivalent("OperationOutputRefreshAction"));
+	        }
+	    	if (s.`return`.map.transfer.isUpdateSupported()) {
+		        t.actions.add(s.equivalent("OperationOutputCancelAction"));
+		        t.actions.add(s.equivalent("OperationOutputUpdateAction"));
+	    	}
+	    	if (s.`return`.map.transfer.isDeleteSupported()) {
+		        t.actions.add(s.equivalent("OperationOutputDeleteAction"));
+	    	}
+
+            /*
+	        for (ad in s.`return`.getAllActionDeclarations()) {
+		    	var operationCallAction = ad.equivalentDiscriminated("OperationOutputCallAction", id);
+		    	operationCallAction.actionDefinition = ad.getActionDefinitionForView(ad.getDiscriminator());
+		        operationCallAction.ownerDataElement = uiOp;
+		        operationCallAction.targetDataElement = uiOp;
+
+		        if (op?.input?.target == ad?.getOperationReference()?.getMember()?.input?.target) {
+                    operationCallAction.targetPageDefinition = t;
+                }
+
+	    		t.actions.add(operationCallAction);
+        	}
+
+			for (tabularReferenceField in s.`return`.getAllTabularReferenceFields().select(f | f.isAvailable())) {
+			    t.actions.addAll(tabularReferenceField.calculateActions(id, uiOp, false));
+			    t.actions.addAll(tabularReferenceField.calculateReferencedRelationTableAndRowActions(id, uiOp));
+			}
+			*/
+        }
+
+        rootMenu.equivalent("Application").pages.add(t);
+
+        log.debug("OperationOutputPageDefinition " + t.name);
+}
+
+@lazy
+rule OperationOutputBackAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputBackAction");
+        t.name = s.name + "::Back";
+        t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.actionDefinition = s.`return`.equivalent("ViewPageContainerBackActionDefinition");
+
+        log.debug("OperationOutputBackAction: " + t.name);
+}
+
+@lazy
+rule OperationOutputRefreshAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputRefreshAction");
+ 		t.name = s.name + "::Refresh";
+        t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.actionDefinition = s.`return`.equivalent("ViewPageContainerRefreshActionDefinition");
+
+        log.debug("OperationOutputRefreshAction: " + t.name);
+}
+
+@lazy
+rule OperationOutputCancelAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputCancelAction");
+ 		t.name = s.name + "::Cancel";
+        t.actionDefinition = s.`return`.equivalent("ViewPageContainerBackActionDefinition");
+
+        log.debug("OperationOutputCancelAction: " + t.name);
+}
+
+@lazy
+rule OperationOutputUpdateAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputUpdateAction");
+ 		t.name = s.name + "::Update";
+        t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.actionDefinition = s.`return`.equivalent("ViewPageContainerUpdateActionDefinition");
+
+        log.debug("OperationOutputUpdateAction: " + t.name);
+}
+
+@lazy
+rule OperationOutputDeleteAction
+    transform s: JSL!UIViewActionDeclaration
+    to t: UI!ui::Action {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputDeleteAction");
+ 		t.name = s.getFqName() + "::Delete";
+        t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.actionDefinition = s.`return`.equivalent("ViewPageContainerDeleteActionDefinition");
+
+        log.debug("OperationOutputDeleteAction: " + t.name);
+}
