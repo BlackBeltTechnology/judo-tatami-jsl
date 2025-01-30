@@ -35,8 +35,74 @@ rule TablePageContainerButtonGroup
  		t.label = "Actions";
 
  		t.buttons.add(s.equivalent("TablePageContainerBackButton"));
+ 		t.buttons.add(s.equivalent("TablePageContainerSetSelectorSetButton"));
+ 		t.buttons.add(s.equivalent("TablePageContainerAddSelectorAddButton"));
 
         log.debug("TablePageContainerButtonGroup: " + t.name);
+}
+
+@lazy
+rule TablePageContainerSetSelectorSetActionDefinition
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::SetActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerSetSelectorSetActionDefinition");
+ 		t.name = s.getFqName() + "::Set";
+ 		t.targetType = s.map.transfer.equivalent("ClassType");
+        log.debug("TablePageContainerSetSelectorSetActionDefinition: " + t.name);
+}
+
+@lazy
+rule TablePageContainerSetSelectorSetButtonIcon
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Icon {
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerSetSelectorSetButtonIcon");
+    	t.iconName = "attachment-plus";
+    	t.name = s.name + "Icon";
+}
+
+@lazy
+rule TablePageContainerSetSelectorSetButton
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerSetSelectorSetButton");
+ 		t.name = s.getFqName() + "::Set";
+    	t.label = "Set";
+    	t.buttonStyle = "contained";
+    	t.icon = s.equivalent("TablePageContainerSetSelectorSetButtonIcon");
+    	t.actionDefinition = s.equivalent("TablePageContainerSetSelectorSetActionDefinition");
+        log.debug("TablePageContainerSetSelectorSetButton: " + t.name);
+}
+
+@lazy
+rule TablePageContainerAddSelectorAddActionDefinition
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::AddActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerAddSelectorAddActionDefinition");
+ 		t.name = s.getFqName() + "::Add";
+ 		t.targetType = s.map.transfer.equivalent("ClassType");
+        log.debug("TablePageContainerAddSelectorAddActionDefinition: " + t.name);
+}
+
+@lazy
+rule TablePageContainerAddSelectorAddButtonIcon
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Icon {
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerAddSelectorAddButtonIcon");
+    	t.iconName = "attachment-plus";
+    	t.name = s.name + "Icon";
+}
+
+@lazy
+rule TablePageContainerAddSelectorAddButton
+    transform s: JSL!UIRowDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePageContainerAddSelectorAddButton");
+ 		t.name = s.getFqName() + "::Add";
+    	t.label = "Add";
+    	t.buttonStyle = "contained";
+    	t.icon = s.equivalent("TransferObjectTableAddSelectorAddButtonIcon");
+    	t.actionDefinition = s.equivalent("TablePageContainerAddSelectorAddActionDefinition");
+        log.debug("TablePageContainerAddSelectorAddButton: " + t.name);
 }
 
 @lazy
