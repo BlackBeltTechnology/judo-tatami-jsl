@@ -1,11 +1,56 @@
-/*
 @cached
-operation JSL!ViewActionDeclaration getId(): String {
+operation JSL!UIActionDeclaration getId(): String {
     return (self.eContainer.getId() + "/" + self.name);
 }
 
 @cached
-operation JSL!ViewActionDeclaration getFqName(): String {
+operation JSL!UIActionDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "::" + self.name;
 }
-*/
+
+@cached
+operation JSL!UIActionDeclaration isCallAction(): Boolean {
+    return not self.parameterType.isDefined();
+}
+
+@cached
+operation JSL!UIActionDeclaration isOpenOperationSelectorAction(): Boolean {
+    if (self.parameterType.isDefined()) {
+        return self.transferAction.map.isDefined();
+    }
+    return false;
+}
+
+@cached
+operation JSL!UIActionDeclaration isOpenOperationFormAction(): Boolean {
+    if (self.parameterType.isDefined()) {
+        return self.parameterType.form;
+    }
+    return false;
+}
+
+@cached
+operation JSL!UIActionDeclaration hasOutput(): Boolean {
+    return self.transferAction.target.hasOutput();
+}
+
+@cached
+operation JSL!UIActionDeclaration getExposedVisualElements(): Set {
+    var ves = new Set();
+
+    ves.add(self);
+
+    if (self.parameterType.isDefined() and self.parameterType.form) {
+        ves.add(self.parameterType);
+        ves.addAll(self.parameterType.getExposedVisualElements());
+    } else if (self.getSelectorTableModifier().isDefined()) {
+        ves.add(self.getSelectorTableModifier().row);
+        ves.addAll(self.getSelectorTableModifier().row.getExposedVisualElements());
+    }
+    if (self.`return`.isDefined()) {
+        ves.add(self.`return`);
+        ves.addAll(self.`return`.getExposedVisualElements());
+    }
+
+    return ves;
+}
