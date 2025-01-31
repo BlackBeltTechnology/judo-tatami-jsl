@@ -1,0 +1,54 @@
+@cached
+operation JSL!TransferActionDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!TransferActionDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}
+
+@cached
+operation JSL!TransferActionDeclaration isStatic(): Boolean {
+    return self.modifiers.exists (m | m.isTypeOf(JSL!StaticModifier) and not m.`false`);
+}
+
+@cached
+operation JSL!TransferActionDeclaration isUpdateAllowed() : Boolean {
+    if (self.hasOutput()){
+        return self.modifiers.exists(m | m.isTypeOf(JSL!UpdateModifier) and not m.`false`);
+    }
+    return false;
+}
+
+@cached
+operation JSL!TransferActionDeclaration isDeleteAllowed() : Boolean {
+    if (self.hasOutput()){
+        return self.modifiers.exists (m | m.isTypeOf(JSL!DeleteModifier) and not m.`false`);
+    }
+    return false;
+}
+
+@cached
+operation JSL!TransferActionDeclaration hasOutput() : Boolean {
+    return self.`return`.isDefined();
+}
+
+@cached
+operation JSL!TransferActionDeclaration getTransferContainer(): JSL!TransferDeclaration {
+    if (self.eContainer.isKindOf(JSL!TransferDeclaration)) {
+        return self.eContainer;
+    }
+    return null;
+}
+
+@cached
+operation JSL!TransferActionDeclaration getContainerEquivalentClassType(): UI!ui::data::ClassType {
+    var container = self.getTransferContainer();
+    if (container.isDefined() and container.isTypeOf(JSL!ActorDeclaration)) {
+        return self.getTransferContainer().equivalent("Actor");
+    } else if (container.isDefined() and container.isKindOf(JSL!TransferDeclaration)) {
+        return self.getTransferContainer().equivalent("ClassType");
+    }
+    return null;
+}
