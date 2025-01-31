@@ -42,3 +42,28 @@ operation JSL!UIViewTabsDeclaration getExposedVisualElements(): Set {
 
     return ves;
 }
+
+@cached
+operation JSL!UIViewTabsDeclaration getAllActionDeclarations(): Set {
+    var ves = new Set();
+/*
+    for (link in self.panels.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
+        ves.addAll(link.getAllActionDeclarations());
+    }
+*/
+    for (table in self.panels.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
+        ves.addAll(table.getAllActionDeclarations());
+    }
+
+    for (group in self.panels.select(m | m.isKindOf(JSL!UIViewGroupDeclaration)).asSet()) {
+        ves.addAll(group.getAllActionDeclarations());
+    }
+
+    for (tab in self.panels.select(m | m.isKindOf(JSL!UIViewTabsDeclaration)).asSet()) {
+        ves.addAll(tab.getAllActionDeclarations());
+    }
+
+    ves.addAll(self.panels.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet());
+
+    return ves;
+}
