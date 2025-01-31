@@ -144,21 +144,6 @@ rule OperationInputFormGetTemplateAction
 }
 
 @lazy
-rule OperationInputFormCallAction
-    transform s: JSL!UIActionDeclaration
-    to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallAction");
-        t.name = s.name + "::CallOperation";
-        t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
-        t.actionDefinition = s.equivalent("OperationInputFormCallActionDefinition");
-        if (s.hasOutput()) {
-            t.targetPageDefinition = s.equivalent("OperationOutputPageDefinition");
-        }
-
-        log.debug("OperationInputFormCallAction: " + t.name);
-}
-
-@lazy
 rule OperationInputFormCallActionButton
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
@@ -312,7 +297,7 @@ rule OperationInputFormCallAction
     to t: UI!ui::Action {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallAction");
         t.name = s.name + "::CallOperation";
-        // t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
         t.targetDataElement = s.transferAction.target.equivalent("OperationType");
         t.actionDefinition = s.equivalent("OperationInputFormCallActionDefinition");
         if (s.hasOutput()) {
