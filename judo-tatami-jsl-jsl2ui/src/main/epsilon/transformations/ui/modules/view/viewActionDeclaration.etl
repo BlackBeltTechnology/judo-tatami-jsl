@@ -341,7 +341,7 @@ rule OperationOutputPageDefinition
                 operationCallAction.ownerDataElement = uiOp;
                 operationCallAction.targetDataElement = uiOp;
 
-                if (op?.input?.target == ad?.getOperationReference()?.getMember()?.input?.target) {
+                if (uiOp?.input?.target == ad?.getOperationReference()?.getMember()?.input?.target) {
                     operationCallAction.targetPageDefinition = t;
                 }
 
