@@ -1,8 +1,8 @@
 @abstract
 rule AbstractOperationType
-	transform s: JSL!TransferActionDeclaration
-    to t: UI!ui::data::OperationType {
-        guard: actorDeclaration.getExposedTransferObjects().includes(s.eContainer)
+        transform s: JSL!TransferActionDeclaration
+        to t: UI!ui::data::OperationType {
+            guard: actorDeclaration.getExposedTransferObjects().includes(s.eContainer)
 
 	    t.name = s.name;
 
