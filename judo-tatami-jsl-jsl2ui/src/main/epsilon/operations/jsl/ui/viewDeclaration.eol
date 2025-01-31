@@ -40,14 +40,7 @@ operation JSL!UIViewDeclaration getExposedVisualElements(): Set {
     }
 
     for (ad in self.getAllActionDeclarations()) {
-        if (ad.parameterType.isDefined() and ad.parameterType.form) {
-            ves.add(ad.parameterType);
-        } else if (ad.getSelectorTableModifier().isDefined()) {
-            ves.add(ad.getSelectorTableModifier().row);
-        }
-        if (ad.`return`.isDefined()) {
-            ves.add(ad.`return`);
-        }
+        ves.addAll(ad.getExposedVisualElements());
     }
 
     return ves;

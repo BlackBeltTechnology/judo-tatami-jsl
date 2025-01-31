@@ -33,6 +33,8 @@ rule ViewActionDeclarationButton
             t.actionDefinition = s.equivalent("ViewActionDeclarationCallOperationActionDefinition");
         }
 
+        t.dataElement = s.transferAction.target.equivalent("OperationType");
+
         s.eContainer.uiContainer().children.add(t);
 
         log.debug("Create ViewActionDeclarationButton: " + t.name);
@@ -164,6 +166,7 @@ rule OperationInputFormCallActionButton
         t.name = s.getFqName() + "::CallAction";
         t.buttonStyle = "contained";
         t.actionDefinition = s.equivalent("OperationInputFormCallActionDefinition");
+        t.dataElement = s.transferAction.target.equivalent("OperationType");
         var icon = s.getIconModifier();
         if (icon.isDefined()) {
             t.iconName = icon.equivalent("IconModifierIcon");
@@ -199,14 +202,13 @@ rule OperationInputSelectorPageDefinition
         t.name = s.getFqName() + "::OperationInputSelector";
         t.openInDialog = true;
         t.container = s.getSelectorTableModifier().row.equivalent("TablePageContainer");
-        // TODO: fix transformation and generator to use same table to reduce code generation. Right now we generate
-        // dedicated selector containers instead of preparing them to handle the actual use-case....
-        // Maybe we could move the isSelector flag to the PageDefinition level...
-        // t.container.isSelector = true;
+        t.isSelector = true;
         t.container.actionButtonGroup.buttons.add(s.equivalent("OperationInputSelectorCallActionButton"));
         t.dataElement = s.transferAction.target.equivalent("OperationType").input;
 
         t.actions.add(s.equivalent("OperationInputSelectorBackAction"));
+        t.actions.add(s.equivalent("OperationInputSelectorRangeAction"));
+        t.actions.add(s.equivalent("OperationInputSelectorFilterAction"));
         t.actions.add(s.equivalent("OperationInputSelectorCallAction"));
 
         rootMenu.equivalent("Application").pages.add(t);
@@ -222,6 +224,7 @@ rule OperationInputSelectorCallActionButton
         t.name = s.getFqName() + "::CallAction";
         t.buttonStyle = "contained";
         t.actionDefinition = s.equivalent("OperationInputSelectorCallActionDefinition");
+        t.dataElement = s.transferAction.target.equivalent("OperationType");
         var icon = s.getIconModifier();
         if (icon.isDefined()) {
             t.iconName = icon.equivalent("IconModifierIcon");
@@ -278,6 +281,32 @@ rule OperationInputSelectorCallAction
 }
 
 @lazy
+rule OperationInputSelectorRangeAction
+    transform s: JSL!UIActionDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorRangeAction");
+        t.name = s.name + "::Refresh";
+        t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.targetDataElement = s.transferAction.target.equivalent("OperationType").input;
+        t.actionDefinition = s.getSelectorTableModifier().row.equivalent("TableTableRefreshActionDefinition");
+
+        log.debug("OperationInputSelectorRangeAction: " + t.name);
+}
+
+@lazy
+rule OperationInputSelectorFilterAction
+    transform s: JSL!UIActionDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorFilterAction");
+        t.name = s.name + "::Filter";
+        t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
+        t.targetDataElement = s.transferAction.target.equivalent("OperationType").input;
+        t.actionDefinition = s.getSelectorTableModifier().row.equivalent("TableTableFilterActionDefinition");
+
+        log.debug("OperationInputSelectorFilterAction: " + t.name);
+}
+
+@lazy
 rule OperationInputFormCallAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
@@ -321,7 +350,6 @@ rule OperationOutputPageDefinition
 		        t.actions.add(s.equivalent("OperationOutputDeleteAction"));
 	    	}
 
-            /*
 	        for (ad in s.`return`.getAllActionDeclarations()) {
 		    	var operationCallAction = ad.equivalentDiscriminated("OperationOutputCallAction", id);
 		    	operationCallAction.actionDefinition = ad.getActionDefinitionForView(ad.getDiscriminator());
@@ -334,7 +362,7 @@ rule OperationOutputPageDefinition
 
 	    		t.actions.add(operationCallAction);
         	}
-
+            /*
 			for (tabularReferenceField in s.`return`.getAllTabularReferenceFields().select(f | f.isAvailable())) {
 			    t.actions.addAll(tabularReferenceField.calculateActions(id, uiOp, false));
 			    t.actions.addAll(tabularReferenceField.calculateReferencedRelationTableAndRowActions(id, uiOp));

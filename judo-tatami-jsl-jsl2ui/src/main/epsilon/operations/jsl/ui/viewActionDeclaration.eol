@@ -33,3 +33,24 @@ operation JSL!UIActionDeclaration isOpenOperationFormAction(): Boolean {
 operation JSL!UIActionDeclaration hasOutput(): Boolean {
     return self.transferAction.target.hasOutput();
 }
+
+@cached
+operation JSL!UIActionDeclaration getExposedVisualElements(): Set {
+    var ves = new Set();
+
+    ves.add(self);
+
+    if (self.parameterType.isDefined() and self.parameterType.form) {
+        ves.add(self.parameterType);
+        ves.addAll(self.parameterType.getExposedVisualElements());
+    } else if (self.getSelectorTableModifier().isDefined()) {
+        ves.add(self.getSelectorTableModifier().row);
+        ves.addAll(self.getSelectorTableModifier().row.getExposedVisualElements());
+    }
+    if (self.`return`.isDefined()) {
+        ves.add(self.`return`);
+        ves.addAll(self.`return`.getExposedVisualElements());
+    }
+
+    return ves;
+}

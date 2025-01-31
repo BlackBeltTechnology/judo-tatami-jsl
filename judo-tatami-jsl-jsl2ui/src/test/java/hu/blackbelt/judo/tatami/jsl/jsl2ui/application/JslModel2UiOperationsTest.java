@@ -161,6 +161,17 @@ public class JslModel2UiOperationsTest extends AbstractTest {
         ), application.getPages().stream().map(NamedElement::getFQName).sorted().toList());
 
         assertEquals(List.of(
+                "A::OperationsOnViews::Form2::Create::PageContainer",
+                "A::OperationsOnViews::FormX::Create::PageContainer",
+                "A::OperationsOnViews::M::Dashboard",
+                "A::OperationsOnViews::Table1::Table::PageContainer",
+                "A::OperationsOnViews::TableX::Table::PageContainer",
+                "A::OperationsOnViews::View1::View::PageContainer",
+                "A::OperationsOnViews::View2::View::PageContainer",
+                "A::OperationsOnViews::ViewX::View::PageContainer"
+        ), application.getPageContainers().stream().map(NamedElement::getFQName).sorted().toList());
+
+        assertEquals(List.of(
                 "A::OperationsOnViews::A::txs"
         ), application.getRelationTypes().stream().map(r -> ((RelationType) r).getFQName()).sorted().toList());
 
@@ -342,7 +353,9 @@ public class JslModel2UiOperationsTest extends AbstractTest {
 
         assertEquals(List.of(
                 "A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationInputSelector::myAction2::Back",
-                "A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationInputSelector::myAction2::CallOperation"
+                "A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationInputSelector::myAction2::CallOperation",
+                "A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationInputSelector::myAction2::Filter",
+                "A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationInputSelector::myAction2::Refresh"
         ), myAction2InputActions.stream().map(NamedElement::getFQName).sorted().toList());
 
         Action myAction2CallOperationAction = myAction2InputActions.stream().filter(a -> a.getFQName().equals("A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationInputSelector::myAction2::CallOperation")).findFirst().orElseThrow();
@@ -407,5 +420,11 @@ public class JslModel2UiOperationsTest extends AbstractTest {
 
         assertEquals(myAction3Operation, callOperationAction.getTargetDataElement());
         assertEquals(outputPage, callOperationAction.getTargetPageDefinition());
+
+        PageContainer container = inputPage.getContainer();
+
+        assertEquals(List.of(
+            "A::OperationsOnViewsWithInputForms::Form2::Create::PageContainer::Form2::number"
+        ), ((Flex) container.getChildren().get(0)).getChildren().stream().map(NamedElement::getFQName).sorted().toList());
     }
 }
