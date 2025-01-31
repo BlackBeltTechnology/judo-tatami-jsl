@@ -4,7 +4,7 @@ rule AbstractOperationType
         to t: UI!ui::data::OperationType {
             guard: actorDeclaration.getExposedTransferObjects().includes(s.eContainer)
 
-	    t.name = s.name;
+        t.name = s.name;
 
         if (self.eContainer.map.isDefined() and self.isStatic()) {
             t.operationType = UI!ui::data::OperationTypeEnum#STATIC;
