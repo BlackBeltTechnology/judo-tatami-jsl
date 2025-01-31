@@ -4,6 +4,7 @@ import "modules/application/actorDeclaration.etl";
 import "modules/application/actorGroupDeclaration.etl";
 import "modules/application/modifiable.etl";
 
+import "modules/structure/transferActionDeclaration.etl";
 import "modules/structure/transferDeclaration.etl";
 import "modules/structure/transferFieldDeclaration.etl";
 import "modules/structure/transferRelationDeclaration.etl";
@@ -23,6 +24,7 @@ import "modules/view/menuTableDeclarationTablePage.etl";
 import "modules/view/menuTableDeclarationViewPage.etl";
 import "modules/view/rowColumnDeclaration.etl";
 import "modules/view/rowDeclaration.etl";
+import "modules/view/viewActionDeclaration.etl";
 import "modules/view/viewDeclaration.etl";
 import "modules/view/viewDeclarationForm.etl";
 import "modules/view/viewGroupDeclaration.etl";

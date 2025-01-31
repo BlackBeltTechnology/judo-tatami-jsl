@@ -12,6 +12,7 @@ operation JSL!TransferDeclaration getFqName(): String {
 operation JSL!TransferDeclaration getExposedTransferObjects(): Set {
     var transfers = new Set();
     var relations = self.getExposedRelations();
+    var actions = self.getAllActions();
 
     transfers.addAll(relations.collect(r | r.referenceType));
 
@@ -21,6 +22,16 @@ operation JSL!TransferDeclaration getExposedTransferObjects(): Set {
         //if (targetCreateEvent.isDefined() and targetCreateEvent.parameterType.isKindOf(JSL!TransferDeclaration)) {
         //    transfers.add(targetCreateEvent.parameterType);
         //}
+    }
+
+    for (action in actions) {
+        transfers.addAll(action.errors);
+        if (action.parameterType.isDefined()) {
+            transfers.add(action.parameterType);
+        }
+        if (action.`return`.isDefined()) {
+            transfers.add(action.`return`);
+        }
     }
 
     return transfers;
@@ -63,6 +74,11 @@ operation JSL!TransferDeclaration collectExposedRelations(collected: Set): Set {
     }
 
     return collected;
+}
+
+@cached
+operation JSL!TransferDeclaration getAllActions(): Set {
+    return self.members.select(m | m.isKindOf(JSL!TransferActionDeclaration));
 }
 
 @cached
@@ -194,3 +210,13 @@ operation JSL!TransferDeclaration getDeleteEventDeclaration() : JSL!TransferDele
     return self.members.selectOne(m | m.isKindOf(JSL!TransferDeleteDeclaration));
 }
 */
+
+@cached
+operation JSL!TransferDeclaration hasSortableField(): Boolean {
+    return self.members.exists(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.isSortable());
+}
+
+@cached
+operation JSL!TransferDeclaration hasFilterableField(): Boolean {
+    return self.members.exists(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.isFilterable());
+}
