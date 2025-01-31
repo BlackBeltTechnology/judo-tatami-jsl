@@ -6,7 +6,7 @@ rule AbstractOperationType
 
 	    t.name = s.name;
 
-	    if (self.eContainer.map.isDefined() and self.isStatic()) {
+        if (self.eContainer.map.isDefined() and self.isStatic()) {
             t.operationType = UI!ui::data::OperationTypeEnum#STATIC;
         } else if (self.eContainer.map.isDefined() and not self.isStatic()) {
             t.operationType = UI!ui::data::OperationTypeEnum#MAPPED;
@@ -45,7 +45,7 @@ rule OperationType
 rule OperationOutputParameterType
     transform s: JSL!TransferActionDeclaration
     to t: UI!ui::data::OperationParameterType {
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/OperationOutputParameterType");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/OperationOutputParameterType");
         t.name = "output";
         t.isCollection = false;
         t.isOptional = true;
@@ -69,7 +69,7 @@ rule OperationOutputParameterType
 rule OperationInputParameterType
     transform s: JSL!TransferActionDeclaration
     to t: UI!ui::data::OperationParameterType {
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/OperationInputParameterType");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/OperationInputParameterType");
         t.name = s.paramaterName;
         t.isCollection = false;
         t.isOptional = false;
@@ -88,7 +88,7 @@ rule OperationInputParameterType
 rule OperationFaultParameterType
     transform s: JSL!ErrorDeclaration
     to t: UI!ui::data::OperationParameterType {
-	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/OperationFaultParameterType");
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/OperationFaultParameterType");
         t.name = s.name;
         t.target = s.equivalent("ClassType");
         t.isCollection = false;
