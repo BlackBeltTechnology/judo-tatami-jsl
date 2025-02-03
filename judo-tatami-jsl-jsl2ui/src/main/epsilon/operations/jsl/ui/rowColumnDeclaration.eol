@@ -1,15 +1,22 @@
 @cached
+operation JSL!UIRowColumnDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!UIRowColumnDeclaration getFqName(): String {
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
+    }
+    return self.name;
+}
+
+@cached
 operation JSL!UIRowColumnDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
     var field = self.transferField.target;
 
-    if (field.isTransient()) {
-        return field.equivalent("CreateTransientTransferAttribute");
-    }
-    if (field.reads()) {
-        return field.equivalent("CreateDerivedTransferAttribute");
-    }
-    if (field.maps()) {
-        return field.equivalent("CreateMappedTransferAttribute");
+    if (field.isDefined()) {
+        return field.getTransferFieldDeclarationEquivalent();
     }
     throw "Could not determinate attribute type: " + self.fqName();
 }

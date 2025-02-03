@@ -22,6 +22,7 @@ import "modules/view/menuTableDeclarationAddSelectorPage.etl";
 import "modules/view/menuTableDeclarationFormPage.etl";
 import "modules/view/menuTableDeclarationTablePage.etl";
 import "modules/view/menuTableDeclarationViewPage.etl";
+import "modules/view/rowActionDeclaration.etl";
 import "modules/view/rowColumnDeclaration.etl";
 import "modules/view/rowDeclaration.etl";
 import "modules/view/viewActionDeclaration.etl";

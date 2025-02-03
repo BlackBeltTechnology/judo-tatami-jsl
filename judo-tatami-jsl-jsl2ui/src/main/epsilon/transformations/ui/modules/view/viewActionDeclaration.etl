@@ -1,7 +1,7 @@
 rule ViewActionDeclarationButton
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
-        guard: rootMenu.containsVisualElement(s)
+        guard: rootMenu.containsVisualElement(s) and not s.eContainer.isKindOf(JSL!UIRowDeclaration)
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationButton");
         t.name = s.name;
@@ -17,7 +17,6 @@ rule ViewActionDeclarationButton
         if (icon.isDefined()) {
             t.icon = icon.equivalent("IconModifierIcon");
         }
-        t.dataElement = s.equivalent("OperationType");
 
         if (__pos.get(s).isDefined()) {
             __pos.put(t, __pos.get(s));
@@ -82,16 +81,16 @@ rule ViewAction
 
         if (s.isOpenOperationFormAction()) {
             t.targetPageDefinition = s.equivalent("OperationInputFormPageDefinition");
-            t.actionDefinition = s.equivalent("ViewActionDeclarationOpenFormActionDefinition");
+            t.actionDefinition = s.eContainer.isKindOf(JSL!UIRowDeclaration) ? s.equivalent("ViewTableActionDeclarationOpenFormActionDefinition") : s.equivalent("ViewActionDeclarationOpenFormActionDefinition");
             t.actionDefinition.formFor = s.equivalent("OperationInputFormCallActionDefinition");
         } else if (s.isOpenOperationSelectorAction()) {
             t.targetPageDefinition = s.equivalent("OperationInputSelectorPageDefinition");
-            t.actionDefinition = s.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
+            t.actionDefinition = s.eContainer.isKindOf(JSL!UIRowDeclaration) ? s.equivalent("ViewTableActionDeclarationOpenSelectorActionDefinition") : s.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
         } else {
             if (s.hasOutput()) {
-                t.targetPageDefinition = s.equivalent("OperationOutputViewPageDefinition");
+                t.targetPageDefinition = s.equivalent("OperationOutputPageDefinition");
             }
-            t.actionDefinition = s.equivalent("ViewActionDeclarationCallOperationActionDefinition");
+            t.actionDefinition = s.eContainer.isKindOf(JSL!UIRowDeclaration) ? s.equivalent("ViewTableActionDeclarationCallOperationActionDefinition") : s.equivalent("ViewActionDeclarationCallOperationActionDefinition");
         }
 
         log.debug("ViewAction: " + t.name);
@@ -315,7 +314,7 @@ rule OperationOutputPageDefinition
         var uiOp = s.transferAction.target.equivalent("OperationType");
 
         t.setId(id);
-        t.name = s.name + "::OperationOutput";
+        t.name = s.getFqName() + "::OperationOutput";
         t.container = s.`return`.equivalent("ViewPageContainer");
         t.dataElement = uiOp.output;
         t.openInDialog = true;
@@ -334,7 +333,7 @@ rule OperationOutputPageDefinition
             if (s.`return`.map.transfer.isDeleteSupported()) {
                 t.actions.add(s.equivalent("OperationOutputDeleteAction"));
             }
-
+            /*
             for (ad in s.`return`.getAllActionDeclarations()) {
                 var operationCallAction = ad.equivalentDiscriminated("OperationOutputCallAction", id);
                 operationCallAction.actionDefinition = ad.getActionDefinitionForView(ad.getDiscriminator());
@@ -347,7 +346,7 @@ rule OperationOutputPageDefinition
 
                 t.actions.add(operationCallAction);
             }
-            /*
+
             for (tabularReferenceField in s.`return`.getAllTabularReferenceFields().select(f | f.isAvailable())) {
                 t.actions.addAll(tabularReferenceField.calculateActions(id, uiOp, false));
                 t.actions.addAll(tabularReferenceField.calculateReferencedRelationTableAndRowActions(id, uiOp));
