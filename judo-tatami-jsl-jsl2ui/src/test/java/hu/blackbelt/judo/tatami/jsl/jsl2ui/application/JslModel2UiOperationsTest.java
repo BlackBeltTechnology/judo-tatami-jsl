@@ -155,9 +155,9 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                 "A::OperationsOnViews::M::vxs::AccessTablePage",
                 "A::OperationsOnViews::M::vxs::AccessTableViewPage",
                 "A::OperationsOnViews::ViewX::myAction2::OperationInputSelector",
+                "A::OperationsOnViews::ViewX::myAction2::OperationOutput",
                 "A::OperationsOnViews::ViewX::myAction3::OperationInputForm",
-                "A::myAction2::OperationOutput",
-                "A::myAction3::OperationOutput"
+                "A::OperationsOnViews::ViewX::myAction3::OperationOutput"
         ), application.getPages().stream().map(NamedElement::getFQName).sorted().toList());
 
         assertEquals(List.of(
@@ -307,7 +307,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
         List<Action> accessTableViewPageActions = accessTableViewPage.getActions();
 
         PageDefinition myAction2InputSelectorPage = application.getPages().stream().filter(p -> p.getFQName().equals("A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationInputSelector")).findFirst().orElseThrow();
-        PageDefinition myAction2OutputPage = application.getPages().stream().filter(p -> p.getFQName().equals("A::myAction2::OperationOutput")).findFirst().orElseThrow();
+        PageDefinition myAction2OutputPage = application.getPages().stream().filter(p -> p.getFQName().equals("A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationOutput")).findFirst().orElseThrow();
 
         Action myAction2 = accessTableViewPageActions.stream().filter( a -> a.getFQName().equals("A::OperationsOnViewsWithInputSelectors::M::vxs::AccessTableViewPage::OperationsOnViewsWithInputSelectors::ViewX::myAction2::Action")).findFirst().orElseThrow();
 
@@ -365,11 +365,11 @@ public class JslModel2UiOperationsTest extends AbstractTest {
         assertTrue(myAction2OutputPage.isOpenInDialog());
 
         assertEquals(List.of(
-                "A::myAction2::OperationOutput::myAction2::Back",
-                "A::myAction2::OperationOutput::myAction2::Refresh"
+                "A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationOutput::myAction2::Back",
+                "A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationOutput::myAction2::Refresh"
         ), myAction2OutputPage.getActions().stream().map(NamedElement::getFQName).sorted().toList());
 
-        Action myAction2OutputRefreshAction = myAction2OutputPage.getActions().stream().filter(a -> a.getFQName().equals("A::myAction2::OperationOutput::myAction2::Refresh")).findFirst().orElseThrow();
+        Action myAction2OutputRefreshAction = myAction2OutputPage.getActions().stream().filter(a -> a.getFQName().equals("A::OperationsOnViewsWithInputSelectors::ViewX::myAction2::OperationOutput::myAction2::Refresh")).findFirst().orElseThrow();
 
         assertEquals(myAction2Operation, myAction2OutputRefreshAction.getOwnerDataElement());
 
@@ -404,7 +404,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
         assertEquals("A::OperationsOnViewsWithInputForms::TransferX::myAction3::output", myAction3Output.getFQName());
 
         PageDefinition inputPage = application.getPages().stream().filter(p -> p.getFQName().equals("A::OperationsOnViewsWithInputForms::ViewX::myAction3::OperationInputForm")).findFirst().orElseThrow();
-        PageDefinition outputPage = application.getPages().stream().filter(p -> p.getFQName().equals("A::myAction3::OperationOutput")).findFirst().orElseThrow();
+        PageDefinition outputPage = application.getPages().stream().filter(p -> p.getFQName().equals("A::OperationsOnViewsWithInputForms::ViewX::myAction3::OperationOutput")).findFirst().orElseThrow();
 
         assertEquals(myAction3Input, inputPage.getDataElement());
 
