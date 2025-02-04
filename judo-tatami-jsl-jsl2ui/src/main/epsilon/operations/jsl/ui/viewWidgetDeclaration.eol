@@ -12,14 +12,8 @@ operation JSL!UIViewWidgetDeclaration getFqName(): String {
 operation JSL!UIViewWidgetDeclaration getTransferFieldDeclarationEquivalent(): UI!ui::data::AttributeType {
     var primitive = self.transferField.target;
 
-    if (primitive.isTransient()) {
-        return primitive.equivalent("CreateTransientTransferAttribute");
-    }
-    if (primitive.reads()) {
-        return primitive.equivalent("CreateDerivedTransferAttribute");
-    }
-    if (primitive.maps()) {
-        return primitive.equivalent("CreateMappedTransferAttribute");
+    if (primitive.isDefined()) {
+        return primitive.getTransferFieldDeclarationEquivalent();
     }
     throw "Could not determinate attribute type: " + self.fqName();
 }

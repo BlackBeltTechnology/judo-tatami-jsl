@@ -35,6 +35,13 @@ rule AccessTablePageDefinition
             t.actions.add(table.equivalent("AccessTableTableBulkRemoveAction"));
         }
 
+        for (actionDeclaration in s.referenceType.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet()) {
+            var rowAction = actionDeclaration.equivalentDiscriminated("RowAction", s.getId());
+            rowAction.ownerDataElement = t.dataElement;
+            rowAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
+            t.actions.add(rowAction);
+        }
+
         rootMenu.equivalent("Application").pages.add(t);
 
         log.debug("Create AccessTablePageDefinition: " + t.name);

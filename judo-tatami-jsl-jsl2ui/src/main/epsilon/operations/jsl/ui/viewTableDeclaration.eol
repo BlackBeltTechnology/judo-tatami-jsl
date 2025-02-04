@@ -34,13 +34,7 @@ operation JSL!UIViewTableDeclaration getExposedVisualElements(): Set {
     var rowDeclaration = self.referenceType;
 
     ves.add(self);
-    ves.add(rowDeclaration);
-    ves.addAll(rowDeclaration.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration)).asSet());
-
-    for (act in rowDeclaration.members.select(m | m.isKindOf(JSL!UIActionDeclaration)).asSet()) {
-        ves.add(act);
-        ves.addAll(act.getExposedVisualElements());
-    }
+    ves.addAll(rowDeclaration.getExposedVisualElements());
 
     if (self.getCreateFormModifier().isDefined()) {
         ves.add(self.getCreateFormModifier().form);
