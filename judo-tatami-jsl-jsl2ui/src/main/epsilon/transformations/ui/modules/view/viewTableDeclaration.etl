@@ -230,6 +230,10 @@ rule InlineViewTableRowButtonGroup
             t.buttons.add(s.equivalent("ViewTableDeclarationRowDeleteButton"));
         }
 
+        for (action in s.referenceType.members.select(m | m.isTypeOf(JSL!UIActionDeclaration))) {
+            t.buttons.add(action.equivalent("ViewTableActionDeclarationButton"));
+        }
+
         log.debug("TabularReferenceTableRowButtonGroup: " + t.name);
 }
 
@@ -522,3 +526,75 @@ rule ViewTableDeclarationClearActionDefinition
 
         log.debug("ViewTableDeclarationClearActionDefinition: " + t.name);
 }
+
+@lazy
+rule ViewTableActionDeclarationButton
+    transform s: JSL!UIActionDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationButton");
+        t.name = s.name;
+        var label = s.getLabelModifier();
+        if (label.isDefined()) {
+            t.label = label.value.value;
+        }
+        if (t.label.isUndefined() and t.icon.isUndefined()) {
+            t.label = t.name;
+        }
+
+        var icon = s.getIconModifier();
+        if (icon.isDefined()) {
+            t.icon = icon.equivalent("IconModifierIcon");
+        }
+
+        if (__pos.get(s).isDefined()) {
+            __pos.put(t, __pos.get(s));
+        } else {
+            __pos.put(t, 0);
+        }
+
+        if (s.isOpenOperationFormAction()) {
+            t.actionDefinition = s.equivalent("ViewTableActionDeclarationOpenFormActionDefinition");
+        } else if (s.isOpenOperationSelectorAction()) {
+            t.actionDefinition = s.equivalent("ViewTableActionDeclarationOpenSelectorActionDefinition");
+        } else {
+            t.actionDefinition = s.equivalent("ViewTableActionDeclarationCallOperationActionDefinition");
+        }
+
+        t.dataElement = s.transferAction.target.equivalent("OperationType");
+
+        log.debug("Create ViewTableActionDeclarationButton: " + t.name);
+}
+
+@lazy
+rule ViewTableActionDeclarationCallOperationActionDefinition
+    transform s: JSL!UIActionDeclaration
+    to t: UI!ui::ParameterlessCallOperationActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationCallOperationActionDefinition");
+    	t.name = s.getFqName() + "::Call";
+    	t.`operation` = s.transferAction.target.equivalent("OperationType");
+    	t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+
+        log.debug("ViewTableActionDeclarationCallOperationActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableActionDeclarationOpenSelectorActionDefinition
+    transform s: JSL!UIActionDeclaration
+    to t: UI!ui::OpenOperationInputSelectorActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationOpenSelectorActionDefinition");
+        t.name = s.getFqName() + "::Open::Selector";
+        t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+ 		// t.selectorFor = s.equivalent("ViewActionDeclarationOpenSelectorCallOperationActionDefinition");
+        log.debug("ViewTableActionDeclarationOpenSelectorActionDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableActionDeclarationOpenFormActionDefinition
+    transform s: JSL!UIActionDeclaration
+    to t: UI!ui::OpenOperationInputFormActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationOpenFormActionDefinition");
+    	t.name = s.getFqName() + "::Open::Operation::Form";
+        // t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+        log.debug("ViewTableActionDeclarationOpenFormActionDefinition: " + t.name);
+}
+

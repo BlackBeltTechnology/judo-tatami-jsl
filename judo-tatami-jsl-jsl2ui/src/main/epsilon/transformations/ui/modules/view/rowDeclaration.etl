@@ -229,6 +229,10 @@ rule TableRowButtonGroup
         t.buttons.add(s.equivalent("TableOpenPageButton"));
         t.buttons.add(s.equivalent("TableRowDeleteButton"));
 
+        for (action in s.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet()) {
+            t.buttons.add(action.equivalent("RowActionDeclarationButton"));
+        }
+
         log.debug("TableRowButtonGroup: " + t.name);
 }
 
