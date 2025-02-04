@@ -34,7 +34,13 @@ rule ViewActionDeclarationButton
 
         t.dataElement = s.transferAction.target.equivalent("OperationType");
 
-        s.eContainer.uiContainer().children.add(t);
+        var uiContainer = s.eContainer.uiContainer();
+
+        if (uiContainer.isTypeOf(UI!ui::ButtonGroup)) {
+            uiContainer.buttons.add(t);
+        } else {
+            uiContainer.children.add(t);
+        }
 
         log.debug("Create ViewActionDeclarationButton: " + t.name);
 }

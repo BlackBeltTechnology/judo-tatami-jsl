@@ -39,6 +39,10 @@ operation JSL!UIViewDeclaration getExposedVisualElements(): Set {
         ves.addAll(tab.getExposedVisualElements());
     }
 
+    for (agd in self.members.select(m | m.isKindOf(JSL!UIActionGroupDeclaration)).asSet()) {
+        ves.addAll(agd.getExposedVisualElements());
+    }
+
     for (ad in self.getAllActionDeclarations()) {
         ves.addAll(ad.getExposedVisualElements());
     }
