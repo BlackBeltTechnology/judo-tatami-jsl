@@ -16,23 +16,20 @@ operation JSL!UIViewLinkDeclaration getRelation(): TransferRelationDeclaration {
     return self.transferRelation.target;
 }
 
-@cached
-operation JSL!UIViewLinkDeclaration getExposedVisualElements(): Set {
-    var ves = new Set();
+operation JSL!UIViewLinkDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
     var viewDeclaration = self.referenceType;
 
-    ves.add(self);
-    ves.add(viewDeclaration);
-    ves.addAll(viewDeclaration.getExposedVisualElements());
+    ves.addAll(viewDeclaration.getExposedVisualElements(ves));
 
     if (self.getCreateFormModifier().isDefined()) {
-        ves.add(self.getCreateFormModifier().form);
-        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements());
+        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements(ves));
     }
 
     if (self.getSelectorTableModifier().isDefined()) {
-        ves.add(self.getSelectorTableModifier().row);
-        ves.addAll(self.getSelectorTableModifier().row.getExposedVisualElements());
+        ves.addAll(self.getSelectorTableModifier().row.getExposedVisualElements(ves));
     }
 
     return ves;

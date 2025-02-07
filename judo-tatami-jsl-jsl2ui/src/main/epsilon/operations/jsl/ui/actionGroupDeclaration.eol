@@ -11,12 +11,14 @@ operation JSL!UIActionGroupDeclaration getFqName(): String {
     return self.name;
 }
 
-@cached
-operation JSL!UIActionGroupDeclaration getExposedVisualElements(): Set {
-    var ves = new Set();
-
+operation JSL!UIActionGroupDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
     ves.add(self);
-    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet());
+    for (ad in self.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet()) {
+        ves.addAll(ad.getExposedVisualElements(ves));
+    }
 
     return ves;
 }

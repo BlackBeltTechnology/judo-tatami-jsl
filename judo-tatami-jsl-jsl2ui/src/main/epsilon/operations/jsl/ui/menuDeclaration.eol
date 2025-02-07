@@ -23,29 +23,34 @@ operation JSL!UIMenuDeclaration getActorDeclaration(): JSL!ActorDeclaration {
 
 @cached
 operation JSL!UIMenuDeclaration getExposedVisualElements(): Set {
-    var ves = new Set();
+    return self.getExposedVisualElements(new Set());
+}
 
+operation JSL!UIMenuDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
     ves.add(self);
 
     for (link in self.members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
-        ves.add(link);
-        ves.addAll(link.getExposedVisualElements());
+        ves.addAll(link.getExposedVisualElements(ves));
     }
 
     for (table in self.members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
-        ves.add(table);
-        ves.addAll(table.getExposedVisualElements());
+        ves.addAll(table.getExposedVisualElements(ves));
     }
 
     for (group in self.members.select(m | m.isTypeOf(JSL!UIMenuGroupDeclaration)).asSet()) {
-        ves.add(group);
-        ves.addAll(group.getExposedVisualElements());
+        ves.addAll(group.getExposedVisualElements(ves));
     }
 
     return ves;
 }
 
-@cached
 operation JSL!UIMenuDeclaration containsVisualElement(element: Any): Boolean {
-    return self.getRootMenu().getExposedVisualElements().contains(element);
+    var result = self.getRootMenu().getExposedVisualElements().contains(element);
+    if (not result) {
+        log.info(" !!!!!!!!!!!!! MISSING VISUAL ELEMENT: " + element.name);
+    }
+    return result;
 }
