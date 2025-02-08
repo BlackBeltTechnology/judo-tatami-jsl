@@ -11,18 +11,17 @@ operation JSL!UIMenuLinkDeclaration getFqName(): String {
     return self.name;
 }
 
-@cached
-operation JSL!UIMenuLinkDeclaration getExposedVisualElements(): Set {
-    var ves = new Set();
+operation JSL!UIMenuLinkDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
     var viewDeclaration = self.referenceType;
 
     ves.add(self);
-    ves.add(viewDeclaration);
-    ves.addAll(viewDeclaration.getExposedVisualElements());
+    ves.addAll(viewDeclaration.getExposedVisualElements(ves));
 
     if (self.getCreateFormModifier().isDefined()) {
-        ves.add(self.getCreateFormModifier().form);
-        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements());
+        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements(ves));
     }
 
     return ves;

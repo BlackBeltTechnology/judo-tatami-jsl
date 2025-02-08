@@ -1,3 +1,4 @@
+import "actionGroupDeclaration.eol";
 import "icon.eol";
 import "menuDeclaration.eol";
 import "menuLinkDeclaration.eol";

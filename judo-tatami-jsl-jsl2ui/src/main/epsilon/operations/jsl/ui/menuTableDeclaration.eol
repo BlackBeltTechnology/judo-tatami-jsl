@@ -11,23 +11,21 @@ operation JSL!UIMenuTableDeclaration getFqName(): String {
     return self.name;
 }
 
-@cached
-operation JSL!UIMenuTableDeclaration getExposedVisualElements(): Set {
-    var ves = new Set();
+operation JSL!UIMenuTableDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
     var rowDeclaration = self.referenceType;
 
     ves.add(self);
-    ves.add(rowDeclaration);
-    ves.addAll(rowDeclaration.members.select(m | m.isTypeOf(JSL!UIRowColumnDeclaration)).asSet());
+    ves.addAll(rowDeclaration.getExposedVisualElements(ves));
 
     if (self.getCreateFormModifier().isDefined()) {
-        ves.add(self.getCreateFormModifier().form);
-        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements());
+        ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements(ves));
     }
 
     if (self.getUpdateViewModifier().isDefined()) {
-        ves.add(self.getUpdateViewModifier().view);
-        ves.addAll(self.getUpdateViewModifier().view.getExposedVisualElements());
+        ves.addAll(self.getUpdateViewModifier().view.getExposedVisualElements(ves));
     }
 
     return ves;

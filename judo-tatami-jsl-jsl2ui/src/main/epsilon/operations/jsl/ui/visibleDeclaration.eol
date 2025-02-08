@@ -17,6 +17,8 @@ operation Any getPos(): Integer {
         return self.eContainer.members.indexOf(self);
     } else if (self.eContainer.isKindOf(JSL!UIViewTabsDeclaration)) {
         return self.eContainer.panels.indexOf(self);
+    } else if (self.eContainer.isKindOf(JSL!UIActionGroupDeclaration)) {
+        return self.eContainer.members.indexOf(self);
     }
     return __pos.get(self).isDefined() ? __pos.get(self) : 0;
 }
