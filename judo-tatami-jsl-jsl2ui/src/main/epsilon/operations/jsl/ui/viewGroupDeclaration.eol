@@ -18,35 +18,34 @@ operation JSL!UIViewGroupDeclaration uiContainer() : UI!ui::VisualElement {
     return self.equivalent("GroupVisualElement");
 }
 
-@cached
-operation JSL!UIViewGroupDeclaration getExposedVisualElements(): Set {
-    var ves = new Set();
-
+operation JSL!UIViewGroupDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
     ves.add(self);
 
     for (link in self.members.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
-        ves.add(link);
-        ves.addAll(link.getExposedVisualElements());
+        ves.addAll(link.getExposedVisualElements(ves));
     }
 
     for (table in self.members.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
-        ves.add(table);
-        ves.addAll(table.getExposedVisualElements());
+        ves.addAll(table.getExposedVisualElements(ves));
     }
 
     for (group in self.members.select(m | m.isKindOf(JSL!UIViewGroupDeclaration)).asSet()) {
-        ves.add(group);
-        ves.addAll(group.getExposedVisualElements());
+        ves.addAll(group.getExposedVisualElements(ves));
     }
 
     for (tab in self.members.select(m | m.isKindOf(JSL!UIViewTabsDeclaration)).asSet()) {
-        ves.add(tab);
-        ves.addAll(tab.getExposedVisualElements());
+        ves.addAll(tab.getExposedVisualElements(ves));
     }
 
     for (act in self.members.select(m | m.isKindOf(JSL!UIActionDeclaration)).asSet()) {
-        ves.add(act);
-        ves.addAll(act.getExposedVisualElements());
+        ves.addAll(act.getExposedVisualElements(ves));
+    }
+
+    for (agd in self.members.select(m | m.isKindOf(JSL!UIActionGroupDeclaration)).asSet()) {
+        ves.addAll(agd.getExposedVisualElements(ves));
     }
 
     ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
@@ -57,11 +56,7 @@ operation JSL!UIViewGroupDeclaration getExposedVisualElements(): Set {
 @cached
 operation JSL!UIViewGroupDeclaration getAllActionDeclarations() : Set {
     var ves = new Set();
-/*
-    for (link in self.members.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
-        ves.addAll(link.getAllActionDeclarations());
-    }
-*/
+
     for (table in self.members.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
         ves.addAll(table.getAllActionDeclarations());
     }
@@ -72,6 +67,10 @@ operation JSL!UIViewGroupDeclaration getAllActionDeclarations() : Set {
 
     for (tab in self.members.select(m | m.isKindOf(JSL!UIViewTabsDeclaration)).asSet()) {
         ves.addAll(tab.getAllActionDeclarations());
+    }
+
+    for (agd in self.members.select(m | m.isKindOf(JSL!UIActionGroupDeclaration)).asSet()) {
+        ves.addAll(agd.getAllActionDeclarations());
     }
 
     ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet());

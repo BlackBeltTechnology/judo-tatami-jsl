@@ -27,25 +27,22 @@ operation JSL!UIMenuGroupDeclaration getActorDeclaration(): JSL!ActorDeclaration
     return null;
 }
 
-@cached
-operation JSL!UIMenuGroupDeclaration getExposedVisualElements(): Set {
-    var ves = new Set();
-
+operation JSL!UIMenuGroupDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
     ves.add(self);
 
     for (link in self.members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
-        ves.add(link);
-        ves.addAll(link.getExposedVisualElements());
+        ves.addAll(link.getExposedVisualElements(ves));
     }
 
     for (table in self.members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
-        ves.add(table);
-        ves.addAll(table.getExposedVisualElements());
+        ves.addAll(table.getExposedVisualElements(ves));
     }
 
     for (group in self.members.select(m | m.isTypeOf(JSL!UIMenuGroupDeclaration)).asSet()) {
-        ves.add(group);
-        ves.addAll(group.getExposedVisualElements());
+        ves.addAll(group.getExposedVisualElements(ves));
     }
 
     return ves;

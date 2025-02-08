@@ -12,6 +12,7 @@ import "modules/structure/transferRelationDeclaration.etl";
 import "modules/type/dataTypeOperation.etl";
 import "modules/type/type.etl";
 
+import "modules/view/actionGroupDeclaration.etl";
 import "modules/view/enumLiteral.etl";
 import "modules/view/menuDeclaration.etl";
 import "modules/view/menuLinkDeclaration.etl";

@@ -24,7 +24,6 @@ rule RowColumnDeclarationColumnIcon
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowColumnDeclarationColumnIcon");
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "FieldIcon";
-        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
 
         log.debug("RowColumnDeclarationColumnIcon: " + t.name);
 }

@@ -34,7 +34,13 @@ rule ViewActionDeclarationButton
 
         t.dataElement = s.transferAction.target.equivalent("OperationType");
 
-        s.eContainer.uiContainer().children.add(t);
+        var uiContainer = s.eContainer.uiContainer();
+
+        if (uiContainer.isTypeOf(UI!ui::ButtonGroup)) {
+            uiContainer.buttons.add(t);
+        } else {
+            uiContainer.children.add(t);
+        }
 
         log.debug("Create ViewActionDeclarationButton: " + t.name);
 }
@@ -153,7 +159,7 @@ rule OperationInputFormCallActionButton
         t.dataElement = s.transferAction.target.equivalent("OperationType");
         var icon = s.getIconModifier();
         if (icon.isDefined()) {
-            t.iconName = icon.equivalent("IconModifierIcon");
+            t.icon = s.equivalent("OperationInputFormCallActionButtonIcon");
         }
         var label = s.getLabelModifier();
         if (label.isDefined()) {
@@ -165,6 +171,15 @@ rule OperationInputFormCallActionButton
 
         log.debug("OperationInputFormCallActionButton: " + t.name);
 
+}
+
+@lazy
+rule OperationInputFormCallActionButtonIcon
+    transform s: JSL!UIActionDeclaration
+    to t: UI!ui::Icon {
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallActionButtonIcon");
+    	t.iconName = s.getIconModifier().value.value;
+    	t.name = s.name + "Icon";
 }
 
 @lazy
