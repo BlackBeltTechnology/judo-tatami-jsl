@@ -1,0 +1,37 @@
+@cached
+operation JSL!UIActionGroupDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!UIActionGroupDeclaration getFqName(): String {
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
+    }
+    return self.name;
+}
+
+operation JSL!UIActionGroupDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
+    ves.add(self);
+    for (ad in self.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet()) {
+        ves.addAll(ad.getExposedVisualElements(ves));
+    }
+
+    return ves;
+}
+
+@cached
+operation JSL!UIActionGroupDeclaration getAllActionDeclarations() : Set {
+    var ves = new Set();
+
+    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet());
+
+    return ves;
+}
+
+operation JSL!UIActionGroupDeclaration uiContainer() : UI!ui::VisualElement {
+    return self.equivalent("ActionGroupVisualElement");
+}

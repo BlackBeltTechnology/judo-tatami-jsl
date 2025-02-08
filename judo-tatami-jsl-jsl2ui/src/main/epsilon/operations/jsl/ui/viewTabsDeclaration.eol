@@ -17,27 +17,27 @@ operation JSL!UIViewTabsDeclaration uiContainer() : UI!ui::VisualElement {
     return self.equivalent("TabBarVisualElement");
 }
 
-@cached
-operation JSL!UIViewTabsDeclaration getExposedVisualElements(): Set {
-    var ves = new Set();
-
+operation JSL!UIViewTabsDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
     ves.add(self);
     ves.addAll(self.panels.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
 
     for (link in self.panels.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
-        ves.addAll(link.getExposedVisualElements());
+        ves.addAll(link.getExposedVisualElements(ves));
     }
 
     for (table in self.panels.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
-        ves.addAll(table.getExposedVisualElements());
+        ves.addAll(table.getExposedVisualElements(ves));
     }
 
     for (group in self.panels.select(m | m.isKindOf(JSL!UIViewGroupDeclaration)).asSet()) {
-        ves.addAll(group.getExposedVisualElements());
+        ves.addAll(group.getExposedVisualElements(ves));
     }
 
     for (tab in self.panels.select(m | m.isKindOf(JSL!UIViewTabsDeclaration)).asSet()) {
-        ves.addAll(tab.getExposedVisualElements());
+        ves.addAll(tab.getExposedVisualElements(ves));
     }
 
     return ves;
@@ -46,11 +46,7 @@ operation JSL!UIViewTabsDeclaration getExposedVisualElements(): Set {
 @cached
 operation JSL!UIViewTabsDeclaration getAllActionDeclarations(): Set {
     var ves = new Set();
-/*
-    for (link in self.panels.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
-        ves.addAll(link.getAllActionDeclarations());
-    }
-*/
+
     for (table in self.panels.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
         ves.addAll(table.getAllActionDeclarations());
     }

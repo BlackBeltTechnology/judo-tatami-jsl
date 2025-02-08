@@ -1,0 +1,21 @@
+rule ActionGroupVisualElement
+    transform s: JSL!UIActionGroupDeclaration
+    to t: UI!ui::ButtonGroup {
+        guard: rootMenu.containsVisualElement(s)
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ActionGroupVisualElement");
+        t.name = s.name;
+        t.label = s.getLabelWithNameFallback();
+
+        var icon = s.getIconModifier();
+
+        if (icon.isDefined()) {
+            t.icon = icon.equivalent("IconModifierIcon");
+        }
+
+        __pos.put(t, s.getPos());
+
+        s.eContainer.uiContainer().children.add(t);
+
+        log.debug("ActionGroupVisualElement: " + t.name);
+}
