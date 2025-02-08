@@ -133,7 +133,6 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
 
     @Test
     void testTableOperations() throws Exception {
-        // TODO JNG-6146 Commented out section of model causes stack overflow exception
         jslModel = JslParser.getModelFromStrings("TableOperations", List.of(createModelString("TableOperations")));
 
         transform();
