@@ -88,7 +88,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                         widget Integer number <=> t1.number;
 
                         action void myAction1() <= t1.myAction1 label:"my action 1";
-                        action View1 myAction2(View1 input selector:Table1) <= t1.myAction2  label:"my action 2"; // Causes stack overflow exception
+                        action View1 myAction2(View1 input selector:Table1) <= t1.myAction2  label:"my action 2";
                         action View2 myAction3(FormX input) <= t1.myAction3 label:"my action 3";
 
                         actions myActions label:"hello" icon:"bello" {
