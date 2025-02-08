@@ -46,11 +46,7 @@ operation JSL!UIViewTabsDeclaration getExposedVisualElements(ves: Set): Set {
 @cached
 operation JSL!UIViewTabsDeclaration getAllActionDeclarations(): Set {
     var ves = new Set();
-/*
-    for (link in self.panels.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
-        ves.addAll(link.getAllActionDeclarations());
-    }
-*/
+
     for (table in self.panels.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
         ves.addAll(table.getAllActionDeclarations());
     }

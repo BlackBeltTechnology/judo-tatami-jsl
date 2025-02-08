@@ -88,7 +88,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                         widget Integer number <=> t1.number;
 
                         action void myAction1() <= t1.myAction1 label:"my action 1";
-                        // action View1 myAction2(View1 input selector:Table1) <= t1.myAction2  label:"my action 2"; // Causes stack overflow exception
+                        action View1 myAction2(View1 input selector:Table1) <= t1.myAction2  label:"my action 2"; // Causes stack overflow exception
                         action View2 myAction3(FormX input) <= t1.myAction3 label:"my action 3";
 
                         actions myActions label:"hello" icon:"bello" {
@@ -149,15 +149,24 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                 "A::TableOperations::M::v1s::AccessFormPage",
                 "A::TableOperations::M::v1s::AccessTablePage",
                 "A::TableOperations::M::v1s::AccessTableViewPage",
+                "A::TableOperations::View1::myAction2::OperationInputSelector",
+                "A::TableOperations::View1::myAction2::OperationOutput",
                 "A::TableOperations::View1::myAction3::OperationInputForm",
-                "A::TableOperations::View1::myAction3::OperationOutput"
+                "A::TableOperations::View1::myAction3::OperationOutput",
+                "A::TableOperations::View1::myActions::myAction4::OperationInputSelector",
+                "A::TableOperations::View1::myActions::myAction4::OperationOutput",
+                "A::TableOperations::View1::myActions::myAction5::OperationInputForm",
+                "A::TableOperations::View1::myActions::myAction5::OperationOutput"
         ), application.getPages().stream().map(NamedElement::getFQName).sorted().toList());
 
         PageDefinition view1Page = application.getPages().stream().filter(p -> p.getFQName().equals("A::TableOperations::M::v1s::AccessTableViewPage")).findFirst().orElseThrow();
 
         assertEquals(List.of(
                 "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::myAction1::Action",
+                "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::myAction2::Action",
                 "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::myAction3::Action",
+                "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::myActions::myAction4::Action",
+                "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::myActions::myAction5::Action",
                 "A::TableOperations::M::v1s::AccessTableViewPage::table2::Filter",
                 "A::TableOperations::M::v1s::AccessTableViewPage::table2::Refresh",
                 "A::TableOperations::M::v1s::AccessTableViewPage::v1s::Back",
@@ -185,6 +194,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                 "A::TableOperations::View1::View::PageContainer::TableOperations::View1::PageActions::TableOperations::View1::Refresh::TableOperations::View1::Refresh",
                 "A::TableOperations::View1::View::PageContainer::TableOperations::View1::PageActions::TableOperations::View1::Update::TableOperations::View1::Update",
                 "A::TableOperations::View1::View::PageContainer::View1::myAction1::TableOperations::View1::myAction1::Call",
+                "A::TableOperations::View1::View::PageContainer::View1::myAction2::TableOperations::View1::myAction2::Open::Selector",
                 "A::TableOperations::View1::View::PageContainer::View1::myAction3::TableOperations::View1::myAction3::Open::Operation::Form",
                 "A::TableOperations::View1::View::PageContainer::View1::myActions::myAction4::TableOperations::View1::myActions::myAction4::Open::Selector",
                 "A::TableOperations::View1::View::PageContainer::View1::myActions::myAction5::TableOperations::View1::myActions::myAction5::Open::Operation::Form",

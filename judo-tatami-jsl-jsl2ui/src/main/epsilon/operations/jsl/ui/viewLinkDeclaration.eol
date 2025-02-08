@@ -20,6 +20,7 @@ operation JSL!UIViewLinkDeclaration getExposedVisualElements(ves: Set): Set {
     if (ves.contains(self)) {
         return ves;
     }
+    ves.add(self);
     var viewDeclaration = self.referenceType;
 
     ves.addAll(viewDeclaration.getExposedVisualElements(ves));

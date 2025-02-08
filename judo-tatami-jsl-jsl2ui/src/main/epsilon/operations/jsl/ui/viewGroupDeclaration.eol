@@ -56,11 +56,7 @@ operation JSL!UIViewGroupDeclaration getExposedVisualElements(ves: Set): Set {
 @cached
 operation JSL!UIViewGroupDeclaration getAllActionDeclarations() : Set {
     var ves = new Set();
-/*
-    for (link in self.members.select(m | m.isTypeOf(JSL!UIViewLinkDeclaration)).asSet()) {
-        ves.addAll(link.getAllActionDeclarations());
-    }
-*/
+
     for (table in self.members.select(m | m.isTypeOf(JSL!UIViewTableDeclaration)).asSet()) {
         ves.addAll(table.getAllActionDeclarations());
     }

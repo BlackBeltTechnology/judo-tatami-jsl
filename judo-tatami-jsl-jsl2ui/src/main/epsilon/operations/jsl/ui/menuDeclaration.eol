@@ -50,7 +50,7 @@ operation JSL!UIMenuDeclaration getExposedVisualElements(ves: Set): Set {
 operation JSL!UIMenuDeclaration containsVisualElement(element: Any): Boolean {
     var result = self.getRootMenu().getExposedVisualElements().contains(element);
     if (not result) {
-        log.info(" !!!!!!!!!!!!! MISSING VISUAL ELEMENT: " + element.name);
+        log.warn(" !!!! MISSING VISUAL ELEMENT: " + element.name);
     }
     return result;
 }
