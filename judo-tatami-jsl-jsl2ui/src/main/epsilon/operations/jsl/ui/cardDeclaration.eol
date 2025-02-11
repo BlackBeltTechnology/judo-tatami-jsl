@@ -29,8 +29,3 @@ operation JSL!UICardDeclaration getAllActionDeclarations(): Set {
 
     return ves;
 }
-
-@cached
-operation JSL!UICardDeclaration getTableRepresentation() : Any {
-    return UI!ui::TableRepresentation#CARD;
-}
