@@ -64,7 +64,7 @@
         <build-helper-maven-plugin-version>3.3.0</build-helper-maven-plugin-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.3.20250211_122715_0d81c688_develop</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.3.20250211_150741_c4272f37_develop</judo-meta-jsl-version>
         <judo-meta-rdbms-version>1.0.2.20241202_042200_e7bf5d81_develop</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.4.20241127_233906_fda2e24e_develop</judo-meta-jql-version>
         <judo-meta-ui-version>1.1.0.20250131_191056_484ccd59_develop</judo-meta-ui-version>
@@ -73,12 +73,12 @@
         <judo-meta-expression-version>1.0.5.20241213_202708_15dcb464_develop</judo-meta-expression-version>
         <judo-meta-liquibase-version>1.0.2.20241202_042218_c81e3cad_develop</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.4.20250120_142441_62642c3f_develop</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.4.20250121_041245_93ed2d58_develop</judo-sdk-common-version>
+        <judo-sdk-common-version>1.0.4.20250211_142224_3a63f88f_develop</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.3.20241127_150146_84f2988d_develop</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20250121_041245_91c9b87a_develop</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20250206_104945_1a52e253_develop</judo-runtime-core-version>
-        <judo-tatami-base-version>1.1.6.20250121_041418_7f44e8b5_develop</judo-tatami-base-version>
+        <judo-runtime-core-version>1.0.6.20250211_143753_e73f313c_develop</judo-runtime-core-version>
+        <judo-tatami-base-version>1.1.6.20250211_143505_fa338889_develop</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20241202_041508_e3484451_develop</judo-tatami-core-version>
 
         <!-- Code Quality-->
