@@ -32,3 +32,8 @@ operation JSL!UIRowDeclaration getAllActionDeclarations(): Set {
     
     return ves;
 }
+
+@cached
+operation JSL!UIRowDeclaration getTableRepresentation() : Any {
+    return UI!ui::TableRepresentation#TABLE;
+}

@@ -39,7 +39,6 @@ rule SubTab
 }
 
 @lazy
-@greedy
 rule TabsIcon
     transform s: JSL!UIViewTabsDeclaration
     to t: UI!ui::Icon {

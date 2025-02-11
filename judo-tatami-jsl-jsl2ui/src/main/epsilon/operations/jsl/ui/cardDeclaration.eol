@@ -1,0 +1,36 @@
+@cached
+operation JSL!UICardDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!UICardDeclaration getFqName(): String {
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
+    }
+    return self.name;
+}
+
+operation JSL!UICardDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
+    ves.add(self);
+    ves.addAll(self.members.select(m | m.isTypeOf(JSL!UIViewWidgetDeclaration)).asSet());
+
+    return ves;
+}
+
+@cached
+operation JSL!UICardDeclaration getAllActionDeclarations(): Set {
+    var ves = new Set();
+
+    ves.addAll(self.members.select(m | m.isKindOf(JSL!UIActionDeclaration)).asSet());
+
+    return ves;
+}
+
+@cached
+operation JSL!UICardDeclaration getTableRepresentation() : Any {
+    return UI!ui::TableRepresentation#CARD;
+}

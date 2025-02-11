@@ -41,7 +41,6 @@ rule OperationType
 }
 
 @lazy
-@greedy
 rule OperationOutputParameterType
     transform s: JSL!TransferActionDeclaration
     to t: UI!ui::data::OperationParameterType {
@@ -65,7 +64,6 @@ rule OperationOutputParameterType
 }
 
 @lazy
-@greedy
 rule OperationInputParameterType
     transform s: JSL!TransferActionDeclaration
     to t: UI!ui::data::OperationParameterType {
@@ -84,7 +82,6 @@ rule OperationInputParameterType
 }
 
 @lazy
-@greedy
 rule OperationFaultParameterType
     transform s: JSL!ErrorDeclaration
     to t: UI!ui::data::OperationParameterType {

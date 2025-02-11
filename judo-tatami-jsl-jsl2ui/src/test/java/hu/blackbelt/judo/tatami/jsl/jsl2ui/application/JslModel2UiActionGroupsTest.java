@@ -96,7 +96,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                             action View2 myAction5(FormX input) <= t1.myAction3 label:"my action 5" icon:"horse";
                         }
 
-                        table Table2 table2 <= t1.list2
+                        table Table2[] table2 <= t1.list2
                             actions: {
                                 action View1 myAction6(View1 input selector:Table1) <= t1.myAction2  label:"my action 6";
                             };
@@ -106,11 +106,11 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                         widget Integer number <=> t2.number;
                     }
 
-                    table Table1(Transfer1 t1) {
+                    row Table1(Transfer1 t1) {
                         column Integer number <= t1.number;
                     }
 
-                    table Table2(Transfer2 t2) {
+                    row Table2(Transfer2 t2) {
                         column Integer number <= t2.number;
                     }
 
@@ -119,7 +119,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                     }
 
                     menu M(A a) {
-                        table Table1 v1s <= a.t1s view:View1 form:Form1;
+                        table Table1[] v1s <= a.t1s view:View1 form:Form1;
                     }
                 """.formatted(name);
     }

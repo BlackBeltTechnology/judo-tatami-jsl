@@ -60,7 +60,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                 widget Integer number <=> t1.number;
             }
 
-            table Table1(Transfer1 t1) {
+            row Row1(Transfer1 t1) {
                 column Integer number <= t1.number;
             }
 
@@ -97,7 +97,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                 group level1 label:"Yo" icon:"text" {
                     action void myAction1() <= tx.myAction1 label:"my action 1" icon:"flower";
                 }
-                action View1 myAction2(View1 input selector:Table1) <= tx.myAction2  label:"my action 2";
+                action View1 myAction2(View1 input selector:Row1) <= tx.myAction2  label:"my action 2";
                 action View2 myAction3(Form2 input) <= tx.myAction3 label:"my action 3";
             }
 
@@ -105,7 +105,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                 widget Integer number <=> tx.number;
             }
 
-            table TableX(TransferX tx) {
+            row RowX(TransferX tx) {
                 column Integer number <= tx.number;
             }
 
@@ -114,7 +114,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
             }
 
             menu M(A a) {
-                table TableX vxs <= a.txs view:ViewX form:FormX;
+                table RowX[] vxs <= a.txs view:ViewX form:FormX;
             }
         """.formatted(name);
     }
@@ -164,8 +164,8 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                 "A::OperationsOnViews::Form2::Create::PageContainer",
                 "A::OperationsOnViews::FormX::Create::PageContainer",
                 "A::OperationsOnViews::M::Dashboard",
-                "A::OperationsOnViews::Table1::Table::PageContainer",
-                "A::OperationsOnViews::TableX::Table::PageContainer",
+                "A::OperationsOnViews::Row1::Table::PageContainer",
+                "A::OperationsOnViews::RowX::Table::PageContainer",
                 "A::OperationsOnViews::View1::View::PageContainer",
                 "A::OperationsOnViews::View2::View::PageContainer",
                 "A::OperationsOnViews::ViewX::View::PageContainer"
@@ -323,10 +323,10 @@ public class JslModel2UiOperationsTest extends AbstractTest {
         Table selectorTable = (Table) myAction2InputSelectorPage.getContainer().getTables().get(0);
 
         assertEquals(List.of(
-                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::number"
+                "A::OperationsOnViewsWithInputSelectors::Row1::Table::PageContainer::Row1::Row1::Table::number"
         ), selectorTable.getColumns().stream().map(NamedElement::getFQName).sorted().toList());
 
-        Column selectorTableNumberColumn = selectorTable.getColumns().stream().filter(c -> c.getFQName().equals("A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::number")).findFirst().orElseThrow();
+        Column selectorTableNumberColumn = selectorTable.getColumns().stream().filter(c -> c.getFQName().equals("A::OperationsOnViewsWithInputSelectors::Row1::Table::PageContainer::Row1::Row1::Table::number")).findFirst().orElseThrow();
 
         assertEquals("Integer", selectorTableNumberColumn.getAttributeType().getDataType().getName());
         assertEquals("number", selectorTableNumberColumn.getAttributeType().getName());
@@ -336,17 +336,17 @@ public class JslModel2UiOperationsTest extends AbstractTest {
         List<Button> selectorTableRowButtons = selectorTable.getRowActionButtonGroup().getButtons();
 
         assertEquals(List.of(
-                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::BulkRemove",
-                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::Clear",
-                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::Filter",
-                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::OpenAddSelector",
-                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::OpenCreate",
-                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1::TableTableButtonGroup::Table1::Refresh"
+                "A::OperationsOnViewsWithInputSelectors::Row1::Table::PageContainer::Row1::Row1::Table::Row1::TableTableButtonGroup::Row1::BulkRemove",
+                "A::OperationsOnViewsWithInputSelectors::Row1::Table::PageContainer::Row1::Row1::Table::Row1::TableTableButtonGroup::Row1::Clear",
+                "A::OperationsOnViewsWithInputSelectors::Row1::Table::PageContainer::Row1::Row1::Table::Row1::TableTableButtonGroup::Row1::Filter",
+                "A::OperationsOnViewsWithInputSelectors::Row1::Table::PageContainer::Row1::Row1::Table::Row1::TableTableButtonGroup::Row1::OpenAddSelector",
+                "A::OperationsOnViewsWithInputSelectors::Row1::Table::PageContainer::Row1::Row1::Table::Row1::TableTableButtonGroup::Row1::OpenCreate",
+                "A::OperationsOnViewsWithInputSelectors::Row1::Table::PageContainer::Row1::Row1::Table::Row1::TableTableButtonGroup::Row1::Refresh"
         ), selectorTableButtons.stream().map(NamedElement::getFQName).sorted().toList());
 
         assertEquals(List.of(
-                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1TableRowButtonGroup::Table1::RowDelete",
-                "A::OperationsOnViewsWithInputSelectors::Table1::Table::PageContainer::Table1::Table1::Table::Table1TableRowButtonGroup::Table1::View"
+                "A::OperationsOnViewsWithInputSelectors::Row1::Table::PageContainer::Row1::Row1::Table::Row1TableRowButtonGroup::Row1::RowDelete",
+                "A::OperationsOnViewsWithInputSelectors::Row1::Table::PageContainer::Row1::Row1::Table::Row1TableRowButtonGroup::Row1::View"
         ), selectorTableRowButtons.stream().map(NamedElement::getFQName).sorted().toList());
 
         List<Action> myAction2InputActions = myAction2InputSelectorPage.getActions();

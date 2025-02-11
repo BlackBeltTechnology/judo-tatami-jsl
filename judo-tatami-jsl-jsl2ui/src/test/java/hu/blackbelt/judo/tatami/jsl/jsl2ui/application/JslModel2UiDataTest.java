@@ -286,12 +286,12 @@ public class JslModel2UiDataTest extends AbstractTest {
                 field Integer integer <= e2.integer;
             }
 
-            table Transfer1Table(Transfer1 t1) {
+            row Transfer1Row(Transfer1 t1) {
                 column String string <= t1.string label:"String";
                 column Boolean boolean <= t1.boolean label:"Boolean";
             }
 
-            table Transfer2Table(Transfer2 t2) {
+            row Transfer2Row(Transfer2 t2) {
                 column Integer integer <= t2.integer label:"Integer";
             }
 
@@ -301,8 +301,8 @@ public class JslModel2UiDataTest extends AbstractTest {
             }
 
             menu TestApp(Actor1 a) {
-                table Transfer1Table tr1s <= a.tr1s label:"TR1S";
-                table Transfer2Table tr2s <= a.tr2s label:"TR2S";
+                table Transfer1Row[] tr1s <= a.tr1s label:"TR1S";
+                table Transfer2Row[] tr2s <= a.tr2s label:"TR2S";
             }
         """));
 
@@ -414,36 +414,36 @@ public class JslModel2UiDataTest extends AbstractTest {
             view UserView(UserTransfer u) {
                 link UnmappedRelated unmappedLazy <= u.unmapped;
                 link UnmappedRelated unmappedLazyRequired <= u.unmappedRequired;
-                table UnmappedRelatedTable unmappedLazyCollection <= u.unmappedCollection;
+                table UnmappedRelatedRow[] unmappedLazyCollection <= u.unmappedCollection;
 
                 link MappedRelated lazyAssociation <= u.association;
-                table MappedRelatedTable lazyAssociationCollection <= u.associationCollection;
+                table MappedRelatedRow[] lazyAssociationCollection <= u.associationCollection;
                 link MappedRelated lazyAssociationOpposite <= u.userRelatedOpposite;
 
                 link MappedRelated derivedLazyContainment <= u.containment;
-                table MappedRelatedTable derivedLazyContainmentCollection <= u.containmentCollection;
+                table MappedRelatedRow[] derivedLazyContainmentCollection <= u.containmentCollection;
 
                 link MappedRelated derivedEagerContainment <= u.derivedEagerContainment;
-                table MappedRelatedTable derivedEagerContainmentCollection <= u.derivedEagerContainmentCollection;
+                table MappedRelatedRow[] derivedEagerContainmentCollection <= u.derivedEagerContainmentCollection;
 
                 link MappedRelated derivedEagerAssociation <= u.eagerAssociation;
-                table MappedRelatedTable derivedEagerAssociationCollection <= u.eagerAssociationCollection;
+                table MappedRelatedRow[] derivedEagerAssociationCollection <= u.eagerAssociationCollection;
 
                 link MappedRelated derivedLazyStatic <= u.derivedLazyStatic;
-                table MappedRelatedTable derivedLazyCollectionStatic <= u.derivedLazyCollectionStatic;
+                table MappedRelatedRow[] derivedLazyCollectionStatic <= u.derivedLazyCollectionStatic;
 
                 link MappedRelated derivedEagerStatic <= u.derivedLazyStaticEager;
-                table MappedRelatedTable derivedEagerCollectionStatic <= u.derivedLazyCollectionStaticEager;
+                table MappedRelatedRow[] derivedEagerCollectionStatic <= u.derivedLazyCollectionStaticEager;
 
                 link MappedRelated lazyTransientWithDefault <= u.lazyTransientWithDefault;
-                table MappedRelatedTable lazyTransientCollectionWithDefault <= u.lazyTransientCollectionWithDefault;
+                table MappedRelatedRow[] lazyTransientCollectionWithDefault <= u.lazyTransientCollectionWithDefault;
             }
 
             view UnmappedRelated(EntityRelatedTransfer t) {
                 widget String transient <= t.transient label:"Transient Field";
             }
 
-            table UnmappedRelatedTable(EntityRelatedTransfer t) {
+            row UnmappedRelatedRow(EntityRelatedTransfer t) {
                 column String transient <= t.transient label:"Transient";
             }
 
@@ -451,7 +451,7 @@ public class JslModel2UiDataTest extends AbstractTest {
                 widget String mappedAttribute <= e.hello;
             }
 
-            table MappedRelatedTable(EntityRelatedTransfer e) {
+            row MappedRelatedRow(EntityRelatedTransfer e) {
                 column String mappedAttribute <= e.hello label:"Mapped Attribute";
             }
 

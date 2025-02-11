@@ -15,10 +15,10 @@ operation JSL!UIMenuTableDeclaration getExposedVisualElements(ves: Set): Set {
     if (ves.contains(self)) {
         return ves;
     }
-    var rowDeclaration = self.referenceType;
+    var listItem = self.referenceType;
 
     ves.add(self);
-    ves.addAll(rowDeclaration.getExposedVisualElements(ves));
+    ves.addAll(listItem.getExposedVisualElements(ves));
 
     if (self.getCreateFormModifier().isDefined()) {
         ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements(ves));

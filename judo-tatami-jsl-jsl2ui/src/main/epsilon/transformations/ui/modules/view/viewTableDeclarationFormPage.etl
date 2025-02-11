@@ -2,7 +2,7 @@
 rule ViewTableCreateFormPageDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::PageDefinition {
-        guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
+        guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined() and s.referenceType.isTypeOf(JSL!UIRowDeclaration)
 
         rootMenu.equivalent("Application").pages.add(t);
 
@@ -40,7 +40,6 @@ rule ViewTableCreateFormPageDefinition
         log.debug("Create ViewTableCreateFormPageDefinition: " + t.name);
 }
 
-@greedy
 @lazy
 rule ViewTableCreateFormCreateAction
     transform s: JSL!UIViewTableDeclaration
@@ -53,7 +52,6 @@ rule ViewTableCreateFormCreateAction
         log.debug("ViewTableCreateFormCreateAction: " + t.name);
 }
 
-@greedy
 @lazy
 rule ViewTableCreateFormBackAction
     transform s: JSL!UIViewTableDeclaration
