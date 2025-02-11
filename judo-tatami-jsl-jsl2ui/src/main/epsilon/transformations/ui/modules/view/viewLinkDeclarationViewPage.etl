@@ -87,7 +87,6 @@ rule ViewLinkPageDefinition
 }
 
 @lazy
-@greedy
 rule ViewLinkPageDefinitionRefreshAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
@@ -101,7 +100,6 @@ rule ViewLinkPageDefinitionRefreshAction
 }
 
 @lazy
-@greedy
 rule ViewLinkPageDefinitionBackAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
@@ -115,7 +113,6 @@ rule ViewLinkPageDefinitionBackAction
 }
 
 @lazy
-@greedy
 rule ViewLinkPageDefinitionUpdateAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
@@ -127,7 +124,6 @@ rule ViewLinkPageDefinitionUpdateAction
 }
 
 @lazy
-@greedy
 rule ViewLinkPageDefinitionDeleteAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
@@ -138,7 +134,6 @@ rule ViewLinkPageDefinitionDeleteAction
         log.debug("ViewLinkPageDefinitionDeleteAction: " + t.name);
 }
 
-@greedy
 @lazy
 rule ViewLinkDeclarationRefreshAction
     transform s: JSL!UIViewLinkDeclaration
@@ -152,7 +147,6 @@ rule ViewLinkDeclarationRefreshAction
         log.debug("ViewLinkDeclarationRefreshAction: " + t.name);
 }
 
-@greedy
 @lazy
 rule ViewLinkDeclarationOpenPageAction
     transform s: JSL!UIViewLinkDeclaration
@@ -166,7 +160,6 @@ rule ViewLinkDeclarationOpenPageAction
         log.debug("ViewLinkDeclarationOpenPageAction: " + t.name);
 }
 
-@greedy
 @lazy
 rule ViewLinkDeclarationOpenFormAction
     transform s: JSL!UIViewLinkDeclaration
@@ -180,7 +173,6 @@ rule ViewLinkDeclarationOpenFormAction
         log.debug("ViewLinkDeclarationOpenFormAction: " + t.name);
 }
 
-@greedy
 @lazy
 rule ViewLinkDeclarationRowDeleteAction
     transform s: JSL!UIViewLinkDeclaration

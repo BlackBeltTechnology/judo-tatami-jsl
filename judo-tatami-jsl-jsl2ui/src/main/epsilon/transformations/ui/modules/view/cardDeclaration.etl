@@ -1,0 +1,301 @@
+rule CardPageContainer
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::PageContainer {
+        guard: rootMenu.containsVisualElement(s)
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainer");
+        t.name = s.getFqName() + "::Card::PageContainer";
+        t.label = s.getLabelWithNameFallback();
+        t.titleFrom = UI!ui::TitleFrom#LABEL;
+        t.type = UI!ui::PageContainerType#TABLE;
+        t.children.add(s.equivalent("CardPageContainerVisualElement"));
+        t.actionButtonGroup = s.equivalent("CardPageContainerButtonGroup");
+        t.dataElement = s.map.transfer.equivalent("ClassType");
+        t.onInit = s.equivalent("TableTableRefreshActionDefinition");
+
+        rootMenu.equivalent("Application").pageContainers.add(t);
+
+        /*
+        for (dataFeature in s.additionalMaskFeatures) {
+            var attributeType = dataFeature.getMember().mapAttributeType(s.eContainer.equivalent("ClassType"));
+            t.additionalMaskAttributes.add(attributeType);
+        }
+        */
+
+        log.debug("Create CardPageContainer: " + t.name);
+}
+
+
+@lazy
+rule CardPageContainerButtonGroup
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::ButtonGroup {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainerButtonGroup");
+ 		t.name = s.getFqName() + "::PageActions";
+ 		t.label = "Actions";
+
+ 		t.buttons.add(s.equivalent("CardPageContainerBackButton"));
+
+        log.debug("CardPageContainerButtonGroup: " + t.name);
+}
+
+@lazy
+rule CardPageContainerBackButtonIcon
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::Icon {
+    	t.iconName = "arrow-left";
+    	t.name = s.name + "BackIcon";
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainerBackButtonIcon");
+}
+
+@lazy
+rule CardPageContainerBackActionDefinition
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::BackActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainerBackActionDefinition");
+ 		t.name = s.getFqName() + "::Back";
+        log.debug("CardPageContainerBackActionDefinition: " + t.name);
+}
+
+@lazy
+rule CardPageContainerBackButton
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainerBackButton");
+ 		t.name = s.getFqName() + "::Back";
+    	t.label = "Back";
+    	t.buttonStyle = "text";
+    	t.icon = s.equivalent("CardPageContainerBackButtonIcon");
+    	t.actionDefinition = s.equivalent("CardPageContainerBackActionDefinition");
+        log.debug("CardPageContainerBackButton: " + t.name);
+}
+
+@lazy
+rule CardPageContainerVisualElement
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::Flex {
+        __pos.put(t, 0);
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainerVisualElement");
+        t.name = s.name;
+        t.direction = UI!Axis#VERTICAL;
+        t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        t.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        t.col = 12d;
+        t.children.add(s.equivalent("CardTable"));
+
+        log.debug("CardPageContainerVisualElement: " + t.name);
+}
+
+@lazy
+rule CardTable
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::Table {
+        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/CardTable";
+        t.setId(id);
+        t.col = 12d;
+        t.label = s.getLabelWithNameFallback();
+        t.name = s.name + "::Cards";
+        t.dataElement = s.map.transfer.equivalent("ClassType");
+        t.relationName = "";
+        t.isInlineEditable = true;
+        t.representationComponent = UI!ui::TableRepresentation#CARD;
+        if (__pos.get(t).isUndefined()) {
+            __pos.put(t, 0);
+        }
+
+        var primitiveFields = s.members.select(m | m.transferField.isDefined() and m.transferField.target.referenceType.`primitive`.isDefined());
+
+        for (field in primitiveFields) {
+            var col = field.equivalentDiscriminated("CardWidgetDeclarationPrimitiveColumn", id);
+            t.columns.add(col);
+            if (col.attributeType.isFilterable) {
+               t.filters.add(field.equivalentDiscriminated("CardWidgetDeclarationPrimitiveColumnFilter", id));
+            }
+        }
+
+        t.tableActionButtonGroup = s.equivalent("CardTableButtonGroup");
+        t.rowActionButtonGroup = s.equivalent("CardTableRowButtonGroup");
+
+        // TODO transform selector row per page
+        t.selectorRowsPerPage = 10;
+
+        log.debug("CardTable: " + t.name);
+}
+
+@lazy
+rule CardTableButtonGroup
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::ButtonGroup {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableButtonGroup");
+        t.name = s.name + "::CardTableButtonGroup";
+        t.label = "Actions";
+
+        // TODO add buttons
+
+        t.buttons.add(s.equivalent("CardTableFilterButton"));
+        t.buttons.add(s.equivalent("CardTableRefreshButton"));
+
+        log.debug("CardTableButtonGroup: " + t.name);
+}
+
+@lazy
+rule CardTableRowButtonGroup
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::ButtonGroup {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowButtonGroup");
+        t.name = s.name + "TableRowButtonGroup";
+        t.label = "Actions";
+
+        // TODO add buttons
+
+        t.buttons.add(s.equivalent("CardOpenPageButton"));
+
+        log.debug("TableRowButtonGroup: " + t.name);
+}
+
+@lazy
+rule CardTableFilterButton
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableFilterButton");
+        t.name = s.name + "::Filter";
+        t.icon = s.equivalent("CardTableFilterButtonIcon");
+        t.label = "Filter";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("CardTableFilterActionDefinition");
+
+        log.debug("CardTableFilterButton: " + t.name);
+}
+
+@lazy
+rule CardTableFilterButtonIcon
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableFilterButtonIcon");
+        t.name = s.name + "FilterIcon";
+        t.iconName = "filter";
+
+        log.debug("CardTableFilterButtonIcon: " + t.name);
+}
+
+@lazy
+rule CardTableFilterActionDefinition
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::FilterActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableFilterActionDefinition");
+        t.name = s.name + "::Filter";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+
+        log.debug("CardTableFilterActionDefinition: " + t.name);
+}
+
+@lazy
+rule CardTableRefreshButton
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableRefreshButton");
+        t.name = s.name + "::Refresh";
+        t.icon = s.equivalent("CardTableRefreshButtonIcon");
+        t.label = "Refresh";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("CardTableRefreshActionDefinition");
+
+        log.debug("CardTableRefreshButton: " + t.name);
+}
+
+@lazy
+rule CardTableRefreshButtonIcon
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableRefreshButtonIcon");
+        t.name = s.name + "RefreshIcon";
+        t.iconName = "refresh";
+
+        log.debug("CardTableRefreshButtonIcon: " + t.name);
+}
+
+@lazy
+rule CardTableRefreshActionDefinition
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::RefreshActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableRefreshActionDefinition");
+        t.name = s.name + "::Refresh";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+
+        log.debug("CardTableRefreshActionDefinition: " + t.name);
+}
+
+@lazy
+rule CardOpenPageButton
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardOpenPageButton");
+        t.name = s.name + "::View";
+        t.icon = s.equivalent("CardOpenPageButtonIcon");
+        t.label = "View";
+        t.buttonStyle = "contained";
+        t.actionDefinition = s.equivalent("CardOpenPageActionDefinition");
+
+        log.debug("CardOpenPageButton: " + t.name);
+}
+
+@lazy
+rule CardOpenPageButtonIcon
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardOpenPageButtonIcon");
+        t.name = s.name + "OpenPageIcon";
+        t.iconName = "visibility";
+
+        log.debug("CardOpenPageButtonIcon: " + t.name);
+}
+
+@lazy
+rule CardOpenPageActionDefinition
+    transform s: JSL!UICardDeclaration
+    to t: UI!ui::OpenPageActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardOpenPageActionDefinition");
+        t.name = s.name + "::View";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+
+        log.debug("CardOpenPageActionDefinition: " + t.name);
+}
+
+@lazy
+rule CardWidgetDeclarationPrimitiveColumn
+    transform s: JSL!UIViewWidgetDeclaration
+    to t: UI!ui::Column {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardWidgetDeclarationPrimitiveColumn");
+        t.name = s.name;
+        t.format = "%s";
+        t.label = s.getLabelWithNameFallback();
+        if (s.getIconModifier().isDefined()) {
+            t.icon = s.equivalent("CardColumnDeclarationColumnIcon");
+        }
+        t.width = s.getWidth().isDefined() ? s.getWidth().value : "120";
+        t.attributeType = s.getTransferFieldDeclarationEquivalent();
+
+        log.debug("CardWidgetDeclarationPrimitiveColumn: " + t.name);
+}
+
+@lazy
+rule CardColumnDeclarationColumnIcon
+    transform s: JSL!UIViewWidgetDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardColumnDeclarationColumnIcon");
+        t.iconName = s.getIconModifier().value.value;
+        t.name = s.name + "FieldIcon";
+
+        log.debug("CardColumnDeclarationColumnIcon: " + t.name);
+}
+
+@lazy
+rule CardWidgetDeclarationPrimitiveColumnFilter
+    transform s: JSL!UIViewWidgetDeclaration
+    to t: UI!ui::Filter {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardWidgetDeclarationPrimitiveColumnFilter");
+        t.name = s.name + "Filter";
+        t.attributeType = s.getTransferFieldDeclarationEquivalent();
+        t.label = s.getLabelWithNameFallback();
+        log.debug("CardWidgetDeclarationPrimitiveColumnFilter: " + t.name);
+}

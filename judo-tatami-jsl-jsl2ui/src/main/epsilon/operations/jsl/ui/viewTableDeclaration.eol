@@ -33,10 +33,10 @@ operation JSL!UIViewTableDeclaration getExposedVisualElements(ves: Set): Set {
         return ves;
     }
 
-    var rowDeclaration = self.referenceType;
+    var listItemDeclaration = self.referenceType;
 
     ves.add(self);
-    ves.addAll(rowDeclaration.getExposedVisualElements(ves));
+    ves.addAll(listItemDeclaration.getExposedVisualElements(ves));
 
     if (self.getCreateFormModifier().isDefined()) {
         ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements(ves));
