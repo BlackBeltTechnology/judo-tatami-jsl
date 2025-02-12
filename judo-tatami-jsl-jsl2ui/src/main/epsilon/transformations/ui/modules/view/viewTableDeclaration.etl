@@ -12,7 +12,8 @@ rule AbstractViewTableDeclaration
         }
         t.row = 1d;
         t.col = s.width.isDefined() ? s.width.asReal() : 12d;
-        t.isInlineEditable = true;
+        t.isEager = s.transferRelation.target.isEager();
+        t.isInlineEditable = t.isEager; // TODO JNG-6043 Currently the runtime only supports inline edit for eager tables
         if (__pos.get(s).isDefined()) {
             __pos.put(t, __pos.get(s));
         } else {
