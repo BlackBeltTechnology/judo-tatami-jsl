@@ -116,11 +116,11 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 field String price <= p.price.asString() + " HUF";
             }
 
-            table UsersTable(UserTransfer u) {
+            row UsersRow(UserTransfer u) {
                 column String userName <= u.userName label:"Username";
             }
 
-            table ProductsTable(ProductTransfer p) {
+            row ProductsRow(ProductTransfer p) {
                 column String name <= p.name label:"Name";
                 column String price <= p.price label:"Price";
             }
@@ -134,11 +134,11 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             menu MenuActor(Actor usr) {
                 group first label:"Group1" {
                     group second label:"Group2" {
-                        table ProductsTable products <= usr.products label:"Products" icon:"close";
+                        table ProductsRow[] products <= usr.products label:"Products" icon:"close";
                     }
-                    table ProductsTable products2 <= usr.products2 label:"Products2";
+                    table ProductsRow[] products2 <= usr.products2 label:"Products2";
                 }
-                table UsersTable users <= usr.users label:"Users" icon:"account-multiple";
+                table UsersRow[] users <= usr.users label:"Users" icon:"account-multiple";
             }
         """));
 
@@ -248,12 +248,12 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 widget String price2 <= product2.price2;
             }
 
-            table ProductsTable(ProductTransfer product) {
+            row ProductsRow(ProductTransfer product) {
                 column String name <= product.name label:"Name";
                 column String price <= product.price label:"Price";
             }
 
-            table ProductsTable2(Product2Transfer product2) {
+            row ProductsRow2(Product2Transfer product2) {
                 column String name2 <= product2.name2 label:"Name 2";
                 column String price2 <= product2.price2 label:"Price 2";
             }
@@ -268,16 +268,16 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
             menu App1(Actor1 a) {
                 group first label:"Group1" {
-                    table ProductsTable products1 <= a.products label:"Products1" view:ProductView;
+                    table ProductsRow[] products1 <= a.products label:"Products1" view:ProductView;
                 }
-                table ProductsTable allProducts <= a.products label:"All Products" icon:"tools" view:ProductView;
+                table ProductsRow[] allProducts <= a.products label:"All Products" icon:"tools" view:ProductView;
             }
 
             menu App2(Actor2 a) {
                 group first label:"Group2" {
-                    table ProductsTable2 products2 <= a.products2 label:"Products2" view:Product2View;
+                    table ProductsRow2[] products2 <= a.products2 label:"Products2" view:Product2View;
                 }
-                table ProductsTable2 allProducts2 <= a.products2 label:"All Products 2" icon:"tools" view:Product2View;
+                table ProductsRow2[] allProducts2 <= a.products2 label:"All Products 2" icon:"tools" view:Product2View;
             }
         """));
 

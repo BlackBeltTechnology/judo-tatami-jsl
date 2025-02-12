@@ -2,7 +2,7 @@
 rule AbstractViewWidgetDeclaration
     transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::VisualElement {
-        guard: rootMenu.containsVisualElement(s)
+        guard: rootMenu.containsVisualElement(s) and not s.eContainer.isTypeOf(JSL!UICardDeclaration)
 
         t.name = s.name;
         t.label = s.getLabelWithNameFallback();
@@ -26,7 +26,6 @@ rule AbstractViewWidgetDeclaration
 }
 
 @lazy
-@greedy
 rule ViewWidgetIcon
     transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::Icon {

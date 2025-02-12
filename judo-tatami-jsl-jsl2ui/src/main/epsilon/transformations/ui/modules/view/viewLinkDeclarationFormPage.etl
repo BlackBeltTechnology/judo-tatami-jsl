@@ -40,7 +40,6 @@ rule ViewLinkCreateFormPageDefinition
         log.debug("Create ViewLinkCreateFormPageDefinition: " + t.name);
 }
 
-@greedy
 @lazy
 rule ViewLinkCreateFormCreateAction
     transform s: JSL!UIViewLinkDeclaration
@@ -53,7 +52,6 @@ rule ViewLinkCreateFormCreateAction
         log.debug("ViewLinkCreateFormCreateAction: " + t.name);
 }
 
-@greedy
 @lazy
 rule ViewLinkCreateFormBackAction
     transform s: JSL!UIViewLinkDeclaration

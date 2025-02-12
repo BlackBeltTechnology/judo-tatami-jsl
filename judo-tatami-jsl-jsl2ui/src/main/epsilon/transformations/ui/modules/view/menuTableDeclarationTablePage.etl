@@ -1,8 +1,7 @@
-
 rule AccessTablePageDefinition
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::PageDefinition {
-        guard: rootMenu.containsVisualElement(s)
+        guard: rootMenu.containsVisualElement(s) and s.referenceType.isTypeOf(JSL!UIRowDeclaration)
 
         var relation = s.actorAccess.target;
 

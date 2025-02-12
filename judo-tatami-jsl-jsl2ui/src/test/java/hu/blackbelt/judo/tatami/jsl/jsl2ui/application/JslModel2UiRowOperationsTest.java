@@ -4,7 +4,6 @@ import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.ui.part.Page;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -74,11 +73,11 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                      	widget Integer number <=> t1.number;
                      }
                 
-                     table Table1(Transfer1 t1) {
+                     row Row1(Transfer1 t1) {
                      	column Integer number <= t1.number;
                      }
 
-                     table Table3(Transfer3 t3) {
+                     row Row3(Transfer3 t3) {
                      	column String name <= t3.name;
                      	action void myAction4() <= t3.myAction4 label:"my action 4";
                      }
@@ -115,11 +114,11 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                      	widget Integer number <=> tx.number;
 
                      	group level {
-                     	    table Table3 relatedCollection <= tx.relatedCollection;
+                     	    table Row3[] relatedCollection <= tx.relatedCollection;
                         }
                 
                      	action void myAction1() <= tx.myAction1 label:"my action 1";
-                     	action View1 myAction2(View1 input selector:Table1) <= tx.myAction2  label:"my action 2";
+                     	action View1 myAction2(View1 input selector:Row1) <= tx.myAction2  label:"my action 2";
                      	action View2 myAction3(Form2 input) <= tx.myAction3 label:"my action 3";
                      }
                 
@@ -127,7 +126,7 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                      	widget Integer number <=> tx.number;
                      }
                 
-                     table TableX(TransferX tx) {
+                     row RowX(TransferX tx) {
                      	column Integer number <= tx.number;
                      	action View2 myAction3(Form2 input) <= tx.myAction3 label:"my action 3";
                      }
@@ -137,7 +136,7 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                      }
                 
                      menu M(A a) {
-                     	table TableX vxs <= a.txs view:ViewX form:FormX;
+                     	table RowX[] vxs <= a.txs view:ViewX form:FormX;
                      }
                 
                 """.formatted(name);
@@ -169,8 +168,8 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                 "A::AccessTableRowOperations::M::vxs::AccessFormPage",
                 "A::AccessTableRowOperations::M::vxs::AccessTablePage",
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage",
-                "A::AccessTableRowOperations::TableX::myAction3::OperationInputForm",
-                "A::AccessTableRowOperations::TableX::myAction3::OperationOutput",
+                "A::AccessTableRowOperations::RowX::myAction3::OperationInputForm",
+                "A::AccessTableRowOperations::RowX::myAction3::OperationOutput",
                 "A::AccessTableRowOperations::ViewX::myAction2::OperationInputSelector",
                 "A::AccessTableRowOperations::ViewX::myAction2::OperationOutput",
                 "A::AccessTableRowOperations::ViewX::myAction3::OperationInputForm",
@@ -183,12 +182,12 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                 "A::AccessTableRowOperations::M::vxs::AccessFormPage::vxs::Back",
                 "A::AccessTableRowOperations::M::vxs::AccessFormPage::vxs::Create",
                 "A::AccessTableRowOperations::M::vxs::AccessFormPage::vxs::GetTemplate",
-                "A::AccessTableRowOperations::M::vxs::AccessTablePage::AccessTableRowOperations::TableX::myAction3::Action",
+                "A::AccessTableRowOperations::M::vxs::AccessTablePage::AccessTableRowOperations::RowX::myAction3::Action",
                 "A::AccessTableRowOperations::M::vxs::AccessTablePage::vxs::Filter",
                 "A::AccessTableRowOperations::M::vxs::AccessTablePage::vxs::OpenCreate",
                 "A::AccessTableRowOperations::M::vxs::AccessTablePage::vxs::OpenPage",
                 "A::AccessTableRowOperations::M::vxs::AccessTablePage::vxs::Refresh",
-                "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::AccessTableRowOperations::Table3::myAction4::Action",
+                "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::AccessTableRowOperations::Row3::myAction4::Action",
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::AccessTableRowOperations::ViewX::myAction1::Action",
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::AccessTableRowOperations::ViewX::myAction2::Action",
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::AccessTableRowOperations::ViewX::myAction3::Action",
@@ -198,10 +197,10 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::vxs::Cancel",
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::vxs::Refresh",
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::vxs::Update",
-                "A::AccessTableRowOperations::TableX::myAction3::OperationInputForm::myAction3::Back",
-                "A::AccessTableRowOperations::TableX::myAction3::OperationInputForm::myAction3::CallOperation",
-                "A::AccessTableRowOperations::TableX::myAction3::OperationInputForm::myAction3::GetTemplate",
-                "A::AccessTableRowOperations::TableX::myAction3::OperationOutput::myAction3::Back",
+                "A::AccessTableRowOperations::RowX::myAction3::OperationInputForm::myAction3::Back",
+                "A::AccessTableRowOperations::RowX::myAction3::OperationInputForm::myAction3::CallOperation",
+                "A::AccessTableRowOperations::RowX::myAction3::OperationInputForm::myAction3::GetTemplate",
+                "A::AccessTableRowOperations::RowX::myAction3::OperationOutput::myAction3::Back",
                 "A::AccessTableRowOperations::ViewX::myAction2::OperationInputSelector::myAction2::Back",
                 "A::AccessTableRowOperations::ViewX::myAction2::OperationInputSelector::myAction2::CallOperation",
                 "A::AccessTableRowOperations::ViewX::myAction2::OperationInputSelector::myAction2::Filter",
@@ -217,10 +216,10 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                 "A::AccessTableRowOperations::ViewX::myAction3::OperationOutput::myAction3::Back"
         ), actions.stream().map(NamedElement::getFQName).sorted().toList());
 
-        PageDefinition myAction3Input = pages.stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::TableX::myAction3::OperationInputForm")).findFirst().orElseThrow();
-        PageDefinition myAction3Output = pages.stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::TableX::myAction3::OperationOutput")).findFirst().orElseThrow();
-        Action myAction3Call = actions.stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::TableX::myAction3::OperationInputForm::myAction3::CallOperation")).findFirst().orElseThrow();
-        Action accessTableMyAction3 = actions.stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::M::vxs::AccessTablePage::AccessTableRowOperations::TableX::myAction3::Action")).findFirst().orElseThrow();
+        PageDefinition myAction3Input = pages.stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::RowX::myAction3::OperationInputForm")).findFirst().orElseThrow();
+        PageDefinition myAction3Output = pages.stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::RowX::myAction3::OperationOutput")).findFirst().orElseThrow();
+        Action myAction3Call = actions.stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::RowX::myAction3::OperationInputForm::myAction3::CallOperation")).findFirst().orElseThrow();
+        Action accessTableMyAction3 = actions.stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::M::vxs::AccessTablePage::AccessTableRowOperations::RowX::myAction3::Action")).findFirst().orElseThrow();
 
         assertTrue(accessTableMyAction3.isOpenOperationInputFormAction());
         assertTrue(accessTableMyAction3.isOpenOperationInputFormAction());
@@ -231,7 +230,7 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
 
         PageDefinition accessView = pages.stream().filter(p -> p.getFQName().equals("A::AccessTableRowOperations::M::vxs::AccessTableViewPage")).findFirst().orElseThrow();
         Table relatedCollectionTable = (Table) accessView.getContainer().getTables().stream().filter(t -> ((Table) t).getName().equals("relatedCollection")).findFirst().orElseThrow();
-        Action myAction4 = accessView.getActions().stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::M::vxs::AccessTableViewPage::AccessTableRowOperations::Table3::myAction4::Action")).findFirst().orElseThrow();
+        Action myAction4 = accessView.getActions().stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::M::vxs::AccessTableViewPage::AccessTableRowOperations::Row3::myAction4::Action")).findFirst().orElseThrow();
 
         assertTrue(relatedCollectionTable.getRowActionButtonGroup().getButtons().stream().anyMatch(b -> myAction4.getActionDefinition().equals(b.getActionDefinition())));
 

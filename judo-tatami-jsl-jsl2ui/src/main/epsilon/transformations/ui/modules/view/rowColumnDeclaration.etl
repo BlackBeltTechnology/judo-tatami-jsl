@@ -1,5 +1,4 @@
 @lazy
-@greedy
 rule RowColumnDeclarationPrimitiveColumn
     transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Column {
@@ -17,7 +16,6 @@ rule RowColumnDeclarationPrimitiveColumn
 }
 
 @lazy
-@greedy
 rule RowColumnDeclarationColumnIcon
     transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Icon {
@@ -29,7 +27,6 @@ rule RowColumnDeclarationColumnIcon
 }
 
 @lazy
-@greedy
 rule RowColumnDeclarationPrimitiveColumnFilter
     transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Filter {
