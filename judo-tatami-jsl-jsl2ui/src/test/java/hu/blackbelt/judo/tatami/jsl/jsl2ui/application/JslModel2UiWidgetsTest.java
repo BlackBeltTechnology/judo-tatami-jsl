@@ -429,7 +429,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
             form UserForm(UserTransfer u) {
                 widget String emailReadOnly <= u.emailReadOnly icon:"text" label:"Readonly Email";
-                widget String emailWritable <=> u.emailWritable icon:"text" label:"Writable Email";
+                widget String emailWritable <=> u.emailWritable icon:"text" label:"Writable Email" help:"ME";
                 group level1 label:"Yo" icon:"text" {
                     link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm;
                 }
@@ -659,6 +659,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("emailWritable", formEmailWritable.getName());
         assertEquals("Writable Email", formEmailWritable.getLabel());
         assertEquals("text", formEmailWritable.getIcon().getIconName());
+        assertEquals("ME", formEmailWritable.getTooltipText());
         assertFalse(formEmailWritable.isIsReadOnly());
 
         // group level1
