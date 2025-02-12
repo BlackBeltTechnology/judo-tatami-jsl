@@ -28,6 +28,11 @@ operation JSL!Modifiable getOrientationModifier(): JSL!Modifier {
 }
 
 @cached
+operation JSL!Modifiable getHelpModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!HelpModifier));
+}
+
+@cached
 operation JSL!Modifiable getStretchModifier(): JSL!Modifier {
     return self.modifiers.selectOne(m | m.isTypeOf(JSL!StretchModifier));
 }

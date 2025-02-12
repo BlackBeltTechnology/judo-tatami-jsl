@@ -9,6 +9,9 @@ rule AbstractViewWidgetDeclaration
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("ViewWidgetIcon");
         }
+        if (s.getHelpModifier().isDefined()) {
+            t.tooltipText = s.getHelpModifier().value.value;
+        }
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
         t.isReadOnly = s.bind.isUndefined();
         /*

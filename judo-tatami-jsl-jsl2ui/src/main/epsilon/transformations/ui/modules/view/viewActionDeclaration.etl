@@ -13,6 +13,10 @@ rule ViewActionDeclarationButton
             t.label = t.name;
         }
 
+        if (s.getHelpModifier().isDefined()) {
+            t.tooltipText = s.getHelpModifier().value.value;
+        }
+
         var icon = s.getIconModifier();
         if (icon.isDefined()) {
             t.icon = icon.equivalent("IconModifierIcon");
@@ -169,6 +173,10 @@ rule OperationInputFormCallActionButton
             t.label = t.name;
         }
 
+        if (s.getHelpModifier().isDefined()) {
+            t.tooltipText = s.getHelpModifier().value.value;
+        }
+
         log.debug("OperationInputFormCallActionButton: " + t.name);
 
 }
@@ -234,6 +242,10 @@ rule OperationInputSelectorCallActionButton
         }
         if (t.label.isUndefined() and t.icon.isUndefined()) {
             t.label = t.name;
+        }
+
+        if (s.getHelpModifier().isDefined()) {
+            t.tooltipText = s.getHelpModifier().value.value;
         }
 
         log.debug("OperationInputSelectorCallActionButton: " + t.name);

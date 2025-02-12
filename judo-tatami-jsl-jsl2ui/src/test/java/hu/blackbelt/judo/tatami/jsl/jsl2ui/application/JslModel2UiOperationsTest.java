@@ -98,7 +98,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                     action void myAction1() <= tx.myAction1 label:"my action 1" icon:"flower";
                 }
                 action View1 myAction2(View1 input selector:Row1) <= tx.myAction2  label:"my action 2";
-                action View2 myAction3(Form2 input) <= tx.myAction3 label:"my action 3";
+                action View2 myAction3(Form2 input) <= tx.myAction3 label:"my action 3" help:"Us all";
             }
 
             form FormX(TransferX tx) {
@@ -227,6 +227,14 @@ public class JslModel2UiOperationsTest extends AbstractTest {
                 "A::OperationsOnViews::TransferX::myAction2",
                 "A::OperationsOnViews::TransferX::myAction3"
         ), allOperations.stream().map(NamedElement::getFQName).sorted().toList());
+
+        // visual modifiers
+
+        PageDefinition vxs = application.getPages().stream().filter(p -> p.getFQName().equals("A::OperationsOnViews::M::vxs::AccessTableViewPage")).findFirst().orElseThrow();
+        PageContainer vxsContainer = vxs.getContainer();
+        Button myAction3Button = (Button) ((Flex) vxsContainer.getChildren().get(0)).getChildren().stream().filter(c -> c.getName().equals("myAction3")).findFirst().orElseThrow();
+
+        assertEquals("Us all", myAction3Button.getTooltipText());
     }
 
     @Test
