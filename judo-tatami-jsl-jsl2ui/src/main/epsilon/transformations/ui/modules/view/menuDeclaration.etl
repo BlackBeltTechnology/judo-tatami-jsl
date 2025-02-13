@@ -1,7 +1,7 @@
 rule Application
     transform s: JSL!UIMenuDeclaration
     to t: UI!ui::Application {
-        guard: s = rootMenu
+        guard: s == rootMenu
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/Application");
 
@@ -60,7 +60,7 @@ rule NavigationController
 rule EmptyDashboardPageDefinition
     transform s: JSL!UIMenuDeclaration
     to t: UI!ui::PageDefinition {
-        guard: s = rootMenu
+        guard: s == rootMenu
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageDefinition");
         t.name = s.getFqName() + "::DashboardPage";
@@ -76,7 +76,7 @@ rule EmptyDashboardPageDefinition
 rule EmptyDashboardPageContainer
     transform s: JSL!UIMenuDeclaration
     to t: UI!ui::PageContainer {
-        guard: s = rootMenu
+        guard: s == rootMenu
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageContainer");
         t.name = s.getFqName() + "::Dashboard";
