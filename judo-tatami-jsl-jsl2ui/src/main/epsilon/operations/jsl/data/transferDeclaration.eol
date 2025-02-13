@@ -8,28 +8,32 @@ operation JSL!TransferDeclaration getFqName(): String {
     return self.eContainer.getFqName() + "::" + self.name;
 }
 
-@cached
-operation JSL!TransferDeclaration getExposedTransferObjects(): Set {
-    var transfers = new Set();
+operation JSL!TransferDeclaration getExposedTransferObjects(transfers: Set): Set {
+    if (transfers.includes(self)) {
+        return transfers;
+    }
+
+    transfers.add(self);
+
     var relations = self.getExposedRelations();
     var actions = self.getAllActions();
 
-    transfers.addAll(relations.collect(r | r.referenceType));
-
     for (relation in relations) {
-        transfers.addAll(relation.referenceType.getExposedTransferObjects());
-        //var targetCreateEvent = relation.referenceType.getCreateEventDeclaration();
-        //if (targetCreateEvent.isDefined() and targetCreateEvent.parameterType.isKindOf(JSL!TransferDeclaration)) {
-        //    transfers.add(targetCreateEvent.parameterType);
-        //}
+        if (not transfers.includes(relation.referenceType)) {
+            transfers.addAll(relation.referenceType.getExposedTransferObjects(transfers));
+        }
     }
 
     for (action in actions) {
-        transfers.addAll(action.errors);
-        if (action.parameterType.isDefined()) {
+        for (error in action.errors) {
+            if (not transfers.includes(error)) {
+                transfers.add(error);
+            }
+        }
+        if (action.parameterType.isDefined() and not transfers.includes(action.parameterType)) {
             transfers.add(action.parameterType);
         }
-        if (action.`return`.isDefined()) {
+        if (action.`return`.isDefined() and not transfers.includes(action.`return`)) {
             transfers.add(action.`return`);
         }
     }
@@ -37,77 +41,22 @@ operation JSL!TransferDeclaration getExposedTransferObjects(): Set {
     return transfers;
 }
 
-/*
-@cached
-operation JSL!TransferDeclaration getReferencingCreateEvent(): JSL!TransferCreateDeclaration {
-    return JSL!TransferCreateDeclaration.all.selectOne(s | s.parameterType == self);
-}
-
-@cached
-operation JSL!TransferDeclaration isCreateEventParameter(): Boolean {
-    return self.getReferencingCreateEvent().isDefined();
-}
-*/
-
 @cached
 operation JSL!TransferDeclaration getExposedRelations(): Set {
     return self.collectExposedRelations(new Set());
 }
 
 operation JSL!TransferDeclaration collectExposedRelations(collected: Set): Set {
-    var relations = self.getAllRelations();
-    // var operations = self.getAllOperations().select(op | not op.hasQueryParameters());
-    /*relations.addAll(operations
-        .select(o | o.input.isDefined())
-        .collect(o | o.input.target)
-        .collect(i | i.getAllRelations().select(r | not r.isQuery)).flatten());
-    relations.addAll(operations
-        .select(o | o.output.isDefined())
-        .collect(o | o.output.target)
-        .collect(o | o.getAllRelations().select(r | not r.isQuery)).flatten());
-    */
+    var relations = self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration));
     for (relation in relations) {
-        if ((not collected.includes(relation)) and relation.referenceType.isKindOf(JSL!TransferDeclaration)) {
-            collected.add(relation);
-            relation.referenceType.collectExposedRelations(collected);
-        }
+        collected.addAll(relation.collectExposedRelations(collected));
     }
-
     return collected;
 }
 
 @cached
 operation JSL!TransferDeclaration getAllActions(): Set {
     return self.members.select(m | m.isKindOf(JSL!TransferActionDeclaration));
-}
-
-@cached
-operation JSL!TransferDeclaration getAllRelations(): Set {
-    var relations = new Set();
-    var ownRelations = self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration));
-    relations.addAll(ownRelations);
-/*
-    if (self.isKindOf(JSL!ActorDeclaration)) {
-        var linkRelations = self.getAllMenuDeclarations();
-        relations.addAll(linkRelations);
-
-        for (ref in linkRelations) {
-            if (ref.referenceType.isKindOf(JSL!TransferDeclaration)) {
-                relations.addAll(ref.referenceType.getAllRelations());
-            }
-        }
-    }
-
-    for (member in self.members.select(m | m.isKindOf(JSL!UIViewPanelDeclaration))) {
-        relations.addAll(member.getAllRelations());
-    }
-*/
-    // also add relations of relations to complete the trees
-    for (member in ownRelations) {
-        relations.addAll(member.referenceType.getAllRelations());
-    }
-
-    return relations;
 }
 
 @cached
@@ -186,30 +135,8 @@ operation JSL!TransferDeclaration isRefreshSupported(): Boolean {
 
 @cached
 operation JSL!TransferDeclaration isGenerated() : Boolean {
-    return actorDeclaration.getExposedTransferObjects().includes(self);
+    return actorDeclaration.getExposedTransferObjects(new Set()).includes(self);
 }
-
-/*
-@cached
-operation JSL!TransferDeclaration getCreateEventDeclaration() : JSL!TransferCreateDeclaration {
-    return self.members.selectOne(m | m.isKindOf(JSL!TransferCreateDeclaration));
-}
-
-@cached
-operation JSL!TransferDeclaration getFetchEventDeclaration() : JSL!TransferFetchDeclaration {
-    return self.members.selectOne(m | m.isKindOf(JSL!TransferFetchDeclaration));
-}
-
-@cached
-operation JSL!TransferDeclaration getUpdateEventDeclaration() : JSL!TransferUpdateDeclaration {
-    return self.members.selectOne(m | m.isKindOf(JSL!TransferUpdateDeclaration));
-}
-
-@cached
-operation JSL!TransferDeclaration getDeleteEventDeclaration() : JSL!TransferDeleteDeclaration {
-    return self.members.selectOne(m | m.isKindOf(JSL!TransferDeleteDeclaration));
-}
-*/
 
 @cached
 operation JSL!TransferDeclaration hasSortableField(): Boolean {
