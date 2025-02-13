@@ -74,15 +74,14 @@ operation JSL!ActorDeclaration getExposedTransferObjects() : Set {
     var declarations = self.members.select(m | m.isKindOf(JSL!ActorAccessDeclaration)).collect(m | m.referenceType).asSet();
 
     var collected = new Set();
-    collected.addAll(declarations);
 
     for (vd in declarations) {
-        collected.addAll(vd.getExposedTransferObjects());
+        collected.addAll(vd.getExposedTransferObjects(collected));
     }
 
     var identity = self.getIdentityTransferDeclaration();
 
-    if (identity.isDefined()) {
+    if (identity.isDefined() and not collected.includes(identity)) {
         // Principal Transfers are not required to be present in the view graph
         collected.add(identity);
     }
