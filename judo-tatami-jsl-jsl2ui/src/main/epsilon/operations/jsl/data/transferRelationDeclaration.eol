@@ -163,3 +163,18 @@ operation JSL!TransferRelationDeclaration getContainerEquivalentClassType(): UI!
     }
     return null;
 }
+
+operation JSL!TransferRelationDeclaration collectExposedRelations(collected: Set): Set {
+    if (collected.includes(self)) {
+        return collected;
+    }
+    collected.add(self);
+
+    if (self.referenceType.isDefined() and self.referenceType.isKindOf(JSL!TransferDeclaration)) {
+        for (nested in self.referenceType.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration))) {
+            collected.addAll(nested.collectExposedRelations(collected));
+        }
+    }
+
+    return collected;
+}

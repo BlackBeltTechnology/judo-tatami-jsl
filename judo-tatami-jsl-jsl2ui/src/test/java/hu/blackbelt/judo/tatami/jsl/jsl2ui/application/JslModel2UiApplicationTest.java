@@ -488,9 +488,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
     }
 
-
     @Test
-    @Disabled("https://blackbelt.atlassian.net/browse/JNG-6175")
     void testMenuStackOverFlow() throws Exception {
         jslModel = JslParser.getModelFromStrings("StackOverFlowTestModel", List.of("""
         model StackOverFlowTestModel;
@@ -540,7 +538,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         }
         
         transfer DTransfer(D d) {
-            relation CTransfer c <= d.c create:true delete:true update:true; // if this relation is commented the recursion is gone
+            relation CTransfer c <= d.c create:true delete:true update:true;
         
             event create createOn;
             event update updateOn;
