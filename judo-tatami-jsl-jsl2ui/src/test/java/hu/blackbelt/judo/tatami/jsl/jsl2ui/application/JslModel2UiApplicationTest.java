@@ -8,6 +8,7 @@ import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
@@ -484,6 +485,98 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals(1, authentication.getClaims().size());
         assertEquals("UNDEFINED", authentication.getClaims().get(0).getType().getName());
         assertEquals(principal.getAttributes().stream().filter(a -> a.getName().equals("email")).findFirst().orElse(null), authentication.getClaims().get(0).getAttributeType());
+
+    }
+
+
+    @Test
+    @Disabled("https://blackbelt.atlassian.net/browse/JNG-6175")
+    void testMenuStackOverFlow() throws Exception {
+        jslModel = JslParser.getModelFromStrings("StackOverFlowTestModel", List.of("""
+        model StackOverFlowTestModel;
+        
+        import judo::types;
+        
+        entity A {
+            field String name;
+            field B[] bs;
+        }
+        
+        entity B {
+            field C[] cs;
+        }
+        
+        entity C {
+            relation D[] ds opposite: c;
+        }
+        
+        entity D {
+            relation C c opposite: ds;
+        }
+        
+        transfer ATransfer(A a) {
+            field String name <=> a.name;
+            relation BTransfer[] bs <= a.bs eager:true create:true delete:true update:true;
+        
+            event create createOn;
+            event update updateOn;
+            event delete deleteOn;
+        }
+        
+        transfer BTransfer(B b) {
+            relation CTransfer[] cs <= b.cs eager:true create:true delete:true update:true;
+        
+            event create createOn;
+            event update updateOn;
+            event delete deleteOn;
+        }
+        
+        transfer CTransfer(C c) {
+            relation DTransfer[] ds <= c.ds eager:true create:true delete:true update:true;
+        
+            event create createOn;
+            event update updateOn;
+            event delete deleteOn;
+        }
+        
+        transfer DTransfer(D d) {
+            relation CTransfer c <= d.c create:true delete:true update:true; // if this relation is commented the recursion is gone
+        
+            event create createOn;
+            event update updateOn;
+            event delete deleteOn;
+        }
+        
+        form AForm(ATransfer a) {
+            widget String name <= a.name icon: "atom-variant";
+        }
+        
+        view AView(ATransfer a) {
+            widget String name <= a.name;
+        }
+        
+        row ARow(ATransfer a) {
+            column String name <= a.name;
+        }
+        
+        // Actor
+        
+        actor Actor {
+            access ATransfer[] `as` <= A.all() create delete update;
+        }
+        
+        menu actorApp(Actor act) {
+            table ARow[] asTable <= act.`as` form:AForm view:AView; // this cause the stackoverflow
+        }
+        """));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        assertEquals(1, apps.size());
+
+        Application app1 = apps.get(0);
 
     }
 }
