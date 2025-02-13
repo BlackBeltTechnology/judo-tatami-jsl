@@ -549,6 +549,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("Related Collection", userViewTable.getLabel());
         assertEquals(12, userViewTable.getCol());
         assertEquals("relatedCollection", userViewTable.getRelationName());
+        assertFalse(userViewTable.isIsEager());
+        assertFalse(userViewTable.isIsInlineEditable());
         assertEquals("relatedCollection", tableRelation.getName());
         assertEquals(relatedRowClassType, tableRelation.getTarget());
 
