@@ -1,7 +1,7 @@
 rule Actor
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::ClassType {
-        guard: s = actorDeclaration
+        guard: s == actorDeclaration
         t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/Actor");
 
         t.name = s.getFqName();
@@ -16,7 +16,7 @@ rule Actor
 rule Authentication
     transform s: JSL!ActorDeclaration
     to t: UI!ui::Authentication {
-        guard: s = actorDeclaration
+        guard: s == actorDeclaration
             and s.getPrincipal().isDefined()
             and s.getRealm().isDefined()
             and s.getIdentity().isDefined()
