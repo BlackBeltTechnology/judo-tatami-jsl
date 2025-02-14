@@ -8,6 +8,7 @@ import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
@@ -116,11 +117,11 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 field String price <= p.price.asString() + " HUF";
             }
 
-            table UsersTable(UserTransfer u) {
+            row UsersRow(UserTransfer u) {
                 column String userName <= u.userName label:"Username";
             }
 
-            table ProductsTable(ProductTransfer p) {
+            row ProductsRow(ProductTransfer p) {
                 column String name <= p.name label:"Name";
                 column String price <= p.price label:"Price";
             }
@@ -134,11 +135,11 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             menu MenuActor(Actor usr) {
                 group first label:"Group1" {
                     group second label:"Group2" {
-                        table ProductsTable products <= usr.products label:"Products" icon:"close";
+                        table ProductsRow[] products <= usr.products label:"Products" icon:"close";
                     }
-                    table ProductsTable products2 <= usr.products2 label:"Products2";
+                    table ProductsRow[] products2 <= usr.products2 label:"Products2";
                 }
-                table UsersTable users <= usr.users label:"Users" icon:"account-multiple";
+                table UsersRow[] users <= usr.users label:"Users" icon:"account-multiple";
             }
         """));
 
@@ -248,12 +249,12 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 widget String price2 <= product2.price2;
             }
 
-            table ProductsTable(ProductTransfer product) {
+            row ProductsRow(ProductTransfer product) {
                 column String name <= product.name label:"Name";
                 column String price <= product.price label:"Price";
             }
 
-            table ProductsTable2(Product2Transfer product2) {
+            row ProductsRow2(Product2Transfer product2) {
                 column String name2 <= product2.name2 label:"Name 2";
                 column String price2 <= product2.price2 label:"Price 2";
             }
@@ -268,16 +269,16 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
             menu App1(Actor1 a) {
                 group first label:"Group1" {
-                    table ProductsTable products1 <= a.products label:"Products1" view:ProductView;
+                    table ProductsRow[] products1 <= a.products label:"Products1" view:ProductView;
                 }
-                table ProductsTable allProducts <= a.products label:"All Products" icon:"tools" view:ProductView;
+                table ProductsRow[] allProducts <= a.products label:"All Products" icon:"tools" view:ProductView;
             }
 
             menu App2(Actor2 a) {
                 group first label:"Group2" {
-                    table ProductsTable2 products2 <= a.products2 label:"Products2" view:Product2View;
+                    table ProductsRow2[] products2 <= a.products2 label:"Products2" view:Product2View;
                 }
-                table ProductsTable2 allProducts2 <= a.products2 label:"All Products 2" icon:"tools" view:Product2View;
+                table ProductsRow2[] allProducts2 <= a.products2 label:"All Products 2" icon:"tools" view:Product2View;
             }
         """));
 
@@ -484,6 +485,96 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals(1, authentication.getClaims().size());
         assertEquals("UNDEFINED", authentication.getClaims().get(0).getType().getName());
         assertEquals(principal.getAttributes().stream().filter(a -> a.getName().equals("email")).findFirst().orElse(null), authentication.getClaims().get(0).getAttributeType());
+
+    }
+
+    @Test
+    void testMenuStackOverFlow() throws Exception {
+        jslModel = JslParser.getModelFromStrings("StackOverFlowTestModel", List.of("""
+        model StackOverFlowTestModel;
+        
+        import judo::types;
+        
+        entity A {
+            field String name;
+            field B[] bs;
+        }
+        
+        entity B {
+            field C[] cs;
+        }
+        
+        entity C {
+            relation D[] ds opposite: c;
+        }
+        
+        entity D {
+            relation C c opposite: ds;
+        }
+        
+        transfer ATransfer(A a) {
+            field String name <=> a.name;
+            relation BTransfer[] bs <= a.bs eager:true create:true delete:true update:true;
+        
+            event create createOn;
+            event update updateOn;
+            event delete deleteOn;
+        }
+        
+        transfer BTransfer(B b) {
+            relation CTransfer[] cs <= b.cs eager:true create:true delete:true update:true;
+        
+            event create createOn;
+            event update updateOn;
+            event delete deleteOn;
+        }
+        
+        transfer CTransfer(C c) {
+            relation DTransfer[] ds <= c.ds eager:true create:true delete:true update:true;
+        
+            event create createOn;
+            event update updateOn;
+            event delete deleteOn;
+        }
+        
+        transfer DTransfer(D d) {
+            relation CTransfer c <= d.c create:true delete:true update:true;
+        
+            event create createOn;
+            event update updateOn;
+            event delete deleteOn;
+        }
+        
+        form AForm(ATransfer a) {
+            widget String name <= a.name icon: "atom-variant";
+        }
+        
+        view AView(ATransfer a) {
+            widget String name <= a.name;
+        }
+        
+        row ARow(ATransfer a) {
+            column String name <= a.name;
+        }
+        
+        // Actor
+        
+        actor Actor {
+            access ATransfer[] `as` <= A.all() create delete update;
+        }
+        
+        menu actorApp(Actor act) {
+            table ARow[] asTable <= act.`as` form:AForm view:AView; // this cause the stackoverflow
+        }
+        """));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        assertEquals(1, apps.size());
+
+        Application app1 = apps.get(0);
 
     }
 }

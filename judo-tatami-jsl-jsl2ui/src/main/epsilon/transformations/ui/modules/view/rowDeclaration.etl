@@ -173,6 +173,7 @@ rule TableTable
         t.name = s.name + "::Table";
         t.dataElement = s.map.transfer.equivalent("ClassType");
         t.relationName = "";
+        t.isInlineEditable = true;
         if (__pos.get(t).isUndefined()) {
             __pos.put(t, 0);
         }
@@ -527,4 +528,3 @@ rule TableTableClearActionDefinition
 
         log.debug("TableTableClearActionDefinition: " + t.name);
 }
-

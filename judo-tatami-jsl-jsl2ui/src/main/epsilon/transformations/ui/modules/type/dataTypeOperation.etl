@@ -2,7 +2,7 @@
 rule BooleanOperation
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationType {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/BooleanOperation");
 	    t.name = "BooleanOperation";
 	    rootMenu.equivalent("Application").dataTypes.add(t);
@@ -12,7 +12,7 @@ rule BooleanOperation
 rule BooleanOperationEquals
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/BooleanOperationEquals");
 	    t.ordinal = 0;
 	    t.name = "equals";
@@ -23,7 +23,7 @@ rule BooleanOperationEquals
 rule NumericOperation
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationType {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperation");
 	    t.name = "NumericOperation";
 	    rootMenu.equivalent("Application").dataTypes.add(t);
@@ -33,7 +33,7 @@ rule NumericOperation
 rule NumericOperationLessThan
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationLessThan");
 	    t.ordinal = 0;
 	    t.name = "lessThan";
@@ -44,7 +44,7 @@ rule NumericOperationLessThan
 rule NumericOperationGreaterThan
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationGreaterThan");
 	    t.ordinal = 1;
 	    t.name = "greaterThan";
@@ -55,7 +55,7 @@ rule NumericOperationGreaterThan
 rule NumericOperationLessOrEqual
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationLessOrEqual");
 	    t.ordinal = 2;
 	    t.name = "lessOrEqual";
@@ -66,7 +66,7 @@ rule NumericOperationLessOrEqual
 rule NumericOperationGreaterOrEqual
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationGreaterOrEqual");
 	    t.ordinal = 3;
 	    t.name = "greaterOrEqual";
@@ -77,7 +77,7 @@ rule NumericOperationGreaterOrEqual
 rule NumericOperationEqual
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationEqual");
 	    t.ordinal = 4;
 	    t.name = "equal";
@@ -88,7 +88,7 @@ rule NumericOperationEqual
 rule NumericOperationNotEqual
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperationNotEqual");
 	    t.ordinal = 5;
 	    t.name = "notEqual";
@@ -99,7 +99,7 @@ rule NumericOperationNotEqual
 rule EnumerationOperation
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationType {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EnumerationOperation");
 	    t.name = "EnumerationOperation";
 	    rootMenu.equivalent("Application").dataTypes.add(t);
@@ -109,7 +109,7 @@ rule EnumerationOperation
 rule EnumerationOperationEquals
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EnumerationOperationEquals");
 	    t.ordinal = 0;
 	    t.name = "equals";
@@ -120,7 +120,7 @@ rule EnumerationOperationEquals
 rule EnumerationOperationNotEquals
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EnumerationOperationNotEquals");
 	    t.ordinal = 1;
 	    t.name = "notEquals";
@@ -132,7 +132,7 @@ rule EnumerationOperationNotEquals
 rule StringOperation
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationType {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperation");
 	    t.name = "StringOperation";
@@ -143,7 +143,7 @@ rule StringOperation
 rule StringOperationLessThan
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationLessThan");
 	    t.ordinal = 0;
 	    t.name = "lessThan";
@@ -154,7 +154,7 @@ rule StringOperationLessThan
 rule StringOperationGreaterThan
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationGreaterThan");
 	    t.ordinal = 1;
 	    t.name = "greaterThan";
@@ -165,7 +165,7 @@ rule StringOperationGreaterThan
 rule StringOperationLessOrEqual
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationLessOrEqual");
 	    t.ordinal = 2;
 	    t.name = "lessOrEqual";
@@ -176,7 +176,7 @@ rule StringOperationLessOrEqual
 rule StringOperationGreaterOrEqual
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationGreaterOrEqual");
 	    t.ordinal = 3;
 	    t.name = "greaterOrEqual";
@@ -187,7 +187,7 @@ rule StringOperationGreaterOrEqual
 rule StringOperationEqual
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationEqual");
 	    t.ordinal = 4;
 	    t.name = "equal";
@@ -198,7 +198,7 @@ rule StringOperationEqual
 rule StringOperationNotEqual
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationNotEqual");
 	    t.ordinal = 5;
 	    t.name = "notEqual";
@@ -209,7 +209,7 @@ rule StringOperationNotEqual
 rule StringOperationMatches
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationMatches");
 	    t.ordinal = 6;
 	    t.name = "matches";
@@ -220,7 +220,7 @@ rule StringOperationMatches
 rule StringOperationLike
     transform s: JSL!ActorDeclaration
     to t: UI!ui::data::EnumerationMember {
-	    guard: s = actorDeclaration
+	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperationLike");
 	    t.ordinal = 7;
 	    t.name = "like";

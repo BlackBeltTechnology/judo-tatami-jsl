@@ -99,13 +99,13 @@ public class JslModel2UiCarTest extends AbstractTest  {
                 widget String type <= ct.type;
             }
 
-            table CarTable(CarTransfer ct) {
+            row CarRow(CarTransfer ct) {
                 column String make <= ct.make;
                 column String type <= ct.type;
             }
 
             menu CarApp(UserActor usr) {
-                table CarTable cars <= usr.cars form:CarForm view:CarView;
+                table CarRow[] cars <= usr.cars form:CarForm view:CarView;
             }
         """));
 
@@ -140,7 +140,7 @@ public class JslModel2UiCarTest extends AbstractTest  {
         assertEquals(List.of(
                 "Car::CarApp::Dashboard",
                 "Car::CarForm::Create::PageContainer",
-                "Car::CarTable::Table::PageContainer",
+                "Car::CarRow::Table::PageContainer",
                 "Car::CarView::View::PageContainer"
         ), pageContainers.stream().map(NamedElement::getName).sorted().toList());
 
@@ -154,7 +154,7 @@ public class JslModel2UiCarTest extends AbstractTest  {
         assertEquals(List.of(), links.stream().map(NamedElement::getName).sorted().toList());
 
         assertEquals(List.of(
-                "CarTable::Table"
+                "CarRow::Table"
         ), tables.stream().map(NamedElement::getName).sorted().toList());
     }
 }

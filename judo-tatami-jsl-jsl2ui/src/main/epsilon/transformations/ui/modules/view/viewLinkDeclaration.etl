@@ -33,7 +33,6 @@ rule AbstractViewLinkDeclaration
 }
 
 @lazy
-@greedy
 rule LinkIcon
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Icon {

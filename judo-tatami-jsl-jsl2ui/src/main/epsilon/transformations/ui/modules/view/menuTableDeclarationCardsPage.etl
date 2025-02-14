@@ -1,0 +1,75 @@
+rule AccessCardsPageDefinition
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: rootMenu.containsVisualElement(s) and s.referenceType.isTypeOf(JSL!UICardDeclaration)
+
+        var relation = s.actorAccess.target;
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessCardsPageDefinition");
+        t.name = s.getFqName() + "::AccessCardsPage";
+        t.container = s.referenceType.equivalent("CardPageContainer");
+        t.dataElement = relation.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
+
+        t.actions.add(s.equivalent("AccessCardsBackAction"));
+        if (s.getUpdateViewModifier().isDefined()) {
+            t.actions.add(s.equivalent("AccessCardsOpenPageAction"));
+        }
+        if (relation.isRefreshAllowed()) {
+            t.actions.add(s.equivalent("AccessCardsTableRefreshAction"));
+        }
+        if (relation.isFilterSupported()) {
+            t.actions.add(s.equivalent("AccessCardsTableFilterAction"));
+        }
+
+        rootMenu.equivalent("Application").pages.add(t);
+
+        log.debug("Create AccessCardsPageDefinition: " + t.name);
+}
+
+@lazy
+rule AccessCardsBackAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessCardsBackAction");
+        t.name = s.name + "::Back";
+        t.actionDefinition = s.referenceType.equivalent("CardPageContainerBackActionDefinition");
+
+        log.debug("AccessCardsBackAction: " + t.name);
+}
+
+@lazy
+rule AccessCardsTableRefreshAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessCardsTableRefreshAction");
+        t.name = s.name + "::Refresh";
+        t.actionDefinition = s.referenceType.equivalent("CardTableRefreshActionDefinition");
+
+        log.debug("AccessCardsTableRefreshAction: " + t.name);
+}
+
+@lazy
+rule AccessCardsTableFilterAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessCardsTableFilterAction");
+        t.name = s.name + "::Filter";
+        t.actionDefinition = s.referenceType.equivalent("CardTableFilterActionDefinition");
+
+        log.debug("AccessCardsTableFilterAction: " + t.name);
+}
+
+@lazy
+rule AccessCardsOpenPageAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessCardsOpenPageAction");
+
+        t.name = s.name + "::OpenPage";
+        t.actionDefinition = s.referenceType.equivalent("CardOpenPageActionDefinition");
+
+        t.targetPageDefinition = s.equivalent("AccessTableViewPageDefinition");
+
+        log.debug("AccessCardsOpenPageAction: " + t.name);
+}

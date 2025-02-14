@@ -97,11 +97,11 @@ public class JslModel2UiNavigationTest extends AbstractTest {
             view UserView(UserTransfer u) {
                 group level1 {
                     link RelatedView related <= u.related icon:"related" label:"Related" width:6;
-                    table RelatedTable relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" view:RelatedView;
+                    table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" view:RelatedView;
                 }
             }
 
-            table RelatedTable(RelatedTransfer r) {
+            row RelatedRow(RelatedTransfer r) {
                 column String first <= r.first label:"First";
                 column Integer second <= r.second label:"Second";
             }
@@ -110,14 +110,14 @@ public class JslModel2UiNavigationTest extends AbstractTest {
                 widget String first <= r.first label: "First";
                 widget Integer second <= r.second label: "Second";
                 link JumperView myJumper <= r.theJumper icon:"jumping" label:"My Jumper" width:6;
-                table JumperTable myJumpers <= r.theJumpersCollection icon:"jumping-all" label:"My Jumpers" width:6 view:JumperView;
+                table JumperRow[] myJumpers <= r.theJumpersCollection icon:"jumping-all" label:"My Jumpers" width:6 view:JumperView;
             }
 
             view JumperView(JumperTransfer j) {
                 widget String first <= j.first label: "First";
             }
 
-            table JumperTable(JumperTransfer j) {
+            row JumperRow(JumperTransfer j) {
                 column String first <= j.first label: "First";
             }
 
@@ -176,8 +176,8 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         // Tables
 
         assertEquals(List.of(
-                "NavigationActor::NavigationTestModel::JumperTable::Table::PageContainer::JumperTable::JumperTable::Table",
-                "NavigationActor::NavigationTestModel::RelatedTable::Table::PageContainer::RelatedTable::RelatedTable::Table",
+                "NavigationActor::NavigationTestModel::JumperRow::Table::PageContainer::JumperRow::JumperRow::Table",
+                "NavigationActor::NavigationTestModel::RelatedRow::Table::PageContainer::RelatedRow::RelatedRow::Table",
                 "NavigationActor::NavigationTestModel::RelatedView::View::PageContainer::RelatedView::myJumpers",
                 "NavigationActor::NavigationTestModel::UserView::View::PageContainer::UserView::level1::relatedCollection"
         ), tables.stream().map(NamedElement::getFQName).sorted().toList());

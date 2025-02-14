@@ -2,12 +2,15 @@
 rule AbstractViewWidgetDeclaration
     transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::VisualElement {
-        guard: rootMenu.containsVisualElement(s)
+        guard: rootMenu.containsVisualElement(s) and not s.eContainer.isTypeOf(JSL!UICardDeclaration)
 
         t.name = s.name;
         t.label = s.getLabelWithNameFallback();
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("ViewWidgetIcon");
+        }
+        if (s.getHelpModifier().isDefined()) {
+            t.tooltipText = s.getHelpModifier().value.value;
         }
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
         t.isReadOnly = s.bind.isUndefined();
@@ -26,7 +29,6 @@ rule AbstractViewWidgetDeclaration
 }
 
 @lazy
-@greedy
 rule ViewWidgetIcon
     transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::Icon {

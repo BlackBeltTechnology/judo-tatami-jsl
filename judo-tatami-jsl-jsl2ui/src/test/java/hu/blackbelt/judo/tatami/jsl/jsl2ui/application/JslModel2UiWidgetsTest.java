@@ -404,7 +404,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 event delete onDelete;
             }
 
-            table UserTable(UserTransfer u) {
+            row UserRow(UserTransfer u) {
                 column String email <= u.emailReadOnly;
             }
 
@@ -412,7 +412,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 group level1 label:"Yo" icon:"text" {
                     group level2 width:12 frame:true icon:"unicorn" label:"Level 2" stretch:true {
                         link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm;
-                        link RelatedView relatedAssociation <= u.relatedAssociation icon:"related-association" label:"Related Association" width:6 selector:RelatedTable form:RelatedForm;
+                        link RelatedView relatedAssociation <= u.relatedAssociation icon:"related-association" label:"Related Association" width:6 selector:RelatedRow form:RelatedForm;
                     }
     
                     tabs tabs0 orientation:horizontal width:6 {
@@ -421,7 +421,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                         }
         
                         group tab2 label:"Tab2" icon:"numbers" h-align:right {
-                            table RelatedTable relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" width:6 selector:RelatedTable view:RelatedView form:RelatedForm;
+                            table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" width:6 selector:RelatedRow view:RelatedView form:RelatedForm;
                         }
                     }
                 }
@@ -429,14 +429,14 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
             form UserForm(UserTransfer u) {
                 widget String emailReadOnly <= u.emailReadOnly icon:"text" label:"Readonly Email";
-                widget String emailWritable <=> u.emailWritable icon:"text" label:"Writable Email";
+                widget String emailWritable <=> u.emailWritable icon:"text" label:"Writable Email" help:"ME";
                 group level1 label:"Yo" icon:"text" {
                     link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm;
                 }
-                table RelatedTable relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" width:6 selector:RelatedTable view:RelatedView form:RelatedForm;
+                table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" width:6 selector:RelatedRow view:RelatedView form:RelatedForm;
             }
 
-            table RelatedTable(RelatedTransfer r) {
+            row RelatedRow(RelatedTransfer r) {
                 column String first <= r.first label:"First";
                 column Numeric second <= r.second label:"Second";
             }
@@ -458,7 +458,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
             menu RelationWidgets(RelationWidgetsActor a) {
                 link UserView user <= a.user label:"User" icon:"tools";
-                table UserTable users <= a.users label:"Users" icon:"tools" form:UserForm view:UserView;
+                table UserRow[] users <= a.users label:"Users" icon:"tools" form:UserForm view:UserView;
             }
         """));
 
@@ -534,9 +534,9 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         // Tables
 
         assertEquals(List.of(
-                "RelationWidgetsActor::RelationWidgetsTestModel::RelatedTable::Table::PageContainer::RelatedTable::RelatedTable::Table",
+                "RelationWidgetsActor::RelationWidgetsTestModel::RelatedRow::Table::PageContainer::RelatedRow::RelatedRow::Table",
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::relatedCollection",
-                "RelationWidgetsActor::RelationWidgetsTestModel::UserTable::Table::PageContainer::UserTable::UserTable::Table",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserRow::Table::PageContainer::UserRow::UserRow::Table",
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserView::View::PageContainer::UserView::level1::tabs0::tab2::tab2::relatedCollection"
         ), tables.stream().map(NamedElement::getFQName).sorted().toList());
 
@@ -549,20 +549,22 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("Related Collection", userViewTable.getLabel());
         assertEquals(12, userViewTable.getCol());
         assertEquals("relatedCollection", userViewTable.getRelationName());
+        assertFalse(userViewTable.isIsEager());
+        assertFalse(userViewTable.isIsInlineEditable());
         assertEquals("relatedCollection", tableRelation.getName());
         assertEquals(relatedRowClassType, tableRelation.getTarget());
 
-        Table relatedCollectionAddSelector = tables.stream().filter(t -> t.getName().equals("RelatedTable::Table")).findFirst().orElseThrow();
+        Table relatedCollectionAddSelector = tables.stream().filter(t -> t.getName().equals("RelatedRow::Table")).findFirst().orElseThrow();
         assertTrue(relatedCollectionAddSelector.getDataElement() instanceof ClassType);
 
-        assertEquals("RelatedTable", relatedCollectionAddSelector.getLabel());
+        assertEquals("RelatedRow", relatedCollectionAddSelector.getLabel());
         assertEquals(12, relatedCollectionAddSelector.getCol());
         assertEquals("", relatedCollectionAddSelector.getRelationName());
 
-        Table relatedAssociationSetSelector = tables.stream().filter(t -> t.getName().equals("RelatedTable::Table")).findFirst().orElseThrow();
+        Table relatedAssociationSetSelector = tables.stream().filter(t -> t.getName().equals("RelatedRow::Table")).findFirst().orElseThrow();
         assertTrue(relatedAssociationSetSelector.getDataElement() instanceof ClassType);
 
-        assertEquals("RelatedTable", relatedAssociationSetSelector.getLabel());
+        assertEquals("RelatedRow", relatedAssociationSetSelector.getLabel());
         assertEquals(12, relatedAssociationSetSelector.getCol());
         assertEquals("", relatedAssociationSetSelector.getRelationName());
 
@@ -659,6 +661,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("emailWritable", formEmailWritable.getName());
         assertEquals("Writable Email", formEmailWritable.getLabel());
         assertEquals("text", formEmailWritable.getIcon().getIconName());
+        assertEquals("ME", formEmailWritable.getTooltipText());
         assertFalse(formEmailWritable.isIsReadOnly());
 
         // group level1
