@@ -64,6 +64,10 @@ rule ViewTableViewPageDefinition
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", s.getId()));
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", s.getId()));
             }
+            if (table.referenceType.isTypeOf(JSL!UITagDeclaration)) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteRangeAction", s.getId()));
+                t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteAddAction", s.getId()));
+            }
         }
 
         t.actions.add(s.equivalent("ViewTableViewPageDefinitionBackAction"));
@@ -78,6 +82,26 @@ rule ViewTableViewPageDefinition
         }
 
         log.debug("Create ViewTableViewPageDefinition: " + t.name);
+}
+
+@lazy
+rule ViewTableTagsDeclarationAutocompleteRangeAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableTagsDeclarationAutocompleteRangeAction");
+ 		t.name = s.name + "::AutocompleteRange";
+        t.actionDefinition = s.equivalent("ViewTagsDeclarationAutocompleteRangeActionDefinition");
+        log.debug("ViewTableTagsDeclarationAutocompleteRangeAction: " + t.name);
+}
+
+@lazy
+rule ViewTableTagsDeclarationAutocompleteAddAction
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableTagsDeclarationAutocompleteAddAction");
+ 		t.name = s.name + "::AutocompleteAdd";
+        t.actionDefinition = s.equivalent("ViewTagsDeclarationAutocompleteAddActionDefinition");
+        log.debug("ViewTableTagsDeclarationAutocompleteAddAction: " + t.name);
 }
 
 @lazy
@@ -139,6 +163,8 @@ rule ViewTableDeclarationFilterAction
             t.actionDefinition = s.equivalent("ViewTableDeclarationFilterActionDefinition");
         } else if (s.referenceType.isTypeOf(JSL!UICardDeclaration)) {
             t.actionDefinition = s.equivalent("InlineViewCardsFilterButtonActionDefinition");
+        } else if (s.referenceType.isTypeOf(JSL!UITagDeclaration)) {
+            t.actionDefinition = s.equivalent("InlineViewTagsFilterActionDefinition");
         }
 
         log.debug("ViewTableDeclarationFilterAction: " + t.name);
@@ -157,6 +183,8 @@ rule ViewTableDeclarationRefreshAction
             t.actionDefinition = s.equivalent("ViewTableDeclarationRefreshActionDefinition");
         } else if (s.referenceType.isTypeOf(JSL!UICardDeclaration)) {
             t.actionDefinition = s.equivalent("InlineViewCardsRefreshActionDefinition");
+        } else if (s.referenceType.isTypeOf(JSL!UITagDeclaration)) {
+            t.actionDefinition = s.equivalent("InlineViewTagsRefreshActionDefinition");
         }
 
         log.debug("ViewTableDeclarationRefreshAction: " + t.name);
@@ -190,6 +218,8 @@ rule ViewTableDeclarationOpenPageAction
             t.actionDefinition = s.equivalent("ViewTableDeclarationOpenPageActionDefinition");
         } else if (s.referenceType.isTypeOf(JSL!UICardDeclaration)) {
             t.actionDefinition = s.equivalent("InlineViewCardsOpenPageActionDefinition");
+        } else if (s.referenceType.isTypeOf(JSL!UITagDeclaration)) {
+            t.actionDefinition = s.equivalent("InlineViewTagsOpenPageActionDefinition");
         }
 
         log.debug("ViewTableDeclarationOpenPageAction: " + t.name);

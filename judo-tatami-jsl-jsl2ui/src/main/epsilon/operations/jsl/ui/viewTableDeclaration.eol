@@ -57,7 +57,9 @@ operation JSL!UIViewTableDeclaration getExposedVisualElements(ves: Set): Set {
 operation JSL!UIViewTableDeclaration getAllActionDeclarations() : Set {
     var ves = new Set();
 
-    ves.addAll(self.referenceType.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet());
+    if (self.referenceType.isTypeOf(JSL!UIRowDeclaration) or self.referenceType.isTypeOf(JSL!UICardDeclaration)) {
+        ves.addAll(self.referenceType.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet());
+    }
 
     return ves;
 }
