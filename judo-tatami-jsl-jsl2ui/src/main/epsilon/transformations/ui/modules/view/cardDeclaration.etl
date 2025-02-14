@@ -25,7 +25,6 @@ rule CardPageContainer
         log.debug("Create CardPageContainer: " + t.name);
 }
 
-
 @lazy
 rule CardPageContainerButtonGroup
     transform s: JSL!UICardDeclaration

@@ -166,3 +166,8 @@ operation JSL!Modifiable getUpdateViewModifier(): JSL!Modifier {
 operation JSL!Modifiable getSelectorTableModifier(): JSL!Modifier {
     return self.modifiers.selectOne(m | m.isTypeOf(JSL!SelectorTableModifier));
 }
+
+@cached
+operation JSL!Modifiable getTextModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!TextModifier));
+}
