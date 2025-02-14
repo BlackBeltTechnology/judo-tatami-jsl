@@ -1,0 +1,75 @@
+rule AccessTagsPageDefinition
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::PageDefinition {
+        guard: rootMenu.containsVisualElement(s) and s.referenceType.isTypeOf(JSL!UITagDeclaration)
+
+        var relation = s.actorAccess.target;
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTagsPageDefinition");
+        t.name = s.getFqName() + "::AccessTagsPage";
+        t.container = s.referenceType.equivalent("TagPageContainer");
+        t.dataElement = relation.equivalent("RelationType");
+        t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
+
+        t.actions.add(s.equivalent("AccessTagsBackAction"));
+        if (s.getUpdateViewModifier().isDefined()) {
+            t.actions.add(s.equivalent("AccessTagsOpenPageAction"));
+        }
+        if (relation.isRefreshAllowed()) {
+            t.actions.add(s.equivalent("AccessTagsTableRefreshAction"));
+        }
+        if (relation.isFilterSupported()) {
+            t.actions.add(s.equivalent("AccessTagsTableFilterAction"));
+        }
+
+        rootMenu.equivalent("Application").pages.add(t);
+
+        log.debug("Create AccessTagsPageDefinition: " + t.name);
+}
+
+@lazy
+rule AccessTagsBackAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTagsBackAction");
+        t.name = s.name + "::Back";
+        t.actionDefinition = s.referenceType.equivalent("TagPageContainerBackActionDefinition");
+
+        log.debug("AccessTagsBackAction: " + t.name);
+}
+
+@lazy
+rule AccessTagsTableRefreshAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTagsTableRefreshAction");
+        t.name = s.name + "::Refresh";
+        t.actionDefinition = s.referenceType.equivalent("TagTableRefreshActionDefinition");
+
+        log.debug("AccessTagsTableRefreshAction: " + t.name);
+}
+
+@lazy
+rule AccessTagsTableFilterAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTagsTableFilterAction");
+        t.name = s.name + "::Filter";
+        t.actionDefinition = s.referenceType.equivalent("TagTableFilterActionDefinition");
+
+        log.debug("AccessTagsTableFilterAction: " + t.name);
+}
+
+@lazy
+rule AccessTagsOpenPageAction
+    transform s: JSL!UIMenuTableDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTagsOpenPageAction");
+
+        t.name = s.name + "::OpenPage";
+        t.actionDefinition = s.referenceType.equivalent("TagOpenPageActionDefinition");
+
+        t.targetPageDefinition = s.equivalent("AccessTableViewPageDefinition");
+
+        log.debug("AccessTagsOpenPageAction: " + t.name);
+}

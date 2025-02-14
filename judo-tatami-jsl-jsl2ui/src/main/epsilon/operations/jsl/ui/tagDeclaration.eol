@@ -1,0 +1,35 @@
+@cached
+operation JSL!UITagDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!UITagDeclaration getFqName(): String {
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
+    }
+    return self.name;
+}
+
+operation JSL!UITagDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
+    ves.add(self);
+
+    return ves;
+}
+
+@cached
+operation JSL!UITagDeclaration getAllActionDeclarations(): Set {
+    var ves = new Set();
+
+    // placeholder
+
+    return ves;
+}
+
+@cached
+operation JSL!UITagDeclaration getTransferFieldDeclaration(): JSL!TransferFieldDeclaration {
+    return self.getTextModifier().transferField.target;
+}

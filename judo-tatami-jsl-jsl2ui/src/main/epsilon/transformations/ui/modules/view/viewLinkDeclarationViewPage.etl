@@ -70,6 +70,10 @@ rule ViewLinkPageDefinition
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", s.getId()));
                 t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", s.getId()));
             }
+            if (table.referenceType.isTypeOf(JSL!UITagDeclaration)) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteRangeAction", s.getId()));
+                t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteAddAction", s.getId()));
+            }
         }
 
         t.actions.add(s.equivalent("ViewLinkPageDefinitionBackAction"));

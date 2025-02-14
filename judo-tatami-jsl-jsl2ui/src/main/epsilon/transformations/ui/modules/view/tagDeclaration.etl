@@ -1,0 +1,251 @@
+rule TagPageContainer
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::PageContainer {
+        guard: rootMenu.containsVisualElement(s)
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagPageContainer");
+        t.name = s.getFqName() + "::Tag::PageContainer";
+        t.label = s.name;
+        t.titleFrom = UI!ui::TitleFrom#LABEL;
+        t.type = UI!ui::PageContainerType#TABLE;
+        t.children.add(s.equivalent("TagPageContainerVisualElement"));
+        t.actionButtonGroup = s.equivalent("TagPageContainerButtonGroup");
+        t.dataElement = s.map.transfer.equivalent("ClassType");
+        t.onInit = s.equivalent("TableTableRefreshActionDefinition");
+
+        rootMenu.equivalent("Application").pageContainers.add(t);
+
+        log.debug("Create TagPageContainer: " + t.name);
+}
+
+@lazy
+rule TagPageContainerButtonGroup
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::ButtonGroup {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagPageContainerButtonGroup");
+ 		t.name = s.getFqName() + "::PageActions";
+ 		t.label = "Actions";
+
+ 		t.buttons.add(s.equivalent("TagPageContainerBackButton"));
+
+        log.debug("TagPageContainerButtonGroup: " + t.name);
+}
+
+@lazy
+rule TagPageContainerBackButtonIcon
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::Icon {
+    	t.iconName = "arrow-left";
+    	t.name = s.name + "BackIcon";
+    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagPageContainerBackButtonIcon");
+}
+
+@lazy
+rule TagPageContainerBackActionDefinition
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::BackActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagPageContainerBackActionDefinition");
+ 		t.name = s.getFqName() + "::Back";
+        log.debug("TagPageContainerBackActionDefinition: " + t.name);
+}
+
+@lazy
+rule TagPageContainerBackButton
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::Button {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagPageContainerBackButton");
+ 		t.name = s.getFqName() + "::Back";
+    	t.label = "Back";
+    	t.buttonStyle = "text";
+    	t.icon = s.equivalent("TagPageContainerBackButtonIcon");
+    	t.actionDefinition = s.equivalent("TagPageContainerBackActionDefinition");
+        log.debug("TagPageContainerBackButton: " + t.name);
+}
+
+@lazy
+rule TagPageContainerVisualElement
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::Flex {
+        __pos.put(t, 0);
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagPageContainerVisualElement");
+        t.name = s.name;
+        t.direction = UI!Axis#VERTICAL;
+        t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        t.crossAxisAlignment = UI!ui::CrossAxisAlignment#STRETCH;
+        t.col = 12d;
+        t.children.add(s.equivalent("TagTable"));
+
+        log.debug("TagPageContainerVisualElement: " + t.name);
+}
+
+@lazy
+rule TagTable
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::Table {
+        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/TagTable";
+        t.setId(id);
+        t.col = 12d;
+        t.label = s.getLabelWithNameFallback();
+        t.name = s.name + "::Tags";
+        t.dataElement = s.map.transfer.equivalent("ClassType");
+        t.relationName = "";
+        t.isInlineEditable = true;
+        t.representationComponent = UI!ui::TableRepresentation#TAG;
+        if (__pos.get(t).isUndefined()) {
+            __pos.put(t, 0);
+        }
+
+        var col = s.equivalentDiscriminated("TagWidgetDeclarationPrimitiveColumn", id);
+        t.columns.add(col);
+        if (col.attributeType.isFilterable) {
+           t.filters.add(s.equivalentDiscriminated("TagWidgetDeclarationPrimitiveColumnFilter", id));
+        }
+
+        t.tableActionButtonGroup = s.equivalent("TagTableButtonGroup");
+        t.rowActionButtonGroup = s.equivalent("TagTableRowButtonGroup");
+
+        // TODO transform selector row per page
+        t.selectorRowsPerPage = 10;
+
+        log.debug("TagTable: " + t.name);
+}
+
+@lazy
+rule TagTableButtonGroup
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::ButtonGroup {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagTableButtonGroup");
+        t.name = s.name + "::TagTableButtonGroup";
+        t.label = "Actions";
+
+        // TODO add buttons
+
+        t.buttons.add(s.equivalent("TagTableFilterButton"));
+        t.buttons.add(s.equivalent("TagTableRefreshButton"));
+
+        log.debug("TagTableButtonGroup: " + t.name);
+}
+
+@lazy
+rule TagTableRowButtonGroup
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::ButtonGroup {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowButtonGroup");
+        t.name = s.name + "TableRowButtonGroup";
+        t.label = "Actions";
+
+        // TODO add buttons
+
+        t.buttons.add(s.equivalent("TagOpenPageButton"));
+
+        log.debug("TagTableRowButtonGroup: " + t.name);
+}
+
+@lazy
+rule TagTableFilterButton
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagTableFilterButton");
+        t.name = s.name + "::Filter";
+        t.icon = s.equivalent("TagTableFilterButtonIcon");
+        t.label = "Filter";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("TagTableFilterActionDefinition");
+
+        log.debug("TagTableFilterButton: " + t.name);
+}
+
+@lazy
+rule TagTableFilterButtonIcon
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::Icon {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagTableFilterButtonIcon");
+        t.name = s.name + "FilterIcon";
+        t.iconName = "filter";
+
+        log.debug("TagTableFilterButtonIcon: " + t.name);
+}
+
+@lazy
+rule TagTableFilterActionDefinition
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::FilterActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagTableFilterActionDefinition");
+        t.name = s.name + "::Filter";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+
+        log.debug("TagTableFilterActionDefinition: " + t.name);
+}
+
+@lazy
+rule TagTableRefreshButton
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagTableRefreshButton");
+        t.name = s.name + "::Refresh";
+        t.label = "Refresh";
+        t.buttonStyle = "text";
+        t.actionDefinition = s.equivalent("TagTableRefreshActionDefinition");
+
+        log.debug("TagTableRefreshButton: " + t.name);
+}
+
+@lazy
+rule TagTableRefreshActionDefinition
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::RefreshActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagTableRefreshActionDefinition");
+        t.name = s.name + "::Refresh";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+
+        log.debug("TagTableRefreshActionDefinition: " + t.name);
+}
+
+@lazy
+rule TagOpenPageButton
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::Button {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagOpenPageButton");
+        t.name = s.name + "::View";
+        t.label = "View";
+        t.buttonStyle = "contained";
+        t.actionDefinition = s.equivalent("TagOpenPageActionDefinition");
+
+        log.debug("TagOpenPageButton: " + t.name);
+}
+
+@lazy
+rule TagOpenPageActionDefinition
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::OpenPageActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagOpenPageActionDefinition");
+        t.name = s.name + "::View";
+        t.targetType = s.map.transfer.equivalent("ClassType");
+
+        log.debug("TagOpenPageActionDefinition: " + t.name);
+}
+
+@lazy
+rule TagWidgetDeclarationPrimitiveColumn
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::Column {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagWidgetDeclarationPrimitiveColumn");
+        t.name = s.name;
+        t.format = "%s";
+        t.label = s.name;
+        t.width = "120";
+        t.attributeType = s.getTransferFieldDeclaration().getTransferFieldDeclarationEquivalent();
+
+        log.debug("TagWidgetDeclarationPrimitiveColumn: " + t.name);
+}
+
+@lazy
+rule TagWidgetDeclarationPrimitiveColumnFilter
+    transform s: JSL!UITagDeclaration
+    to t: UI!ui::Filter {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TagWidgetDeclarationPrimitiveColumnFilter");
+        t.name = s.name + "Filter";
+        t.attributeType = s.getTransferFieldDeclaration().getTransferFieldDeclarationEquivalent();
+        t.label = s.name;
+        log.debug("TagWidgetDeclarationPrimitiveColumnFilter: " + t.name);
+}
