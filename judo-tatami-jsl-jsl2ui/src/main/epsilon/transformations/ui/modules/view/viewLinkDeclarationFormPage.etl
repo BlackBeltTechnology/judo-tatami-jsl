@@ -20,19 +20,46 @@ rule ViewLinkCreateFormPageDefinition
         log.info("===================");
         */
 
-/*
-        for (link in s.getCreateFormModifier().form.getAllLinks()) {
-            t.actions.add(link.equivalent("ViewLinkDeclarationOpenPageAction"));
-        }
+        for (link in s.getCreateFormModifier().form.getOwnLinks()) {
+            var lRelation = link.transferRelation.target;
 
-        for (table in s.getCreateFormModifier().form.getAllLinks()) {
-            var detailLink = table.getDetailLink();
+            t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", s.getId()));
 
-            if (detailLink.isDefined()) {
-                t.actions.add(table.equivalent("ViewTableDeclarationOpenPageAction"));
+            if (link.getSelectorTableModifier().isDefined()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", s.getId()));
+            }
+            if (link.getSelectorTableModifier().isDefined()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", s.getId()));
+            }
+            if (lRelation.isGetRangeAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationAutocompleteRangeAction", s.getId()));
+            }
+            if (lRelation.isSetReferenceAllowed()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationAutocompleteSetAction", s.getId()));
             }
         }
-*/
+
+        for (table in s.getCreateFormModifier().form.getOwnTables()) {
+            var tRelation = table.transferRelation.target;
+
+            if (table.getUpdateViewModifier().isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", s.getId()));
+            }
+            if (tRelation.isFilterSupported()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationFilterAction", s.getId()));
+            }
+            if (table.getSelectorTableModifier().isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", s.getId()));
+            }
+            if (table.getSelectorTableModifier().isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", s.getId()));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", s.getId()));
+            }
+            if (table.referenceType.isTypeOf(JSL!UITagDeclaration)) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteRangeAction", s.getId()));
+                t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteAddAction", s.getId()));
+            }
+        }
 
         t.actions.add(s.equivalent("ViewLinkCreateFormBackAction"));
         t.actions.add(s.equivalent("ViewLinkCreateFormCreateAction"));

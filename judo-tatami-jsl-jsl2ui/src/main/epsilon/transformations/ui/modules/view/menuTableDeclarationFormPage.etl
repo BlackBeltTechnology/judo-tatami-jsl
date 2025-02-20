@@ -16,6 +16,41 @@ rule AccessTableCreateFormPageDefinition
             t.actions.add(s.equivalent("AccessTableCreateFormGetTemplateAction"));
         }
 
+        for (link in s.getCreateFormModifier().form.getOwnLinks()) {
+            var lRelation = link.transferRelation.target;
+
+            t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", s.getId()));
+
+            if (link.getSelectorTableModifier().isDefined()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenSetSelectorDialogAction", s.getId()));
+            }
+            if (link.getSelectorTableModifier().isDefined()) {
+                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationUnsetAction", s.getId()));
+            }
+        }
+
+        for (table in s.getCreateFormModifier().form.getOwnTables()) {
+            var tRelation = table.transferRelation.target;
+
+            if (table.getUpdateViewModifier().isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenPageAction", s.getId()));
+            }
+            if (tRelation.isFilterSupported()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationFilterAction", s.getId()));
+            }
+            if (table.getSelectorTableModifier().isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationOpenAddSelectorAction", s.getId()));
+            }
+            if (table.getSelectorTableModifier().isDefined()) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationClearAction", s.getId()));
+                t.actions.add(table.equivalentDiscriminated("ViewTableDeclarationBulkRemoveAction", s.getId()));
+            }
+            if (table.referenceType.isTypeOf(JSL!UITagDeclaration)) {
+                t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteRangeAction", s.getId()));
+                t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteAddAction", s.getId()));
+            }
+        }
+
         rootMenu.equivalent("Application").pages.add(t);
 
         log.debug("Create AccessTableCreateFormPageDefinition: " + t.name);

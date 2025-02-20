@@ -489,6 +489,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 "RelationWidgetsTestModel::RelationWidgets::users::AccessTableViewPage",
                 "RelationWidgetsTestModel::UserForm::level1::related::FormPage",
                 "RelationWidgetsTestModel::UserForm::level1::related::ViewPage",
+                "RelationWidgetsTestModel::UserForm::relatedCollection::AddSelectorPage",
                 "RelationWidgetsTestModel::UserForm::relatedCollection::FormPage",
                 "RelationWidgetsTestModel::UserForm::relatedCollection::ViewPage",
                 "RelationWidgetsTestModel::UserView::level1::level2::related::FormPage",
