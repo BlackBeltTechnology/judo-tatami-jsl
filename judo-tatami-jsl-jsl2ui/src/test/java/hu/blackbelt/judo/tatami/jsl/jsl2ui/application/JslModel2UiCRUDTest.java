@@ -69,7 +69,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             transfer UserTransfer(User u) {
                 field String email <= u.email;
                 relation RelatedTransfer related <= u.related choices:Related.all() eager create update delete;
-                relation RelatedTransfer[] relatedCollection <= u.relatedCollection create update;
+                relation RelatedTransfer[] relatedCollection <= u.relatedCollection choices:Related.all() create update;
         
                 event create onCreate;
                 event update onUpdate;
@@ -104,8 +104,16 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 widget String email <= u.email label:"Email";
                 group level {
                     link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm selector:RelatedRow;
-                    table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" view:RelatedView;
+                    table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" form:RelatedForm view:RelatedView;
                 }
+            }
+
+            form UserForm(UserTransfer u) {
+                widget String email <= u.email label:"Email";
+                group level1 label:"Yo" icon:"text" {
+                    link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm selector:RelatedRow;
+                }
+                table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" width:6 selector:RelatedRow view:RelatedView form:RelatedForm;
             }
         
             row RelatedRow(RelatedTransfer r) {
@@ -127,6 +135,10 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 group one label:"Group 1" {
                     widget String first <= r.first label:"First";
                 }
+                group level1 label:"Yo" icon:"text" {
+                    link JumperView jumper <= r.theJumper label:"Jumper" width:6 form:JumperForm selector:JumperRow;
+                }
+                table JumperRow[] jumpers <= r.theJumpersCollection label:"Jumpers" width:6 selector:JumperRow view:JumperView form:JumperForm;
             }
         
             view JumperView(JumperTransfer j) {
@@ -144,13 +156,13 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             }
         
             actor NavigationActor {
-                access UserTransfer user <= User.any() update delete;
-                access UserTransfer[] users <= User.all() update delete;
+                access UserTransfer user <= User.any() create update delete;
+                access UserTransfer[] users <= User.all() create update delete;
             }
         
             menu NavigationApp(NavigationActor a) {
-                link UserView user <= a.user label:"User" icon:"tools" view:UserView;
-                table UserRow[] users <= a.users label:"Users" icon:"people" view:UserView;
+                link UserView user <= a.user label:"User" icon:"tools" view:UserView form:UserForm;
+                table UserRow[] users <= a.users label:"Users" icon:"people" view:UserView form:UserForm;
             }
         """.formatted(name);
     }
@@ -182,9 +194,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         List<Table> tables = application.getTables();
         List<Action> allActions = application.getPages().stream().flatMap(ps -> ps.getActions().stream()).toList();
 
-        PageDefinition actorDashboardPage = pages.stream().filter(p -> p.getName().equals("SummaryCRUD::NavigationApp::DashboardPage")).findFirst().orElseThrow();
-
-        assertEquals(List.of(
+       assertEquals(List.of(
                 "NavigationActor::SummaryCRUD::NavigationActor::user",
                 "NavigationActor::SummaryCRUD::NavigationActor::users",
                 "NavigationActor::SummaryCRUD::RelatedTransfer::theJumper",
@@ -208,15 +218,24 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SummaryCRUD::RelatedForm::Create::PageContainer",
                 "NavigationActor::SummaryCRUD::RelatedRow::Table::PageContainer",
                 "NavigationActor::SummaryCRUD::RelatedView::View::PageContainer",
+                "NavigationActor::SummaryCRUD::UserForm::Create::PageContainer",
                 "NavigationActor::SummaryCRUD::UserRow::Table::PageContainer",
                 "NavigationActor::SummaryCRUD::UserView::View::PageContainer"
         ), pageContainers.stream().map(NamedElement::getFQName).sorted().toList());
 
         assertEquals(List.of(
                 "NavigationActor::SummaryCRUD::NavigationApp::DashboardPage",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::AddSelectorPage",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::FormPage",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::ViewPage",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::FormPage",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::SetSelectorPage",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::ViewPage",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::FormPage",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::SetSelectorPage",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::ViewPage",
@@ -226,40 +245,75 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SummaryCRUD::RelatedView::g1::readOnlyJumper::FormPage",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::readOnlyJumper::SetSelectorPage",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::readOnlyJumper::ViewPage",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::SetSelectorPage",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::AddSelectorPage",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::FormPage",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage",
                 "NavigationActor::SummaryCRUD::UserView::level::related::FormPage",
                 "NavigationActor::SummaryCRUD::UserView::level::related::SetSelectorPage",
                 "NavigationActor::SummaryCRUD::UserView::level::related::ViewPage",
+                "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::FormPage",
                 "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::ViewPage"
         ), pages.stream().map(NamedElement::getFQName).sorted().toList());
 
         assertEquals(List.of(
+                "NavigationActor::SummaryCRUD::RelatedForm::Create::PageContainer::RelatedForm::level1::jumper",
                 "NavigationActor::SummaryCRUD::RelatedView::View::PageContainer::RelatedView::g1::myJumper",
                 "NavigationActor::SummaryCRUD::RelatedView::View::PageContainer::RelatedView::g1::readOnlyJumper",
+                "NavigationActor::SummaryCRUD::UserForm::Create::PageContainer::UserForm::level1::related",
                 "NavigationActor::SummaryCRUD::UserView::View::PageContainer::UserView::level::related"
         ), links.stream().map(NamedElement::getFQName).sorted().toList());
 
         assertEquals(List.of(
                 "NavigationActor::SummaryCRUD::JumperRow::Table::PageContainer::JumperRow::JumperRow::Table",
+                "NavigationActor::SummaryCRUD::RelatedForm::Create::PageContainer::RelatedForm::jumpers",
                 "NavigationActor::SummaryCRUD::RelatedRow::Table::PageContainer::RelatedRow::RelatedRow::Table",
                 "NavigationActor::SummaryCRUD::RelatedView::View::PageContainer::RelatedView::g1::myJumpers",
+                "NavigationActor::SummaryCRUD::UserForm::Create::PageContainer::UserForm::relatedCollection",
                 "NavigationActor::SummaryCRUD::UserRow::Table::PageContainer::UserRow::UserRow::Table",
                 "NavigationActor::SummaryCRUD::UserView::View::PageContainer::UserView::level::relatedCollection"
         ), tables.stream().map(NamedElement::getFQName).sorted().toList());
 
         assertEquals(List.of(
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::related::OpenPage",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::related::OpenSetSelector",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::related::Unset",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::relatedCollection::BulkRemove",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::relatedCollection::Clear",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::relatedCollection::Filter",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::relatedCollection::OpenAddSelector",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::relatedCollection::OpenPage",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::user::Back",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::user::Create",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessFormPage::user::GetTemplate",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::related::OpenForm",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::related::OpenPage",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::related::OpenSetSelector",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::related::RowDelete",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::related::Unset",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::relatedCollection::Filter",
+                "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::relatedCollection::OpenCreate",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::relatedCollection::OpenPage",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::relatedCollection::Refresh",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::user::Back",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::user::Delete",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::user::Refresh",
                 "NavigationActor::SummaryCRUD::NavigationApp::user::AccessViewPage::user::Update",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::related::OpenPage",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::related::OpenSetSelector",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::related::Unset",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::relatedCollection::BulkRemove",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::relatedCollection::Clear",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::relatedCollection::Filter",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::relatedCollection::OpenAddSelector",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::relatedCollection::OpenPage",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::users::Back",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::users::Create",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessFormPage::users::GetTemplate",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage::users::Filter",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage::users::OpenCreate",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage::users::OpenPage",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage::users::Refresh",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTablePage::users::RowDelete",
@@ -270,12 +324,33 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::related::RowDelete",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::related::Unset",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::relatedCollection::Filter",
+                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::relatedCollection::OpenCreate",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::relatedCollection::OpenPage",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::relatedCollection::Refresh",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::users::Back",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::users::Cancel",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::users::Refresh",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::users::Update",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::AddSelectorPage::SummaryCRUD::RelatedForm::jumpers::AddSelector::Add",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::AddSelectorPage::SummaryCRUD::RelatedForm::jumpers::AddSelector::Back",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::AddSelectorPage::SummaryCRUD::RelatedForm::jumpers::AddSelector::Table::Filter",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::AddSelectorPage::SummaryCRUD::RelatedForm::jumpers::AddSelector::Table::Range",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::FormPage::jumpers::Back",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::FormPage::jumpers::Create",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::ViewPage::jumpers::Back",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::ViewPage::jumpers::Delete",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::ViewPage::jumpers::Refresh",
+                "NavigationActor::SummaryCRUD::RelatedForm::jumpers::ViewPage::jumpers::Update",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::FormPage::jumper::Back",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::FormPage::jumper::Create",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::SetSelectorPage::SummaryCRUD::RelatedForm::level1::jumper::SetSelector::Back",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::SetSelectorPage::SummaryCRUD::RelatedForm::level1::jumper::SetSelector::Set",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::SetSelectorPage::SummaryCRUD::RelatedForm::level1::jumper::SetSelector::Table::Filter",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::SetSelectorPage::SummaryCRUD::RelatedForm::level1::jumper::SetSelector::Table::Range",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::ViewPage::jumper::Back",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::ViewPage::jumper::Delete",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::ViewPage::jumper::Refresh",
+                "NavigationActor::SummaryCRUD::RelatedForm::level1::jumper::ViewPage::jumper::Update",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::FormPage::myJumper::Back",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::FormPage::myJumper::Create",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::myJumper::SetSelectorPage::SummaryCRUD::RelatedView::g1::myJumper::SetSelector::Back",
@@ -306,6 +381,97 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SummaryCRUD::RelatedView::g1::readOnlyJumper::ViewPage::readOnlyJumper::Delete",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::readOnlyJumper::ViewPage::readOnlyJumper::Refresh",
                 "NavigationActor::SummaryCRUD::RelatedView::g1::readOnlyJumper::ViewPage::readOnlyJumper::Update",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::jumper::AutocompleteRangeAction",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::jumper::AutocompleteSetAction",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::jumper::OpenPage",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::jumper::OpenSetSelector",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::jumper::Unset",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::jumpers::BulkRemove",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::jumpers::Clear",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::jumpers::Filter",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::jumpers::OpenAddSelector",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::jumpers::OpenPage",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::related::Back",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::FormPage::related::Create",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::SetSelectorPage::SummaryCRUD::UserForm::level1::related::SetSelector::Back",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::SetSelectorPage::SummaryCRUD::UserForm::level1::related::SetSelector::Set",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::SetSelectorPage::SummaryCRUD::UserForm::level1::related::SetSelector::Table::Filter",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::SetSelectorPage::SummaryCRUD::UserForm::level1::related::SetSelector::Table::Range",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumper::AutocompleteRangeAction",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumper::AutocompleteSetAction",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumper::OpenForm",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumper::OpenPage",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumper::OpenSetSelector",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumper::Refresh",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumper::RowDelete",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumper::Unset",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumpers::BulkRemove",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumpers::Clear",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumpers::Filter",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumpers::OpenAddSelector",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumpers::OpenCreate",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumpers::OpenPage",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumpers::Refresh",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::myJumpers::RowDelete",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::readOnlyJumper::AutocompleteRangeAction",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::readOnlyJumper::AutocompleteSetAction",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::readOnlyJumper::OpenForm",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::readOnlyJumper::OpenPage",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::readOnlyJumper::OpenSetSelector",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::readOnlyJumper::Refresh",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::readOnlyJumper::RowDelete",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::readOnlyJumper::Unset",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::related::Back",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::related::Delete",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::related::Refresh",
+                "NavigationActor::SummaryCRUD::UserForm::level1::related::ViewPage::related::Update",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::AddSelectorPage::SummaryCRUD::UserForm::relatedCollection::AddSelector::Add",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::AddSelectorPage::SummaryCRUD::UserForm::relatedCollection::AddSelector::Back",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::AddSelectorPage::SummaryCRUD::UserForm::relatedCollection::AddSelector::Table::Filter",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::AddSelectorPage::SummaryCRUD::UserForm::relatedCollection::AddSelector::Table::Range",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::FormPage::jumper::OpenPage",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::FormPage::jumper::OpenSetSelector",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::FormPage::jumper::Unset",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::FormPage::jumpers::BulkRemove",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::FormPage::jumpers::Clear",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::FormPage::jumpers::Filter",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::FormPage::jumpers::OpenAddSelector",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::FormPage::jumpers::OpenPage",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::FormPage::relatedCollection::Back",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::FormPage::relatedCollection::Create",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumper::OpenForm",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumper::OpenPage",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumper::OpenSetSelector",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumper::Refresh",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumper::RowDelete",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumper::Unset",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumpers::BulkRemove",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumpers::Clear",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumpers::Filter",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumpers::OpenAddSelector",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumpers::OpenCreate",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumpers::OpenPage",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumpers::Refresh",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::myJumpers::RowDelete",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::readOnlyJumper::OpenForm",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::readOnlyJumper::OpenPage",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::readOnlyJumper::OpenSetSelector",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::readOnlyJumper::Refresh",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::readOnlyJumper::RowDelete",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::readOnlyJumper::Unset",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::relatedCollection::Back",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::relatedCollection::Refresh",
+                "NavigationActor::SummaryCRUD::UserForm::relatedCollection::ViewPage::relatedCollection::Update",
+                "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::jumper::AutocompleteRangeAction",
+                "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::jumper::AutocompleteSetAction",
+                "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::jumper::OpenPage",
+                "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::jumper::OpenSetSelector",
+                "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::jumper::Unset",
+                "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::jumpers::BulkRemove",
+                "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::jumpers::Clear",
+                "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::jumpers::Filter",
+                "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::jumpers::OpenAddSelector",
+                "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::jumpers::OpenPage",
                 "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::related::Back",
                 "NavigationActor::SummaryCRUD::UserView::level::related::FormPage::related::Create",
                 "NavigationActor::SummaryCRUD::UserView::level::related::SetSelectorPage::SummaryCRUD::UserView::level::related::SetSelector::Back",
@@ -340,6 +506,16 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SummaryCRUD::UserView::level::related::ViewPage::related::Delete",
                 "NavigationActor::SummaryCRUD::UserView::level::related::ViewPage::related::Refresh",
                 "NavigationActor::SummaryCRUD::UserView::level::related::ViewPage::related::Update",
+                "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::FormPage::jumper::OpenPage",
+                "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::FormPage::jumper::OpenSetSelector",
+                "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::FormPage::jumper::Unset",
+                "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::FormPage::jumpers::BulkRemove",
+                "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::FormPage::jumpers::Clear",
+                "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::FormPage::jumpers::Filter",
+                "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::FormPage::jumpers::OpenAddSelector",
+                "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::FormPage::jumpers::OpenPage",
+                "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::FormPage::relatedCollection::Back",
+                "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::FormPage::relatedCollection::Create",
                 "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::ViewPage::myJumper::OpenForm",
                 "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::ViewPage::myJumper::OpenPage",
                 "NavigationActor::SummaryCRUD::UserView::level::relatedCollection::ViewPage::myJumper::OpenSetSelector",
@@ -392,6 +568,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::related::RowDelete",
                 "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::related::Unset",
                 "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::relatedCollection::Filter",
+                "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::relatedCollection::OpenCreate",
                 "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::relatedCollection::OpenPage",
                 "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::relatedCollection::Refresh",
                 "NavigationActor::AccessViewCRUD::NavigationApp::user::AccessViewPage::user::Back",
@@ -473,6 +650,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         assertEquals(List.of(
                 "NavigationActor::AccessViewCRUD::UserView::View::PageContainer::UserView::level::relatedCollection::relatedCollection::InlineViewTableButtonGroup::relatedCollection::Filter",
+                "NavigationActor::AccessViewCRUD::UserView::View::PageContainer::UserView::level::relatedCollection::relatedCollection::InlineViewTableButtonGroup::relatedCollection::OpenCreate",
                 "NavigationActor::AccessViewCRUD::UserView::View::PageContainer::UserView::level::relatedCollection::relatedCollection::InlineViewTableButtonGroup::relatedCollection::Refresh"
         ), relatedCollection.getTableActionButtonGroup().getButtons().stream().map(NamedElement::getFQName).sorted().toList());
 
@@ -1064,6 +1242,16 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         ClassType classType = (ClassType) application.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelatedFormCRUD::RelatedTransfer")).findFirst().orElseThrow();
 
         assertEquals(List.of(
+                "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::jumper::AutocompleteRangeAction",
+                "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::jumper::AutocompleteSetAction",
+                "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::jumper::OpenPage",
+                "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::jumper::OpenSetSelector",
+                "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::jumper::Unset",
+                "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::jumpers::BulkRemove",
+                "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::jumpers::Clear",
+                "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::jumpers::Filter",
+                "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::jumpers::OpenAddSelector",
+                "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::jumpers::OpenPage",
                 "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::related::Back",
                 "NavigationActor::RelatedFormCRUD::UserView::level::related::FormPage::related::Create"
         ), actions.stream().map(NamedElement::getFQName).sorted().toList());
@@ -1090,6 +1278,138 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(myJumpersView.getActionDefinition().getIsCreateAction());
         assertButtonVisuals(myJumpersView, "Create", "content-save", "contained");
         assertEquals(relatedCreateActions.getActionDefinition(), myJumpersView.getActionDefinition());
+    }
+
+    @Test
+    void testAccessFormsRelationActions() throws Exception {
+        jslModel = JslParser.getModelFromStrings("AccessFormsRelationActions", List.of(createModelString("AccessFormsRelationActions")));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        Application application = apps.get(0);
+        List<PageDefinition> pages = application.getPages();
+
+        PageDefinition userFormPage = pages.stream().filter(p -> p.getFQName().equals("NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage")).findFirst().orElseThrow();
+        PageDefinition usersFormPage = pages.stream().filter(p -> p.getFQName().equals("NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage")).findFirst().orElseThrow();
+
+        PageDefinition level1RelatedViewPage = pages.stream().filter(p -> p.getFQName().equals("NavigationActor::AccessFormsRelationActions::UserForm::level1::related::ViewPage")).findFirst().orElseThrow();
+        PageDefinition relatedCollectionViewPage = pages.stream().filter(p -> p.getFQName().equals("NavigationActor::AccessFormsRelationActions::UserForm::relatedCollection::ViewPage")).findFirst().orElseThrow();
+
+        assertEquals(List.of(
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::related::OpenPage",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::related::OpenSetSelector",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::related::Unset",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::relatedCollection::BulkRemove",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::relatedCollection::Clear",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::relatedCollection::Filter",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::relatedCollection::OpenAddSelector",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::relatedCollection::OpenPage",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::users::Back",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::users::Create",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::users::GetTemplate"
+        ), usersFormPage.getActions().stream().map(NamedElement::getFQName).sorted().toList());
+
+        Action usersFormRelatedOpenPage = usersFormPage.getActions().stream().filter(a -> a.getFQName().equals("NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::related::OpenPage")).findFirst().orElseThrow();
+
+        assertEquals(level1RelatedViewPage, usersFormRelatedOpenPage.getTargetPageDefinition());
+        assertTrue(usersFormRelatedOpenPage.getIsOpenPageAction());
+
+        Action usersFormRelatedCollectionOpenPage = usersFormPage.getActions().stream().filter(a -> a.getFQName().equals("NavigationActor::AccessFormsRelationActions::NavigationApp::users::AccessFormPage::relatedCollection::OpenPage")).findFirst().orElseThrow();
+
+        assertEquals(relatedCollectionViewPage, usersFormRelatedCollectionOpenPage.getTargetPageDefinition());
+        assertTrue(usersFormRelatedCollectionOpenPage.getIsOpenPageAction());
+
+        assertEquals(List.of(
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::related::OpenPage",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::related::OpenSetSelector",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::related::Unset",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::relatedCollection::BulkRemove",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::relatedCollection::Clear",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::relatedCollection::Filter",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::relatedCollection::OpenAddSelector",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::relatedCollection::OpenPage",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::user::Back",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::user::Create",
+                "NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::user::GetTemplate"
+        ), userFormPage.getActions().stream().map(NamedElement::getFQName).sorted().toList());
+
+        Action userFormRelatedOpenPage = userFormPage.getActions().stream().filter(a -> a.getFQName().equals("NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::related::OpenPage")).findFirst().orElseThrow();
+
+        assertEquals(level1RelatedViewPage, userFormRelatedOpenPage.getTargetPageDefinition());
+        assertTrue(userFormRelatedOpenPage.getIsOpenPageAction());
+
+        Action userFormRelatedCollectionOpenPage = userFormPage.getActions().stream().filter(a -> a.getFQName().equals("NavigationActor::AccessFormsRelationActions::NavigationApp::user::AccessFormPage::relatedCollection::OpenPage")).findFirst().orElseThrow();
+
+        assertEquals(relatedCollectionViewPage, userFormRelatedCollectionOpenPage.getTargetPageDefinition());
+        assertTrue(userFormRelatedCollectionOpenPage.getIsOpenPageAction());
+    }
+
+    @Test
+    void testRelationFormsRelationActions() throws Exception {
+        jslModel = JslParser.getModelFromStrings("testRelationFormsRelationActions", List.of(createModelString("testRelationFormsRelationActions")));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        Application application = apps.get(0);
+        List<PageDefinition> pages = application.getPages();
+
+        PageDefinition relatedForm = pages.stream().filter(p -> p.getFQName().equals("NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage")).findFirst().orElseThrow();
+        PageDefinition relatedCollectionForm = pages.stream().filter(p -> p.getFQName().equals("NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage")).findFirst().orElseThrow();
+
+        PageDefinition relatedViewPage = pages.stream().filter(p -> p.getFQName().equals("NavigationActor::testRelationFormsRelationActions::RelatedForm::level1::jumper::ViewPage")).findFirst().orElseThrow();
+        PageDefinition relatedCollectionViewPage = pages.stream().filter(p -> p.getFQName().equals("NavigationActor::testRelationFormsRelationActions::RelatedForm::jumpers::ViewPage")).findFirst().orElseThrow();
+
+        assertEquals(List.of(
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::jumper::OpenPage",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::jumper::OpenSetSelector",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::jumper::Unset",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::jumpers::BulkRemove",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::jumpers::Clear",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::jumpers::Filter",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::jumpers::OpenAddSelector",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::jumpers::OpenPage",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::relatedCollection::Back",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::relatedCollection::Create"
+        ), relatedCollectionForm.getActions().stream().map(NamedElement::getFQName).sorted().toList());
+
+        Action relatedFormJumperOpenPage = relatedCollectionForm.getActions().stream().filter(a -> a.getFQName().equals("NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::jumper::OpenPage")).findFirst().orElseThrow();
+
+        assertEquals(relatedViewPage, relatedFormJumperOpenPage.getTargetPageDefinition());
+        assertTrue(relatedFormJumperOpenPage.getIsOpenPageAction());
+
+        Action relatedFormJumpersOpenPage = relatedCollectionForm.getActions().stream().filter(a -> a.getFQName().equals("NavigationActor::testRelationFormsRelationActions::UserView::level::relatedCollection::FormPage::jumpers::OpenPage")).findFirst().orElseThrow();
+
+        assertEquals(relatedCollectionViewPage, relatedFormJumpersOpenPage.getTargetPageDefinition());
+        assertTrue(relatedFormJumpersOpenPage.getIsOpenPageAction());
+
+        assertEquals(List.of(
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumper::AutocompleteRangeAction",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumper::AutocompleteSetAction",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumper::OpenPage",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumper::OpenSetSelector",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumper::Unset",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumpers::BulkRemove",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumpers::Clear",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumpers::Filter",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumpers::OpenAddSelector",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumpers::OpenPage",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::related::Back",
+                "NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::related::Create"
+        ), relatedForm.getActions().stream().map(NamedElement::getFQName).sorted().toList());
+
+        Action jumperOpenPage = relatedForm.getActions().stream().filter(a -> a.getFQName().equals("NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumper::OpenPage")).findFirst().orElseThrow();
+
+        assertEquals(relatedViewPage, jumperOpenPage.getTargetPageDefinition());
+        assertTrue(jumperOpenPage.getIsOpenPageAction());
+
+        Action jumpersOpenPage = relatedForm.getActions().stream().filter(a -> a.getFQName().equals("NavigationActor::testRelationFormsRelationActions::UserView::level::related::FormPage::jumpers::OpenPage")).findFirst().orElseThrow();
+
+        assertEquals(relatedCollectionViewPage, jumpersOpenPage.getTargetPageDefinition());
+        assertTrue(jumpersOpenPage.getIsOpenPageAction());
     }
 
     public static void assertButtonVisuals(Button button, String label, String icon, String style) {
