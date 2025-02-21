@@ -39,6 +39,7 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.xtext.diagnostics.Severity;
+import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.util.CancelIndicator;
@@ -192,13 +193,16 @@ public abstract class AbstractJslDslWorkflowProjectMojo extends AbstractMojo {
     }
 
     private void checkErrors(Collection<ModelDeclaration> modulesToProcess) throws MojoExecutionException {
-        final List<Issue> errors = new ArrayList<>();
+        final Map<IParseResult, Collection<Issue>> errors = new HashMap<>();
 
         for (ModelDeclaration modelDeclaration : modulesToProcess) {
             XtextResource jslResource = (XtextResource) modelDeclaration.eResource();
             final IResourceValidator validator = jslResource.getResourceServiceProvider().getResourceValidator();
-            errors.addAll(validator.validate(jslResource, CheckMode.ALL, CancelIndicator.NullImpl)
-                    .stream().filter(i -> i.getSeverity() == Severity.ERROR).collect(Collectors.toList()));
+            final Collection<Issue> validationErrors = validator.validate(jslResource, CheckMode.ALL, CancelIndicator.NullImpl)
+                    .stream().filter(i -> i.getSeverity() == Severity.ERROR).collect(Collectors.toList());
+            if (validationErrors.size() > 0) {
+                errors.put(jslResource.getParseResult(), validationErrors);
+            }
         }
 
         try {
