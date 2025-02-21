@@ -53,6 +53,9 @@ public class JslModel2UiNavigationTest extends AbstractTest {
 
             import judo::types;
 
+            widget numeric NumericWidget;
+            widget string StringWidget;
+
             entity User {
                 identifier String email required;
                 field Integer numeric;
@@ -107,14 +110,14 @@ public class JslModel2UiNavigationTest extends AbstractTest {
             }
 
             view RelatedView(RelatedTransfer r) {
-                widget String first <= r.first label: "First";
-                widget Integer second <= r.second label: "Second";
+                widget StringWidget first <= r.first label: "First";
+                widget NumericWidget second <= r.second label: "Second";
                 link JumperView myJumper <= r.theJumper icon:"jumping" label:"My Jumper" width:6;
                 table JumperRow[] myJumpers <= r.theJumpersCollection icon:"jumping-all" label:"My Jumpers" width:6 view:JumperView;
             }
 
             view JumperView(JumperTransfer j) {
-                widget String first <= j.first label: "First";
+                widget StringWidget first <= j.first label: "First";
             }
 
             row JumperRow(JumperTransfer j) {

@@ -59,6 +59,8 @@ public class JslModel2UiCarTest extends AbstractTest  {
             type time Time;
             type timestamp Timestamp;
 
+            widget string StringWidget;
+
             entity User {
                 identifier String email;
                 field Boolean isActive;
@@ -91,12 +93,12 @@ public class JslModel2UiCarTest extends AbstractTest  {
             }
 
             form CarForm(CarTransfer ct) {
-                widget String make2 <= ct.make;
+                widget StringWidget make2 <= ct.make;
             }
 
             view CarView(CarTransfer ct) {
-                widget String make2 <= ct.make;
-                widget String type <= ct.type;
+                widget StringWidget make2 <= ct.make;
+                widget StringWidget type <= ct.type;
             }
 
             row CarRow(CarTransfer ct) {

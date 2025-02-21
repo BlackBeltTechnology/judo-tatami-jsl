@@ -60,6 +60,16 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             type time Time;
             type timestamp Timestamp;
 
+            widget binary BinaryWidget;
+            widget boolean BooleanWidget;
+            widget date DateWidget;
+            widget enum ComboWidget;
+            widget enum RadioWidget;
+            widget numeric NumericWidget;
+            widget string StringWidget;
+            widget time TimeWidget;
+            widget timestamp TimestampWidget;
+
             enum MyEnum {
                 Atomic = 0;
                 Bombastic = 1;
@@ -97,34 +107,36 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             view UserView(UserTransfer u) {
                 group level1 label:"Yo" icon:"text" {
                     group level2 width:12 frame:true icon:"unicorn" label:"Level 2" stretch:true {
-                        widget String email <= u.email icon:"text" label: "My Email";
-                        widget Binary binaryDerived <= u.binary icon:"binary" label:"Binary Derived";
-                        widget String stringDerived <= u.string icon:"string" label:"String Derived";
+                        widget StringWidget email <= u.email icon:"text" label: "My Email" predictive;
+                        widget BinaryWidget binaryDerived <= u.binary icon:"binary" label:"Binary Derived";
+                        widget StringWidget stringTextAreaDerived <= u.string icon:"string" label:"String TextArea Derived" lines:5;
+                        widget StringWidget stringDerived <= u.string icon:"string" label:"String Derived";
                     }
 
                     group level22 width:6 frame:true icon:"dog" label:"Level 2 - 2" orientation:horizontal {
-                        widget Boolean booleanDerived <= u.boolean icon:"boolean" label:"Boolean Derived";
-                        widget Date dateDerived <= u.date icon:"date" label:"Date Derived";
-                        widget Numeric numericDerived <= u.numeric icon:"numeric" label:"Numeric Derived";
+                        widget BooleanWidget booleanDerived <= u.boolean icon:"boolean" label:"Boolean Derived";
+                        widget DateWidget dateDerived <= u.date icon:"date" label:"Date Derived";
+                        widget NumericWidget numericDerived <= u.numeric icon:"numeric" label:"Numeric Derived";
                     }
 
                     tabs tabs0 orientation:horizontal width:6 {
                         group tab1 label:"Tab1" icon:"numbers" h-align:left {
-                            widget Time timeDerived <= u.time icon:"time" label:"Time Derived";
+                            widget TimeWidget timeDerived <= u.time icon:"time" label:"Time Derived";
                         }
 
                         group tab2 label:"Tab2" icon:"numbers" h-align:right {
-                            widget Timestamp timestampDerived <= u.timestamp icon:"timestamp" label:"Timestamp Derived";
-                            widget MyEnum mappedEnum <= u.`enum` icon:"enum" label:"Mapped Enum";
+                            widget TimestampWidget timestampDerived <= u.timestamp icon:"timestamp" label:"Timestamp Derived";
+                            widget ComboWidget mappedEnum <= u.`enum` icon:"enum" label:"Mapped Enum";
+                            widget RadioWidget mappedRadioEnum <= u.`enum` icon:"enum 2" label:"Mapped Radio Enum";
                         }
                     }
                 }
             }
 
             form UserForm(UserTransfer u) {
-                widget String email <= u.email icon:"text" label: "My Email";
+                widget StringWidget email <= u.email icon:"text" label: "My Email";
                 group level1 label:"Yo" icon:"text" {
-                    widget Timestamp timestampDerived <= u.timestamp icon:"timestamp" label:"Timestamp Derived";
+                    widget TimestampWidget timestampDerived <= u.timestamp icon:"timestamp" label:"Timestamp Derived";
                 }
             }
 
@@ -195,7 +207,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals(Axis.VERTICAL, level2.getDirection());
         assertNotNull(level2.getFrame());
         assertNotNull(level2.getStretch());
-        assertEquals(3, level2.getChildren().size());
+        assertEquals(4, level2.getChildren().size());
 
         // level2 -> children
 
@@ -206,6 +218,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("text", email.getIcon().getIconName());
         assertEquals("String", email.getAttributeType().getDataType().getName());
         assertTrue(email.getAttributeType().isIsRequired());
+        assertTrue(email.isIsTypeAheadField());
         assertFalse(email.getAttributeType().isIsReadOnly());
 
         BinaryTypeInput binaryDerived = (BinaryTypeInput) level2.getChildren().stream().filter(c -> c.getName().equals("binaryDerived")).findFirst().orElseThrow();
@@ -224,7 +237,19 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("string", stringDerived.getIcon().getIconName());
         assertEquals("String", stringDerived.getAttributeType().getDataType().getName());
         assertFalse(stringDerived.getAttributeType().isIsRequired());
+        assertFalse(stringDerived.isIsTypeAheadField());
         assertTrue(stringDerived.getAttributeType().isIsReadOnly());
+
+        TextArea stringTextAreaDerived = (TextArea) level2.getChildren().stream().filter(c -> c.getName().equals("stringTextAreaDerived")).findFirst().orElseThrow();
+
+        assertEquals("stringTextAreaDerived", stringTextAreaDerived.getName());
+        assertEquals("String TextArea Derived", stringTextAreaDerived.getLabel());
+        assertEquals("string", stringTextAreaDerived.getIcon().getIconName());
+        assertEquals("String", stringTextAreaDerived.getAttributeType().getDataType().getName());
+        assertEquals(5, stringTextAreaDerived.getLines());
+        assertEquals(5, stringTextAreaDerived.getRow());
+        assertFalse(stringTextAreaDerived.getAttributeType().isIsRequired());
+        assertTrue(stringTextAreaDerived.getAttributeType().isIsReadOnly());
 
         // level2 - 2
 
@@ -310,7 +335,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("numbers", tab2Element.getIcon().getIconName());
         assertEquals(Axis.VERTICAL, tab2Element.getDirection());
         assertEquals(CrossAxisAlignment.END, tab2Element.getCrossAxisAlignment());
-        assertEquals(2, tab2Element.getChildren().size());
+        assertEquals(3, tab2Element.getChildren().size());
 
         // tab2 -> children
 
@@ -331,6 +356,15 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("MyEnum", mappedEnum.getAttributeType().getDataType().getName());
         assertFalse(mappedEnum.getAttributeType().isIsRequired());
         assertFalse(mappedEnum.getAttributeType().isIsReadOnly());
+
+        EnumerationRadio mappedRadioEnum = (EnumerationRadio) tab2Element.getChildren().stream().filter(c -> c.getName().equals("mappedRadioEnum")).findFirst().orElseThrow();
+
+        assertEquals("mappedRadioEnum", mappedRadioEnum.getName());
+        assertEquals("Mapped Radio Enum", mappedRadioEnum.getLabel());
+        assertEquals("enum 2", mappedRadioEnum.getIcon().getIconName());
+        assertEquals("MyEnum", mappedRadioEnum.getAttributeType().getDataType().getName());
+        assertFalse(mappedRadioEnum.getAttributeType().isIsRequired());
+        assertFalse(mappedRadioEnum.getAttributeType().isIsReadOnly());
 
         // User Form
 
@@ -367,6 +401,9 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
             type numeric Numeric scale: 0 precision: 9;
             type string String min-size: 0 max-size: 255;
+
+            widget numeric NumericWidget;
+            widget string StringWidget;
 
             entity User {
                 identifier String email required;
@@ -417,7 +454,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
     
                     tabs tabs0 orientation:horizontal width:6 {
                         group tab1 label:"Tab1" icon:"numbers" h-align:left {
-                            widget String email <= u.emailReadOnly icon:"text" label:"My Email";
+                            widget StringWidget email <= u.emailReadOnly icon:"text" label:"My Email";
                         }
         
                         group tab2 label:"Tab2" icon:"numbers" h-align:right {
@@ -428,10 +465,11 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             }
 
             form UserForm(UserTransfer u) {
-                widget String emailReadOnly <= u.emailReadOnly icon:"text" label:"Readonly Email";
-                widget String emailWritable <=> u.emailWritable icon:"text" label:"Writable Email" help:"ME";
+                widget StringWidget emailReadOnly <= u.emailReadOnly icon:"text" label:"Readonly Email";
+                widget StringWidget emailWritable <=> u.emailWritable icon:"text" label:"Writable Email" help:"ME";
                 group level1 label:"Yo" icon:"text" {
                     link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm;
+                    button RelatedView relatedButton <= u.related icon:"related" label:"Related";
                 }
                 table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" width:6 selector:RelatedRow view:RelatedView form:RelatedForm;
             }
@@ -442,13 +480,13 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             }
 
             view RelatedView(RelatedTransfer r) {
-                widget String first <= r.first label: "First";
-                widget Numeric second <= r.second label: "Second";
+                widget StringWidget first <= r.first label: "First";
+                widget NumericWidget second <= r.second label: "Second";
             }
 
             form RelatedForm(RelatedTransfer r) {
-                widget String first <= r.first label: "First";
-                widget Numeric second <= r.second label: "Second";
+                widget StringWidget first <= r.first label: "First";
+                widget NumericWidget second <= r.second label: "Second";
             }
 
             actor RelationWidgetsActor {
@@ -489,6 +527,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 "RelationWidgetsTestModel::RelationWidgets::users::AccessTableViewPage",
                 "RelationWidgetsTestModel::UserForm::level1::related::FormPage",
                 "RelationWidgetsTestModel::UserForm::level1::related::ViewPage",
+                "RelationWidgetsTestModel::UserForm::level1::relatedButton::ViewPage",
                 "RelationWidgetsTestModel::UserForm::relatedCollection::AddSelectorPage",
                 "RelationWidgetsTestModel::UserForm::relatedCollection::FormPage",
                 "RelationWidgetsTestModel::UserForm::relatedCollection::ViewPage",
@@ -664,6 +703,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("text", formEmailWritable.getIcon().getIconName());
         assertEquals("ME", formEmailWritable.getTooltipText());
         assertFalse(formEmailWritable.isIsReadOnly());
+        assertFalse(formEmailWritable.isIsTypeAheadField());
 
         // group level1
 
@@ -673,8 +713,14 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("text", formLevel1.getIcon().getIconName());
 
         assertEquals(List.of(
-            "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::related"
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::related",
+                "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::relatedButton"
         ), formLevel1.getChildren().stream().map(NamedElement::getFQName).sorted().toList());
+
+        Button formLevel1RelatedButton = (Button) formLevel1.getChildren().get(1);
+        assertEquals("relatedButton", formLevel1RelatedButton.getName());
+        assertEquals("RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::relatedButton::relatedButton::View", formLevel1RelatedButton.getActionDefinition().getFQName());
+        assertEquals("RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::relatedButton::relatedButton::PreFetch", formLevel1RelatedButton.getPreFetchActionDefinition().getFQName());
 
         Link formLevel1Related = (Link) formLevel1.getChildren().get(0);
         assertEquals("related", formLevel1Related.getName());
