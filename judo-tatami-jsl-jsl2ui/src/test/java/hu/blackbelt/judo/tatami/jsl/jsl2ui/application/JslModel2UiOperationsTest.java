@@ -41,6 +41,8 @@ public class JslModel2UiOperationsTest extends AbstractTest {
             model %s;
             import judo::types;
 
+            widget numeric NumericWidget;
+
             error Error1 {
             }
 
@@ -57,7 +59,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
             }
 
             view View1(Transfer1 t1) {
-                widget Integer number <=> t1.number;
+                widget NumericWidget number <=> t1.number;
             }
 
             row Row1(Transfer1 t1) {
@@ -71,11 +73,11 @@ public class JslModel2UiOperationsTest extends AbstractTest {
             }
 
             view View2(Transfer2 t2) {
-                widget Integer number <=> t2.number;
+                widget NumericWidget number <=> t2.number;
             }
 
             form Form2(Transfer2 t2) {
-                widget Integer number <=> t2.number;
+                widget NumericWidget number <=> t2.number;
             }
 
             // test
@@ -92,7 +94,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
             }
 
             view ViewX(TransferX tx) {
-                widget Integer number <=> tx.number;
+                widget NumericWidget number <=> tx.number;
 
                 group level1 label:"Yo" icon:"text" {
                     action void myAction1() <= tx.myAction1 label:"my action 1" icon:"flower";
@@ -102,7 +104,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
             }
 
             form FormX(TransferX tx) {
-                widget Integer number <=> tx.number;
+                widget NumericWidget number <=> tx.number;
             }
 
             row RowX(TransferX tx) {

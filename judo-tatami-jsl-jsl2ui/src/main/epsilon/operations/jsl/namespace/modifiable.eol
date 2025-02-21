@@ -33,6 +33,11 @@ operation JSL!Modifiable getHelpModifier(): JSL!Modifier {
 }
 
 @cached
+operation JSL!Modifiable isPredictive(): Boolean {
+    return self.modifiers.exists(m | m.isTypeOf(JSL!PredictiveModifier) and not m.`false`);
+}
+
+@cached
 operation JSL!Modifiable getStretchModifier(): JSL!Modifier {
     return self.modifiers.selectOne(m | m.isTypeOf(JSL!StretchModifier));
 }
