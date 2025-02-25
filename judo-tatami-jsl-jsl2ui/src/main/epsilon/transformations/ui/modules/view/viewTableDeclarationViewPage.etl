@@ -11,6 +11,10 @@ rule ViewTableViewPageDefinition
 
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
 
+        if (s.getUpdateViewModifier().view.isOpenInDialog()) {
+            t.openInDialog = true;
+        }
+
         /*
         log.info("===================");
         log.info(t.name + ":");
