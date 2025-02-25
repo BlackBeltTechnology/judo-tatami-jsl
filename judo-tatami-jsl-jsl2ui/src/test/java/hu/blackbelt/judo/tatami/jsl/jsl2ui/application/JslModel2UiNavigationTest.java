@@ -17,8 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class JslModel2UiNavigationTest extends AbstractTest {
@@ -314,5 +313,124 @@ public class JslModel2UiNavigationTest extends AbstractTest {
         Action myJumpersCollectionOpenPageAction = relatedViewPageActions.stream().filter(a -> a.getName().equals("myJumpers::OpenPage")).findFirst().orElseThrow();
         assertTrue(myJumpersCollectionOpenPageAction.getIsOpenPageAction());
         assertEquals(pages.stream().filter(p -> p.getName().equals("NavigationTestModel::RelatedView::myJumpers::ViewPage")).findFirst().orElse(null), myJumpersCollectionOpenPageAction.getTargetPageDefinition());
+    }
+
+    @Test
+    void testDialogs() throws Exception {
+        jslModel = JslParser.getModelFromStrings("DialogTestModel", List.of("""
+            model DialogTestModel;
+
+            import judo::types;
+
+            widget numeric NumericWidget;
+            widget string StringWidget;
+
+            entity User {
+                identifier String email required;
+                field Integer numeric;
+
+                field Related related;
+                relation Related[] relatedCollection;
+            }
+
+            transfer UserTransfer(User u) {
+                relation RelatedTransfer related <= u.related eager;
+                relation RelatedTransfer[] relatedCollection <= u.relatedCollection update create;
+            }
+
+            entity Related {
+                field String first;
+                field Integer second;
+                field Jumper theJumper;
+                relation Jumper[] theJumpersCollection;
+            }
+
+            transfer RelatedTransfer(Related r) {
+                field String first <= r.first;
+                field Integer second <= r.second;
+                relation JumperTransfer theJumper <= r.theJumper;
+                relation JumperTransfer[] theJumpersCollection <= r.theJumpersCollection update create;
+
+                event create onCreate;
+                event update onUpdate;
+            }
+
+            entity Jumper {
+                field String first;
+            }
+
+            transfer JumperTransfer(Jumper j) {
+                field String first <= j.first;
+
+                event create onCreate;
+                event update onUpdate;
+            }
+
+            view UserView(UserTransfer u) dialog:true {
+                group level1 {
+                    link RelatedView related <= u.related icon:"related" label:"Related" width:6;
+                    table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" view:RelatedView;
+                }
+            }
+
+            row RelatedRow(RelatedTransfer r) {
+                column String first <= r.first label:"First";
+                column Integer second <= r.second label:"Second";
+            }
+
+            view RelatedView(RelatedTransfer r) dialog:true {
+                widget StringWidget first <= r.first label: "First";
+                widget NumericWidget second <= r.second label: "Second";
+                link JumperView myJumper <= r.theJumper icon:"jumping" label:"My Jumper" width:6;
+                table JumperRow[] myJumpers <= r.theJumpersCollection icon:"jumping-all" label:"My Jumpers" width:6 view:JumperView;
+            }
+
+            view JumperView(JumperTransfer j) {
+                widget StringWidget first <= j.first label: "First";
+            }
+
+            row JumperRow(JumperTransfer j) {
+                column String first <= j.first label: "First";
+            }
+
+            actor NavigationActor {
+                access UserTransfer user <= User.any();
+            }
+
+            menu NavigationApp(NavigationActor a){
+                link UserView user <= a.user label:"User" icon:"tools";
+            }
+        """));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        assertEquals(1, apps.size());
+
+        Application application = apps.get(0);
+
+        List<PageDefinition> pages = application.getPages();
+
+        assertEquals(List.of(
+                "DialogTestModel::NavigationApp::DashboardPage",
+                "DialogTestModel::NavigationApp::user::AccessViewPage",
+                "DialogTestModel::RelatedView::myJumper::ViewPage",
+                "DialogTestModel::RelatedView::myJumpers::ViewPage",
+                "DialogTestModel::UserView::level1::related::ViewPage",
+                "DialogTestModel::UserView::level1::relatedCollection::ViewPage"
+        ), pages.stream().map(PageDefinition::getName).sorted().collect(Collectors.toList()));
+
+        PageDefinition userAccessView = pages.stream().filter(p -> p.getName().equals("DialogTestModel::NavigationApp::user::AccessViewPage")).findFirst().orElseThrow();
+        PageDefinition myJumperView = pages.stream().filter(p -> p.getName().equals("DialogTestModel::RelatedView::myJumper::ViewPage")).findFirst().orElseThrow();
+        PageDefinition myJumpersView = pages.stream().filter(p -> p.getName().equals("DialogTestModel::RelatedView::myJumpers::ViewPage")).findFirst().orElseThrow();
+        PageDefinition userViewRelatedView = pages.stream().filter(p -> p.getName().equals("DialogTestModel::UserView::level1::related::ViewPage")).findFirst().orElseThrow();
+        PageDefinition userViewRelatedCollectionView = pages.stream().filter(p -> p.getName().equals("DialogTestModel::UserView::level1::relatedCollection::ViewPage")).findFirst().orElseThrow();
+
+        assertTrue(userAccessView.isOpenInDialog());
+        assertFalse(myJumperView.isOpenInDialog());
+        assertFalse(myJumpersView.isOpenInDialog());
+        assertTrue(userViewRelatedView.isOpenInDialog());
+        assertTrue(userViewRelatedCollectionView.isOpenInDialog());
     }
 }

@@ -93,6 +93,11 @@ operation JSL!Modifiable getDetail(): JSL!DetailModifier {
 }
 
 @cached
+operation JSL!Modifiable isOpenInDialog(): Boolean {
+    return self.modifiers.exists (m | m.isTypeOf(JSL!DialogModifier) and not m.`false`);
+}
+
+@cached
 operation JSL!Modifiable getOpposite(): JSL!Modifier {
     return (self.modifiers.selectOne(m | m.type == "opposite" or m.type == "opposite-add"));
 }

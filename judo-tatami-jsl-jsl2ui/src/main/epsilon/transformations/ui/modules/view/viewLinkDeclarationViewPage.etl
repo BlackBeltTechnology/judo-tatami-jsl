@@ -11,6 +11,10 @@ rule ViewLinkPageDefinition
 
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
 
+        if (s.referenceType.isOpenInDialog()) {
+            t.openInDialog = true;
+        }
+
         /*
         log.info("===================");
         log.info(t.name + ":");
