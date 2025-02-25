@@ -120,34 +120,28 @@ rule TimeTypeTypeTimeInput
         log.debug("TimeTypeTypeTimeInput: " + t.name);
 }
 
-/*
 @greedy
 rule EnumerationTypeRadio
     transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::EnumerationRadio
     extends AbstractViewWidgetDeclaration {
-        guard: s.enumWidget == ESM!esm::ui::EnumWidget#RADIO
-                and rootMenu.containsVisualElement(s)
-                and not s.dataFeature.getMember().isQuery
-                and s.dataFeature.getMember().getDataType().isTypeOf(ESM!esm::type::EnumerationType)
+        guard: s.transferField.target.referenceType.isTypeOf(JSL!EnumDeclaration) and s.type.name == "RadioWidget"
 
-        var id = actorType.name + "/(esm/" + s.getId() + ")/EnumerationTypeRadio";
-        t.setId(actorType.name + "/(esm/" + s.getId() + ")/EnumerationTypeRadio");
-        for (m in s.dataFeature.getMember().getDataType().members) {
-            t.options.add(m.equivalentDiscriminated("EnumerationMemberOption", id));
-        }
-
+        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/EnumerationTypeRadio";
         s.eContainer.uiContainer().children.add(t);
+        t.setId(id);
+        for (l in s.transferField.target.referenceType.literals) {
+            t.options.add(l.equivalentDiscriminated("EnumerationMemberOption", id));
+        }
         log.debug("EnumerationTypeRadio: " + t.name);
 }
-*/
 
 @greedy
 rule EnumerationTypeCombo
     transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::EnumerationCombo
     extends AbstractViewWidgetDeclaration {
-        guard: s.transferField.target.referenceType.isTypeOf(JSL!EnumDeclaration)
+        guard: s.transferField.target.referenceType.isTypeOf(JSL!EnumDeclaration) and s.type.name == "ComboWidget"
 
         var id = rootMenu.name + "/(jsl/" + s.getId() + ")/EnumerationTypeCombo";
         s.eContainer.uiContainer().children.add(t);
@@ -181,13 +175,13 @@ rule StringTypeTextInput
     extends AbstractViewWidgetDeclaration {
         guard: s.transferField.target.referenceType.`primitive`.isDefined()
             and s.transferField.target.referenceType.`primitive` == "string"
-            // and (not s.getLines().isDefined() or s.getLines().value == 1)
+            and (s.getLines().isUndefined() or s.getLines().value <= 1)
 
         s.eContainer.uiContainer().children.add(t);
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/StringTypeTextInput");
-        // if (s.isTypeAheadField.isDefined() and s.isTypeAheadField == true) {
-        //     t.isTypeAheadField = true;
-        // }
+        if (s.isPredictive()) {
+            t.isTypeAheadField = true;
+        }
         log.debug("StringTypeTextInput: " + t.name);
 }
 
@@ -203,6 +197,8 @@ rule StringTypeTextArea
 
         s.eContainer.uiContainer().children.add(t);
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/StringTypeTextArea");
+        t.lines = s.getLines().value.intValue();
+        t.row = t.lines.doubleValue();
         log.debug("StringTypeTextArea: " + t.name);
 }
 

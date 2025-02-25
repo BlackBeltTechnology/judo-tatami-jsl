@@ -16,3 +16,4 @@ import "viewTableDeclaration.eol";
 import "viewTabsDeclaration.eol";
 import "viewWidgetDeclaration.eol";
 import "visibleDeclaration.eol";
+import "widgetDeclaration.eol";

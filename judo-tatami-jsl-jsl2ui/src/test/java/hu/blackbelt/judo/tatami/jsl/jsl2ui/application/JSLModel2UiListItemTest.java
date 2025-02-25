@@ -40,6 +40,9 @@ public class JSLModel2UiListItemTest extends AbstractTest  {
 
                     import judo::types;
 
+                    widget numeric NumericWidget;
+                    widget string StringWidget;
+
                     entity Entity1 {
                         field Integer number;
                         field String blaa;
@@ -67,8 +70,8 @@ public class JSLModel2UiListItemTest extends AbstractTest  {
                     }
 
                     view View1(Transfer1 t1) {
-                        widget Integer number <=> t1.number;
-                        widget String blaa <=> t1.blaa;
+                        widget NumericWidget number <=> t1.number;
+                        widget StringWidget blaa <=> t1.blaa;
 
                         group level {
                             table Card2[] relatedCollection <= t1.relatedCollection view:View2;
@@ -77,18 +80,18 @@ public class JSLModel2UiListItemTest extends AbstractTest  {
                     }
 
                     view View2(Transfer2 t2) {
-                        widget String name <=> t2.name;
-                        widget String hello <=> t2.hello;
+                        widget StringWidget name <=> t2.name;
+                        widget StringWidget hello <=> t2.hello;
                     }
 
                     card Card1(Transfer1 t1) {
-                        widget Integer number <=> t1.number;
-                        widget String blaa <=> t1.blaa;
+                        widget NumericWidget number <=> t1.number;
+                        widget StringWidget blaa <=> t1.blaa;
                     }
 
                     card Card2(Transfer2 t2) {
-                        widget String name <=> t2.name;
-                        widget String hello <=> t2.hello;
+                        widget StringWidget name <=> t2.name;
+                        widget StringWidget hello <=> t2.hello;
                     }
 
                     tag Tag1(Transfer1 t1) text:t1.blaa;

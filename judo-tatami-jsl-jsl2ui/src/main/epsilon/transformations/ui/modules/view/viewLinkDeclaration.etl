@@ -18,18 +18,6 @@ rule AbstractViewLinkDeclaration
         } else {
             __pos.put(t, 0);
         }
-
-        t.isEager = s.transferRelation.target.isEager();
-
-        if (t.isEager) {
-            // TODO finish additional mask attributes
-            /*
-            for (dataFeature in s.additionalMaskFeatures) {
-                var attributeType = dataFeature.getMember().mapAttributeType(s.getRoot().getTransferObjectType().equivalent("ClassType"));
-                t.additionalMaskAttributes.add(attributeType);
-            }
-            */
-        }
 }
 
 @lazy
@@ -45,6 +33,7 @@ rule InlineViewLink
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Link
     extends AbstractViewLinkDeclaration {
+        guard: not s.button
         var id = rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewLink";
         t.setId(id);
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
@@ -67,7 +56,57 @@ rule InlineViewLink
             t.refreshActionDefinition = s.equivalent("ViewLinkDeclarationRefreshActionDefinition");
         }
 
+        t.isEager = s.transferRelation.target.isEager();
+
+        if (t.isEager) {
+            // TODO finish additional mask attributes
+            /*
+            for (dataFeature in s.additionalMaskFeatures) {
+                var attributeType = dataFeature.getMember().mapAttributeType(s.getRoot().getTransferObjectType().equivalent("ClassType"));
+                t.additionalMaskAttributes.add(attributeType);
+            }
+            */
+        }
+
         log.debug("InlineViewLink: " + t.name);
+}
+
+rule InlineViewButton
+    transform s: JSL!UIViewLinkDeclaration
+    to t: UI!ui::Button
+    extends AbstractViewLinkDeclaration {
+        guard: s.button
+
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewButton");
+        t.dataElement = s.transferRelation.target.equivalent("RelationType");
+        t.relationName = t.dataElement.name;
+
+        t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenPageActionDefinition");
+        t.preFetchActionDefinition = s.equivalent("InlineViewButtonPreFetchActionDefinition");
+
+        s.eContainer.uiContainer().children.add(t);
+
+        log.debug("InlineViewButton: " + t.name);
+}
+
+@lazy
+rule InlineViewButtonOpenPageActionDefinition
+    transform s: JSL!UIViewLinkDeclaration
+    to t: UI!ui::OpenPageActionDefinition {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewButtonOpenPageActionDefinition");
+	    t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
+	    t.name = s.name + "::OpenPage";
+        log.debug("InlineViewButtonOpenPageActionDefinition: " + t.name);
+}
+
+@lazy
+rule InlineViewButtonPreFetchActionDefinition
+    transform s: JSL!UIViewLinkDeclaration
+    to t: UI!ui::PreFetchActionDefinition {
+	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewButtonPreFetchActionDefinition");
+        t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
+        t.name = s.name + "::PreFetch";
+        log.debug("InlineViewButtonPreFetchActionDefinition: " + t.name);
 }
 
 @lazy

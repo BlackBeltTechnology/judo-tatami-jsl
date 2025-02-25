@@ -349,6 +349,8 @@ public class JslModel2UiDataTest extends AbstractTest {
 
             import judo::types;
 
+            widget string StringWidget;
+
             entity User {
                 identifier String email required;
 
@@ -440,7 +442,7 @@ public class JslModel2UiDataTest extends AbstractTest {
             }
 
             view UnmappedRelated(EntityRelatedTransfer t) {
-                widget String transient <= t.transient label:"Transient Field";
+                widget StringWidget transient <= t.transient label:"Transient Field";
             }
 
             row UnmappedRelatedRow(EntityRelatedTransfer t) {
@@ -448,7 +450,7 @@ public class JslModel2UiDataTest extends AbstractTest {
             }
 
             view MappedRelated(EntityRelatedTransfer e) {
-                widget String mappedAttribute <= e.hello;
+                widget StringWidget mappedAttribute <= e.hello;
             }
 
             row MappedRelatedRow(EntityRelatedTransfer e) {
