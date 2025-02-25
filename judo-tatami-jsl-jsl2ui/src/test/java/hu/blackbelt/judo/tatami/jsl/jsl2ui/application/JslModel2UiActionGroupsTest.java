@@ -40,6 +40,16 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                 
                     import judo::types;
 
+                    widget binary BinaryWidget;
+                    widget boolean BooleanWidget;
+                    widget date DateWidget;
+                    widget enum ComboWidget;
+                    widget enum RadioWidget;
+                    widget numeric NumericWidget;
+                    widget string StringWidget;
+                    widget time TimeWidget;
+                    widget timestamp TimestampWidget;
+
                     // mapped transfer
 
                     entity Entity1 {
@@ -73,19 +83,19 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                     }
 
                     form Form1(Transfer1 t1) {
-                        widget Integer number <=> t1.number;
+                        widget NumericWidget number <=> t1.number;
                     }
 
                     form Form2(Transfer2 t2) {
-                        widget Integer number <=> t2.number;
+                        widget NumericWidget number <=> t2.number;
                     }
 
                     form FormX(TransferX tx) {
-                        widget Integer number <=> tx.number;
+                        widget NumericWidget number <=> tx.number;
                     }
 
                     view View1(Transfer1 t1) {
-                        widget Integer number <=> t1.number;
+                        widget NumericWidget number <=> t1.number;
 
                         action void myAction1() <= t1.myAction1 label:"my action 1";
                         action View1 myAction2(View1 input selector:Table1) <= t1.myAction2  label:"my action 2";
@@ -103,7 +113,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                     }
 
                     view View2(Transfer2 t2) {
-                        widget Integer number <=> t2.number;
+                        widget NumericWidget number <=> t2.number;
                     }
 
                     row Table1(Transfer1 t1) {

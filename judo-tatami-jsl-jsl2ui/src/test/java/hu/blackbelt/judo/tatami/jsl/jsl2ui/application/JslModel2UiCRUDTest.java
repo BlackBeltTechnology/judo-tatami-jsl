@@ -46,6 +46,9 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
             import judo::types;
 
+            widget numeric NumericWidget;
+            widget string StringWidget;
+
             entity User {
                 identifier String email required;
                 field Integer numeric;
@@ -101,7 +104,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             }
         
             view UserView(UserTransfer u) {
-                widget String email <= u.email label:"Email";
+                widget StringWidget email <= u.email label:"Email";
                 group level {
                     link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm selector:RelatedRow;
                     table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" form:RelatedForm view:RelatedView;
@@ -109,7 +112,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             }
 
             form UserForm(UserTransfer u) {
-                widget String email <= u.email label:"Email";
+                widget StringWidget email <= u.email label:"Email";
                 group level1 label:"Yo" icon:"text" {
                     link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm selector:RelatedRow;
                 }
@@ -122,8 +125,8 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             }
         
             view RelatedView(RelatedTransfer r) {
-                widget String first <= r.first label:"First";
-                widget Integer second <= r.second label:"Second";
+                widget StringWidget first <= r.first label:"First";
+                widget NumericWidget second <= r.second label:"Second";
                 group g1 {
                     link JumperView readOnlyJumper <= r.theJumper icon:"jumping" label:"Read only Jumper" form:JumperForm view:JumperView selector:JumperRow;
                     link JumperView myJumper <= r.theJumper icon:"jumping" label:"My Jumper" width:6 form:JumperForm selector:JumperRow;
@@ -133,7 +136,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         
             form RelatedForm(RelatedTransfer r) {
                 group one label:"Group 1" {
-                    widget String first <= r.first label:"First";
+                    widget StringWidget first <= r.first label:"First";
                 }
                 group level1 label:"Yo" icon:"text" {
                     link JumperView jumper <= r.theJumper label:"Jumper" width:6 form:JumperForm selector:JumperRow;
@@ -142,7 +145,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
             }
         
             view JumperView(JumperTransfer j) {
-                widget String first <= j.first label:"First";
+                widget StringWidget first <= j.first label:"First";
             }
         
             row JumperRow(JumperTransfer j) {
@@ -151,7 +154,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         
             form JumperForm(JumperTransfer j) {
                 group one label:"Group 1" {
-                    widget String firstOnForm <= j.first label:"First on form";
+                    widget StringWidget firstOnForm <= j.first label:"First on form";
                 }
             }
         

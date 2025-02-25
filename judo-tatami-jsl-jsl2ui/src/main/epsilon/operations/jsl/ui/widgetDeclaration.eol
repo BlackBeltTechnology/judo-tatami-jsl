@@ -1,0 +1,9 @@
+@cached
+operation JSL!WidgetDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!WidgetDeclaration getFqName(): String {
+    return self.eContainer.getFqName() + "::" + self.name;
+}

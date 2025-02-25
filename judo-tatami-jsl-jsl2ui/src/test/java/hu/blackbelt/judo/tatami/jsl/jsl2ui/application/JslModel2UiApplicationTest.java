@@ -197,6 +197,8 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
             import judo::types;
 
+            widget string StringWidget;
+
             entity User {
                 identifier String userName required;
             }
@@ -240,13 +242,13 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             }
 
             view ProductView(ProductTransfer product) {
-                widget String name <= product.name;
-                widget String price <= product.price;
+                widget StringWidget name <= product.name;
+                widget StringWidget price <= product.price;
             }
 
             view Product2View(Product2Transfer product2) {
-                widget String name2 <= product2.name2;
-                widget String price2 <= product2.price2;
+                widget StringWidget name2 <= product2.name2;
+                widget StringWidget price2 <= product2.price2;
             }
 
             row ProductsRow(ProductTransfer product) {
@@ -495,6 +497,8 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         
         import judo::types;
         
+        widget string StringWidget;
+        
         entity A {
             field String name;
             field B[] bs;
@@ -546,11 +550,11 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         }
         
         form AForm(ATransfer a) {
-            widget String name <= a.name icon: "atom-variant";
+            widget StringWidget name <= a.name icon: "atom-variant";
         }
         
         view AView(ATransfer a) {
-            widget String name <= a.name;
+            widget StringWidget name <= a.name;
         }
         
         row ARow(ATransfer a) {

@@ -39,7 +39,9 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
         return """
                     model %s;
                 
-                     import judo::types;
+                    import judo::types;
+
+                    widget numeric NumericWidget;
                 
                      // mapped transfer
                 
@@ -70,7 +72,7 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                      }
                 
                      view View1(Transfer1 t1) {
-                     	widget Integer number <=> t1.number;
+                     	widget NumericWidget number <=> t1.number;
                      }
                 
                      row Row1(Transfer1 t1) {
@@ -89,11 +91,11 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                      }
                 
                      view View2(Transfer2 t2) {
-                         widget Integer number <=> t2.number;
+                         widget NumericWidget number <=> t2.number;
                      }
                 
                      form Form2(Transfer2 t2) {
-                         widget Integer number <=> t2.number;
+                         widget NumericWidget number <=> t2.number;
                      }
                 
                      // test
@@ -111,7 +113,7 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                      }
                 
                      view ViewX(TransferX tx) {
-                     	widget Integer number <=> tx.number;
+                     	widget NumericWidget number <=> tx.number;
 
                      	group level {
                      	    table Row3[] relatedCollection <= tx.relatedCollection;
@@ -123,7 +125,7 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                      }
                 
                      form FormX(TransferX tx) {
-                     	widget Integer number <=> tx.number;
+                     	widget NumericWidget number <=> tx.number;
                      }
                 
                      row RowX(TransferX tx) {
