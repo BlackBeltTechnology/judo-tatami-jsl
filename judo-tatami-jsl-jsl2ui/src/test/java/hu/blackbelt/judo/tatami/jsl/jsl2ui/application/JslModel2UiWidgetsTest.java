@@ -465,9 +465,9 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
             }
 
             form UserForm(UserTransfer u) {
-                widget StringWidget emailReadOnly <= u.emailReadOnly icon:"text" label:"Readonly Email";
+                widget StringWidget emailReadOnly <= u.emailReadOnly icon:"text" label:"Readonly Email" width:3;
                 widget StringWidget emailWritable <=> u.emailWritable icon:"text" label:"Writable Email" help:"ME";
-                group level1 label:"Yo" icon:"text" {
+                group level1 label:"Yo" icon:"text" width:6 {
                     link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm;
                     button RelatedView relatedButton <= u.related icon:"related" label:"Related";
                 }
@@ -541,6 +541,13 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 "RelationWidgetsTestModel::UserView::level1::tabs0::tab2::relatedCollection::ViewPage"
         ), pages.stream().map(PageDefinition::getName).sorted().toList());
 
+        // Pages
+        PageDefinition usersViewPage = pages.stream().filter(p -> p.getName().equals("RelationWidgetsTestModel::RelationWidgets::users::AccessTableViewPage")).findFirst().orElseThrow();
+
+        assertEquals(TitleFrom.LABEL, usersViewPage.getContainer().getTitleFrom());
+        assertEquals("UserView", usersViewPage.getContainer().getLabel());
+
+
         // Links
 
         assertEquals(List.of(
@@ -587,7 +594,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         ClassType relatedRowClassType = classTypes.stream().filter(c -> c.getName().equals("RelationWidgetsTestModel::RelatedTransfer")).findFirst().orElseThrow();
 
         assertEquals("Related Collection", userViewTable.getLabel());
-        assertEquals(12, userViewTable.getCol());
+        assertEquals(6, userViewTable.getCol());
         assertEquals("relatedCollection", userViewTable.getRelationName());
         assertFalse(userViewTable.isIsEager());
         assertFalse(userViewTable.isIsInlineEditable());
@@ -695,6 +702,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("emailReadOnly", formEmailReadonly.getName());
         assertEquals("Readonly Email", formEmailReadonly.getLabel());
         assertEquals("text", formEmailReadonly.getIcon().getIconName());
+        assertEquals(3, formEmailReadonly.getCol());
         assertTrue(formEmailReadonly.isIsReadOnly());
 
         TextInput formEmailWritable = (TextInput) formChildren.get(1);
@@ -724,6 +732,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
 
         Link formLevel1Related = (Link) formLevel1.getChildren().get(0);
         assertEquals("related", formLevel1Related.getName());
+        assertEquals(6, formLevel1Related.getCol());
         assertEquals(List.of(
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::related::related::Actions::related::Create::Open",
                 "RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::related::related::Actions::related::Delete",
