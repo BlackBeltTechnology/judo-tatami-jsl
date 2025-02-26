@@ -20,39 +20,21 @@ package hu.blackbelt.judo.tatami.jsl.workflow.maven.plugin;
  * #L%
  */
 
-import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflow;
 import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSetupParameters;
 import hu.blackbelt.judo.tatami.jsl.workflow.WorkflowHelper;
-import lombok.Builder;
-import lombok.SneakyThrows;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArguments.jslDslLoadArgumentsBuilder;
 
 @Mojo(name = "default-model-workflow",
         defaultPhase = LifecyclePhase.COMPILE,
@@ -84,7 +66,7 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
     private Boolean ignorePsm2AsmTrace = true;
 
     @Parameter(property = "ignorePsm2Measure", defaultValue = "false")
-    private Boolean ignoreAsm2Measure = false;
+    private Boolean ignorePsm2Measure = false;
 
     @Parameter(property = "ignorePsm2MeasureTrace", defaultValue = "true")
     private Boolean ignorePsm2MeasureTrace = true;
@@ -192,7 +174,7 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
                         .ignoreJsl2Ui(ignoreJsl2Ui)
                         .ignoreJsl2PsmTrace(true)
                         .ignorePsm2Asm(ignorePsm2Asm)
-                        .ignorePsm2Measure(ignoreAsm2Measure)
+                        .ignorePsm2Measure(ignorePsm2Measure)
                         .ignoreAsm2Rdbms(ignoreAsm2Rdbms)
                         .ignoreAsm2Expression(ignoreAsm2Expression)
                         .ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
