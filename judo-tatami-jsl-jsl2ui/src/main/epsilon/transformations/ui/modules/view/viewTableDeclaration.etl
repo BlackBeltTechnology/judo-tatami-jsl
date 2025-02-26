@@ -6,12 +6,14 @@ rule AbstractViewTableDeclaration
 
         t.name = s.name;
         t.relationName = s.transferRelation.target.name;
-        t.label = s.getLabelWithNameFallback();
+        if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("TableIcon");
         }
         t.row = 1d;
-        t.col = s.width.isDefined() ? s.width.asReal() : 12d;
+        t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12d;
         t.isEager = s.transferRelation.target.isEager();
         t.isInlineEditable = t.isEager; // TODO JNG-6043 Currently the runtime only supports inline edit for eager tables
         if (__pos.get(s).isDefined()) {
@@ -212,6 +214,7 @@ rule InlineViewTags
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
         s.eContainer.uiContainer().children.add(t);
         t.representationComponent = UI!ui::TableRepresentation#CARD;
+        t.label = s.getLabelWithNameFallback(); // Tags behave like input components, so we apply a fallback here
 
         var col = s.referenceType.equivalentDiscriminated("TagWidgetDeclarationPrimitiveColumn", id);
         t.columns.add(col);
