@@ -64,7 +64,7 @@
         <build-helper-maven-plugin-version>3.3.0</build-helper-maven-plugin-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.3.20250225_145318_9c79b07e_develop</judo-meta-jsl-version>
+        <judo-meta-jsl-version>1.0.3.20250226_102152_cc2e1735_develop</judo-meta-jsl-version>
         <judo-meta-rdbms-version>1.0.2.20250222_040702_8ea8a157_develop</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.4.20250222_040637_1cddfa73_develop</judo-meta-jql-version>
         <judo-meta-ui-version>1.1.0.20250222_040642_c9901377_develop</judo-meta-ui-version>
