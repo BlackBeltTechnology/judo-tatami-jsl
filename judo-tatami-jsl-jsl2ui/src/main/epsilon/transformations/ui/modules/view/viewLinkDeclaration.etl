@@ -11,7 +11,7 @@ rule AbstractViewLinkDeclaration
             t.icon = s.equivalent("LinkIcon");
         }
         t.row = 1d;
-        t.col = s.width.isDefined() ? s.width.asReal() : 12d;
+        t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 12d;
 
         if (__pos.get(s).isDefined()) {
             __pos.put(t, __pos.get(s));

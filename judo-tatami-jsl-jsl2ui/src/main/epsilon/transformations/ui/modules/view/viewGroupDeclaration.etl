@@ -3,7 +3,9 @@ rule AbstractViewGroupDeclaration
     transform s: JSL!UIViewGroupDeclaration
     to t: UI!ui::Flex {
         t.name = s.name;
-        t.label = s.getLabelWithNameFallback();
+        if (s.getLabelModifier().isDefined()) {
+            t.label = s.getLabelModifier().value.value;
+        }
         if (s.getIconModifier().isDefined()) {
             t.icon = s.equivalent("GroupIcon");
         }
