@@ -27,7 +27,11 @@ rule ViewLinkPageDefinition
 
             t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", s.getId()));
             if (lRelation.isRefreshAllowed() and not lRelation.isEager()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", s.getId()));
+                if (link.button) {
+                    t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationPreFetchAction", s.getId()));
+                } else {
+                    t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", s.getId()));
+                }
             }
             if (link.getCreateFormModifier().isDefined()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", s.getId()));
@@ -153,6 +157,19 @@ rule ViewLinkDeclarationRefreshAction
         t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
 
         log.debug("ViewLinkDeclarationRefreshAction: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationPreFetchAction
+    transform s: JSL!UIViewLinkDeclaration
+    to t: UI!ui::Action {
+        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationPreFetchAction");
+        t.name = s.name + "::PreFetch";
+        t.actionDefinition = s.equivalent("InlineViewButtonPreFetchActionDefinition");
+        t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
+        t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
+
+        log.debug("ViewLinkDeclarationPreFetchAction: " + t.name);
 }
 
 @lazy
