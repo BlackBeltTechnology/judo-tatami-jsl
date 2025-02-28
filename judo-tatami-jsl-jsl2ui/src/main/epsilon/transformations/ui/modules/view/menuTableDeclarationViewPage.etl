@@ -30,7 +30,11 @@ rule AccessTableViewPageDefinition
 
             t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", s.getId()));
             if (lRelation.isRefreshAllowed() and not lRelation.isEager()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", s.getId()));
+                if (link.button) {
+                    t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationPreFetchAction", s.getId()));
+                } else {
+                    t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", s.getId()));
+                }
             }
             if (link.getCreateFormModifier().isDefined()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", s.getId()));
