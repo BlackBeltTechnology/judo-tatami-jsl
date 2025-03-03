@@ -2,6 +2,8 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.*;
+import hu.blackbelt.judo.meta.ui.data.DataElement;
+import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -76,6 +78,8 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
 
                     transfer Transfer2(Entity2 e2) {
                         field Integer number <=> e2.number;
+
+                        action void someAction();
                     }
 
                     transfer TransferX {
@@ -122,6 +126,8 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
 
                     row Table2(Transfer2 t2) {
                         column Integer number <= t2.number;
+
+                        action void someAction() <= t2.someAction label:"some action";
                     }
 
                     actor A {
@@ -156,6 +162,14 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
         Application application = apps.get(0);
 
         assertEquals(List.of(
+                "A::TableOperations::A::t1",
+                "A::TableOperations::A::t1s",
+                "A::TableOperations::Transfer1::list2"
+        ), application.getRelationTypes().stream().map(r -> ((DataElement) r).getFQName()).sorted().toList());
+
+        RelationType list2 = (RelationType) application.getRelationTypes().stream().filter(r -> ((DataElement) r).getFQName().equals("A::TableOperations::Transfer1::list2")).findFirst().orElseThrow();
+
+        assertEquals(List.of(
                 "A::TableOperations::M::DashboardPage",
                 "A::TableOperations::M::v1::AccessViewPage",
                 "A::TableOperations::M::v1s::AccessFormPage",
@@ -174,6 +188,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
         PageDefinition accessTableView1Page = application.getPages().stream().filter(p -> p.getFQName().equals("A::TableOperations::M::v1s::AccessTableViewPage")).findFirst().orElseThrow();
 
         assertEquals(List.of(
+                "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::Table2::someAction::Action",
                 "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::myAction1::Action",
                 "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::myAction2::Action",
                 "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::myAction3::Action",
@@ -182,7 +197,6 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                 "A::TableOperations::M::v1s::AccessTableViewPage::table2::Filter",
                 "A::TableOperations::M::v1s::AccessTableViewPage::table2::Refresh",
                 "A::TableOperations::M::v1s::AccessTableViewPage::v1s::Back",
-                "A::TableOperations::M::v1s::AccessTableViewPage::v1s::Cancel",
                 "A::TableOperations::M::v1s::AccessTableViewPage::v1s::Refresh",
                 "A::TableOperations::M::v1s::AccessTableViewPage::v1s::Update"
         ), accessTableView1Page.getActions().stream().map(NamedElement::getFQName).sorted().toList());
@@ -201,7 +215,6 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
 
         assertEquals(List.of(
                 "A::TableOperations::View1::View::PageContainer::TableOperations::View1::PageActions::TableOperations::View1::Back::TableOperations::View1::Back",
-                "A::TableOperations::View1::View::PageContainer::TableOperations::View1::PageActions::TableOperations::View1::Cancel::TableOperations::View1::Cancel",
                 "A::TableOperations::View1::View::PageContainer::TableOperations::View1::PageActions::TableOperations::View1::Delete::TableOperations::View1::Delete",
                 "A::TableOperations::View1::View::PageContainer::TableOperations::View1::PageActions::TableOperations::View1::Refresh::TableOperations::View1::Refresh",
                 "A::TableOperations::View1::View::PageContainer::TableOperations::View1::PageActions::TableOperations::View1::Update::TableOperations::View1::Update",
@@ -211,7 +224,8 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                 "A::TableOperations::View1::View::PageContainer::View1::myActions::myAction4::TableOperations::View1::myActions::myAction4::Open::Selector",
                 "A::TableOperations::View1::View::PageContainer::View1::myActions::myAction5::TableOperations::View1::myActions::myAction5::Open::Operation::Form",
                 "A::TableOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Filter::table2::Filter",
-                "A::TableOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Refresh::table2::Refresh"
+                "A::TableOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Refresh::table2::Refresh",
+                "A::TableOperations::View1::View::PageContainer::View1::table2::table2InlineViewTableRowButtonGroup::someAction::TableOperations::Table2::someAction::Call"
         ), view1Container.getAllActionDefinitions().stream().map(a -> ((ActionDefinition) a).getFQName()).toList());
 
         ButtonGroup myActions = (ButtonGroup) ((Flex) view1Container.getChildren().get(0)).getChildren().stream().filter(c -> c.getName().equals("myActions")).findFirst().orElseThrow();
@@ -233,6 +247,22 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
         assertEquals(myAction5ActionDefinition, myAction5.getActionDefinition());
         assertEquals("my action 5", myAction5.getLabel());
         assertEquals("horse", myAction5.getIcon().getIconName());
+
+        Table table2 = (Table) view1Container.getTables().stream().filter(t -> ((Table) t).getName().equals("table2")).findFirst().orElseThrow();
+        ButtonGroup table2RowButtons = table2.getRowActionButtonGroup();
+
+        assertEquals(List.of(
+                "A::TableOperations::View1::View::PageContainer::View1::table2::table2InlineViewTableRowButtonGroup::someAction"
+        ), table2RowButtons.getButtons().stream().map(NamedElement::getFQName).sorted().toList());
+
+        Button someActionButton =  table2RowButtons.getButtons().stream().filter(c -> c.getName().equals("someAction")).findFirst().orElseThrow();
+
+        assertTrue(someActionButton.getActionDefinition().getIsCallOperationAction());
+        assertEquals(list2.getTarget(), someActionButton.getActionDefinition().getTargetType());
+
+        Action table2SomeAction = accessTableView1Page.getActions().stream().filter(a -> a.getFQName().equals("A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::Table2::someAction::Action")).findFirst().orElseThrow();
+
+        assertEquals(list2,  table2SomeAction.getOwnerDataElement());
     }
 
     @Test
@@ -250,6 +280,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
         PageDefinition accessLinkView1Page = application.getPages().stream().filter(p -> p.getFQName().equals("A::LinkOperations::M::v1::AccessViewPage")).findFirst().orElseThrow();
 
         assertEquals(List.of(
+                "A::LinkOperations::M::v1::AccessViewPage::LinkOperations::Table2::someAction::Action",
                 "A::LinkOperations::M::v1::AccessViewPage::LinkOperations::View1::myAction1::Action",
                 "A::LinkOperations::M::v1::AccessViewPage::LinkOperations::View1::myAction2::Action",
                 "A::LinkOperations::M::v1::AccessViewPage::LinkOperations::View1::myAction3::Action",
@@ -266,7 +297,6 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
 
         assertEquals(List.of(
                 "A::LinkOperations::View1::View::PageContainer::LinkOperations::View1::PageActions::LinkOperations::View1::Back::LinkOperations::View1::Back",
-                "A::LinkOperations::View1::View::PageContainer::LinkOperations::View1::PageActions::LinkOperations::View1::Cancel::LinkOperations::View1::Cancel",
                 "A::LinkOperations::View1::View::PageContainer::LinkOperations::View1::PageActions::LinkOperations::View1::Delete::LinkOperations::View1::Delete",
                 "A::LinkOperations::View1::View::PageContainer::LinkOperations::View1::PageActions::LinkOperations::View1::Refresh::LinkOperations::View1::Refresh",
                 "A::LinkOperations::View1::View::PageContainer::LinkOperations::View1::PageActions::LinkOperations::View1::Update::LinkOperations::View1::Update",
@@ -276,7 +306,8 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                 "A::LinkOperations::View1::View::PageContainer::View1::myActions::myAction4::LinkOperations::View1::myActions::myAction4::Open::Selector",
                 "A::LinkOperations::View1::View::PageContainer::View1::myActions::myAction5::LinkOperations::View1::myActions::myAction5::Open::Operation::Form",
                 "A::LinkOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Filter::table2::Filter",
-                "A::LinkOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Refresh::table2::Refresh"
+                "A::LinkOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Refresh::table2::Refresh",
+                "A::LinkOperations::View1::View::PageContainer::View1::table2::table2InlineViewTableRowButtonGroup::someAction::LinkOperations::Table2::someAction::Call"
         ), view1Container.getAllActionDefinitions().stream().map(a -> ((ActionDefinition) a).getFQName()).toList());
 
         ButtonGroup myActions = (ButtonGroup) ((Flex) view1Container.getChildren().get(0)).getChildren().stream().filter(c -> c.getName().equals("myActions")).findFirst().orElseThrow();

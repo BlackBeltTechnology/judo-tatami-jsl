@@ -22,6 +22,8 @@ rule ViewLinkPageDefinition
         log.info("===================");
         */
 
+        var actionDeclarationsToProcess =s.referenceType.getAllActionDeclarations();
+
         for (link in s.referenceType.getOwnLinks()) {
             var lRelation = link.transferRelation.target;
 
@@ -82,11 +84,24 @@ rule ViewLinkPageDefinition
                 t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteRangeAction", s.getId()));
                 t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteAddAction", s.getId()));
             }
+
+            for (actionDeclaration in table.getAllActionDeclarations()) {
+                var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
+                viewAction.ownerDataElement = tRelation.equivalent("RelationType");
+                viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
+                t.actions.add(viewAction);
+
+                actionDeclarationsToProcess.remove(actionDeclaration);
+
+                if (viewAction.actionDefinition.isKindOf(UI!ui::ParameterlessCallOperationActionDefinition) and viewAction.actionDefinition.targetType.isUndefined()) {
+                    viewAction.actionDefinition.targetType = tRelation.referenceType.equivalent("ClassType");
+                }
+            }
         }
 
-        for (actionDeclaration in s.referenceType.getAllActionDeclarations()) {
+        for (actionDeclaration in actionDeclarationsToProcess) {
             var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
-            viewAction.ownerDataElement = t.dataElement; // TODO JNG-6224 add plus if-else's here for tabular reference field actions
+            viewAction.ownerDataElement = t.dataElement;
             viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
             t.actions.add(viewAction);
         }
