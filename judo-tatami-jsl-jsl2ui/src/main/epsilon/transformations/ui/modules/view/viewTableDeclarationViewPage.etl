@@ -78,6 +78,13 @@ rule ViewTableViewPageDefinition
             }
         }
 
+        for (actionDeclaration in s.getUpdateViewModifier().view.getAllActionDeclarations()) {
+            var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
+            viewAction.ownerDataElement = t.dataElement; // TODO JNG-6224 add plus if-else's here for tabular reference field actions
+            viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
+            t.actions.add(viewAction);
+        }
+
         t.actions.add(s.equivalent("ViewTableViewPageDefinitionBackAction"));
         if (s.transferRelation.target.isRefreshAllowed()) {
             t.actions.add(s.equivalent("ViewTableViewPageDefinitionRefreshAction"));
