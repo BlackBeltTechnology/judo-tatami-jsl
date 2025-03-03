@@ -25,7 +25,7 @@ rule AccessTableViewPageDefinition
         log.info("===================");
         */
 
-        var allActionDeclarations = s.getUpdateViewModifier().view.getAllActionDeclarations();
+        var actionDeclarationsToProcess =s.getUpdateViewModifier().view.getAllActionDeclarations();
 
         for (link in s.getUpdateViewModifier().view.getOwnLinks()) {
             var lRelation = link.transferRelation.target;
@@ -88,7 +88,7 @@ rule AccessTableViewPageDefinition
                 viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
                 t.actions.add(viewAction);
 
-                allActionDeclarations.remove(actionDeclaration);
+                actionDeclarationsToProcess.remove(actionDeclaration);
 
                 if (viewAction.actionDefinition.isKindOf(UI!ui::ParameterlessCallOperationActionDefinition) and viewAction.actionDefinition.targetType.isUndefined()) {
                     viewAction.actionDefinition.targetType = tRelation.referenceType.equivalent("ClassType");
@@ -96,7 +96,7 @@ rule AccessTableViewPageDefinition
             }
         }
 
-        for (actionDeclaration in allActionDeclarations) {
+        for (actionDeclaration in actionDeclarationsToProcess) {
             var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
             viewAction.ownerDataElement = t.dataElement;
             viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");

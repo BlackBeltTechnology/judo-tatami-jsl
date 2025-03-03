@@ -22,7 +22,7 @@ rule ViewLinkPageDefinition
         log.info("===================");
         */
 
-        var allActionDeclarations = s.referenceType.getAllActionDeclarations();
+        var actionDeclarationsToProcess =s.referenceType.getAllActionDeclarations();
 
         for (link in s.referenceType.getOwnLinks()) {
             var lRelation = link.transferRelation.target;
@@ -91,7 +91,7 @@ rule ViewLinkPageDefinition
                 viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
                 t.actions.add(viewAction);
 
-                allActionDeclarations.remove(actionDeclaration);
+                actionDeclarationsToProcess.remove(actionDeclaration);
 
                 if (viewAction.actionDefinition.isKindOf(UI!ui::ParameterlessCallOperationActionDefinition) and viewAction.actionDefinition.targetType.isUndefined()) {
                     viewAction.actionDefinition.targetType = tRelation.referenceType.equivalent("ClassType");
@@ -99,7 +99,7 @@ rule ViewLinkPageDefinition
             }
         }
 
-        for (actionDeclaration in allActionDeclarations) {
+        for (actionDeclaration in actionDeclarationsToProcess) {
             var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
             viewAction.ownerDataElement = t.dataElement;
             viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
