@@ -47,7 +47,6 @@ rule ViewPageContainerButtonGroup
  		t.buttons.add(s.equivalent("ViewPageContainerBackButton"));
  		t.buttons.add(s.equivalent("ViewPageContainerRefreshButton"));
  		t.buttons.add(s.equivalent("ViewPageContainerDeleteButton"));
- 		t.buttons.add(s.equivalent("ViewPageContainerCancelButton"));
  		t.buttons.add(s.equivalent("ViewPageContainerUpdateButton"));
 
         log.debug("ViewPageContainerButtonGroup: " + t.name);
@@ -197,39 +196,4 @@ rule ViewPageContainerUpdateButton
     	t.actionDefinition = s.equivalent("ViewPageContainerUpdateActionDefinition");
 
         log.debug("ViewPageContainerUpdateButton: " + t.name);    
-}
-
-@lazy
-rule ViewPageContainerCancelActionDefinition
-    transform s: JSL!UIViewDeclaration
-    to t: UI!ui::CancelActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerCancelActionDefinition");
- 		t.name = s.getFqName() + "::Cancel";
-
-        log.debug("ViewPageContainerCancelActionDefinition: " + t.name);
-}
-
-@lazy
-rule ViewPageContainerCancelButtonIcon
-    transform s: JSL!UIViewDeclaration
-    to t: UI!ui::Icon {
-    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerCancelButtonIcon");
-    	t.name = s.name + "CancelButtonIcon";
-    	t.iconName = "cancel";
-
-    	log.debug("ViewPageContainerCancelButtonIcon: " + t.name);
-}
-
-@lazy
-rule ViewPageContainerCancelButton
-    transform s: JSL!UIViewDeclaration
-    to t: UI!ui::Button {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerCancelButton");
- 		t.name = s.getFqName() + "::Cancel";
-    	t.label = "Cancel";
-    	t.buttonStyle = "text";
-    	t.icon = s.equivalent("ViewPageContainerCancelButtonIcon");
-    	t.actionDefinition = s.equivalent("ViewPageContainerCancelActionDefinition");
-
-        log.debug("ViewPageContainerCancelButton: " + t.name);
 }
