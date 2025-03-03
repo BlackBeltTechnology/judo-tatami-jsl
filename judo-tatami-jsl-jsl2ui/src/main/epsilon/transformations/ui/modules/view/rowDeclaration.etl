@@ -231,7 +231,12 @@ rule TableRowButtonGroup
         t.buttons.add(s.equivalent("TableRowDeleteButton"));
 
         for (action in s.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet()) {
-            t.buttons.add(action.equivalent("RowActionDeclarationButton"));
+            var button = action.equivalent("RowActionDeclarationButton");
+            t.buttons.add(button);
+
+            if (button.actionDefinition.isKindOf(UI!ui::ParameterlessCallOperationActionDefinition) and button.actionDefinition.targetType.isUndefined()) {
+                button.actionDefinition.targetType = s.map.transfer.equivalent("ClassType");
+            }
         }
 
         log.debug("TableRowButtonGroup: " + t.name);
