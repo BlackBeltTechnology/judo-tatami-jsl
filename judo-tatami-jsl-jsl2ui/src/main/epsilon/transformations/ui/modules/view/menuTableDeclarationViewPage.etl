@@ -83,7 +83,7 @@ rule AccessTableViewPageDefinition
 
         for (actionDeclaration in s.getUpdateViewModifier().view.getAllActionDeclarations()) {
             var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
-            viewAction.ownerDataElement = t.dataElement; // TODO: add plus if-else's here for tabular reference field actions
+            viewAction.ownerDataElement = t.dataElement; // TODO JNG-6224 add plus if-else's here for tabular reference field actions
             viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
             t.actions.add(viewAction);
         }
