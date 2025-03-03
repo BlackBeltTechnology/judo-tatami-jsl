@@ -331,7 +331,6 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::relatedCollection::OpenPage",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::relatedCollection::Refresh",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::users::Back",
-                "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::users::Cancel",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::users::Refresh",
                 "NavigationActor::SummaryCRUD::NavigationApp::users::AccessTableViewPage::users::Update",
                 "NavigationActor::SummaryCRUD::RelatedForm::jumpers::AddSelectorPage::SummaryCRUD::RelatedForm::jumpers::AddSelector::Add",

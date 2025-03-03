@@ -23,6 +23,14 @@ rule AbstractViewTableDeclaration
         }
 }
 
+@abstract
+rule AbstractViewTableActionDefinition
+    transform s: JSL!UIViewTableDeclaration
+    to t: UI!ui::ActionDefinition {
+
+    t.isContainedRelationAction = true;
+}
+
 @lazy
 rule TableIcon
     transform s: JSL!UIViewTableDeclaration
@@ -108,7 +116,8 @@ rule InlineViewCardsFilterButtonIcon
 @lazy
 rule InlineViewCardsFilterButtonActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::FilterActionDefinition {
+    to t: UI!ui::FilterActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsFilterButtonActionDefinition");
         t.name = s.name + "::Filter";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -144,7 +153,8 @@ rule InlineViewCardsRefreshButtonIcon
 @lazy
 rule InlineViewCardsRefreshActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::RefreshActionDefinition {
+    to t: UI!ui::RefreshActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsRefreshActionDefinition");
         t.name = s.name + "::Refresh";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -195,7 +205,8 @@ rule InlineViewCardsOpenPageButtonIcon
 @lazy
 rule InlineViewCardsOpenPageActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::OpenPageActionDefinition {
+    to t: UI!ui::OpenPageActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsOpenPageActionDefinition");
         t.name = s.name + "::View";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -237,7 +248,8 @@ rule InlineViewTags
 @lazy
 rule ViewTagsDeclarationAutocompleteRangeActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::AutocompleteRangeActionDefinition {
+    to t: UI!ui::AutocompleteRangeActionDefinition
+    extends AbstractViewTableActionDefinition {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTagsDeclarationAutocompleteRangeActionDefinition");
  		t.name = s.name + "::Autocomplete";
  		t.isContainedRelationAction = true;
@@ -248,7 +260,8 @@ rule ViewTagsDeclarationAutocompleteRangeActionDefinition
 @lazy
 rule ViewTagsDeclarationAutocompleteAddActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::AutocompleteAddActionDefinition {
+    to t: UI!ui::AutocompleteAddActionDefinition
+    extends AbstractViewTableActionDefinition {
 	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTagsDeclarationAutocompleteAddActionDefinition");
  		t.name = s.name + "::AutocompleteAdd";
  		t.isContainedRelationAction = true;
@@ -301,7 +314,8 @@ rule InlineViewTagsFilterButtonIcon
 @lazy
 rule InlineViewTagsFilterActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::FilterActionDefinition {
+    to t: UI!ui::FilterActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsFilterActionDefinition");
         t.name = s.name + "::Filter";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -337,7 +351,8 @@ rule InlineViewTagsRefreshButtonIcon
 @lazy
 rule InlineViewTagsRefreshActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::RefreshActionDefinition {
+    to t: UI!ui::RefreshActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsRefreshActionDefinition");
         t.name = s.name + "::Refresh";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -388,7 +403,8 @@ rule InlineViewTagsOpenPageButtonIcon
 @lazy
 rule InlineViewTagsOpenPageActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::OpenPageActionDefinition {
+    to t: UI!ui::OpenPageActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsOpenPageActionDefinition");
         t.name = s.name + "::View";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -625,7 +641,8 @@ rule ViewTableDeclarationFilterButtonIcon
 @lazy
 rule ViewTableDeclarationFilterActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::FilterActionDefinition {
+    to t: UI!ui::FilterActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterActionDefinition");
         t.name = s.name + "::Filter";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -661,7 +678,8 @@ rule ViewTableDeclarationRefreshButtonIcon
 @lazy
 rule ViewTableDeclarationRefreshActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::RefreshActionDefinition {
+    to t: UI!ui::RefreshActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshActionDefinition");
         t.name = s.name + "::Refresh";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -697,7 +715,8 @@ rule ViewTableDeclarationOpenCreateButtonIcon
 @lazy
 rule ViewTableDeclarationOpenCreateActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::OpenCreateFormActionDefinition {
+    to t: UI!ui::OpenCreateFormActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateActionDefinition");
         t.name = s.name + "::OpenCreate";
 
@@ -732,7 +751,8 @@ rule ViewTableDeclarationOpenPageButtonIcon
 @lazy
 rule ViewTableDeclarationOpenPageActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::OpenPageActionDefinition {
+    to t: UI!ui::OpenPageActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageActionDefinition");
         t.name = s.name + "::View";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -768,7 +788,8 @@ rule ViewTableDeclarationRowDeleteButtonIcon
 @lazy
 rule ViewTableDeclarationRowDeleteActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::RowDeleteActionDefinition {
+    to t: UI!ui::RowDeleteActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteActionDefinition");
         t.name = s.name + "::RowDelete";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -804,7 +825,8 @@ rule ViewTableDeclarationOpenAddSelectorButtonIcon
 @lazy
 rule ViewTableDeclarationOpenAddSelectorActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::OpenAddSelectorActionDefinition {
+    to t: UI!ui::OpenAddSelectorActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorActionDefinition");
         t.name = s.name + "::OpenAddSelector";
         t.isContainedRelationAction = true;
@@ -841,7 +863,8 @@ rule ViewTableDeclarationBulkRemoveButtonIcon
 @lazy
 rule ViewTableDeclarationBulkRemoveActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::BulkRemoveActionDefinition {
+    to t: UI!ui::BulkRemoveActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveActionDefinition");
         t.name = s.name + "::BulkRemove";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -879,7 +902,8 @@ rule ViewTableDeclarationClearButtonIcon
 @lazy
 rule ViewTableDeclarationClearActionDefinition
     transform s: JSL!UIViewTableDeclaration
-    to t: UI!ui::ClearActionDefinition {
+    to t: UI!ui::ClearActionDefinition
+    extends AbstractViewTableActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearActionDefinition");
         t.name = s.name + "::Clear";
         t.isContainedRelationAction = true;
@@ -933,6 +957,7 @@ rule ViewTableActionDeclarationCallOperationActionDefinition
     	t.name = s.getFqName() + "::Call";
     	t.`operation` = s.transferAction.target.equivalent("OperationType");
     	t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+    	t.isContainedRelationAction = true;
 
         log.debug("ViewTableActionDeclarationCallOperationActionDefinition: " + t.name);
 }
@@ -944,6 +969,7 @@ rule ViewTableActionDeclarationOpenSelectorActionDefinition
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationOpenSelectorActionDefinition");
         t.name = s.getFqName() + "::Open::Selector";
         t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+        t.isContainedRelationAction = true;
  		// t.selectorFor = s.equivalent("ViewActionDeclarationOpenSelectorCallOperationActionDefinition");
         log.debug("ViewTableActionDeclarationOpenSelectorActionDefinition: " + t.name);
 }
@@ -954,6 +980,7 @@ rule ViewTableActionDeclarationOpenFormActionDefinition
     to t: UI!ui::OpenOperationInputFormActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationOpenFormActionDefinition");
     	t.name = s.getFqName() + "::Open::Operation::Form";
+    	t.isContainedRelationAction = true;
         // t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
         log.debug("ViewTableActionDeclarationOpenFormActionDefinition: " + t.name);
 }

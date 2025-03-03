@@ -25,6 +25,8 @@ rule AccessTableViewPageDefinition
         log.info("===================");
         */
 
+        var actionDeclarationsToProcess =s.getUpdateViewModifier().view.getAllActionDeclarations();
+
         for (link in s.getUpdateViewModifier().view.getOwnLinks()) {
             var lRelation = link.transferRelation.target;
 
@@ -79,11 +81,24 @@ rule AccessTableViewPageDefinition
                 t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteRangeAction", s.getId()));
                 t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteAddAction", s.getId()));
             }
+
+            for (actionDeclaration in table.getAllActionDeclarations()) {
+                var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
+                viewAction.ownerDataElement = tRelation.equivalent("RelationType");
+                viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
+                t.actions.add(viewAction);
+
+                actionDeclarationsToProcess.remove(actionDeclaration);
+
+                if (viewAction.actionDefinition.isKindOf(UI!ui::ParameterlessCallOperationActionDefinition) and viewAction.actionDefinition.targetType.isUndefined()) {
+                    viewAction.actionDefinition.targetType = tRelation.referenceType.equivalent("ClassType");
+                }
+            }
         }
 
-        for (actionDeclaration in s.getUpdateViewModifier().view.getAllActionDeclarations()) {
+        for (actionDeclaration in actionDeclarationsToProcess) {
             var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
-            viewAction.ownerDataElement = t.dataElement; // TODO JNG-6224 add plus if-else's here for tabular reference field actions
+            viewAction.ownerDataElement = t.dataElement;
             viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
             t.actions.add(viewAction);
         }
@@ -93,7 +108,6 @@ rule AccessTableViewPageDefinition
             t.actions.add(s.equivalent("AccessTableViewRefreshAction"));
         }
         if (s.actorAccess.target.isUpdateAllowed()) {
-            t.actions.add(s.equivalent("AccessTableViewCancelAction"));
             t.actions.add(s.equivalent("AccessTableViewUpdateAction"));
         }
         if (s.actorAccess.target.isDeleteAllowed()) {
@@ -125,18 +139,6 @@ rule AccessTableViewRefreshAction
         t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerRefreshActionDefinition");
 
         log.debug("AccessTableViewRefreshAction: " + t.name);
-}
-
-@lazy
-rule AccessTableViewCancelAction
-    transform s: JSL!UIMenuTableDeclaration
-    to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableViewCancelAction");
- 		t.name = s.name + "::Cancel";
-        t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
-        t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerCancelActionDefinition");
-
-        log.debug("AccessTableViewCancelAction: " + t.name);
 }
 
 @lazy
