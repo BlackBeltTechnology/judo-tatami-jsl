@@ -38,7 +38,7 @@ rule ViewTableViewPageDefinition
             if (link.getCreateFormModifier().isDefined()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", s.getId()));
             }
-            if (lRelation.isDeleteAllowed()) {
+            if (lRelation.isDeleteAllowed() and not link.button) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", s.getId()));
             }
             if (link.getSelectorTableModifier().isDefined()) {
