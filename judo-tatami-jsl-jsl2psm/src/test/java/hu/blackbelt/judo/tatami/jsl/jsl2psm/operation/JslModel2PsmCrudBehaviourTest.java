@@ -216,8 +216,8 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
         		.transferName("MappedTransfer")
         		.operationName("getRangeForCreateEntities")
         		.behaviour(TransferOperationBehaviourType.GET_RANGE)
-        		.isBound(true)
-        		.inputType("_CreateTransferQueryCustomizer")
+        		.isBound(false)
+        		.inputType("_GetRangeInputMappedTransferCreateEntities")
         		.isMappedInputType(false)
         		.outputType("CreateTransfer")
         		.isMappedOutputType(true));    
