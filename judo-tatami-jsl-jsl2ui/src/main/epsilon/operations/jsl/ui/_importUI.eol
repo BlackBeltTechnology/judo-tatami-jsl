@@ -1,6 +1,5 @@
 import "actionGroupDeclaration.eol";
 import "cardDeclaration.eol";
-import "icon.eol";
 import "menuDeclaration.eol";
 import "menuLinkDeclaration.eol";
 import "menuTableDeclaration.eol";
