@@ -52,6 +52,7 @@ rule CreateUpdateOperationForTransferTypeInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForUpdateTransferTypeInput");
       t.name = "input";
 	  t.type = s.eContainer.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateUpdateOperationForTransferType").input = t;
       log.debug("Created CreateUpdateOperationForTransferTypeInputParameter: " + t.name);
 }
@@ -66,6 +67,7 @@ rule CreateUpdateOperationForTransferTypeOutputParameter
       t.cardinality = s.equivalent("CreateCardinalityForUpdateTransferTypeOutput");
       t.name = "return";
 	  t.type = s.eContainer.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateUpdateOperationForTransferType").output = t;
       log.debug("Created CreateUpdateOperationForTransferTypeOutputParameter: " + t.name);
 }
@@ -80,6 +82,7 @@ rule CreateUpdateOperationForEntityTypeInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForUpdateEntityTypeInput");
       t.name = "input";
 	  t.type = s.eContainer.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateUpdateOperationForEntityType").input = t;
       log.debug("Created CreateUpdateOperationForEntityTypeInputParameter: " + t.name);
 }
@@ -94,6 +97,7 @@ rule CreateUpdateOperationForEntityTypeOutputParameter
       t.cardinality = s.equivalent("CreateCardinalityForUpdateEntityTypeOutput");
       t.name = "return";
 	  t.type = s.eContainer.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateUpdateOperationForEntityType").output = t;
       log.debug("Created CreateUpdateOperationForEntityTypeOutputParameter: " + t.name);
 }

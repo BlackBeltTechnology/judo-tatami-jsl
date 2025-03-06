@@ -49,6 +49,7 @@ rule AbstractTransferActionDeclarationReturnParameter
       t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationOutput");
       t.name = "return";
 	  t.type = s.`return`.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
 }
 
 @abstract
@@ -58,6 +59,12 @@ rule AbstractTransferActionDeclarationInputParameter
 
       t.cardinality = s.equivalent("CreateCardinalityForTransferActionDeclarationInput");
       t.name = s.paramaterName;
+      if (s.parameterType.map.isUndefined()) {
+          // TODO: JNG-6234 Make notation in JSL for that
+          t.wrapAsOptional = false;
+      } else {
+          t.wrapAsOptional = false;
+      }
 
 	  t.type = s.parameterType.getTransferDeclarationEquivalent();
 	  
@@ -85,6 +92,7 @@ rule CreateFaultParameter
 
       t.name = s.name;
       t.type = s.equivalent("CreateUnmappedTransferObjectType");
+      t.wrapAsOptional = false;
       t.cardinality = s.equivalent("CreateCardinalityForFaultParameter");
       
       log.debug("Created CreateFaultParameter: " + t.name);

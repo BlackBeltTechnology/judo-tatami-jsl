@@ -44,6 +44,7 @@ rule CreateGetTemplateOperationForTransferTypeOutputParameter
       t.cardinality = s.equivalent("CreateCardinalityForGetTemplateTransferTypeOutput");
       t.name = "return";
 	  t.type = s.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateGetTemplateOperationForTransferType").output = t;
       log.debug("Created CreateGetTemplateOperationForTransferTypeOutputParameter: " + t.name);
 }
