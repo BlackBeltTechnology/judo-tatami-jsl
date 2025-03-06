@@ -299,10 +299,21 @@ rule ViewLinkDeclarationUnsetButton
         t.name = s.name + "::Unset";
         t.label = "Unset";
         t.buttonStyle = "contained";
-        t.icon = "link-off".createSyntheticIcon(s.getId(), s.getFqName());
+        t.icon = s.equivalent("ViewLinkDeclarationUnsetButtonIcon");
         t.actionDefinition = s.equivalent("ViewLinkDeclarationUnsetActionDefinition");
 
         log.debug("ViewLinkDeclarationUnsetButton: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationUnsetButtonIcon
+    transform s: JSL!UIViewLinkDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetButtonIcon");
+        t.name = s.getFqName() + "::link-off::" + "Icon";
+        t.iconName = "link-off";
+
+        log.debug("ViewLinkDeclarationUnsetButtonIcon: " + t.name);
 }
 
 @lazy
@@ -326,10 +337,21 @@ rule ViewLinkDeclarationOpenSetSelectorButton
         t.name = s.name + "::OpenSetSelector";
         t.label = "Set";
         t.buttonStyle = "contained";
-        t.icon = "link".createSyntheticIcon(s.getId(), s.getFqName());
+        t.icon = s.equivalent("ViewLinkDeclarationOpenSetSelectorButtonIcon");
         t.actionDefinition = s.equivalent("ViewLinkDeclarationOpenSetSelectorActionDefinition");
 
         log.debug("ViewLinkDeclarationOpenSetSelectorButton: " + t.name);
+}
+
+@lazy
+rule ViewLinkDeclarationOpenSetSelectorButtonIcon
+    transform s: JSL!UIViewLinkDeclaration
+    to t: UI!ui::Icon {
+        t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorButtonIcon");
+        t.name = s.getFqName() + "::link::" + "Icon";
+        t.iconName = "link";
+
+        log.debug("ViewLinkDeclarationOpenSetSelectorButtonIcon: " + t.name);
 }
 
 @lazy
