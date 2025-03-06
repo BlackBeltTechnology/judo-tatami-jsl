@@ -251,6 +251,7 @@ rule CreateGetMetadataOperationOutputParameterForActorType
 
         t.name = "output";
         t.type = s.equivalent("CreateMetadataType");
+        t.wrapAsOptional = false;
         t.cardinality = s.equivalent("CreateMetadataOperationOutputParameterForActorTypeCardinality");
 
         s.equivalent("CreateGetMetadataOperationForActorType").output = t;
@@ -296,6 +297,7 @@ rule CreateGetPrincipalOperationOutputParameterForActorType
 
       t.name = "output";
       t.type = s.getPrincipal().getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       t.cardinality = s.equivalent("CreatePrincipalOperationOutputParameterForActorTypeCardinality");
 
       s.equivalent("CreateGetPrincipalOperationForActorType").output = t;

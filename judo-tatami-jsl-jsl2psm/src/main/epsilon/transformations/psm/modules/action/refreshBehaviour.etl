@@ -54,6 +54,7 @@ rule CreateRefreshOperationForTransferTypeInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForRefreshTransferTypeInput");
       t.name = "input";
 	  t.type = s.equivalent("CreateQueryCustomizerType");
+      t.wrapAsOptional = false;
       s.equivalent("CreateRefreshOperationForTransferType").input = t;
       log.debug("Created CreateRefreshOperationForTransferTypeInputParameter: " + t.name);
 }
@@ -68,6 +69,7 @@ rule CreateRefreshOperationForTransferTypeOutputParameter
       t.cardinality = s.equivalent("CreateCardinalityForRefreshTransferTypeOutput");
       t.name = "return";
 	  t.type = s.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateRefreshOperationForTransferType").output = t;
       log.debug("Created CreateRefreshOperationForTransferTypeOutputParameter: " + t.name);
 }
@@ -82,6 +84,7 @@ rule CreateRefreshOperationForEntityTypeInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForRefreshEntityTypeInput");
       t.name = "input";
 	  t.type = s.equivalent("CreateQueryCustomizerType");
+      t.wrapAsOptional = false;
       s.equivalent("CreateRefreshOperationForEntityType").input = t;
       log.debug("Created CreateRefreshOperationForEntityTypeInputParameter: " + t.name);
 }
@@ -96,6 +99,7 @@ rule CreateRefreshOperationForEntityTypeOutputParameter
       t.cardinality = s.equivalent("CreateCardinalityForRefreshEntityTypeOutput");
       t.name = "return";
 	  t.type = s.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateRefreshOperationForEntityType").output = t;
       log.debug("Created CreateRefreshOperationForEntityTypeOutputParameter: " + t.name);
 }

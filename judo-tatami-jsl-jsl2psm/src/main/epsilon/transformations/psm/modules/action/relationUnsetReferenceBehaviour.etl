@@ -59,6 +59,7 @@ rule CreateUnsetReferenceOperationForTransferTypeInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForUnsetReferenceTransferTypeInput");
       t.name = "input";
 	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateUnsetReferenceOperationForTransferType").input = t;
       log.debug("Created CreateUnsetReferenceOperationForTransferTypeInputParameter: " + t.name);
 }
@@ -73,6 +74,7 @@ rule CreateUnsetReferenceOperationForEntityTypeInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForUnsetReferenceEntityTypeInput");
       t.name = "input";
 	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateUnsetReferenceOperationForEntityType").input = t;
       log.debug("Created CreateUnsetReferenceOperationForEntityTypeInputParameter: " + t.name);
 }
