@@ -75,6 +75,7 @@ rule CreateGetUploadTokenOuptutParameter
 
       t.name = "output";
       t.type = "extensions".equivalent("CreateUploadTokenType");
+      t.wrapAsOptional = false;
 	  t.cardinality = s.equivalent("CreateGetUploadTokenOuputParameterCardinality");
       log.debug("Created CreateGetUploadTokenOuptutParameter: " + s.name);
 }

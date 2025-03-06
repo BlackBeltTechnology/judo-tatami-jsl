@@ -80,6 +80,7 @@ rule CreateGetRangeActionInputOperationForTransferTypeInputParameter
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeActionInputTransferTypeInput");
         t.name = "input";
         t.type = s.parameterType.equivalent("CreateQueryCustomizerType");
+        t.wrapAsOptional = false;
         // s.equivalent("CreateGetRangeActionInputOperationForTransferType").input = t;
         s.getBehaviourOperationDeclarationEquivalent().input = t;
         log.debug("Created CreateGetRangeActionInputOperationForTransferTypeInputParameter: " + t.name);
@@ -95,6 +96,7 @@ rule CreateGetRangeActionInputOperationForTransferTypeOutputParameter
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeActionInputTransferTypeOutput");
         t.name = "return";
         t.type = s.parameterType.getTransferDeclarationEquivalent();
+        t.wrapAsOptional = false;
         //s.equivalent("CreateGetRangeActionInputOperationForTransferType").output = t;
         s.getBehaviourOperationDeclarationEquivalent().output = t;
         log.debug("Created CreateGetRangeActionInputOperationForTransferTypeOutputParameter: " + t.name);
@@ -110,6 +112,7 @@ rule CreateGetRangeActionInputOperationForEntityTypeInputParameter
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeActionInputEntityTypeInput");
         t.name = "input";
         t.type = s.parameterType.equivalent("CreateQueryCustomizerType");
+        t.wrapAsOptional = false;
         s.equivalent("CreateGetRangeActionInputOperationForEntityType").input = t;
         log.debug("Created CreateGetRangeActionInputOperationForEntityTypeInputParameter: " + t.name);
 }
@@ -124,6 +127,7 @@ rule CreateGetRangeActionInputOperationForEntityTypeOutputParameter
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeActionInputEntityTypeOutput");
         t.name = "return";
         t.type = s.parameterType.getTransferDeclarationEquivalent();
+        t.wrapAsOptional = false;
         s.equivalent("CreateGetRangeActionInputOperationForEntityType").output = t;
         log.debug("Created CreateGetRangeActionInputOperationForEntityTypeOutputParameter: " + t.name);
 }

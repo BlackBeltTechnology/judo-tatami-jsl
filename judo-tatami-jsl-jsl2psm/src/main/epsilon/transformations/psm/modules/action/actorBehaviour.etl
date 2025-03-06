@@ -22,6 +22,7 @@ rule CreateGetMetadataOperationOutputParameterForActorType
 
         t.name = "output";
         t.type = s.equivalent("CreateMetadataType");
+        t.wrapAsOptional = false;
         t.cardinality = new JUDOPSM!Cardinality;
         t.cardinality.setId("(esm/" + s.getId() + ")/GetMetadataOperationOutputParameterForActorType/Cardinality");
         t.cardinality.lower = 0;
@@ -58,6 +59,7 @@ rule CreateGetPrincipalOperationOutputParameterForActorType
 
         t.name = "output";
         t.type = s.principal.getPSMTransferObjectTypeEquivalent();
+        t.wrapAsOptional = false;
         t.cardinality = new JUDOPSM!Cardinality;
         t.cardinality.setId("(esm/" + s.getId() + ")/GetPrincipalOperationOutputParameterForActorType/Cardinality");
         t.cardinality.lower = 0;

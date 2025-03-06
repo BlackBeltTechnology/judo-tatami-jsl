@@ -58,6 +58,7 @@ rule CreateRemoveReferenceOperationForTransferTypeInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForRemoveReferenceTransferTypeInput");
       t.name = "input";
 	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateRemoveReferenceOperationForTransferType").input = t;
       log.debug("Created CreateRemoveReferenceOperationForTransferTypeInputParameter: " + t.name);
 }
@@ -72,6 +73,7 @@ rule CreateRemoveReferenceOperationForEntityTypeInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForRemoveReferenceEntityTypeInput");
       t.name = "input";
 	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateRemoveReferenceOperationForEntityType").input = t;
       log.debug("Created CreateRemoveReferenceOperationForEntityTypeInputParameter: " + t.name);
 }

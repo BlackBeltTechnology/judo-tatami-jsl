@@ -45,6 +45,7 @@ rule CreateCreateOperationForAccessInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForCreateAccessInput");
       t.name = "input";
 	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateCreateOperationForAccess").input = t;
       log.debug("Created CreateCreateOperationForAccessInputParameter: " + t.name);
 }
@@ -59,6 +60,7 @@ rule CreateCreateOperationForAccessOutputParameter
       t.cardinality = s.equivalent("CreateCardinalityForCreateAccessOutput");
       t.name = "return";
 	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateCreateOperationForAccess").output = t;
       log.debug("Created CreateCreateOperationForAccessOutputParameter: " + t.name);
 }

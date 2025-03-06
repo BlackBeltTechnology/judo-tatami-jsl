@@ -59,6 +59,7 @@ rule CreateAddReferenceOperationForTransferTypeInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForAddReferenceTransferTypeInput");
       t.name = "input";
 	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateAddReferenceOperationForTransferType").input = t;
       log.debug("Created CreateAddReferenceOperationForTransferTypeInputParameter: " + t.name);
 }
@@ -73,6 +74,7 @@ rule CreateAddReferenceOperationForEntityTypeInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForAddReferenceEntityTypeInput");
       t.name = "input";
 	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateAddReferenceOperationForEntityType").input = t;
       log.debug("Created CreateAddReferenceOperationForEntityTypeInputParameter: " + t.name);
 }

@@ -59,6 +59,7 @@ rule CreateGetRangeRelationOperationForTransferTypeInputParameter
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationTransferTypeInput");
         t.name = "input";
         t.type = s.referenceType.equivalent("CreateQueryCustomizerType");
+        t.wrapAsOptional = false;
         s.equivalent("CreateGetRangeRelationOperationForTransferType").input = t;
         log.debug("Created CreateGetRangeRelationOperationForTransferTypeInputParameter: " + t.name);
 }
@@ -73,6 +74,7 @@ rule CreateGetRangeRelationOperationForTransferTypeOutputParameter
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationTransferTypeOutput");
         t.name = "return";
         t.type = s.referenceType.getTransferDeclarationEquivalent();
+        t.wrapAsOptional = false;
         s.equivalent("CreateGetRangeRelationOperationForTransferType").output = t;
         log.debug("Created CreateGetRangeRelationOperationForTransferTypeOutputParameter: " + t.name);
 }
@@ -87,6 +89,7 @@ rule CreateGetRangeRelationOperationForEntityTypeInputParameter
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationEntityTypeInput");
         t.name = "input";
         t.type = s.referenceType.equivalent("CreateQueryCustomizerType");
+        t.wrapAsOptional = false;
         s.equivalent("CreateGetRangeRelationOperationForEntityType").input = t;
         log.debug("Created CreateGetRangeRelationOperationForEntityTypeInputParameter: " + t.name);
 }
@@ -101,6 +104,7 @@ rule CreateGetRangeRelationOperationForEntityTypeOutputParameter
         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationEntityTypeOutput");
         t.name = "return";
         t.type = s.referenceType.getTransferDeclarationEquivalent();
+        t.wrapAsOptional = false;
         s.equivalent("CreateGetRangeRelationOperationForEntityType").output = t;
         log.debug("Created CreateGetRangeRelationOperationForEntityTypeOutputParameter: " + t.name);
 }
