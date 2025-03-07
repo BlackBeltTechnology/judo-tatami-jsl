@@ -394,11 +394,12 @@ rule CreateActionInputParameterRangeTransferObjectRelation
     to t : JUDOPSM!TransferObjectRelation {
         guard: s.eContainer.isKindOf(JSL!TransferActionDeclaration)
 
-        t.setId("(esm/" + s.getId() + ")/CreateActionInputParameterRangeTransferObjectRelation");
+        t.setId("(jsl/" + s.getId() + ")/CreateActionInputParameterRangeTransferObjectRelation");
 
         t.name = s.eContainer.getTransferActionRangeEquivalent().name;
         t.cardinality = s.eContainer.equivalent("CreateCardinalityForGetActionInputParameterRangeTransferObjectRelation");
         t.target = s.eContainer.getParameterType().getTransferDeclarationEquivalent();
+        t.range = s.eContainer.getTransferActionRangeEquivalent();
         t.binding = s.eContainer.getTransferActionRangeEquivalent();
 
         s.eContainer.eContainer.getTransferDeclarationEquivalent().relations.add(t);
