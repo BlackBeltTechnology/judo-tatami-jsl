@@ -58,8 +58,8 @@ rule RowActionDeclarationOpenSelectorActionDefinition
     to t: UI!ui::OpenOperationInputSelectorActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowActionDeclarationOpenSelectorActionDefinition");
         t.name = s.getFqName() + "::Open::Selector";
-        t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
- 		// t.selectorFor = s.equivalent("ViewActionDeclarationOpenSelectorCallOperationActionDefinition");
+        t.targetType = s.getSelectorTableModifier().row.map.transfer.equivalent("ClassType");
+ 		t.selectorFor = s.equivalent("OperationInputSelectorCallActionDefinition");
         log.debug("RowActionDeclarationOpenSelectorActionDefinition: " + t.name);
 }
 

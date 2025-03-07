@@ -606,8 +606,8 @@ rule InlineViewTableRowButtonGroup
             t.buttons.add(s.equivalent("ViewTableDeclarationRowDeleteButton"));
         }
 
-        for (action in s.referenceType.members.select(m | m.isTypeOf(JSL!UIActionDeclaration))) {
-            t.buttons.add(action.equivalent("ViewTableActionDeclarationButton"));
+        for (action in s.referenceType.members.select(m | m.isKindOf(JSL!UIActionDeclaration))) {
+            t.buttons.add(action.equivalentDiscriminated("ViewTableActionDeclarationButton", s.getId()));
         }
 
         log.debug("TabularReferenceTableRowButtonGroup: " + t.name);
@@ -968,9 +968,9 @@ rule ViewTableActionDeclarationOpenSelectorActionDefinition
     to t: UI!ui::OpenOperationInputSelectorActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationOpenSelectorActionDefinition");
         t.name = s.getFqName() + "::Open::Selector";
-        t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
+        t.targetType = s.getSelectorTableModifier().row.map.transfer.equivalent("ClassType");
         t.isContainedRelationAction = true;
- 		// t.selectorFor = s.equivalent("ViewActionDeclarationOpenSelectorCallOperationActionDefinition");
+ 		t.selectorFor = s.equivalent("OperationInputSelectorCallActionDefinition");
         log.debug("ViewTableActionDeclarationOpenSelectorActionDefinition: " + t.name);
 }
 
