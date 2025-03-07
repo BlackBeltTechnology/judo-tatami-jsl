@@ -1,150 +1,6 @@
 import "../../../../operations/_importAll.eol";
 
-
-// @greedy
-// rule CreateGetRangeRelationOperationForEntityType
-//     transform s: JSL!TransferRelationDeclaration
-//     to t: JUDOPSM!BoundOperation {
-//         guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
-
-//         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForEntityType");
-//         t.instanceRepresentation = s.eContainer.getTransferDeclarationEquivalent();
-//         t.name = "getRangeForRelation" + s.getFqName().fqNameToCamelCase();
-//         s.eContainer.map.entity.getEntityDeclarationEquivalent().operations.add(t);
-//         log.debug("Created CreateGetRangeRelationOperationForEntityType: " + t.name);
-// }
-
-// @greedy
-// rule CreateGetRangeRelationBehaviourForTransferType
-//     transform s: JSL!TransferRelationDeclaration
-//     to t: JUDOPSM!TransferOperationBehaviour {
-//         guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
-
-//         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationBehaviourForTransferType");
-//         t.behaviourType = JUDOPSM!TransferOperationBehaviourType#GET_RANGE;
-//         t.owner = s.getMappedTransferRelationEquivalent();
-//         log.debug("Created CreateGetRangeRelationBehaviourForTransferType: " + s.name);
-// }
-
-// @greedy
-// rule CreateGetRangeRelationOperationForTransferType
-//     transform s: JSL!TransferRelationDeclaration
-//     to t: JUDOPSM!BoundTransferOperation {
-//         guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
-
-//         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForTransferType");
-//         t.name = "getRangeFor" + s.name.firstToUpperCase();
-//         if (s.eContainer.members.exists(m | m.name == t.name)) {
-// 	       t.name = "_" + t.name;
-//         }
-
-//         t.binding = s.equivalent("CreateGetRangeRelationOperationForEntityType");
-//         t.behaviour = s.equivalent("CreateGetRangeRelationBehaviourForTransferType");
-
-//         t.updateOnResult = s.referenceType.isUpdateSupported();
-//         t.deleteOnResult = s.referenceType.isDeleteSupported();
-
-//         s.eContainer.getTransferDeclarationEquivalent().operations.add(t);
-//         log.debug("Created CreateGetRangeRelationOperationForTransferType: " + t.name);
-// }
-
-
-// @greedy
-// rule CreateGetRangeRelationOperationForTransferTypeInputParameter
-//     transform s: JSL!TransferRelationDeclaration
-//     to t: JUDOPSM!Parameter {
-//         guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
-
-//         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForTransferTypeInputParameter");
-//         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationTransferTypeInput");
-//         t.name = "input";
-//         t.type = s.referenceType.equivalent("CreateQueryCustomizerType");
-//         s.equivalent("CreateGetRangeRelationOperationForTransferType").input = t;
-//         log.debug("Created CreateGetRangeRelationOperationForTransferTypeInputParameter: " + t.name);
-// }
-
-// @greedy
-// rule CreateGetRangeRelationOperationForTransferTypeOutputParameter
-//     transform s: JSL!TransferRelationDeclaration
-//     to t: JUDOPSM!Parameter {
-//         guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
-
-//         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForTransferTypeOutputParameter");
-//         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationTransferTypeOutput");
-//         t.name = "return";
-//         t.type = s.referenceType.getTransferDeclarationEquivalent();
-//         s.equivalent("CreateGetRangeRelationOperationForTransferType").output = t;
-//         log.debug("Created CreateGetRangeRelationOperationForTransferTypeOutputParameter: " + t.name);
-// }
-
-// @greedy
-// rule CreateGetRangeRelationOperationForEntityTypeInputParameter
-//     transform s: JSL!TransferRelationDeclaration
-//     to t: JUDOPSM!Parameter {
-//         guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
-
-//         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForEntityTypeInputParameter");
-//         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationEntityTypeInput");
-//         t.name = "input";
-//         t.type = s.referenceType.equivalent("CreateQueryCustomizerType");
-//         s.equivalent("CreateGetRangeRelationOperationForEntityType").input = t;
-//         log.debug("Created CreateGetRangeRelationOperationForEntityTypeInputParameter: " + t.name);
-// }
-
-// @greedy
-// rule CreateGetRangeRelationOperationForEntityTypeOutputParameter
-//     transform s: JSL!TransferRelationDeclaration
-//     to t: JUDOPSM!Parameter {
-//         guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
-
-//         t.setId("(jsl/" + s.getId() + ")/CreateGetRangeRelationOperationForEntityTypeOutputParameter");
-//         t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationEntityTypeOutput");
-//         t.name = "return";
-//         t.type = s.referenceType.getTransferDeclarationEquivalent();
-//         s.equivalent("CreateGetRangeRelationOperationForEntityType").output = t;
-//         log.debug("Created CreateGetRangeRelationOperationForEntityTypeOutputParameter: " + t.name);
-// }
-
-// @lazy
-// @greedy
-// rule CreateCardinalityForGetRangeRelationTransferTypeInput
-//     transform s: JSL!TransferRelationDeclaration
-//     to t : JUDOPSM!Cardinality {
-//         t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationTransferTypeInput");
-//         t.lower = 0;
-//         t.upper = 1;
-// }
-
-// @lazy
-// @greedy
-// rule CreateCardinalityForGetRangeRelationTransferTypeOutput
-//     transform s: JSL!TransferRelationDeclaration
-//     to t : JUDOPSM!Cardinality {
-//         t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationTransferTypeOutput");
-//         t.lower = 0;
-//         t.upper = -1;
-// }
-
-// @lazy
-// @greedy
-// rule CreateCardinalityForGetRangeRelationEntityTypeInput
-//     transform s: JSL!TransferRelationDeclaration
-//     to t : JUDOPSM!Cardinality {
-//         t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationEntityTypeInput");
-//         t.lower = 0;
-//         t.upper = 1;
-// }
-
-// @lazy
-// @greedy
-// rule CreateCardinalityForGetRangeRelationEntityTypeOutput
-//     transform s: JSL!TransferRelationDeclaration
-//     to t : JUDOPSM!Cardinality {
-//         t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationEntityTypeOutput");
-//         t.lower = 0;
-//         t.upper = -1;
-// }
-
+// TODO https://blackbelt.atlassian.net/browse/JNG-6235 separate the bound and unbound operations (isStatic) and fix the frontend rest calls that refers for it.
 
 /*
 @greedy
@@ -176,6 +32,7 @@ rule CreateGetRangeRelationBehaviourForTransferType
 @greedy
 rule CreateGetRangeRelationOperationForTransferType
     transform s: JSL!TransferRelationDeclaration
+    // TODO https://blackbelt.atlassian.net/browse/JNG-6235
     to t: JUDOPSM!UnboundOperation {
         guard: generateBehaviours and not s.isActorRelated() and s.isGetRangeSupported()
 
@@ -246,59 +103,87 @@ rule CreateCardinalityForGetRangeRelationTransferTypeOutput
         t.upper = -1;
 }
 
-// @lazy
-// @greedy
-// rule CreateCardinalityForGetRangeRelationEntityTypeInput
-//     transform s: JSL!TransferRelationDeclaration
-//     to t : JUDOPSM!Cardinality {
-//         t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationEntityTypeInput");
-//         t.lower = 0;
-//         t.upper = 1;
-// }
+/*
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeRelationEntityTypeInput
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationEntityTypeInput");
+        t.lower = 0;
+        t.upper = 1;
+}
 
-// @lazy
-// @greedy
-// rule CreateCardinalityForGetRangeRelationEntityTypeOutput
-//     transform s: JSL!TransferRelationDeclaration
-//     to t : JUDOPSM!Cardinality {
-//         t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationEntityTypeOutput");
-//         t.lower = 0;
-//         t.upper = -1;
-// }
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeRelationEntityTypeOutput
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationEntityTypeOutput");
+        t.lower = 0;
+        t.upper = -1;
+}
+*/
 
+// rules for create get range input type
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeRelationTransferTypeInputOwner
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationTransferTypeInputOwner");
+        t.lower = 0;
+        t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateCardinalityForGetRangeRelationTransferTypeInputQueryCustomizer
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!Cardinality {
+        t.setId("(jsl/" + s.getId() + ")/CreateCardinalityForGetRangeRelationTransferTypeInputQueryCustomizer");
+        t.lower = 0;
+        t.upper = 1;
+}
+
+@lazy
+@greedy
+rule CreateTransferObjectRelationForGetRangeRelationTransferTypeInputOwner
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!TransferObjectRelation {
+        t.setId("(jsl/" + s.getId() + ")/GetRangeRelationTransferTypeInputOwner");
+        t.name = "owner";
+        t.target = s.eContainer.getTransferDeclarationEquivalent();
+        t.embedded = true;
+        t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationTransferTypeInputOwner");
+}
+
+@lazy
+@greedy
+rule CreateTransferObjectRelationForGetRangeRelationTransferTypeInputQueryCustomizer
+    transform s: JSL!TransferRelationDeclaration
+    to t : JUDOPSM!TransferObjectRelation {
+        t.setId("(jsl/" + s.getId() + ")/GetRangeRelationTransferTypeInputQueryCustomizer");
+        t.name = "queryCustomizer";
+        t.target = s.referenceType.equivalent("CreateQueryCustomizerType");
+        t.embedded = true;
+        t.cardinality = s.equivalent("CreateCardinalityForGetRangeRelationTransferTypeInputQueryCustomizer");
+}
 
 @lazy
 @greedy
 rule CreateGetRangeInputType
     transform s: JSL!TransferRelationDeclaration
     to t: JUDOPSM!UnmappedTransferObjectType {
-        t.setId("(esm/" + s.getId() + ")/GetRangeInputType");
+        t.setId("(jsl/" + s.getId() + ")/GetRangeInputType");
 
-        t.name = "_GetRangeInput" + s.eContainer.name.firstToUpperCase() + s.name.firstToUpperCase();
+        t.name = "_GetRangeInput" + s.eContainer.eContainer.name.firstToUpperCase() + s.eContainer.name.firstToUpperCase() + s.name.firstToUpperCase();
 
-        var owner = new JUDOPSM!TransferObjectRelation;
-        owner.setId("(jsl/" + s.getId() + ")/GetRangeInputType/Owner");
-        owner.name = "owner";
-        owner.target = s.eContainer.getTransferDeclarationEquivalent();
-        owner.embedded = true;
-        owner.cardinality = new JUDOPSM!Cardinality;
-        owner.cardinality.setId("(jsl/" + s.getId() + ")/GetRangeInputType/Owner/Cardinality");
-        owner.cardinality.lower = 0;
-        owner.cardinality.upper = 1;
+        t.relations.add(s.equivalent("CreateTransferObjectRelationForGetRangeRelationTransferTypeInputOwner"));
 
-        t.relations.add(owner);
-
-        if (s.target.mapping.isDefined()) {
-            var queryCustomizer = new JUDOPSM!TransferObjectRelation;
-            queryCustomizer.setId("(esm/" + s.getId() + ")/GetRangeInputType/QueryCustomizer");
-            queryCustomizer.name = "queryCustomizer";
-            queryCustomizer.target = s.target.equivalent("CreateQueryCustomizerType");
-            queryCustomizer.embedded = true;
-            queryCustomizer.cardinality = new JUDOPSM!Cardinality;
-            queryCustomizer.cardinality.setId("(esm/" + s.getId() + ")/GetRangeInputType/QueryCustomizer/Cardinality");
-            queryCustomizer.cardinality.lower = 0;
-            queryCustomizer.cardinality.upper = 1;
-            t.relations.add(queryCustomizer);
+        if (s.referenceType.map.isDefined()) {
+            t.relations.add(s.equivalent("CreateTransferObjectRelationForGetRangeRelationTransferTypeInputQueryCustomizer"));
         }
 
         s.eContainer.eContainer.getModelRoot().elements.add(t);

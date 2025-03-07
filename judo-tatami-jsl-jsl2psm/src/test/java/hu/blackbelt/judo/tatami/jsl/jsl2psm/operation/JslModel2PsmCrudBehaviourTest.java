@@ -217,7 +217,7 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
         		.operationName("getRangeForCreateEntities")
         		.behaviour(TransferOperationBehaviourType.GET_RANGE)
         		.isBound(false)
-        		.inputType("_GetRangeInputMappedTransferCreateEntities")
+        		.inputType("_GetRangeInputCrudBehaviourTestModelMappedTransferCreateEntities")
         		.isMappedInputType(false)
         		.outputType("CreateTransfer")
         		.isMappedOutputType(true));    
@@ -226,8 +226,8 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
         		.transferName("MappedTransfer")
         		.operationName("getRangeForMappedChoice")
         		.behaviour(TransferOperationBehaviourType.GET_RANGE)
-        		.isBound(true)
-        		.inputType("_MappedTransferQueryCustomizer")
+        		.isBound(false)
+        		.inputType("_GetRangeInputCrudBehaviourTestModelMappedTransferMappedChoice")
         		.isMappedInputType(false)
         		.outputType("MappedTransfer")
         		.isMappedOutputType(true));    
@@ -236,8 +236,8 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
         		.transferName("MappedTransfer")
         		.operationName("getRangeForMappedChoiceStatic")
         		.behaviour(TransferOperationBehaviourType.GET_RANGE)
-        		.isBound(true)
-        		.inputType("_MappedTransferQueryCustomizer")
+        		.isBound(false)
+        		.inputType("_GetRangeInputCrudBehaviourTestModelMappedTransferMappedChoiceStatic")
         		.isMappedInputType(false)
         		.outputType("MappedTransfer")
         		.isMappedOutputType(true));    
@@ -247,7 +247,7 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
         		.operationName("getRangeForUnmappedChoiceStatic")
         		.behaviour(TransferOperationBehaviourType.GET_RANGE)
         		.isBound(false)
-        		.inputType("_MappedTransferQueryCustomizer")
+        		.inputType("_GetRangeInputCrudBehaviourTestModelUnmappedTransferUnmappedChoiceStatic")
         		.isMappedInputType(false)
         		.outputType("MappedTransfer")
         		.isMappedOutputType(true));    
