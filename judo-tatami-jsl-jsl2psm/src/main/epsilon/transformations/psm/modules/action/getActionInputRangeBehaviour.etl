@@ -205,7 +205,7 @@ rule CreateCardinalityForGetRangeActionInputTransferTypeInputParameterQueryCusto
 rule CreateTransferObjectRelationForGetRangeActionInputTransferTypeInputParameterOwner
     transform s: JSL!TransferActionDeclaration
     to t : JUDOPSM!TransferObjectRelation {
-        t.setId("(jsl/" + s.getId() + ")/GetRangeActionInputTransferTypeInputParameterOwner");
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectRelationForGetRangeActionInputTransferTypeInputParameterOwner");
         t.name = "owner";
         t.target = s.eContainer.getTransferDeclarationEquivalent();
         t.embedded = true;
@@ -219,7 +219,7 @@ rule CreateTransferObjectRelationForGetRangeActionInputTransferTypeInputParamete
 rule CreateTransferObjectRelationForGetRangeActionInputTransferTypeInputParameterQueryCustomizer
     transform s: JSL!TransferActionDeclaration
     to t : JUDOPSM!TransferObjectRelation {
-        t.setId("(jsl/" + s.getId() + ")/GetRangeActionInputTransferTypeInputParameterQueryCustomizer");
+        t.setId("(jsl/" + s.getId() + ")/CreateTransferObjectRelationForGetRangeActionInputTransferTypeInputParameterQueryCustomizer");
         t.name = "queryCustomizer";
         t.target = s.parameterType.equivalent("CreateQueryCustomizerType");
         t.embedded = true;
@@ -232,7 +232,7 @@ rule CreateGetRangeInputTypeForInputParameter
     transform s: JSL!TransferActionDeclaration
     to t: JUDOPSM!UnmappedTransferObjectType {
 
-        t.setId("(jsl/" + s.getId() + ")/GetRangeInputTypeForInputParameter");
+        t.setId("(jsl/" + s.getId() + ")/CreateGetRangeInputTypeForInputParameter");
 
         t.name = "_GetRangeInput" + s.eContainer.eContainer.name.firstToUpperCase() + s.eContainer.name.firstToUpperCase() + s.name.firstToUpperCase();
 
