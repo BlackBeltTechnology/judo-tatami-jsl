@@ -2,6 +2,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.*;
+import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.meta.ui.data.DataElement;
 import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
@@ -182,7 +183,9 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                 "A::TableOperations::View1::myActions::myAction4::OperationInputSelector",
                 "A::TableOperations::View1::myActions::myAction4::OperationOutput",
                 "A::TableOperations::View1::myActions::myAction5::OperationInputForm",
-                "A::TableOperations::View1::myActions::myAction5::OperationOutput"
+                "A::TableOperations::View1::myActions::myAction5::OperationOutput",
+                "A::TableOperations::View1::table2::myAction6::OperationInputSelector",
+                "A::TableOperations::View1::table2::myAction6::OperationOutput"
         ), application.getPages().stream().map(NamedElement::getFQName).sorted().toList());
 
         PageDefinition accessTableView1Page = application.getPages().stream().filter(p -> p.getFQName().equals("A::TableOperations::M::v1s::AccessTableViewPage")).findFirst().orElseThrow();
@@ -194,6 +197,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                 "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::myAction3::Action",
                 "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::myActions::myAction4::Action",
                 "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::myActions::myAction5::Action",
+                "A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::table2::myAction6::Action",
                 "A::TableOperations::M::v1s::AccessTableViewPage::table2::Filter",
                 "A::TableOperations::M::v1s::AccessTableViewPage::table2::Refresh",
                 "A::TableOperations::M::v1s::AccessTableViewPage::v1s::Back",
@@ -223,6 +227,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                 "A::TableOperations::View1::View::PageContainer::View1::myAction3::TableOperations::View1::myAction3::Open::Operation::Form",
                 "A::TableOperations::View1::View::PageContainer::View1::myActions::myAction4::TableOperations::View1::myActions::myAction4::Open::Selector",
                 "A::TableOperations::View1::View::PageContainer::View1::myActions::myAction5::TableOperations::View1::myActions::myAction5::Open::Operation::Form",
+                "A::TableOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::myAction6::TableOperations::View1::table2::myAction6::Open::Selector",
                 "A::TableOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Filter::table2::Filter",
                 "A::TableOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Refresh::table2::Refresh",
                 "A::TableOperations::View1::View::PageContainer::View1::table2::table2InlineViewTableRowButtonGroup::someAction::TableOperations::Table2::someAction::Call"
@@ -250,6 +255,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
 
         Table table2 = (Table) view1Container.getTables().stream().filter(t -> ((Table) t).getName().equals("table2")).findFirst().orElseThrow();
         ButtonGroup table2RowButtons = table2.getRowActionButtonGroup();
+        ButtonGroup table2TableButtons = table2.getTableActionButtonGroup();
 
         assertEquals(List.of(
                 "A::TableOperations::View1::View::PageContainer::View1::table2::table2InlineViewTableRowButtonGroup::someAction"
@@ -259,10 +265,27 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
 
         assertTrue(someActionButton.getActionDefinition().getIsCallOperationAction());
         assertEquals(list2.getTarget(), someActionButton.getActionDefinition().getTargetType());
+        assertEquals("text", someActionButton.getButtonStyle());
 
         Action table2SomeAction = accessTableView1Page.getActions().stream().filter(a -> a.getFQName().equals("A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::Table2::someAction::Action")).findFirst().orElseThrow();
 
-        assertEquals(list2,  table2SomeAction.getOwnerDataElement());
+        assertEquals(list2, table2SomeAction.getOwnerDataElement());
+
+        assertEquals(List.of(
+                "A::TableOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::myAction6",
+                "A::TableOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Filter",
+                "A::TableOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Refresh"
+        ), table2TableButtons.getButtons().stream().map(NamedElement::getFQName).sorted().toList());
+
+        Action table2MyAction6 = accessTableView1Page.getActions().stream().filter(a -> a.getFQName().equals("A::TableOperations::M::v1s::AccessTableViewPage::TableOperations::View1::table2::myAction6::Action")).findFirst().orElseThrow();
+
+        Button myAction6 = table2TableButtons.getButtons().stream().filter(c -> c.getName().equals("myAction6")).findFirst().orElseThrow();
+        ClassType transfer1 = (ClassType) application.getDataElements().stream().filter(d -> d.getFQName().equals("A::TableOperations::Transfer1")).findFirst().orElseThrow();
+
+        assertTrue(myAction6.getActionDefinition().getIsOpenOperationInputSelectorAction());
+        assertEquals(table2MyAction6.getActionDefinition(), myAction6.getActionDefinition());
+        assertEquals(transfer1, myAction6.getActionDefinition().getTargetType());
+        assertEquals("text", myAction6.getButtonStyle());
     }
 
     @Test
@@ -286,6 +309,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                 "A::LinkOperations::M::v1::AccessViewPage::LinkOperations::View1::myAction3::Action",
                 "A::LinkOperations::M::v1::AccessViewPage::LinkOperations::View1::myActions::myAction4::Action",
                 "A::LinkOperations::M::v1::AccessViewPage::LinkOperations::View1::myActions::myAction5::Action",
+                "A::LinkOperations::M::v1::AccessViewPage::LinkOperations::View1::table2::myAction6::Action",
                 "A::LinkOperations::M::v1::AccessViewPage::table2::Filter",
                 "A::LinkOperations::M::v1::AccessViewPage::table2::Refresh",
                 "A::LinkOperations::M::v1::AccessViewPage::v1::Back",
@@ -305,6 +329,7 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                 "A::LinkOperations::View1::View::PageContainer::View1::myAction3::LinkOperations::View1::myAction3::Open::Operation::Form",
                 "A::LinkOperations::View1::View::PageContainer::View1::myActions::myAction4::LinkOperations::View1::myActions::myAction4::Open::Selector",
                 "A::LinkOperations::View1::View::PageContainer::View1::myActions::myAction5::LinkOperations::View1::myActions::myAction5::Open::Operation::Form",
+                "A::LinkOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::myAction6::LinkOperations::View1::table2::myAction6::Open::Selector",
                 "A::LinkOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Filter::table2::Filter",
                 "A::LinkOperations::View1::View::PageContainer::View1::table2::table2::InlineViewTableButtonGroup::table2::Refresh::table2::Refresh",
                 "A::LinkOperations::View1::View::PageContainer::View1::table2::table2InlineViewTableRowButtonGroup::someAction::LinkOperations::Table2::someAction::Call"

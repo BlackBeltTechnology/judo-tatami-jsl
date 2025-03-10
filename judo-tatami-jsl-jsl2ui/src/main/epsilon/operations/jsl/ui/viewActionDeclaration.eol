@@ -5,6 +5,9 @@ operation JSL!UIActionDeclaration getId(): String {
 
 @cached
 operation JSL!UIActionDeclaration getFqName(): String {
+    if (self.eContainer.isTypeOf(JSL!ActionGroupModifier)) {
+        return self.eContainer.eContainer.getFqName() + "::" + self.name;
+    }
     return self.eContainer.getFqName() + "::" + self.name;
 }
 

@@ -18,6 +18,23 @@ operation JSL!Modifiable getLabelWithNameFallback(): String {
 }
 
 @cached
+operation JSL!Modifiable getActionGroupModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!ActionGroupModifier));
+}
+
+operation JSL!ActionGroupModifier getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
+    ves.add(self);
+    for (ad in self.actions.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet()) {
+        ves.addAll(ad.getExposedVisualElements(ves));
+    }
+
+    return ves;
+}
+
+@cached
 operation JSL!Modifiable getIconModifier(): JSL!Modifier {
     return self.modifiers.selectOne(m | m.isTypeOf(JSL!IconModifier));
 }

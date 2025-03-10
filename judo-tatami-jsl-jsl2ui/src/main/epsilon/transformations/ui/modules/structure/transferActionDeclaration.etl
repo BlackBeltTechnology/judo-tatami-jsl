@@ -6,9 +6,9 @@ rule AbstractOperationType
 
         t.name = s.name;
 
-        if (self.eContainer.map.isDefined() and self.isStatic()) {
+        if (s.eContainer.map.isDefined() and s.isStatic()) {
             t.operationType = UI!ui::data::OperationTypeEnum#STATIC;
-        } else if (self.eContainer.map.isDefined() and not self.isStatic()) {
+        } else if (s.eContainer.map.isDefined() and not s.isStatic()) {
             t.operationType = UI!ui::data::OperationTypeEnum#MAPPED;
         }
 
