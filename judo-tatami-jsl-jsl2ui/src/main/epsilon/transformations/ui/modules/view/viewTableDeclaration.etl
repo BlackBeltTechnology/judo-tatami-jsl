@@ -585,6 +585,11 @@ rule InlineViewTableButtonGroup
             t.buttons.add(s.equivalent("ViewTableDeclarationClearButton"));
             t.buttons.add(s.equivalent("ViewTableDeclarationBulkRemoveButton"));
         }
+        if (s.getActionGroupModifier().isDefined()) {
+            for (action in s.getActionGroupModifier().actions) {
+                t.buttons.add(action.equivalent("ViewTableActionDeclarationButton"));
+            }
+        }
 
         log.debug("InlineViewTableButtonGroup: " + t.name);
 }
@@ -917,6 +922,7 @@ rule ViewTableActionDeclarationButton
     to t: UI!ui::Button {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationButton");
         t.name = s.name;
+        t.buttonStyle = "text";
         var label = s.getLabelModifier();
         if (label.isDefined()) {
             t.label = label.value.value;
@@ -957,7 +963,7 @@ rule ViewTableActionDeclarationCallOperationActionDefinition
     	t.name = s.getFqName() + "::Call";
     	t.`operation` = s.transferAction.target.equivalent("OperationType");
     	t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
-    	t.isContainedRelationAction = true;
+    	t.isContainedRelationAction = not s.eContainer.isKindOf(JSL!ActionGroupModifier);
 
         log.debug("ViewTableActionDeclarationCallOperationActionDefinition: " + t.name);
 }
