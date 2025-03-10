@@ -1,10 +1,11 @@
 rule ViewActionDeclarationButton
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
-        guard: rootMenu.containsVisualElement(s) and not s.eContainer.isKindOf(JSL!UIRowDeclaration)
+        guard: rootMenu.containsVisualElement(s) and not s.eContainer.isKindOf(JSL!UIRowDeclaration) and not s.eContainer.isKindOf(JSL!ActionGroupModifier)
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationButton");
         t.name = s.name;
+        t.buttonStyle = "text";
         var label = s.getLabelModifier();
         if (label.isDefined()) {
             t.label = label.value.value;
@@ -88,16 +89,34 @@ rule ViewAction
 
         if (s.isOpenOperationFormAction()) {
             t.targetPageDefinition = s.equivalent("OperationInputFormPageDefinition");
-            t.actionDefinition = s.eContainer.isKindOf(JSL!UIRowDeclaration) ? s.equivalent("ViewTableActionDeclarationOpenFormActionDefinition") : s.equivalent("ViewActionDeclarationOpenFormActionDefinition");
+            if (s.eContainer.isKindOf(JSL!UIRowDeclaration)) {
+                t.actionDefinition = s.equivalent("ViewTableActionDeclarationOpenFormActionDefinition");
+            } else if (s.eContainer.isKindOf(JSL!ActionGroupModifier)) {
+               t.actionDefinition = s.equivalent("ViewTableActionDeclarationOpenFormActionDefinition");
+            } else {
+                t.actionDefinition = s.equivalent("ViewActionDeclarationOpenFormActionDefinition");
+            }
             t.actionDefinition.formFor = s.equivalent("OperationInputFormCallActionDefinition");
         } else if (s.isOpenOperationSelectorAction()) {
             t.targetPageDefinition = s.equivalent("OperationInputSelectorPageDefinition");
-            t.actionDefinition = s.eContainer.isKindOf(JSL!UIRowDeclaration) ? s.equivalent("ViewTableActionDeclarationOpenSelectorActionDefinition") : s.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
+            if (s.eContainer.isKindOf(JSL!UIRowDeclaration)) {
+                t.actionDefinition = s.equivalent("ViewTableActionDeclarationOpenSelectorActionDefinition");
+            } else if (s.eContainer.isKindOf(JSL!ActionGroupModifier)) {
+                t.actionDefinition = s.equivalent("ViewTableActionDeclarationOpenSelectorActionDefinition");
+            } else {
+                t.actionDefinition = s.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
+            }
         } else {
             if (s.hasOutput()) {
                 t.targetPageDefinition = s.equivalent("OperationOutputPageDefinition");
             }
-            t.actionDefinition = s.eContainer.isKindOf(JSL!UIRowDeclaration) ? s.equivalent("ViewTableActionDeclarationCallOperationActionDefinition") : s.equivalent("ViewActionDeclarationCallOperationActionDefinition");
+            if (s.eContainer.isKindOf(JSL!UIRowDeclaration)) {
+                t.actionDefinition = s.equivalent("ViewTableActionDeclarationCallOperationActionDefinition");
+            } else if (s.eContainer.isKindOf(JSL!ActionGroupModifier)) {
+                t.actionDefinition = s.equivalent("ViewTableActionDeclarationCallOperationActionDefinition");
+            } else {
+                t.actionDefinition = s.equivalent("ViewActionDeclarationCallOperationActionDefinition");
+            }
         }
 
         log.debug("ViewAction: " + t.name);
