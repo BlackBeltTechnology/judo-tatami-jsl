@@ -729,6 +729,8 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertEquals("relatedButton", formLevel1RelatedButton.getName());
         assertEquals("RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::relatedButton::relatedButton::View", formLevel1RelatedButton.getActionDefinition().getFQName());
         assertEquals("RelationWidgetsActor::RelationWidgetsTestModel::UserForm::Create::PageContainer::UserForm::level1::relatedButton::relatedButton::PreFetch", formLevel1RelatedButton.getPreFetchActionDefinition().getFQName());
+        assertTrue(formLevel1RelatedButton.getActionDefinition().getIsOpenPageAction());
+        assertTrue(formLevel1RelatedButton.getPreFetchActionDefinition().getIsPreFetchAction());
 
         Link formLevel1Related = (Link) formLevel1.getChildren().get(0);
         assertEquals("related", formLevel1Related.getName());

@@ -1,10 +1,11 @@
 rule ViewActionDeclarationButton
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
-        guard: rootMenu.containsVisualElement(s) and not s.eContainer.isKindOf(JSL!UIRowDeclaration)
+        guard: rootMenu.containsVisualElement(s) and not s.eContainer.isKindOf(JSL!UIRowDeclaration) and not s.eContainer.isKindOf(JSL!ActionGroupModifier)
 
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationButton");
         t.name = s.name;
+        t.buttonStyle = "text";
         var label = s.getLabelModifier();
         if (label.isDefined()) {
             t.label = label.value.value;
@@ -56,7 +57,6 @@ rule ViewActionDeclarationCallOperationActionDefinition
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationCallOperationActionDefinition");
     	t.name = s.getFqName() + "::Call";
     	t.`operation` = s.transferAction.target.equivalent("OperationType");
-    	t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
 
         log.debug("ViewActionDeclarationCallOperationActionDefinition: " + t.name);
 }
@@ -67,8 +67,7 @@ rule ViewActionDeclarationOpenSelectorActionDefinition
     to t: UI!ui::OpenOperationInputSelectorActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenSelectorActionDefinition");
         t.name = s.getFqName() + "::Open::Selector";
-        t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
- 		// t.selectorFor = s.equivalent("ViewActionDeclarationOpenSelectorCallOperationActionDefinition");
+ 		t.selectorFor = s.equivalent("OperationInputSelectorCallActionDefinition");
         log.debug("ViewActionDeclarationOpenSelectorActionDefinition: " + t.name);
 }
 
@@ -78,7 +77,6 @@ rule ViewActionDeclarationOpenFormActionDefinition
     to t: UI!ui::OpenOperationInputFormActionDefinition {
         t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenFormActionDefinition");
     	t.name = s.getFqName() + "::Open::Operation::Form";
-        // t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
         log.debug("ViewActionDeclarationOpenFormActionDefinition: " + t.name);
 }
 
@@ -91,16 +89,34 @@ rule ViewAction
 
         if (s.isOpenOperationFormAction()) {
             t.targetPageDefinition = s.equivalent("OperationInputFormPageDefinition");
-            t.actionDefinition = s.eContainer.isKindOf(JSL!UIRowDeclaration) ? s.equivalent("ViewTableActionDeclarationOpenFormActionDefinition") : s.equivalent("ViewActionDeclarationOpenFormActionDefinition");
+            if (s.eContainer.isKindOf(JSL!UIRowDeclaration)) {
+                t.actionDefinition = s.equivalent("ViewTableActionDeclarationOpenFormActionDefinition");
+            } else if (s.eContainer.isKindOf(JSL!ActionGroupModifier)) {
+               t.actionDefinition = s.equivalent("ViewTableActionDeclarationOpenFormActionDefinition");
+            } else {
+                t.actionDefinition = s.equivalent("ViewActionDeclarationOpenFormActionDefinition");
+            }
             t.actionDefinition.formFor = s.equivalent("OperationInputFormCallActionDefinition");
         } else if (s.isOpenOperationSelectorAction()) {
             t.targetPageDefinition = s.equivalent("OperationInputSelectorPageDefinition");
-            t.actionDefinition = s.eContainer.isKindOf(JSL!UIRowDeclaration) ? s.equivalent("ViewTableActionDeclarationOpenSelectorActionDefinition") : s.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
+            if (s.eContainer.isKindOf(JSL!UIRowDeclaration)) {
+                t.actionDefinition = s.equivalent("ViewTableActionDeclarationOpenSelectorActionDefinition");
+            } else if (s.eContainer.isKindOf(JSL!ActionGroupModifier)) {
+                t.actionDefinition = s.equivalent("ViewTableActionDeclarationOpenSelectorActionDefinition");
+            } else {
+                t.actionDefinition = s.equivalent("ViewActionDeclarationOpenSelectorActionDefinition");
+            }
         } else {
             if (s.hasOutput()) {
                 t.targetPageDefinition = s.equivalent("OperationOutputPageDefinition");
             }
-            t.actionDefinition = s.eContainer.isKindOf(JSL!UIRowDeclaration) ? s.equivalent("ViewTableActionDeclarationCallOperationActionDefinition") : s.equivalent("ViewActionDeclarationCallOperationActionDefinition");
+            if (s.eContainer.isKindOf(JSL!UIRowDeclaration)) {
+                t.actionDefinition = s.equivalent("ViewTableActionDeclarationCallOperationActionDefinition");
+            } else if (s.eContainer.isKindOf(JSL!ActionGroupModifier)) {
+                t.actionDefinition = s.equivalent("ViewTableActionDeclarationCallOperationActionDefinition");
+            } else {
+                t.actionDefinition = s.equivalent("ViewActionDeclarationCallOperationActionDefinition");
+            }
         }
 
         log.debug("ViewAction: " + t.name);
@@ -234,7 +250,7 @@ rule OperationInputSelectorCallActionButton
         t.dataElement = s.transferAction.target.equivalent("OperationType");
         var icon = s.getIconModifier();
         if (icon.isDefined()) {
-            t.iconName = icon.equivalent("IconModifierIcon");
+            t.icon = icon.equivalent("IconModifierIcon");
         }
         var label = s.getLabelModifier();
         if (label.isDefined()) {
@@ -354,7 +370,6 @@ rule OperationOutputPageDefinition
                 t.actions.add(s.equivalent("OperationOutputRefreshAction"));
             }
             if (s.`return`.map.transfer.isUpdateSupported()) {
-                t.actions.add(s.equivalent("OperationOutputCancelAction"));
                 t.actions.add(s.equivalent("OperationOutputUpdateAction"));
             }
             if (s.`return`.map.transfer.isDeleteSupported()) {
@@ -408,17 +423,6 @@ rule OperationOutputRefreshAction
         t.actionDefinition = s.`return`.equivalent("ViewPageContainerRefreshActionDefinition");
 
         log.debug("OperationOutputRefreshAction: " + t.name);
-}
-
-@lazy
-rule OperationOutputCancelAction
-    transform s: JSL!UIActionDeclaration
-    to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputCancelAction");
-        t.name = s.name + "::Cancel";
-        t.actionDefinition = s.`return`.equivalent("ViewPageContainerBackActionDefinition");
-
-        log.debug("OperationOutputCancelAction: " + t.name);
 }
 
 @lazy

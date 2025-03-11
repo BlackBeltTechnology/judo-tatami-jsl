@@ -202,7 +202,6 @@ public class JSLModel2UiListItemTest extends AbstractTest  {
                 "A::Cards::M::v1s::AccessTableViewPage::relatedTagCollection::OpenPage",
                 "A::Cards::M::v1s::AccessTableViewPage::relatedTagCollection::Refresh",
                 "A::Cards::M::v1s::AccessTableViewPage::v1s::Back",
-                "A::Cards::M::v1s::AccessTableViewPage::v1s::Cancel",
                 "A::Cards::M::v1s::AccessTableViewPage::v1s::Refresh",
                 "A::Cards::M::v1s::AccessTableViewPage::v1s::Update"
         ), accessViewPage.getActions().stream().map(NamedElement::getFQName).sorted().toList());
@@ -323,7 +322,6 @@ public class JSLModel2UiListItemTest extends AbstractTest  {
                 "A::Tags::M::t1s::AccessTableViewPage::relatedTagCollection::OpenPage",
                 "A::Tags::M::t1s::AccessTableViewPage::relatedTagCollection::Refresh",
                 "A::Tags::M::t1s::AccessTableViewPage::t1s::Back",
-                "A::Tags::M::t1s::AccessTableViewPage::t1s::Cancel",
                 "A::Tags::M::t1s::AccessTableViewPage::t1s::Refresh",
                 "A::Tags::M::t1s::AccessTableViewPage::t1s::Update"
         ), accessViewPage.getActions().stream().map(NamedElement::getFQName).sorted().toList());

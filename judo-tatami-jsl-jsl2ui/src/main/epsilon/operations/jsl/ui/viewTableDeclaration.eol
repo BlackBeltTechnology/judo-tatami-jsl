@@ -28,6 +28,18 @@ operation JSL!UIViewTableDeclaration getRelation(): TransferRelationDeclaration 
     return self.transferRelation.target;
 }
 
+operation JSL!UIViewTableDeclaration uiContainer() : UI!ui::VisualElement {
+    if (self.referenceType.isTypeOf(JSL!UICardDeclaration)) {
+        return self.equivalent("InlineViewCards");
+    } else if (self.referenceType.isTypeOf(JSL!UITagDeclaration)) {
+        return self.equivalent("InlineViewTags");
+    } else if (self.referenceType.isTypeOf(JSL!UIRowDeclaration)) {
+        return self.equivalent("InlineViewTable");
+    } else {
+        throw "Could not map uiContainer() for JSL!UIViewTableDeclaration: " + self.getFqName();
+    }
+}
+
 operation JSL!UIViewTableDeclaration getExposedVisualElements(ves: Set): Set {
     if (ves.contains(self)) {
         return ves;
@@ -37,6 +49,10 @@ operation JSL!UIViewTableDeclaration getExposedVisualElements(ves: Set): Set {
 
     ves.add(self);
     ves.addAll(listItemDeclaration.getExposedVisualElements(ves));
+
+    if (self.getActionGroupModifier().isDefined()) {
+        ves.addAll(self.getActionGroupModifier().getExposedVisualElements(ves));
+    }
 
     if (self.getCreateFormModifier().isDefined()) {
         ves.addAll(self.getCreateFormModifier().form.getExposedVisualElements(ves));
@@ -57,6 +73,12 @@ operation JSL!UIViewTableDeclaration getExposedVisualElements(ves: Set): Set {
 operation JSL!UIViewTableDeclaration getAllActionDeclarations() : Set {
     var ves = new Set();
 
+    // table operations
+    if (self.getActionGroupModifier().isDefined()) {
+        ves.addAll(self.getActionGroupModifier().actions);
+    }
+
+    // row operations
     if (self.referenceType.isTypeOf(JSL!UIRowDeclaration) or self.referenceType.isTypeOf(JSL!UICardDeclaration)) {
         ves.addAll(self.referenceType.members.select(m | m.isTypeOf(JSL!UIActionDeclaration)).asSet());
     }

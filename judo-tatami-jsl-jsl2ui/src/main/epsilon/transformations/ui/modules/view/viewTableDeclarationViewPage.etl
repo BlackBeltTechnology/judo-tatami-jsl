@@ -22,17 +22,23 @@ rule ViewTableViewPageDefinition
         log.info("===================");
         */
 
+        var actionDeclarationsToProcess =s.getUpdateViewModifier().view.getAllActionDeclarations();
+
         for (link in s.getUpdateViewModifier().view.getOwnLinks()) {
             var lRelation = link.transferRelation.target;
 
             t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenPageAction", s.getId()));
             if (lRelation.isRefreshAllowed() and not lRelation.isEager()) {
-                t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", s.getId()));
+                if (link.button) {
+                    t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationPreFetchAction", s.getId()));
+                } else {
+                    t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRefreshAction", s.getId()));
+                }
             }
             if (link.getCreateFormModifier().isDefined()) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationOpenFormAction", s.getId()));
             }
-            if (lRelation.isDeleteAllowed()) {
+            if (lRelation.isDeleteAllowed() and not link.button) {
                 t.actions.add(link.equivalentDiscriminated("ViewLinkDeclarationRowDeleteAction", s.getId()));
             }
             if (link.getSelectorTableModifier().isDefined()) {
@@ -72,6 +78,26 @@ rule ViewTableViewPageDefinition
                 t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteRangeAction", s.getId()));
                 t.actions.add(table.equivalentDiscriminated("ViewTableTagsDeclarationAutocompleteAddAction", s.getId()));
             }
+
+            for (actionDeclaration in table.getAllActionDeclarations()) {
+                var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
+                viewAction.ownerDataElement = tRelation.equivalent("RelationType");
+                viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
+                t.actions.add(viewAction);
+
+                actionDeclarationsToProcess.remove(actionDeclaration);
+
+                if (viewAction.actionDefinition.isKindOf(UI!ui::ParameterlessCallOperationActionDefinition) and viewAction.actionDefinition.targetType.isUndefined()) {
+                    viewAction.actionDefinition.targetType = tRelation.referenceType.equivalent("ClassType");
+                }
+            }
+        }
+
+        for (actionDeclaration in actionDeclarationsToProcess) {
+            var viewAction = actionDeclaration.equivalentDiscriminated("ViewAction", s.getId());
+            viewAction.ownerDataElement = t.dataElement;
+            viewAction.targetDataElement = actionDeclaration.transferAction.target.equivalent("OperationType");
+            t.actions.add(viewAction);
         }
 
         t.actions.add(s.equivalent("ViewTableViewPageDefinitionBackAction"));

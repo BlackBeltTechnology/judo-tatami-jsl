@@ -196,7 +196,6 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::relatedCollection::Filter",
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::relatedCollection::Refresh",
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::vxs::Back",
-                "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::vxs::Cancel",
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::vxs::Refresh",
                 "A::AccessTableRowOperations::M::vxs::AccessTableViewPage::vxs::Update",
                 "A::AccessTableRowOperations::RowX::myAction3::OperationInputForm::myAction3::Back",
@@ -209,7 +208,6 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                 "A::AccessTableRowOperations::ViewX::myAction2::OperationInputSelector::myAction2::Refresh",
                 "A::AccessTableRowOperations::ViewX::myAction2::OperationOutput::AccessTableRowOperations::ViewX::myAction2::Delete",
                 "A::AccessTableRowOperations::ViewX::myAction2::OperationOutput::myAction2::Back",
-                "A::AccessTableRowOperations::ViewX::myAction2::OperationOutput::myAction2::Cancel",
                 "A::AccessTableRowOperations::ViewX::myAction2::OperationOutput::myAction2::Refresh",
                 "A::AccessTableRowOperations::ViewX::myAction2::OperationOutput::myAction2::Update",
                 "A::AccessTableRowOperations::ViewX::myAction3::OperationInputForm::myAction3::Back",
@@ -231,8 +229,13 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
 
 
         PageDefinition accessView = pages.stream().filter(p -> p.getFQName().equals("A::AccessTableRowOperations::M::vxs::AccessTableViewPage")).findFirst().orElseThrow();
+        PageDefinition myAction2InputSelector = pages.stream().filter(p -> p.getFQName().equals("A::AccessTableRowOperations::ViewX::myAction2::OperationInputSelector")).findFirst().orElseThrow();
         Table relatedCollectionTable = (Table) accessView.getContainer().getTables().stream().filter(t -> ((Table) t).getName().equals("relatedCollection")).findFirst().orElseThrow();
+        Action myAction2 = accessView.getActions().stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::M::vxs::AccessTableViewPage::AccessTableRowOperations::ViewX::myAction2::Action")).findFirst().orElseThrow();
+        Action myAction2Call = myAction2InputSelector.getActions().stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::ViewX::myAction2::OperationInputSelector::myAction2::CallOperation")).findFirst().orElseThrow();
         Action myAction4 = accessView.getActions().stream().filter(a -> a.getFQName().equals("A::AccessTableRowOperations::M::vxs::AccessTableViewPage::AccessTableRowOperations::Row3::myAction4::Action")).findFirst().orElseThrow();
+
+        assertEquals(myAction2Call.getActionDefinition(), ((OpenOperationInputSelectorActionDefinition) myAction2.getActionDefinition()).getSelectorFor());
 
         assertTrue(relatedCollectionTable.getRowActionButtonGroup().getButtons().stream().anyMatch(b -> myAction4.getActionDefinition().equals(b.getActionDefinition())));
 
