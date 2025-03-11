@@ -1,9 +1,9 @@
 rule MenuItemGroup
     transform s: JSL!UIMenuGroupDeclaration
     to t : UI!ui::NavigationItem {
-        guard: s.getRootMenu() == rootMenu
+        guard: s.getFrontend() == frontend
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/MenuItemGroup");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/MenuItemGroup");
         t.name = s.getFqName();
 
         log.debug("Create Navigation Group: " + s.name );
@@ -26,7 +26,7 @@ rule MenuItemGroup
             s.eContainer.equivalent("MenuItemGroup").items.add(t);
             __pos.put(t, s.eContainer.members.indexOf(s));
         } else {
-            var navigationController = rootMenu.equivalent("Application").navigationController;
+            var navigationController = frontend.equivalent("Application").navigationController;
             navigationController.items.add(t);
             __pos.put(t, s.eContainer.members.indexOf(s));
         }

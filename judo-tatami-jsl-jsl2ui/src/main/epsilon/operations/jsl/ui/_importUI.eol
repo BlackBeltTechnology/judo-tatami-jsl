@@ -1,8 +1,10 @@
 import "actionGroupDeclaration.eol";
 import "cardDeclaration.eol";
-import "menuDeclaration.eol";
+import "frontendDeclaration.eol";
 import "menuLinkDeclaration.eol";
+import "menuGroupDeclaration.eol";
 import "menuTableDeclaration.eol";
+import "menuModifier.eol";
 import "rowColumnDeclaration.eol";
 import "rowDeclaration.eol";
 import "tagDeclaration.eol";

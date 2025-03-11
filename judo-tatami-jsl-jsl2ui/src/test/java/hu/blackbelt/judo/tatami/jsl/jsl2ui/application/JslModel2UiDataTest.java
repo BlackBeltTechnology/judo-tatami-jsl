@@ -107,7 +107,7 @@ public class JslModel2UiDataTest extends AbstractTest {
 
             actor Actor realm:"COMPANY" claim:"email" identity:UserTransfer::email;
 
-            menu ActorApp(Actor a) {}
+            frontend ActorApp(Actor a);
         """));
 
         transform();
@@ -300,10 +300,11 @@ public class JslModel2UiDataTest extends AbstractTest {
                 access Transfer2[] tr2s <= Entity2.all();
             }
 
-            menu TestApp(Actor1 a) {
-                table Transfer1Row[] tr1s <= a.tr1s label:"TR1S";
-                table Transfer2Row[] tr2s <= a.tr2s label:"TR2S";
-            }
+            frontend TestApp(Actor1 a)
+                menu: {
+                    table Transfer1Row[] tr1s <= a.tr1s label:"TR1S";
+                    table Transfer2Row[] tr2s <= a.tr2s label:"TR2S";
+                };
         """));
 
         transform();
@@ -461,9 +462,10 @@ public class JslModel2UiDataTest extends AbstractTest {
                 access UserTransfer user <= User.any() create delete update;
             }
 
-            menu TestApp(Actor a) {
-                link UserView user <= a.user label:"User";
-            }
+            frontend TestApp(Actor a)
+                menu: {
+                    link UserView user <= a.user label:"User";
+                };
         """));
 
         transform();

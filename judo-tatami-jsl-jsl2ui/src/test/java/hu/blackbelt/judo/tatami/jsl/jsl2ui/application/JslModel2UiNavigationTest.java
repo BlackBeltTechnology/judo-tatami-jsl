@@ -127,9 +127,10 @@ public class JslModel2UiNavigationTest extends AbstractTest {
                 access UserTransfer user <= User.any();
             }
 
-            menu NavigationApp(NavigationActor a){
-                link UserView user <= a.user label:"User" icon:"tools";
-            }
+            frontend NavigationApp(NavigationActor a)
+                menu: {
+                    link UserView user <= a.user label:"User" icon:"tools";
+                };
         """));
 
         transform();
@@ -397,9 +398,10 @@ public class JslModel2UiNavigationTest extends AbstractTest {
                 access UserTransfer user <= User.any();
             }
 
-            menu NavigationApp(NavigationActor a){
-                link UserView user <= a.user label:"User" icon:"tools";
-            }
+            frontend NavigationApp(NavigationActor a)
+                menu: {
+                    link UserView user <= a.user label:"User" icon:"tools";
+                };
         """));
 
         transform();

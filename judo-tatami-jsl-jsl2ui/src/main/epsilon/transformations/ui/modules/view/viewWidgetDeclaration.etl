@@ -2,7 +2,7 @@
 rule AbstractViewWidgetDeclaration
     transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::VisualElement {
-        guard: rootMenu.containsVisualElement(s) and not s.eContainer.isTypeOf(JSL!UICardDeclaration)
+        guard: frontend.containsVisualElement(s) and not s.eContainer.isTypeOf(JSL!UICardDeclaration)
 
         t.name = s.name;
         t.label = s.getLabelWithNameFallback();
@@ -25,7 +25,7 @@ rule ViewWidgetIcon
     to t: UI!ui::Icon {
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "WidgetIcon";
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewWidgetIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewWidgetIcon");
 }
 
 @greedy
@@ -37,7 +37,7 @@ rule BinaryTypeInput
             and s.transferField.target.referenceType.`primitive` == "binary"
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/BinaryTypeInput");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/BinaryTypeInput");
         log.debug("BinaryTypeInput: " + t.name);
 }
 
@@ -51,7 +51,7 @@ rule BooleanTypeTrinaryLogicCombo
             // and (s.booleanWidget == ESM!esm::ui::BooleanWidget#COMBO)
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/BooleanTypeTrinaryLogicCombo");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/BooleanTypeTrinaryLogicCombo");
         log.debug("BooleanTypeTrinaryLogicCombo: " + t.name);
 }
 
@@ -66,7 +66,7 @@ rule BooleanTypeCheckbox
             // and (s.booleanWidget.isUndefined() or s.booleanWidget <> ESM!esm::ui::BooleanWidget#COMBO)
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/BooleanTypeCheckbox");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/BooleanTypeCheckbox");
         t.valueLabelPlacement = UI!ui::Placement#START; // todo add modifier to jsl and transform afterwards
         log.debug("BooleanTypeCheckbox: " + t.name);
 }
@@ -81,7 +81,7 @@ rule DateTypeInput
             and s.transferField.target.referenceType.`primitive` == "date"
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/DateTypeInput");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/DateTypeInput");
         log.debug("DateTypeInput: " + t.name);
 }
 
@@ -94,7 +94,7 @@ rule TimestampTypeDateTimeInput
             and s.transferField.target.referenceType.`primitive` == "timestamp"
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TimestampTypeDateTimeInput");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/TimestampTypeDateTimeInput");
         log.debug("TimestampTypeDateTimeInput: " + t.name);
 }
 
@@ -107,7 +107,7 @@ rule TimeTypeTypeTimeInput
             and s.transferField.target.referenceType.`primitive` == "time"
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TimeTypeTypeTimeInput");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/TimeTypeTypeTimeInput");
         log.debug("TimeTypeTypeTimeInput: " + t.name);
 }
 
@@ -118,7 +118,7 @@ rule EnumerationTypeRadio
     extends AbstractViewWidgetDeclaration {
         guard: s.transferField.target.referenceType.isTypeOf(JSL!EnumDeclaration) and s.type.name == "RadioWidget"
 
-        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/EnumerationTypeRadio";
+        var id = frontend.name + "/(jsl/" + s.getId() + ")/EnumerationTypeRadio";
         s.eContainer.uiContainer().children.add(t);
         t.setId(id);
         for (l in s.transferField.target.referenceType.literals) {
@@ -134,7 +134,7 @@ rule EnumerationTypeCombo
     extends AbstractViewWidgetDeclaration {
         guard: s.transferField.target.referenceType.isTypeOf(JSL!EnumDeclaration) and s.type.name == "ComboWidget"
 
-        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/EnumerationTypeCombo";
+        var id = frontend.name + "/(jsl/" + s.getId() + ")/EnumerationTypeCombo";
         s.eContainer.uiContainer().children.add(t);
         t.setId(id);
         for (l in s.transferField.target.referenceType.literals) {
@@ -152,7 +152,7 @@ rule NumericTypeVisualInput
             and s.transferField.target.referenceType.`primitive` == "numeric"
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/NumericTypeVisualInput");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/NumericTypeVisualInput");
         // if (s.formatValue.isDefined()) {
         //     t.formatValue = s.formatValue;
         // }
@@ -169,7 +169,7 @@ rule StringTypeTextInput
             and (s.getLines().isUndefined() or s.getLines().value <= 1)
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/StringTypeTextInput");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/StringTypeTextInput");
         if (s.isPredictive()) {
             t.isTypeAheadField = true;
         }
@@ -187,7 +187,7 @@ rule StringTypeTextArea
             and s.getLines().value > 1
 
         s.eContainer.uiContainer().children.add(t);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/StringTypeTextArea");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/StringTypeTextArea");
         t.lines = s.getLines().value.intValue();
         t.row = t.lines.doubleValue();
         log.debug("StringTypeTextArea: " + t.name);

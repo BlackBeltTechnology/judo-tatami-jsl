@@ -2,7 +2,7 @@
 rule RowColumnDeclarationPrimitiveColumn
     transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Column {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowColumnDeclarationPrimitiveColumn");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowColumnDeclarationPrimitiveColumn");
         t.name = s.name;
         t.format = "%s";
         t.label = s.getLabelWithNameFallback();
@@ -19,7 +19,7 @@ rule RowColumnDeclarationPrimitiveColumn
 rule RowColumnDeclarationColumnIcon
     transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowColumnDeclarationColumnIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowColumnDeclarationColumnIcon");
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "FieldIcon";
 
@@ -30,7 +30,7 @@ rule RowColumnDeclarationColumnIcon
 rule RowColumnDeclarationPrimitiveColumnFilter
     transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Filter {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowColumnDeclarationPrimitiveColumnFilter");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowColumnDeclarationPrimitiveColumnFilter");
         t.name = s.name + "Filter";
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
         t.label = s.getLabelWithNameFallback();

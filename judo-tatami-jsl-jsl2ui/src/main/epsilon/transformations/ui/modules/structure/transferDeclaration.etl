@@ -33,7 +33,7 @@ rule ClassType
             t.isOptional = true;
         }
 
-        rootMenu.equivalent("Application").dataElements.add(t);
+        frontend.equivalent("Application").dataElements.add(t);
 
         var identity = actorDeclaration.getIdentityTransferDeclaration();
 

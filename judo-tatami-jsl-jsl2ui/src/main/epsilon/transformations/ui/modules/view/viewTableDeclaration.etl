@@ -2,7 +2,7 @@
 rule AbstractViewTableDeclaration
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Table {
-        guard: rootMenu.containsVisualElement(s)
+        guard: frontend.containsVisualElement(s)
 
         t.name = s.name;
         t.relationName = s.transferRelation.target.name;
@@ -35,7 +35,7 @@ rule AbstractViewTableActionDefinition
 rule TableIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/TableIcon");
         t.name = s.name + "TableIcon";
         t.iconName = s.getIconModifier().value.value;
 }
@@ -44,9 +44,9 @@ rule InlineViewCards
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Table
     extends AbstractViewTableDeclaration {
-        guard: rootMenu.containsVisualElement(s) and s.referenceType.isTypeOf(JSL!UICardDeclaration)
+        guard: frontend.containsVisualElement(s) and s.referenceType.isTypeOf(JSL!UICardDeclaration)
 
-        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCards";
+        var id = frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCards";
         t.setId(id);
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
         s.eContainer.uiContainer().children.add(t);
@@ -75,7 +75,7 @@ rule InlineViewCards
 rule InlineViewCardsButtonGroup
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsButtonGroup");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCardsButtonGroup");
         t.name = s.name + "::InlineViewCardsButtonGroup";
         t.label = "Actions";
 
@@ -92,7 +92,7 @@ rule InlineViewCardsButtonGroup
 rule InlineViewCardsFilterButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsFilterButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCardsFilterButton");
         t.name = s.name + "::Filter";
         t.icon = s.equivalent("InlineViewCardsFilterButtonIcon");
         t.label = "Filter";
@@ -106,7 +106,7 @@ rule InlineViewCardsFilterButton
 rule InlineViewCardsFilterButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsFilterButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCardsFilterButtonIcon");
         t.name = s.name + "FilterIcon";
         t.iconName = "filter";
 
@@ -118,7 +118,7 @@ rule InlineViewCardsFilterButtonActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::FilterActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsFilterButtonActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCardsFilterButtonActionDefinition");
         t.name = s.name + "::Filter";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
@@ -129,7 +129,7 @@ rule InlineViewCardsFilterButtonActionDefinition
 rule InlineViewCardsRefreshButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsRefreshButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCardsRefreshButton");
         t.name = s.name + "::Refresh";
         t.icon = s.equivalent("InlineViewCardsRefreshButtonIcon");
         t.label = "Refresh";
@@ -143,7 +143,7 @@ rule InlineViewCardsRefreshButton
 rule InlineViewCardsRefreshButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsRefreshButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCardsRefreshButtonIcon");
         t.name = s.name + "RefreshIcon";
         t.iconName = "refresh";
 
@@ -155,7 +155,7 @@ rule InlineViewCardsRefreshActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::RefreshActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsRefreshActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCardsRefreshActionDefinition");
         t.name = s.name + "::Refresh";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
@@ -166,7 +166,7 @@ rule InlineViewCardsRefreshActionDefinition
 rule InlineViewCardsRowButtonGroup
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsRowButtonGroup");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCardsRowButtonGroup");
         t.name = s.name + "TableRowButtonGroup";
         t.label = "Actions";
 
@@ -181,7 +181,7 @@ rule InlineViewCardsRowButtonGroup
 rule InlineViewCardsOpenPageButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsOpenPageButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCardsOpenPageButton");
         t.name = s.name + "::View";
         t.icon = s.equivalent("InlineViewCardsOpenPageButtonIcon");
         t.label = "View";
@@ -195,7 +195,7 @@ rule InlineViewCardsOpenPageButton
 rule InlineViewCardsOpenPageButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsOpenPageButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCardsOpenPageButtonIcon");
         t.name = s.name + "OpenPageIcon";
         t.iconName = "visibility";
 
@@ -207,7 +207,7 @@ rule InlineViewCardsOpenPageActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::OpenPageActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewCardsOpenPageActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewCardsOpenPageActionDefinition");
         t.name = s.name + "::View";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
@@ -218,9 +218,9 @@ rule InlineViewTags
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Table
     extends AbstractViewTableDeclaration {
-        guard: rootMenu.containsVisualElement(s) and s.referenceType.isTypeOf(JSL!UITagDeclaration)
+        guard: frontend.containsVisualElement(s) and s.referenceType.isTypeOf(JSL!UITagDeclaration)
 
-        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTags";
+        var id = frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTags";
         t.setId(id);
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
         s.eContainer.uiContainer().children.add(t);
@@ -250,7 +250,7 @@ rule ViewTagsDeclarationAutocompleteRangeActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::AutocompleteRangeActionDefinition
     extends AbstractViewTableActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTagsDeclarationAutocompleteRangeActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTagsDeclarationAutocompleteRangeActionDefinition");
  		t.name = s.name + "::Autocomplete";
  		t.isContainedRelationAction = true;
 		t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -262,7 +262,7 @@ rule ViewTagsDeclarationAutocompleteAddActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::AutocompleteAddActionDefinition
     extends AbstractViewTableActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTagsDeclarationAutocompleteAddActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTagsDeclarationAutocompleteAddActionDefinition");
  		t.name = s.name + "::AutocompleteAdd";
  		t.isContainedRelationAction = true;
  		t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -273,7 +273,7 @@ rule ViewTagsDeclarationAutocompleteAddActionDefinition
 rule InlineViewTagsButtonGroup
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsButtonGroup");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTagsButtonGroup");
         t.name = s.name + "::InlineViewTagsButtonGroup";
         t.label = "Actions";
 
@@ -290,7 +290,7 @@ rule InlineViewTagsButtonGroup
 rule InlineViewTagsFilterButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsFilterButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTagsFilterButton");
         t.name = s.name + "::Filter";
         t.icon = s.equivalent("InlineViewTagsFilterButtonIcon");
         t.label = "Filter";
@@ -304,7 +304,7 @@ rule InlineViewTagsFilterButton
 rule InlineViewTagsFilterButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsFilterButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTagsFilterButtonIcon");
         t.name = s.name + "FilterIcon";
         t.iconName = "filter";
 
@@ -316,7 +316,7 @@ rule InlineViewTagsFilterActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::FilterActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsFilterActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTagsFilterActionDefinition");
         t.name = s.name + "::Filter";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
@@ -327,7 +327,7 @@ rule InlineViewTagsFilterActionDefinition
 rule InlineViewTagsRefreshButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsRefreshButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTagsRefreshButton");
         t.name = s.name + "::Refresh";
         t.icon = s.equivalent("InlineViewTagsRefreshButtonIcon");
         t.label = "Refresh";
@@ -341,7 +341,7 @@ rule InlineViewTagsRefreshButton
 rule InlineViewTagsRefreshButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsRefreshButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTagsRefreshButtonIcon");
         t.name = s.name + "RefreshIcon";
         t.iconName = "refresh";
 
@@ -353,7 +353,7 @@ rule InlineViewTagsRefreshActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::RefreshActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsRefreshActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTagsRefreshActionDefinition");
         t.name = s.name + "::Refresh";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
@@ -364,7 +364,7 @@ rule InlineViewTagsRefreshActionDefinition
 rule InlineViewTagsRowButtonGroup
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsRowButtonGroup");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTagsRowButtonGroup");
         t.name = s.name + "TableRowButtonGroup";
         t.label = "Actions";
 
@@ -379,7 +379,7 @@ rule InlineViewTagsRowButtonGroup
 rule InlineViewTagsOpenPageButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsOpenPageButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTagsOpenPageButton");
         t.name = s.name + "::View";
         t.icon = s.equivalent("InlineViewTagsOpenPageButtonIcon");
         t.label = "View";
@@ -393,7 +393,7 @@ rule InlineViewTagsOpenPageButton
 rule InlineViewTagsOpenPageButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsOpenPageButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTagsOpenPageButtonIcon");
         t.name = s.name + "OpenPageIcon";
         t.iconName = "visibility";
 
@@ -405,7 +405,7 @@ rule InlineViewTagsOpenPageActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::OpenPageActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTagsOpenPageActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTagsOpenPageActionDefinition");
         t.name = s.name + "::View";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
@@ -416,9 +416,9 @@ rule InlineViewTable
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Table
     extends AbstractViewTableDeclaration {
-        guard: rootMenu.containsVisualElement(s) and s.referenceType.isTypeOf(JSL!UIRowDeclaration)
+        guard: frontend.containsVisualElement(s) and s.referenceType.isTypeOf(JSL!UIRowDeclaration)
 
-        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTable";
+        var id = frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTable";
         t.setId(id);
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
 
@@ -462,7 +462,7 @@ rule InlineViewTable
 rule TablePrimitiveColumn
     transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Column {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumn");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumn");
         t.name = s.name;
         t.format = "%s";
         t.label = s.getLabelWithNameFallback();
@@ -479,10 +479,10 @@ rule TablePrimitiveColumn
 rule ColumnIcon
     transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "FieldIcon";
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
 
         log.debug("ColumnIcon: " + t.name);
 }
@@ -491,7 +491,7 @@ rule ColumnIcon
 rule TablePrimitiveColumnFilter
     transform s: JSL!UIRowColumnDeclaration
     to t: UI!ui::Filter {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumnFilter");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/TablePrimitiveColumnFilter");
         t.name = s.name + "Filter";
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
         t.label = s.getLabelWithNameFallback();
@@ -502,7 +502,7 @@ rule TablePrimitiveColumnFilter
 rule RowLinkDerivedColumn
     transform s: JSL!RowLinkDeclaration
     to t: UI!ui::Column {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumn");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumn");
         // we keep the name of the link it self because the relation won't be present in the visual elements only in the data model
         t.name = s.name;
         t.format = "%s";
@@ -521,7 +521,7 @@ rule RowLinkDerivedColumn
 rule RowLinkDerivedColumnIcon
     transform s: JSL!RowLinkDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumnIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumnIcon");
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "DerivedColumnIcon";
 
@@ -532,7 +532,7 @@ rule RowLinkDerivedColumnIcon
 rule RowLinkDerivedColumnFilter
     transform s: JSL!RowLinkDeclaration
     to t: UI!ui::Filter {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumnFilter");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedColumnFilter");
         t.name = s.name + "Filter";
         t.attributeType = s.equivalent("RowLinkDerivedAttributeType");
         t.label = s.getLabelWithNameFallback();
@@ -543,7 +543,7 @@ rule RowLinkDerivedColumnFilter
 rule RowLinkDerivedAttributeType
     transform s: JSL!RowLinkDeclaration
     to t: UI!ui::data::AttributeType {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedAttributeType");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowLinkDerivedAttributeType");
         t.memberType = UI!ui::data::MemberType#DERIVED;
         t.isReadOnly = true;
         t.name = "_text_" + s.name;
@@ -551,7 +551,7 @@ rule RowLinkDerivedAttributeType
         t.isFilterable = true;
 
         // TODO investigate if it really does not matter which string type we pick
-        t.dataType = rootMenu.equivalent("Application").dataTypes.selectOne(d | d.isTypeOf(UI!ui::data::StringType));
+        t.dataType = frontend.equivalent("Application").dataTypes.selectOne(d | d.isTypeOf(UI!ui::data::StringType));
 
         s.getContainerEquivalentClassType().attributes.add(t);
         log.debug("Created RowLinkDerivedAttributeType for ViewLinkDeclaration: [" + t.name + "] for [" + s.name + "]");
@@ -561,7 +561,7 @@ rule RowLinkDerivedAttributeType
 rule InlineViewTableButtonGroup
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTableButtonGroup");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTableButtonGroup");
         t.name = s.name + "::InlineViewTableButtonGroup";
         t.label = "Actions";
 
@@ -598,7 +598,7 @@ rule InlineViewTableButtonGroup
 rule InlineViewTableRowButtonGroup
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewTableRowButtonGroup");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewTableRowButtonGroup");
         t.name = s.name + "InlineViewTableRowButtonGroup";
         t.label = "Actions";
 
@@ -622,7 +622,7 @@ rule InlineViewTableRowButtonGroup
 rule ViewTableDeclarationFilterButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterButton");
         t.name = s.name + "::Filter";
         t.icon = s.equivalent("ViewTableDeclarationFilterButtonIcon");
         t.label = "Filter";
@@ -636,7 +636,7 @@ rule ViewTableDeclarationFilterButton
 rule ViewTableDeclarationFilterButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterButtonIcon");
         t.name = s.name + "FilterIcon";
         t.iconName = "filter";
 
@@ -648,7 +648,7 @@ rule ViewTableDeclarationFilterActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::FilterActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterActionDefinition");
         t.name = s.name + "::Filter";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
@@ -659,7 +659,7 @@ rule ViewTableDeclarationFilterActionDefinition
 rule ViewTableDeclarationRefreshButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshButton");
         t.name = s.name + "::Refresh";
         t.icon = s.equivalent("ViewTableDeclarationRefreshButtonIcon");
         t.label = "Refresh";
@@ -673,7 +673,7 @@ rule ViewTableDeclarationRefreshButton
 rule ViewTableDeclarationRefreshButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshButtonIcon");
         t.name = s.name + "RefreshIcon";
         t.iconName = "refresh";
 
@@ -685,7 +685,7 @@ rule ViewTableDeclarationRefreshActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::RefreshActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshActionDefinition");
         t.name = s.name + "::Refresh";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
@@ -696,7 +696,7 @@ rule ViewTableDeclarationRefreshActionDefinition
 rule ViewTableDeclarationOpenCreateButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateButton");
         t.name = s.name + "::OpenCreate";
         t.icon = s.equivalent("ViewTableDeclarationOpenCreateButtonIcon");
         t.label = "Create";
@@ -710,7 +710,7 @@ rule ViewTableDeclarationOpenCreateButton
 rule ViewTableDeclarationOpenCreateButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateButtonIcon");
         t.name = s.name + "OpenCreateIcon";
         t.iconName = "file-document-plus";
 
@@ -722,7 +722,7 @@ rule ViewTableDeclarationOpenCreateActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::OpenCreateFormActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateActionDefinition");
         t.name = s.name + "::OpenCreate";
 
         log.debug("ViewTableDeclarationOpenCreateActionDefinition: " + t.name);
@@ -732,7 +732,7 @@ rule ViewTableDeclarationOpenCreateActionDefinition
 rule ViewTableDeclarationOpenPageButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageButton");
         t.name = s.name + "::View";
         t.icon = s.equivalent("ViewTableDeclarationOpenPageButtonIcon");
         t.label = "View";
@@ -746,7 +746,7 @@ rule ViewTableDeclarationOpenPageButton
 rule ViewTableDeclarationOpenPageButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageButtonIcon");
         t.name = s.name + "OpenPageIcon";
         t.iconName = "visibility";
 
@@ -758,7 +758,7 @@ rule ViewTableDeclarationOpenPageActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::OpenPageActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageActionDefinition");
         t.name = s.name + "::View";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
@@ -769,7 +769,7 @@ rule ViewTableDeclarationOpenPageActionDefinition
 rule ViewTableDeclarationRowDeleteButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteButton");
          t.name = s.name + "::RowDelete";
          t.icon = s.equivalent("ViewTableDeclarationRowDeleteButtonIcon");
         t.label = "Delete";
@@ -783,7 +783,7 @@ rule ViewTableDeclarationRowDeleteButton
 rule ViewTableDeclarationRowDeleteButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteButtonIcon");
         t.name = s.name + "RowDeleteIcon";
         t.iconName = "delete_forever";
 
@@ -795,7 +795,7 @@ rule ViewTableDeclarationRowDeleteActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::RowDeleteActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteActionDefinition");
         t.name = s.name + "::RowDelete";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 
@@ -806,7 +806,7 @@ rule ViewTableDeclarationRowDeleteActionDefinition
 rule ViewTableDeclarationOpenAddSelectorButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorButton");
         t.name = s.name + "::OpenAddSelector";
         t.icon = s.equivalent("ViewTableDeclarationOpenAddSelectorButtonIcon");
         t.label = "Add";
@@ -820,7 +820,7 @@ rule ViewTableDeclarationOpenAddSelectorButton
 rule ViewTableDeclarationOpenAddSelectorButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorButtonIcon");
         t.name = s.name + "OpenAddSelectorIcon";
         t.iconName = "attachment-plus";
 
@@ -832,7 +832,7 @@ rule ViewTableDeclarationOpenAddSelectorActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::OpenAddSelectorActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorActionDefinition");
         t.name = s.name + "::OpenAddSelector";
         t.isContainedRelationAction = true;
         t.selectorFor = s.equivalent("ViewTableDeclarationAddSelectorActionDefinition");
@@ -844,7 +844,7 @@ rule ViewTableDeclarationOpenAddSelectorActionDefinition
 rule ViewTableDeclarationBulkRemoveButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveButton");
         t.name = s.name + "::BulkRemove";
         t.icon = s.equivalent("ViewTableDeclarationBulkRemoveButtonIcon");
         t.label = "Remove";
@@ -858,7 +858,7 @@ rule ViewTableDeclarationBulkRemoveButton
 rule ViewTableDeclarationBulkRemoveButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveButtonIcon");
         t.name = s.name + "RemoveIcon";
         t.iconName = "link-off";
 
@@ -870,7 +870,7 @@ rule ViewTableDeclarationBulkRemoveActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::BulkRemoveActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveActionDefinition");
         t.name = s.name + "::BulkRemove";
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
         t.isContainedRelationAction = true;
@@ -883,7 +883,7 @@ rule ViewTableDeclarationBulkRemoveActionDefinition
 rule ViewTableDeclarationClearButton
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearButton");
         t.name = s.name + "::Clear";
         t.icon = s.equivalent("ViewTableDeclarationClearButtonIcon");
         t.label = "Clear";
@@ -897,7 +897,7 @@ rule ViewTableDeclarationClearButton
 rule ViewTableDeclarationClearButtonIcon
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearButtonIcon");
         t.name = s.name + "ClearIcon";
         t.iconName = "link-off";
 
@@ -909,7 +909,7 @@ rule ViewTableDeclarationClearActionDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::ClearActionDefinition
     extends AbstractViewTableActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearActionDefinition");
         t.name = s.name + "::Clear";
         t.isContainedRelationAction = true;
 
@@ -920,7 +920,7 @@ rule ViewTableDeclarationClearActionDefinition
 rule ViewTableActionDeclarationButton
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationButton");
         t.name = s.name;
         t.buttonStyle = "text";
         var label = s.getLabelModifier();
@@ -959,7 +959,7 @@ rule ViewTableActionDeclarationButton
 rule ViewTableActionDeclarationCallOperationActionDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::ParameterlessCallOperationActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationCallOperationActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationCallOperationActionDefinition");
     	t.name = s.getFqName() + "::Call";
     	t.`operation` = s.transferAction.target.equivalent("OperationType");
     	t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
@@ -972,7 +972,7 @@ rule ViewTableActionDeclarationCallOperationActionDefinition
 rule ViewTableActionDeclarationOpenSelectorActionDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::OpenOperationInputSelectorActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationOpenSelectorActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationOpenSelectorActionDefinition");
         t.name = s.getFqName() + "::Open::Selector";
         t.targetType = s.getSelectorTableModifier().row.map.transfer.equivalent("ClassType");
         t.isContainedRelationAction = true;
@@ -984,7 +984,7 @@ rule ViewTableActionDeclarationOpenSelectorActionDefinition
 rule ViewTableActionDeclarationOpenFormActionDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::OpenOperationInputFormActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationOpenFormActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableActionDeclarationOpenFormActionDefinition");
     	t.name = s.getFqName() + "::Open::Operation::Form";
     	t.isContainedRelationAction = true;
         // t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");

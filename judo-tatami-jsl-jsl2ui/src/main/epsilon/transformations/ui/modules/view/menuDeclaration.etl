@@ -1,16 +1,16 @@
 rule Application
-    transform s: JSL!UIMenuDeclaration
+    transform s: JSL!UIFrontendDeclaration
     to t: UI!ui::Application {
-        guard: s == rootMenu
+        guard: s == frontend
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/Application");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/Application");
 
         log.debug("Application: " + s.name);
 
 
         //t.version = esmUtils.getModel(s).version;
 
-        t.name = rootMenu.map.actor.name;
+        t.name = frontend.map.actor.name;
         t.modelName = defaultModelName;
 
         t.actor = s.map.actor.equivalent("Actor");
@@ -36,9 +36,9 @@ rule Application
 
 @lazy
 rule Theme
-    transform s: JSL!UIMenuDeclaration
+    transform s: JSL!UIFrontendDeclaration
     to t: UI!ui::Theme {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/Theme");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/Theme");
         t.textPrimaryColor = "#17191DFF";
         t.textSecondaryColor = "#434448FF";
         t.primaryColor = "#3C4166FF";
@@ -49,42 +49,42 @@ rule Theme
 
 @lazy
 rule NavigationController
-    transform s: JSL!UIMenuDeclaration
+    transform s: JSL!UIFrontendDeclaration
     to t : UI!ui::NavigationController {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/NavigationController");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/NavigationController");
         t.name = s.getFqName() + "::NavigationController";
 
         log.debug("Create NavigationController: " + t.name);
 }
 
 rule EmptyDashboardPageDefinition
-    transform s: JSL!UIMenuDeclaration
+    transform s: JSL!UIFrontendDeclaration
     to t: UI!ui::PageDefinition {
-        guard: s == rootMenu
+        guard: s == frontend
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageDefinition");
         t.name = s.getFqName() + "::DashboardPage";
         t.dashboard = true;
         t.dataElement = s.map.actor.equivalent("Actor");
 
         t.container = s.equivalent("EmptyDashboardPageContainer");
-        rootMenu.equivalent("Application").pages.add(t);
+        frontend.equivalent("Application").pages.add(t);
 
         log.debug("EmptyDashboardPageDefinition [" + t.name + "]");
 }
 
 rule EmptyDashboardPageContainer
-    transform s: JSL!UIMenuDeclaration
+    transform s: JSL!UIFrontendDeclaration
     to t: UI!ui::PageContainer {
-        guard: s == rootMenu
+        guard: s == frontend
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageContainer");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageContainer");
         t.name = s.getFqName() + "::Dashboard";
         t.label = "Dashboard";
         t.type = UI!ui::PageContainerType#VIEW;
         t.dataElement = s.map.actor.equivalent("Actor");
 
-        rootMenu.equivalent("Application").pageContainers.add(t);
+        frontend.equivalent("Application").pageContainers.add(t);
 
         log.debug("EmptyDashboardPageContainer [" + t.name + "]");
 }

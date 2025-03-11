@@ -79,7 +79,7 @@ pre {
 }
 
 post {
-    var application = rootMenu.equivalent("Application");
+    var application = frontend.equivalent("Application");
 
     for (navigationController : UI!ui::NavigationController in UI!ui::NavigationController.all()) {
         for (item in navigationController.items) {

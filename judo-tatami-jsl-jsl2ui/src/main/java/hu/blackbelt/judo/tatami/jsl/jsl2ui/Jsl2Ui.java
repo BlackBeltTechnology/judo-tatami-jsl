@@ -81,8 +81,8 @@ public class Jsl2Ui {
                     .uri(parameter.jslModel.getUri())
                     .build();
 
-            for (UIMenuDeclaration menuDeclaration : jslDslModelResourceSupport.getStreamOfJsldslUIMenuDeclaration().filter(m -> m.eContainer() instanceof ModelDeclaration).toList()) {
-                ActorDeclaration actorDeclaration = menuDeclaration.getMap().getActor();
+            for (UIFrontendDeclaration frontendDeclaration : jslDslModelResourceSupport.getStreamOfJsldslUIFrontendDeclaration().toList()) {
+                ActorDeclaration actorDeclaration = frontendDeclaration.getMap().getActor();
                 ExecutionContext executionContext = executionContextBuilder
                         .log(log)
                         .modelContexts(ImmutableList.<ModelContext>builder()
@@ -101,7 +101,7 @@ public class Jsl2Ui {
                                 .build()
                         )
                         .injectContexts(ImmutableMap.<String, Object>builder()
-                                .put("rootMenu", menuDeclaration)
+                                .put("frontend", frontendDeclaration)
                                 .put("actorDeclaration", actorDeclaration)
                                 .put("defaultModelName", parameter.jslModel.getName())
                                 .put("ecoreUtil", new EcoreUtil())

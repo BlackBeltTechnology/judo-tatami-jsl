@@ -1,11 +1,11 @@
 rule AccessTablePageDefinition
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::PageDefinition {
-        guard: rootMenu.containsVisualElement(s) and s.referenceType.isTypeOf(JSL!UIRowDeclaration)
+        guard: frontend.containsVisualElement(s) and s.referenceType.isTypeOf(JSL!UIRowDeclaration)
 
         var relation = s.actorAccess.target;
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTablePageDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTablePageDefinition");
         t.name = s.getFqName() + "::AccessTablePage";
         t.container = s.referenceType.equivalent("TablePageContainer");
         t.dataElement = relation.equivalent("RelationType");
@@ -41,7 +41,7 @@ rule AccessTablePageDefinition
             t.actions.add(rowAction);
         }
 
-        rootMenu.equivalent("Application").pages.add(t);
+        frontend.equivalent("Application").pages.add(t);
 
         log.debug("Create AccessTablePageDefinition: " + t.name);
 }
@@ -50,7 +50,7 @@ rule AccessTablePageDefinition
 rule AccessTableBackAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableBackAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableBackAction");
         t.name = s.name + "::Back";
         t.actionDefinition = s.referenceType.equivalent("TablePageContainerBackActionDefinition");
 
@@ -61,7 +61,7 @@ rule AccessTableBackAction
 rule AccessTableTableOpenCreateAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenCreateAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableTableOpenCreateAction");
         t.name = s.name + "::OpenCreate";
         t.actionDefinition = s.referenceType.equivalent("TableTableOpenCreateActionDefinition");
         t.targetPageDefinition = s.equivalent("AccessTableCreateFormPageDefinition");
@@ -73,7 +73,7 @@ rule AccessTableTableOpenCreateAction
 rule AccessTableTableRefreshAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableRefreshAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableTableRefreshAction");
         t.name = s.name + "::Refresh";
         t.actionDefinition = s.referenceType.equivalent("TableTableRefreshActionDefinition");
 
@@ -84,7 +84,7 @@ rule AccessTableTableRefreshAction
 rule AccessTableTableFilterAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableFilterAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableTableFilterAction");
         t.name = s.name + "::Filter";
         t.actionDefinition = s.referenceType.equivalent("TableTableFilterActionDefinition");
 
@@ -95,7 +95,7 @@ rule AccessTableTableFilterAction
 rule AccessTableOpenPageAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableOpenPageAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableOpenPageAction");
 
         t.name = s.name + "::OpenPage";
         t.actionDefinition = s.referenceType.equivalent("TableOpenPageActionDefinition");
@@ -109,7 +109,7 @@ rule AccessTableOpenPageAction
 rule AccessTableRowDeleteAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableRowDeleteAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableRowDeleteAction");
         t.name = s.name + "::RowDelete";
         t.actionDefinition = s.referenceType.equivalent("TableRowDeleteActionDefinition");
 
@@ -120,7 +120,7 @@ rule AccessTableRowDeleteAction
 rule AccessTableTableBulkRemoveAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableBulkRemoveAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableTableBulkRemoveAction");
         t.name = s.name + "::BulkRemove";
         t.actionDefinition = s.equivalent("AccessTableTableBulkRemoveActionDefinition");
 
@@ -134,7 +134,7 @@ rule AccessTableTableBulkRemoveAction
 rule AccessTableTableClearAction
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableClearAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableTableClearAction");
         t.name = s.name + "::Clear";
         t.actionDefinition = s.equivalent("AccessTableTableClearActionDefinition");
 

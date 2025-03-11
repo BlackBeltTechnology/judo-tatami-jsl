@@ -2,7 +2,7 @@
 rule AbstractViewLinkDeclaration
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Link {
-        guard: rootMenu.containsVisualElement(s)
+        guard: frontend.containsVisualElement(s)
 
         t.name = s.name;
         t.relationName = s.transferRelation.target.name;
@@ -34,7 +34,7 @@ rule LinkIcon
     to t: UI!ui::Icon {
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "ViewLinkIcon";
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/LinkIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/LinkIcon");
 }
 
 rule InlineViewLink
@@ -42,7 +42,7 @@ rule InlineViewLink
     to t: UI!ui::Link
     extends AbstractViewLinkDeclaration {
         guard: not s.button
-        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewLink";
+        var id = frontend.name + "/(jsl/" + s.getId() + ")/InlineViewLink";
         t.setId(id);
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
 
@@ -85,7 +85,7 @@ rule InlineViewButton
     extends AbstractViewLinkDeclaration {
         guard: s.button
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewButton");
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
         t.relationName = t.dataElement.name;
 
@@ -102,7 +102,7 @@ rule InlineViewButtonOpenPageActionDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::OpenPageActionDefinition
     extends AbstractViewLinkActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewButtonOpenPageActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewButtonOpenPageActionDefinition");
 	    t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
 	    t.name = s.name + "::OpenPage";
         log.debug("InlineViewButtonOpenPageActionDefinition: " + t.name);
@@ -113,7 +113,7 @@ rule InlineViewButtonPreFetchActionDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::PreFetchActionDefinition
     extends AbstractViewLinkActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewButtonPreFetchActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewButtonPreFetchActionDefinition");
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
         t.name = s.name + "::PreFetch";
         log.debug("InlineViewButtonPreFetchActionDefinition: " + t.name);
@@ -124,7 +124,7 @@ rule ViewLinkDeclarationRefreshActionDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::RefreshActionDefinition
     extends AbstractViewLinkActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRefreshActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRefreshActionDefinition");
         t.name = s.name + "::Refresh";
         t.isContainedRelationAction = true;
 
@@ -135,7 +135,7 @@ rule ViewLinkDeclarationRefreshActionDefinition
 rule InlineViewLinkButtonGroup
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/InlineViewLinkButtonGroup");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/InlineViewLinkButtonGroup");
         t.name = s.name + "::Actions";
         t.label = "Actions";
 
@@ -160,7 +160,7 @@ rule InlineViewLinkButtonGroup
 rule ViewLinkDeclarationRepresentationColumn
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Column {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRepresentationColumn");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRepresentationColumn");
 
         var firstStringFromTarget = s.referenceType.map.transfer.getAllPrimitiveFields().selectOne(f | f.referenceType.isDefined() and f.referenceType.`primitive` == "string");
 
@@ -183,7 +183,7 @@ rule ViewLinkDeclarationRepresentationColumn
 rule ViewLinkDeclarationOpenPageButton
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButton");
         t.name = s.name + "::View";
         t.buttonStyle = "contained";
         t.label = "View";
@@ -197,7 +197,7 @@ rule ViewLinkDeclarationOpenPageButton
 rule ViewLinkDeclarationOpenPageButtonIcon
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageButtonIcon");
         t.iconName = "eye";
         t.name = s.name + "OpenPageIcon";
 
@@ -209,7 +209,7 @@ rule ViewLinkDeclarationOpenPageActionDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::OpenPageActionDefinition
     extends AbstractViewLinkActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenPageActionDefinition");
         t.name = s.name + "::View";
         t.isContainedRelationAction = true;
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -221,7 +221,7 @@ rule ViewLinkDeclarationOpenPageActionDefinition
 rule ViewLinkDeclarationOpenFormButton
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormButton");
         t.name = s.name + "::Create::Open";
         t.buttonStyle = "contained";
         t.label = "Create";
@@ -235,7 +235,7 @@ rule ViewLinkDeclarationOpenFormButton
 rule ViewLinkDeclarationOpenFormButtonIcon
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenFormButtonIcon");
         t.iconName = "note-add";
         t.name = s.name + "OpenFormIcon";
 
@@ -246,7 +246,7 @@ rule ViewLinkDeclarationOpenFormButtonIcon
 rule ViewLinkDeclarationOpenCreateFormActionDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::OpenCreateFormActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenCreateFormActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenCreateFormActionDefinition");
         t.name = s.name + "::OpenCreate";
         t.isContainedRelationAction = true;
 
@@ -257,7 +257,7 @@ rule ViewLinkDeclarationOpenCreateFormActionDefinition
 rule ViewLinkDeclarationDeleteButton
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButton");
         t.name = s.name + "::Delete";
         t.buttonStyle = "contained";
         t.label = "Delete";
@@ -271,7 +271,7 @@ rule ViewLinkDeclarationDeleteButton
 rule ViewLinkDeclarationDeleteButtonIcon
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationDeleteButtonIcon");
         t.iconName = "delete_forever";
         t.name = s.name + "DeleteIcon";
 
@@ -283,7 +283,7 @@ rule ViewLinkDeclarationRowDeleteActionDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::RowDeleteActionDefinition
     extends AbstractViewLinkActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationRowDeleteActionDefinition");
         t.name = s.name + "::Delete";
         t.isContainedRelationAction = true;
         t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -295,7 +295,7 @@ rule ViewLinkDeclarationRowDeleteActionDefinition
 rule ViewLinkDeclarationUnsetButton
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetButton");
         t.name = s.name + "::Unset";
         t.label = "Unset";
         t.buttonStyle = "contained";
@@ -321,7 +321,7 @@ rule ViewLinkDeclarationUnsetActionDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::UnsetActionDefinition
     extends AbstractViewLinkActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationUnsetActionDefinition");
  		t.name = s.name + "::Unset";
  		t.isContainedRelationAction = true;
  		t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -333,7 +333,7 @@ rule ViewLinkDeclarationUnsetActionDefinition
 rule ViewLinkDeclarationOpenSetSelectorButton
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorButton");
         t.name = s.name + "::OpenSetSelector";
         t.label = "Set";
         t.buttonStyle = "contained";
@@ -359,7 +359,7 @@ rule ViewLinkDeclarationOpenSetSelectorActionDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::OpenSetSelectorActionDefinition
     extends AbstractViewLinkActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationOpenSetSelectorActionDefinition");
  		t.name = s.name + "::OpenSetSelector";
  		t.isContainedRelationAction = true;
  		t.selectorFor = s.equivalent("ViewLinkDeclarationSetSelectorSetSelectorSetActionDefinition");
@@ -371,7 +371,7 @@ rule ViewLinkDeclarationOpenSetSelectorActionDefinition
 rule ViewLinkDeclarationAutocompleteRangeAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationAutocompleteRangeAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationAutocompleteRangeAction");
  		t.name = s.name + "::AutocompleteRangeAction";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationAutocompleteRangeActionDefinition");
         t.ownerDataElement = s.equivalent("RelationType");
@@ -385,7 +385,7 @@ rule ViewLinkDeclarationAutocompleteRangeActionDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::AutocompleteRangeActionDefinition
     extends AbstractViewLinkActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationAutocompleteRangeActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationAutocompleteRangeActionDefinition");
  		t.name = s.name + "::Autocomplete";
  		t.isContainedRelationAction = true;
 		t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");
@@ -397,7 +397,7 @@ rule ViewLinkDeclarationAutocompleteRangeActionDefinition
 rule ViewLinkDeclarationAutocompleteSetAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TViewLinkDeclarationAutocompleteSetAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/TViewLinkDeclarationAutocompleteSetAction");
  		t.name = s.name + "::AutocompleteSetAction";
         t.actionDefinition = s.equivalent("ViewLinkDeclarationAutocompleteSetActionDefinition");
         t.ownerDataElement = s.equivalent("RelationType");
@@ -411,7 +411,7 @@ rule ViewLinkDeclarationAutocompleteSetActionDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::AutocompleteSetActionDefinition
     extends AbstractViewLinkActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationAutocompleteSetActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationAutocompleteSetActionDefinition");
  		t.name = s.name + "::AutocompleteSet";
  		t.isContainedRelationAction = true;
  		t.targetType = s.transferRelation.target.referenceType.equivalent("ClassType");

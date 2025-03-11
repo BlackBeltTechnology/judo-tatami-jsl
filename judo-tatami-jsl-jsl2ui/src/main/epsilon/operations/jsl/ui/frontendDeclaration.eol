@@ -1,0 +1,56 @@
+@cached
+operation JSL!UIFrontendDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
+operation JSL!UIFrontendDeclaration getFqName(): String {
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFqName() + "::" + self.name;
+    }
+    return self.name;
+}
+
+@cached
+operation JSL!UIFrontendDeclaration getFrontend(): JSL!UIFrontendDeclaration {
+    return self;
+}
+
+@cached
+operation JSL!UIFrontendDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    return self.map.actor;
+}
+
+@cached
+operation JSL!UIFrontendDeclaration getExposedVisualElements(): Set {
+    return self.getExposedVisualElements(new Set());
+}
+
+operation JSL!UIFrontendDeclaration getExposedVisualElements(ves: Set): Set {
+    if (ves.contains(self)) {
+        return ves;
+    }
+    ves.add(self);
+
+    for (link in self.getMenuModifier().members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
+        ves.addAll(link.getExposedVisualElements(ves));
+    }
+
+    for (table in self.getMenuModifier().members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
+        ves.addAll(table.getExposedVisualElements(ves));
+    }
+
+    for (group in self.getMenuModifier().members.select(m | m.isTypeOf(JSL!UIMenuGroupDeclaration)).asSet()) {
+        ves.addAll(group.getExposedVisualElements(ves));
+    }
+
+    return ves;
+}
+
+operation JSL!UIFrontendDeclaration containsVisualElement(element: Any): Boolean {
+    var result = self.getExposedVisualElements().contains(element);
+    if (not result) {
+        log.warn(" !!!! MISSING VISUAL ELEMENT: " + element.name);
+    }
+    return result;
+}

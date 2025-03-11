@@ -1,9 +1,9 @@
 rule MenuTableNavigationItem
     transform s: JSL!UIMenuTableDeclaration
     to t : UI!ui::NavigationItem {
-        guard: rootMenu.containsVisualElement(s)
+        guard: frontend.containsVisualElement(s)
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/MenuTableNavigationItem");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/MenuTableNavigationItem");
         t.name = s.getFqName();
         t.label = s.getLabelWithNameFallback();
 
@@ -18,7 +18,7 @@ rule MenuTableNavigationItem
             s.eContainer.equivalent("MenuItemGroup").items.add(t);
             __pos.put(t, s.eContainer.members.indexOf(s));
         } else {
-            var navigationController = rootMenu.equivalent("Application").navigationController;
+            var navigationController = frontend.equivalent("Application").navigationController;
             navigationController.items.add(t);
             __pos.put(t, s.eContainer.members.indexOf(s));
         }

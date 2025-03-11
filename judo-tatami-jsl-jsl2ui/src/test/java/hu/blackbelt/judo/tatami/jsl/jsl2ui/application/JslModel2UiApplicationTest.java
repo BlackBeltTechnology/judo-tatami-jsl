@@ -55,8 +55,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
             actor AppActor;
 
-            menu AppMenu(AppActor a) {
-            }
+            frontend AppMenu(AppActor a);
         """));
 
         transform();
@@ -132,15 +131,16 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 access UserTransfer[] users <= User.all();
             }
 
-            menu MenuActor(Actor usr) {
-                group first label:"Group1" {
-                    group second label:"Group2" {
-                        table ProductsRow[] products <= usr.products label:"Products" icon:"close";
+            frontend MenuActor(Actor usr)
+                menu: {
+                    group first label:"Group1" {
+                        group second label:"Group2" {
+                            table ProductsRow[] products <= usr.products label:"Products" icon:"close";
+                        }
+                        table ProductsRow[] products2 <= usr.products2 label:"Products2";
                     }
-                    table ProductsRow[] products2 <= usr.products2 label:"Products2";
-                }
-                table UsersRow[] users <= usr.users label:"Users" icon:"account-multiple";
-            }
+                    table UsersRow[] users <= usr.users label:"Users" icon:"account-multiple";
+                };
         """));
 
         transform();
@@ -269,19 +269,21 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 access Product2Transfer[] products2 <= Product2.all() update;
             }
 
-            menu App1(Actor1 a) {
-                group first label:"Group1" {
-                    table ProductsRow[] products1 <= a.products label:"Products1" view:ProductView;
-                }
-                table ProductsRow[] allProducts <= a.products label:"All Products" icon:"tools" view:ProductView;
-            }
+            frontend App1(Actor1 a)
+                menu: {
+                    group first label:"Group1" {
+                        table ProductsRow[] products1 <= a.products label:"Products1" view:ProductView;
+                    }
+                    table ProductsRow[] allProducts <= a.products label:"All Products" icon:"tools" view:ProductView;
+                };
 
-            menu App2(Actor2 a) {
-                group first label:"Group2" {
-                    table ProductsRow2[] products2 <= a.products2 label:"Products2" view:Product2View;
-                }
-                table ProductsRow2[] allProducts2 <= a.products2 label:"All Products 2" icon:"tools" view:Product2View;
-            }
+            frontend App2(Actor2 a)
+                menu: {
+                    group first label:"Group2" {
+                        table ProductsRow2[] products2 <= a.products2 label:"Products2" view:Product2View;
+                    }
+                    table ProductsRow2[] allProducts2 <= a.products2 label:"All Products 2" icon:"tools" view:Product2View;
+                };
         """));
 
         transform();
@@ -445,8 +447,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
             actor Actor realm:"COMPANY" claim:"email" identity:UserTransfer::email;
 
-            menu ActorApp(Actor usr) {
-            }
+            frontend ActorApp(Actor usr);
         """));
 
         transform();
@@ -567,9 +568,10 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             access ATransfer[] `as` <= A.all() create delete update;
         }
         
-        menu actorApp(Actor act) {
-            table ARow[] asTable <= act.`as` form:AForm view:AView; // this cause the stackoverflow
-        }
+        frontend actorApp(Actor act)
+            menu: {
+                table ARow[] asTable <= act.`as` form:AForm view:AView; // this cause the stackoverflow
+            };
         """));
 
         transform();
