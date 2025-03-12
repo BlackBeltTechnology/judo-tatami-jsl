@@ -5,7 +5,7 @@ rule BooleanOperation
 	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/BooleanOperation");
 	    t.name = "BooleanOperation";
-	    rootMenu.equivalent("Application").dataTypes.add(t);
+	    frontend.equivalent("Application").dataTypes.add(t);
 }
 
 @greedy
@@ -26,7 +26,7 @@ rule NumericOperation
 	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/NumericOperation");
 	    t.name = "NumericOperation";
-	    rootMenu.equivalent("Application").dataTypes.add(t);
+	    frontend.equivalent("Application").dataTypes.add(t);
 }
 
 @greedy
@@ -102,7 +102,7 @@ rule EnumerationOperation
 	    guard: s == actorDeclaration
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/EnumerationOperation");
 	    t.name = "EnumerationOperation";
-	    rootMenu.equivalent("Application").dataTypes.add(t);
+	    frontend.equivalent("Application").dataTypes.add(t);
 }
 
 @greedy
@@ -136,7 +136,7 @@ rule StringOperation
 
 	    t.setId(actorDeclaration.name + "/(jsl/" + s.getId() + ")/StringOperation");
 	    t.name = "StringOperation";
-	    rootMenu.equivalent("Application").dataTypes.add(t);
+	    frontend.equivalent("Application").dataTypes.add(t);
 }
 
 @greedy

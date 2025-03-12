@@ -1,13 +1,13 @@
 rule ViewTableViewPageDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::PageDefinition {
-        guard: rootMenu.containsVisualElement(s) and s.getUpdateViewModifier().isDefined()
+        guard: frontend.containsVisualElement(s) and s.getUpdateViewModifier().isDefined()
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinition");
         t.name = s.getFqName() + "::ViewPage";
         t.container = s.getUpdateViewModifier().view.equivalent("ViewPageContainer");
 
-        rootMenu.equivalent("Application").pages.add(t);
+        frontend.equivalent("Application").pages.add(t);
 
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
 
@@ -118,7 +118,7 @@ rule ViewTableViewPageDefinition
 rule ViewTableTagsDeclarationAutocompleteRangeAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableTagsDeclarationAutocompleteRangeAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableTagsDeclarationAutocompleteRangeAction");
  		t.name = s.name + "::AutocompleteRange";
         t.actionDefinition = s.equivalent("ViewTagsDeclarationAutocompleteRangeActionDefinition");
         log.debug("ViewTableTagsDeclarationAutocompleteRangeAction: " + t.name);
@@ -128,7 +128,7 @@ rule ViewTableTagsDeclarationAutocompleteRangeAction
 rule ViewTableTagsDeclarationAutocompleteAddAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableTagsDeclarationAutocompleteAddAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableTagsDeclarationAutocompleteAddAction");
  		t.name = s.name + "::AutocompleteAdd";
         t.actionDefinition = s.equivalent("ViewTagsDeclarationAutocompleteAddActionDefinition");
         log.debug("ViewTableTagsDeclarationAutocompleteAddAction: " + t.name);
@@ -138,9 +138,9 @@ rule ViewTableTagsDeclarationAutocompleteAddAction
 rule ViewTableViewPageDefinitionRefreshAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        guard: rootMenu.containsVisualElement(s)
+        guard: frontend.containsVisualElement(s)
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionRefreshAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionRefreshAction");
         t.name = s.name + "::Refresh";
         t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerRefreshActionDefinition");
 
@@ -151,9 +151,9 @@ rule ViewTableViewPageDefinitionRefreshAction
 rule ViewTableViewPageDefinitionBackAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        guard: rootMenu.containsVisualElement(s)
+        guard: frontend.containsVisualElement(s)
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionBackAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionBackAction");
         t.name = s.name + "::Back";
         t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerBackActionDefinition");
 
@@ -164,7 +164,7 @@ rule ViewTableViewPageDefinitionBackAction
 rule ViewTableViewPageDefinitionUpdateAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionUpdateAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionUpdateAction");
         t.name = s.name + "::Update";
         t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerUpdateActionDefinition");
 
@@ -175,7 +175,7 @@ rule ViewTableViewPageDefinitionUpdateAction
 rule ViewTableViewPageDefinitionDeleteAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionDeleteAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableViewPageDefinitionDeleteAction");
         t.name = s.name + "::Delete";
         t.actionDefinition = s.getUpdateViewModifier().view.equivalent("ViewPageContainerDeleteActionDefinition");
 
@@ -186,7 +186,7 @@ rule ViewTableViewPageDefinitionDeleteAction
 rule ViewTableDeclarationFilterAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationFilterAction");
         t.name = s.name + "::Filter";
 
         if (s.referenceType.isTypeOf(JSL!UIRowDeclaration)) {
@@ -204,7 +204,7 @@ rule ViewTableDeclarationFilterAction
 rule ViewTableDeclarationRefreshAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRefreshAction");
         t.name = s.name + "::Refresh";
         t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
         t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
@@ -224,7 +224,7 @@ rule ViewTableDeclarationRefreshAction
 rule ViewTableDeclarationOpenCreateAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenCreateAction");
         t.name = s.name + "::OpenCreate";
         t.actionDefinition = s.equivalent("ViewTableDeclarationOpenCreateActionDefinition");
         t.targetPageDefinition = s.equivalent("ViewTableCreateFormPageDefinition");
@@ -239,7 +239,7 @@ rule ViewTableDeclarationOpenPageAction
     to t: UI!ui::Action {
         var row = s.referenceType;
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenPageAction");
         t.name = s.name + "::OpenPage";
         t.targetPageDefinition = s.equivalent("ViewTableViewPageDefinition");
         t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
@@ -259,7 +259,7 @@ rule ViewTableDeclarationOpenPageAction
 rule ViewTableDeclarationRowDeleteAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationRowDeleteAction");
         t.name = s.name + "::RowDelete";
         t.actionDefinition = s.equivalent("ViewTableDeclarationRowDeleteActionDefinition");
         t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
@@ -271,7 +271,7 @@ rule ViewTableDeclarationRowDeleteAction
 rule ViewTableDeclarationOpenAddSelectorAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationOpenAddSelectorAction");
         t.name = s.name + "::OpenAddSelector";
         t.actionDefinition = s.equivalent("ViewTableDeclarationOpenAddSelectorActionDefinition");
         t.targetPageDefinition = s.equivalent("ViewTableDeclarationAddSelectorPageDefinition");
@@ -284,7 +284,7 @@ rule ViewTableDeclarationOpenAddSelectorAction
 rule ViewTableDeclarationBulkRemoveAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationBulkRemoveAction");
         t.name = s.name + "::BulkRemove";
         t.actionDefinition = s.equivalent("ViewTableDeclarationBulkRemoveActionDefinition");
         t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
@@ -297,7 +297,7 @@ rule ViewTableDeclarationBulkRemoveAction
 rule ViewTableDeclarationClearAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableDeclarationClearAction");
         t.name = s.name + "::Clear";
         t.actionDefinition = s.equivalent("ViewTableDeclarationClearActionDefinition");
         t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");

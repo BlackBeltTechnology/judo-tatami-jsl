@@ -1,17 +1,22 @@
 @cached
+operation JSL!UIMenuGroupDeclaration getId(): String {
+    return (self.eContainer.getId() + "/" + self.name);
+}
+
+@cached
 operation JSL!UIMenuGroupDeclaration getFqName(): String {
-    if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration) or self.eContainer.isTypeOf(JSL!UIMenuDeclaration)) {
+    if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration) or self.eContainer.isTypeOf(JSL!MenuModifier) or self.eContainer.isTypeOf(JSL!ProfileModifier)) {
         return self.eContainer.getFqName() + "::" + self.name;
     }
     return self.name;
 }
 
 @cached
-operation JSL!UIMenuGroupDeclaration getRootMenu(): JSL!UIMenuDeclaration {
+operation JSL!UIMenuGroupDeclaration getFrontend(): JSL!UIFrontendDeclaration {
     if (self.eContainer.isDefined()) {
-        if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration)) {
-            return self.eContainer.getRootMenu();
-        } else if (self.eContainer.isTypeOf(JSL!UIMenuDeclaration)) {
+        if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration) or self.eContainer.isTypeOf(JSL!MenuModifier) or self.eContainer.isTypeOf(JSL!ProfileModifier)) {
+            return self.eContainer.getFrontend();
+        } else if (self.eContainer.isTypeOf(JSL!UIFrontendDeclaration)) {
             return self.eContainer;
         }
     }
@@ -20,7 +25,7 @@ operation JSL!UIMenuGroupDeclaration getRootMenu(): JSL!UIMenuDeclaration {
 
 @cached
 operation JSL!UIMenuGroupDeclaration getActorDeclaration(): JSL!ActorDeclaration {
-    var root = self.getRootMenu();
+    var root = self.getFrontend();
     if (root.isDefined()) {
         return root.getActorDeclaration();
     }
