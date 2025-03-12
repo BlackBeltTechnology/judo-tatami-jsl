@@ -482,7 +482,6 @@ rule ColumnIcon
         t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "FieldIcon";
-        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ColumnIcon");
 
         log.debug("ColumnIcon: " + t.name);
 }
