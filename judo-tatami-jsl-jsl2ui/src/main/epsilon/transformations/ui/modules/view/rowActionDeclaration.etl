@@ -2,7 +2,7 @@
 rule RowActionDeclarationButton
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowActionDeclarationButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowActionDeclarationButton");
         t.name = s.name;
         t.buttonStyle = "text";
         var label = s.getLabelModifier();
@@ -45,7 +45,7 @@ rule RowActionDeclarationButton
 rule RowActionDeclarationCallOperationActionDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::ParameterlessCallOperationActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowActionDeclarationCallOperationActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowActionDeclarationCallOperationActionDefinition");
     	t.name = s.getFqName() + "::Call";
     	t.`operation` = s.transferAction.target.equivalent("OperationType");
     	t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
@@ -57,7 +57,7 @@ rule RowActionDeclarationCallOperationActionDefinition
 rule RowActionDeclarationOpenSelectorActionDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::OpenOperationInputSelectorActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowActionDeclarationOpenSelectorActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowActionDeclarationOpenSelectorActionDefinition");
         t.name = s.getFqName() + "::Open::Selector";
         t.targetType = s.getSelectorTableModifier().row.map.transfer.equivalent("ClassType");
  		t.selectorFor = s.equivalent("OperationInputSelectorCallActionDefinition");
@@ -68,7 +68,7 @@ rule RowActionDeclarationOpenSelectorActionDefinition
 rule RowActionDeclarationOpenFormActionDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::OpenOperationInputFormActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowActionDeclarationOpenFormActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowActionDeclarationOpenFormActionDefinition");
     	t.name = s.getFqName() + "::Open::Operation::Form";
         // t.targetType = s.transferAction.target.parameterType.equivalent("ClassType");
         log.debug("RowActionDeclarationOpenFormActionDefinition: " + t.name);
@@ -78,7 +78,7 @@ rule RowActionDeclarationOpenFormActionDefinition
 rule RowAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/RowAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/RowAction");
         t.name = s.getFqName() + "::Action";
 
         if (s.isOpenOperationFormAction()) {

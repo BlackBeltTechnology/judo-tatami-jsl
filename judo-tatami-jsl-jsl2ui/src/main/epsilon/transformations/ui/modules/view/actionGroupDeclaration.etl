@@ -1,9 +1,9 @@
 rule ActionGroupVisualElement
     transform s: JSL!UIActionGroupDeclaration
     to t: UI!ui::ButtonGroup {
-        guard: rootMenu.containsVisualElement(s)
+        guard: frontend.containsVisualElement(s)
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ActionGroupVisualElement");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ActionGroupVisualElement");
         t.name = s.name;
         t.label = s.getLabelWithNameFallback();
         t.col = s.getWidth().isDefined() ? s.getWidth().value.asReal() : 4d;

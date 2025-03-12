@@ -1,9 +1,9 @@
 rule ViewPageContainer
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::PageContainer {
-        guard: rootMenu.containsVisualElement(s) and (s.form.isUndefined() or not s.form)
+        guard: frontend.containsVisualElement(s) and (s.form.isUndefined() or not s.form)
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainer");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainer");
         if (__pos.get(t).isUndefined()) {
             __pos.put(t, 0);
         }
@@ -15,7 +15,7 @@ rule ViewPageContainer
         t.type = UI!ui::PageContainerType#VIEW;
         t.onInit = s.equivalent("ViewPageContainerRefreshActionDefinition");
 
-        rootMenu.equivalent("Application").pageContainers.add(t);
+        frontend.equivalent("Application").pageContainers.add(t);
 
         log.debug("Create ViewPageContainer: " + t.name);
 }
@@ -24,10 +24,10 @@ rule ViewPageContainer
 rule ViewPageContainerVisualElement
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Flex {
-        guard: rootMenu.containsVisualElement(s) and (s.form.isUndefined() or not s.form)
+        guard: frontend.containsVisualElement(s) and (s.form.isUndefined() or not s.form)
 
         __pos.put(t, 0);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerVisualElement");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerVisualElement");
         t.name = s.name;
         t.direction = UI!Axis#VERTICAL;
         t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
@@ -41,7 +41,7 @@ rule ViewPageContainerVisualElement
 rule ViewPageContainerButtonGroup
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::ButtonGroup {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerButtonGroup");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerButtonGroup");
  		t.name = s.getFqName() + "::PageActions";
  		t.label = "Actions";
  		t.buttons.add(s.equivalent("ViewPageContainerBackButton"));
@@ -56,7 +56,7 @@ rule ViewPageContainerButtonGroup
 rule ViewPageContainerBackActionDefinition
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::BackActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerBackActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerBackActionDefinition");
  		t.name = s.getFqName() + "::Back";
 
         log.debug("ViewPageContainerBackActionDefinition: " + t.name);
@@ -66,7 +66,7 @@ rule ViewPageContainerBackActionDefinition
 rule ViewPageContainerBackButtonIcon
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Icon {
-    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerBackButtonIcon");
+    	t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerBackButtonIcon");
     	t.name = s.name + "BackButtonIcon";
     	t.iconName = "arrow-left";
     	
@@ -77,7 +77,7 @@ rule ViewPageContainerBackButtonIcon
 rule ViewPageContainerBackButton
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Button {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerBackButton");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerBackButton");
  		t.name = s.getFqName() + "::Back";
     	t.label = "Back";
     	t.buttonStyle = "text";
@@ -91,7 +91,7 @@ rule ViewPageContainerBackButton
 rule ViewPageContainerRefreshActionDefinition
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::RefreshActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerRefreshActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerRefreshActionDefinition");
  		t.name = s.getFqName() + "::Refresh";
 
         log.debug("ViewPageContainerRefreshActionDefinition: " + t.name);    
@@ -101,7 +101,7 @@ rule ViewPageContainerRefreshActionDefinition
 rule ViewPageContainerRefreshButtonIcon
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Icon {
-    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerRefreshButtonIcon");
+    	t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerRefreshButtonIcon");
     	t.name = s.name + "RefreshButtonIcon";
     	t.iconName = "refresh";
     	
@@ -112,7 +112,7 @@ rule ViewPageContainerRefreshButtonIcon
 rule ViewPageContainerRefreshButton
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Button {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerRefreshButton");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerRefreshButton");
  		t.name = s.getFqName() + "::Refresh";
     	t.label = "Refresh";
     	t.buttonStyle = "contained";
@@ -126,7 +126,7 @@ rule ViewPageContainerRefreshButton
 rule ViewPageContainerDeleteActionDefinition
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::DeleteActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerDeleteActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerDeleteActionDefinition");
  		t.name = s.getFqName() + "::Delete";
 
         log.debug("ViewPageContainerDeleteActionDefinition: " + t.name);    
@@ -136,7 +136,7 @@ rule ViewPageContainerDeleteActionDefinition
 rule ViewPageContainerDeleteButtonIcon
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Icon {
-    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerDeleteButtonIcon");
+    	t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerDeleteButtonIcon");
     	t.name = s.name + "DeleteButtonIcon";
     	t.iconName = "delete_forever";
     	
@@ -147,7 +147,7 @@ rule ViewPageContainerDeleteButtonIcon
 rule ViewPageContainerDeleteButton
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Button {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerDeleteButton");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerDeleteButton");
  		t.name = s.getFqName() + "::Delete";
     	t.label = "Delete";
     	t.buttonStyle = "contained";
@@ -161,7 +161,7 @@ rule ViewPageContainerDeleteButton
 rule ViewPageContainerUpdateActionDefinition
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::UpdateActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerUpdateActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerUpdateActionDefinition");
         t.name = s.getFqName() + "::Update";
         
         /*
@@ -177,7 +177,7 @@ rule ViewPageContainerUpdateActionDefinition
 rule ViewPageContainerUpdateButtonIcon
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Icon {
-    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerUpdateButtonIcon");
+    	t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerUpdateButtonIcon");
     	t.name = s.name + "UpdateButtonIcon";
     	t.iconName = "content-save";
     	
@@ -188,7 +188,7 @@ rule ViewPageContainerUpdateButtonIcon
 rule ViewPageContainerUpdateButton
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Button {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewPageContainerUpdateButton");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewPageContainerUpdateButton");
  		t.name = s.getFqName() + "::Update";
     	t.label = "Save";
     	t.buttonStyle = "contained";

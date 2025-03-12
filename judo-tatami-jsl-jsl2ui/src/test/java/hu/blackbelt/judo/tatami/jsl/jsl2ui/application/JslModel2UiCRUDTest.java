@@ -163,10 +163,11 @@ public class JslModel2UiCRUDTest extends AbstractTest {
                 access UserTransfer[] users <= User.all() create update delete;
             }
         
-            menu NavigationApp(NavigationActor a) {
-                link UserView user <= a.user label:"User" icon:"tools" view:UserView form:UserForm;
-                table UserRow[] users <= a.users label:"Users" icon:"people" view:UserView form:UserForm;
-            }
+            frontend NavigationApp(NavigationActor a)
+                menu: {
+                    link UserView user <= a.user label:"User" icon:"tools" view:UserView form:UserForm;
+                    table UserRow[] users <= a.users label:"Users" icon:"people" view:UserView form:UserForm;
+                };
         """.formatted(name);
     }
 

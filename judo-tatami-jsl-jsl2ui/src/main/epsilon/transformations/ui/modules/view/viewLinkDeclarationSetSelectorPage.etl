@@ -2,7 +2,7 @@
 rule ViewLinkDeclarationSetSelectorPageDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::PageDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorPageDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorPageDefinition");
         t.name = s.getFqName() + "::SetSelectorPage";
         t.container = s.getSelectorTableModifier().row.equivalent("TablePageContainer");
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
@@ -16,7 +16,7 @@ rule ViewLinkDeclarationSetSelectorPageDefinition
         t.actions.add(s.equivalent("ViewLinkDeclarationSetSelectorTableFilterAction"));
         t.actions.add(s.equivalent("ViewLinkDeclarationSetSelectorTableRangeAction"));
 
-        rootMenu.equivalent("Application").pages.add(t);
+        frontend.equivalent("Application").pages.add(t);
 
         log.debug("ViewLinkDeclarationSetSelectorPageDefinition: " + t.name);
 }
@@ -25,7 +25,7 @@ rule ViewLinkDeclarationSetSelectorPageDefinition
 rule ViewLinkDeclarationSetSelectorSetAction
 	transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorSetAction");
  		t.name = s.getFqName() + "::SetSelector::Set";
         t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
         t.actionDefinition = s.getSelectorTableModifier().row.equivalent("TablePageContainerSetSelectorSetActionDefinition");
@@ -37,7 +37,7 @@ rule ViewLinkDeclarationSetSelectorSetAction
 rule ViewLinkDeclarationSetSelectorBackAction
 	transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorBackAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorBackAction");
  		t.name = s.getFqName() + "::SetSelector::Back";
         t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
         t.actionDefinition = s.getSelectorTableModifier().row.equivalent("TablePageContainerBackActionDefinition");
@@ -49,7 +49,7 @@ rule ViewLinkDeclarationSetSelectorBackAction
 rule ViewLinkDeclarationSetSelectorTableFilterAction
 	transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableFilterAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableFilterAction");
  		t.name = s.getFqName() + "::SetSelector::Table::Filter";
         t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
         t.targetDataElement = s.transferRelation.target.equivalent("RelationType");
@@ -62,7 +62,7 @@ rule ViewLinkDeclarationSetSelectorTableFilterAction
 rule ViewLinkDeclarationSetSelectorTableRangeAction
 	transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableRangeAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkDeclarationSetSelectorTableRangeAction");
  		t.name = s.getFqName() + "::SetSelector::Table::Range";
         t.ownerDataElement = s.transferRelation.target.equivalent("RelationType");
         t.targetDataElement = s.transferRelation.target.equivalent("RelationType");

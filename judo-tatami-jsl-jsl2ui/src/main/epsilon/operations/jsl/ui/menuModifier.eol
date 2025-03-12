@@ -1,0 +1,14 @@
+@cached
+operation JSL!MenuModifier getId(): String {
+    return self.eContainer.getId();
+}
+
+@cached
+operation JSL!MenuModifier getFqName(): String {
+    return self.eContainer.getFqName();
+}
+
+@cached
+operation JSL!MenuModifier getFrontend(): JSL!UIFrontendDeclaration {
+    return self.eContainer;
+}

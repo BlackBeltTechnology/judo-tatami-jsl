@@ -1,0 +1,14 @@
+@cached
+operation JSL!ProfileModifier getId(): String {
+    return self.eContainer.getId();
+}
+
+@cached
+operation JSL!ProfileModifier getFqName(): String {
+    return self.eContainer.getFqName();
+}
+
+@cached
+operation JSL!ProfileModifier getFrontend(): JSL!UIFrontendDeclaration {
+    return self.eContainer;
+}

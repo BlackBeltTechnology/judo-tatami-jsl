@@ -136,10 +136,11 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
                         access Transfer1 t1 <= Entity1.any() create update;
                     }
 
-                    menu M(A a) {
-                        table Table1[] v1s <= a.t1s view:View1 form:Form1;
-                        link View1 v1 <= a.t1 label:"V1";
-                    }
+                    frontend M(A a)
+                        menu: {
+                            table Table1[] v1s <= a.t1s view:View1 form:Form1;
+                            link View1 v1 <= a.t1 label:"V1";
+                        };
                 """.formatted(name);
     }
 
