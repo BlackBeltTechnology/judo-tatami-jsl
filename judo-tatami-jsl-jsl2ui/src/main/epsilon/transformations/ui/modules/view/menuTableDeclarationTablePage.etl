@@ -10,6 +10,7 @@ rule AccessTablePageDefinition
         t.container = s.referenceType.equivalent("TablePageContainer");
         t.dataElement = relation.equivalent("RelationType");
         t.dataElement.memberType = UI!ui::data::MemberType#ACCESS;
+        t.dashboard = s.isDashBoard(); // TODO https://blackbelt.atlassian.net/browse/JNG-6253
 
         if (s.getUpdateViewModifier().isDefined()) {
             t.actions.add(s.equivalent("AccessTableOpenPageAction"));

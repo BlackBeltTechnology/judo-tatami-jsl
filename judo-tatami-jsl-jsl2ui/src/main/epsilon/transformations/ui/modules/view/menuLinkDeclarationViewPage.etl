@@ -8,10 +8,16 @@ rule AccessViewPageDefinition
         t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessViewPageDefinition");
         t.name = s.getFqName() + "::AccessViewPage";
         t.container = s.referenceType.equivalent("ViewPageContainer");
+        t.dashboard = s.isDashBoard(); // TODO https://blackbelt.atlassian.net/browse/JNG-6253
 
         frontend.equivalent("Application").pages.add(t);
 
         t.dataElement = relation.equivalent("RelationType");
+
+        // TODO https://blackbelt.atlassian.net/browse/JNG-6254
+        if (s.isNestedInProfile()) {
+          frontend.equivalent("Application").profilePage = t;
+    	}
 
         if (s.referenceType.isOpenInDialog()) {
             t.openInDialog = true;

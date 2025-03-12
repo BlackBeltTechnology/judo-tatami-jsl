@@ -22,6 +22,16 @@ operation JSL!UIFrontendDeclaration getActorDeclaration(): JSL!ActorDeclaration 
 }
 
 @cached
+operation JSL!UIFrontendDeclaration getDashboardMenus(): Set {
+    return self.getExposedVisualElements().select(v | (v.isTypeOf(JSL!UIMenuLinkDeclaration) or v.isTypeOf(JSL!UIMenuTableDeclaration)) and v.isDashBoard());
+}
+
+@cached
+operation JSL!UIFrontendDeclaration hasDashboard(): Boolean {
+    return self.getDashboardMenus().size() > 0;
+}
+
+@cached
 operation JSL!UIFrontendDeclaration getExposedVisualElements(): Set {
     return self.getExposedVisualElements(new Set());
 }
@@ -32,16 +42,32 @@ operation JSL!UIFrontendDeclaration getExposedVisualElements(ves: Set): Set {
     }
     ves.add(self);
 
-    for (link in self.getMenuModifier().members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
-        ves.addAll(link.getExposedVisualElements(ves));
+    if (self.getMenuModifier().isDefined()) {
+        for (link in self.getMenuModifier().members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
+            ves.addAll(link.getExposedVisualElements(ves));
+        }
+
+        for (table in self.getMenuModifier().members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
+            ves.addAll(table.getExposedVisualElements(ves));
+        }
+
+        for (group in self.getMenuModifier().members.select(m | m.isTypeOf(JSL!UIMenuGroupDeclaration)).asSet()) {
+            ves.addAll(group.getExposedVisualElements(ves));
+        }
     }
 
-    for (table in self.getMenuModifier().members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
-        ves.addAll(table.getExposedVisualElements(ves));
-    }
+    if (self.getProfileModifier().isDefined()) {
+        for (link in self.getProfileModifier().members.select(m | m.isTypeOf(JSL!UIMenuLinkDeclaration)).asSet()) {
+            ves.addAll(link.getExposedVisualElements(ves));
+        }
 
-    for (group in self.getMenuModifier().members.select(m | m.isTypeOf(JSL!UIMenuGroupDeclaration)).asSet()) {
-        ves.addAll(group.getExposedVisualElements(ves));
+        for (table in self.getProfileModifier().members.select(m | m.isTypeOf(JSL!UIMenuTableDeclaration)).asSet()) {
+            ves.addAll(table.getExposedVisualElements(ves));
+        }
+
+        for (group in self.getProfileModifier().members.select(m | m.isTypeOf(JSL!UIMenuGroupDeclaration)).asSet()) {
+            ves.addAll(group.getExposedVisualElements(ves));
+        }
     }
 
     return ves;

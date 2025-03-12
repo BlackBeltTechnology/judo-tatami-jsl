@@ -140,7 +140,8 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                         table ProductsRow[] products2 <= usr.products2 label:"Products2";
                     }
                     table UsersRow[] users <= usr.users label:"Users" icon:"account-multiple";
-                };
+                }
+                title: "Yayy, JSL!";
         """));
 
         transform();
@@ -153,6 +154,12 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
         NavigationController navigationController = app1.getNavigationController();
 
+        PageDefinition dashboardPage = app1.getPages().stream().filter(page -> page.getFQName().equals("Actor::MenuTestModel::MenuActor::DashboardPage")).findFirst().orElseThrow();
+
+        assertTrue(dashboardPage.isDashboard());
+        assertEquals("MenuActor/(jsl/MenuTestModel/MenuActor)/EmptyDashboardPageDefinition", getXMIID(dashboardPage));
+
+        assertEquals("Yayy, JSL!", app1.getTitle());
         assertNotNull(navigationController);
 
         List<NavigationItem> firstLevelMenus = navigationController.getItems();
@@ -282,7 +289,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                     group first label:"Group2" {
                         table ProductsRow2[] products2 <= a.products2 label:"Products2" view:Product2View;
                     }
-                    table ProductsRow2[] allProducts2 <= a.products2 label:"All Products 2" icon:"tools" view:Product2View;
+                    table ProductsRow2[] allProducts2 <= a.products2 label:"All Products 2" icon:"tools" view:Product2View dashboard;
                 };
         """));
 
@@ -422,12 +429,16 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         List<PageDefinition> pages2 = app2.getPages();
 
         assertEquals(List.of(
-                "MultipleActorsTestModel::App2::DashboardPage",
                 "MultipleActorsTestModel::App2::allProducts2::AccessTablePage",
                 "MultipleActorsTestModel::App2::allProducts2::AccessTableViewPage",
                 "MultipleActorsTestModel::App2::first::products2::AccessTablePage",
                 "MultipleActorsTestModel::App2::first::products2::AccessTableViewPage"
         ), pages2.stream().map(NamedElement::getName).sorted().toList());
+
+        PageDefinition dashboard2Page = app2.getPages().stream().filter(page -> page.getFQName().equals("Actor2::MultipleActorsTestModel::App2::allProducts2::AccessTablePage")).findFirst().orElseThrow();
+
+        assertTrue(dashboard2Page.isDashboard());
+        assertEquals("App2/(jsl/MultipleActorsTestModel/App2/allProducts2)/AccessTablePageDefinition", getXMIID(dashboard2Page));
     }
 
     @Test
@@ -583,4 +594,82 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         Application app1 = apps.get(0);
 
     }
+
+    @Test
+    void testProfile() throws Exception {
+        jslModel = JslParser.getModelFromStrings("ProfileModel", List.of("""
+            model ProfileModel;
+
+            import judo::types;
+
+            widget string StringWidget;
+
+            entity User {
+                identifier String userName required;
+            }
+
+            entity Product {
+                identifier String name required;
+                field Integer price required;
+            }
+
+            transfer UserTransfer(User u) {
+                field String userName <= u.userName;
+
+                event update onUpdate;
+            }
+
+            transfer ProductTransfer(Product p) {
+                field String name required;
+
+                event update onUpdate;
+            }
+
+            view UserView(UserTransfer u) {
+                widget StringWidget userName <= u.userName;
+            }
+
+            view ProductView(ProductTransfer product) {
+                widget StringWidget name <= product.name;
+            }
+
+            row ProductsRow(ProductTransfer product) {
+                column String name <= product.name label:"Name";
+            }
+
+            actor Actor1 {
+                access ProductTransfer[] products <= Product.all() update;
+                access UserTransfer user <= User.any() update;
+            }
+
+            frontend App1(Actor1 a)
+                menu: {
+                    table ProductsRow[] allProducts <= a.products label:"All Products" icon:"tools" view:ProductView;
+                }
+                profile: {
+                    link UserView myProfile <= a.user label:"My Profile";
+                };
+        """));
+
+        transform();
+
+        List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
+
+        assertEquals(1, apps.size());
+
+        Application app1 = apps.get(0);
+
+        assertEquals(List.of(
+                "Actor1::ProfileModel::App1::DashboardPage",
+                "Actor1::ProfileModel::App1::allProducts::AccessTablePage",
+                "Actor1::ProfileModel::App1::allProducts::AccessTableViewPage",
+                "Actor1::ProfileModel::App1::myProfile::AccessViewPage"
+        ), app1.getPages().stream().map(NamedElement::getFQName).sorted().toList());
+
+        PageDefinition profilePage = app1.getPages().stream().filter(p -> p.getFQName().equals("Actor1::ProfileModel::App1::myProfile::AccessViewPage")).findFirst().orElseThrow();
+        PageDefinition markedProfilePage = app1.getProfilePage();
+
+        assertEquals(markedProfilePage, profilePage);
+    }
+
 }

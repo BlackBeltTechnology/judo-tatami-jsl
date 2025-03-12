@@ -5,7 +5,7 @@ operation JSL!UIMenuGroupDeclaration getId(): String {
 
 @cached
 operation JSL!UIMenuGroupDeclaration getFqName(): String {
-    if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration) or self.eContainer.isTypeOf(JSL!MenuModifier)) {
+    if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration) or self.eContainer.isTypeOf(JSL!MenuModifier) or self.eContainer.isTypeOf(JSL!ProfileModifier)) {
         return self.eContainer.getFqName() + "::" + self.name;
     }
     return self.name;
@@ -14,7 +14,7 @@ operation JSL!UIMenuGroupDeclaration getFqName(): String {
 @cached
 operation JSL!UIMenuGroupDeclaration getFrontend(): JSL!UIFrontendDeclaration {
     if (self.eContainer.isDefined()) {
-        if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration) or self.eContainer.isTypeOf(JSL!MenuModifier)) {
+        if (self.eContainer.isTypeOf(JSL!UIMenuGroupDeclaration) or self.eContainer.isTypeOf(JSL!MenuModifier) or self.eContainer.isTypeOf(JSL!ProfileModifier)) {
             return self.eContainer.getFrontend();
         } else if (self.eContainer.isTypeOf(JSL!UIFrontendDeclaration)) {
             return self.eContainer;

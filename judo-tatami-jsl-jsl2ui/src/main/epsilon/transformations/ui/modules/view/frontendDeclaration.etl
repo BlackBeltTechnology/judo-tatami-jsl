@@ -30,6 +30,10 @@ rule Application
         t.logo = "judo-color-logo.png";
         //}
 
+        if (s.getApplicationTitleModifier().isDefined()) {
+            t.title = s.getApplicationTitleModifier().title.value;
+        }
+
         t.navigationController = s.equivalent("NavigationController");
         t.theme = s.equivalent("Theme");
 }
@@ -60,7 +64,7 @@ rule NavigationController
 rule EmptyDashboardPageDefinition
     transform s: JSL!UIFrontendDeclaration
     to t: UI!ui::PageDefinition {
-        guard: s == frontend
+        guard: s == frontend and not s.hasDashboard()
 
         t.setId(frontend.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageDefinition");
         t.name = s.getFqName() + "::DashboardPage";
@@ -76,7 +80,7 @@ rule EmptyDashboardPageDefinition
 rule EmptyDashboardPageContainer
     transform s: JSL!UIFrontendDeclaration
     to t: UI!ui::PageContainer {
-        guard: s == frontend
+        guard: s == frontend and not s.hasDashboard()
 
         t.setId(frontend.name + "/(jsl/" + s.getId() + ")/EmptyDashboardPageContainer");
         t.name = s.getFqName() + "::Dashboard";

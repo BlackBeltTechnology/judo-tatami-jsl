@@ -208,3 +208,13 @@ operation JSL!Modifiable getProfileModifier(): JSL!Modifier {
 operation JSL!Modifiable getApplicationTitleModifier(): JSL!Modifier {
     return self.modifiers.selectOne(m | m.isTypeOf(JSL!ApplicationTitleModifier));
 }
+
+@cached
+operation JSL!Modifiable getDashboardModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!DashboardModifier));
+}
+
+@cached
+operation JSL!Modifiable isDashBoard(): Boolean {
+    return self.modifiers.exists (m | m.isTypeOf(JSL!DashboardModifier) and not m.`false`);
+}
