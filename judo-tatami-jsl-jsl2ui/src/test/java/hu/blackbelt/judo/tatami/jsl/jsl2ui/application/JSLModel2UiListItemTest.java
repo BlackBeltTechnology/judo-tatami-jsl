@@ -102,11 +102,11 @@ public class JSLModel2UiListItemTest extends AbstractTest  {
                         access Transfer1[] t1s <= Entity1.all() update:true;
                     }
 
-                    menu M(A a) {
-                        table Card1[] v1s <= a.t1s view:View1;
-                        table Tag1[] t1s <= a.t1s view:View1;
-                    }
-
+                    frontend M(A a)
+                        menu: {
+                            table Card1[] v1s <= a.t1s view:View1;
+                            table Tag1[] t1s <= a.t1s view:View1;
+                        };
                 """.formatted(name);
     }
 

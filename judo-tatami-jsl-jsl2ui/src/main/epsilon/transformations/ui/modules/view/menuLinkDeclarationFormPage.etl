@@ -1,9 +1,9 @@
 rule AccessLinkCreateFormPageDefinition
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::PageDefinition {
-        guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
+        guard: frontend.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewCreateFormPageDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessViewCreateFormPageDefinition");
         t.openInDialog = true;
         t.name = s.getFqName() + "::AccessFormPage";
         t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
@@ -51,7 +51,7 @@ rule AccessLinkCreateFormPageDefinition
             }
         }
 
-        rootMenu.equivalent("Application").pages.add(t);
+        frontend.equivalent("Application").pages.add(t);
 
         log.debug("Create AccessViewCreateFormPageDefinition: " + t.name);
 }
@@ -60,7 +60,7 @@ rule AccessLinkCreateFormPageDefinition
 rule AccessLinkCreateFormBackAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessLinkCreateFormBackAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessLinkCreateFormBackAction");
         t.name = s.name + "::Back";
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerBackActionDefinition");
 
@@ -71,7 +71,7 @@ rule AccessLinkCreateFormBackAction
 rule AccessLinkCreateFormGetTemplateAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessLinkCreateFormGetTemplateAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessLinkCreateFormGetTemplateAction");
  		t.name = s.name + "::GetTemplate";
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerGetTemplateActionDefinition");
         log.debug("AccessLinkCreateFormGetTemplateAction: " + t.name);
@@ -81,7 +81,7 @@ rule AccessLinkCreateFormGetTemplateAction
 rule AccessLinkCreateFormCreateAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessLinkCreateFormCreateAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessLinkCreateFormCreateAction");
         t.name = s.name + "::Create";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerCreateActionDefinition");

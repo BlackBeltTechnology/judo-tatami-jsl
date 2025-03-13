@@ -2,11 +2,11 @@
 rule ViewTableCreateFormPageDefinition
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::PageDefinition {
-        guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined() and s.referenceType.isTypeOf(JSL!UIRowDeclaration)
+        guard: frontend.containsVisualElement(s) and s.getCreateFormModifier().isDefined() and s.referenceType.isTypeOf(JSL!UIRowDeclaration)
 
-        rootMenu.equivalent("Application").pages.add(t);
+        frontend.equivalent("Application").pages.add(t);
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormPageDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormPageDefinition");
         t.name = s.getFqName() + "::FormPage";
         t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
@@ -66,7 +66,7 @@ rule ViewTableCreateFormPageDefinition
 rule ViewTableCreateFormCreateAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormCreateAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormCreateAction");
         t.name = s.name + "::Create";
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerCreateActionDefinition");
         t.targetPageDefinition = s.equivalent("ViewTableViewPageDefinition");
@@ -78,7 +78,7 @@ rule ViewTableCreateFormCreateAction
 rule ViewTableCreateFormBackAction
     transform s: JSL!UIViewTableDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormBackAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewTableCreateFormBackAction");
         t.name = s.name + "::Back";
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerBackActionDefinition");
 

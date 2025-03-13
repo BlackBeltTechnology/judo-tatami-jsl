@@ -3,7 +3,7 @@ rule AccessTableTableAddSelectorPageDefinition
     transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::PageDefinition {
 
-    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorPageDefinition");
+    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorPageDefinition");
 
     t.name = s.getFqName() + "::AddSelectorPage";
 
@@ -20,7 +20,7 @@ rule AccessTableTableAddSelectorPageDefinition
     t.actions.add(s.equivalent("AccessTableTableAddSelectorTableFilterAction"));
     t.actions.add(s.equivalent("AccessTableTableAddSelectorTableRangeAction"));
 
-    rootMenu.equivalent("Application").pages.add(t);
+    frontend.equivalent("Application").pages.add(t);
 
     log.debug("AccessTableTableAddSelectorPageDefinition: " + t.name);
 }
@@ -29,7 +29,7 @@ rule AccessTableTableAddSelectorPageDefinition
 rule AccessTableTableAddSelectorAddAction
 	transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorAddAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorAddAction");
  		t.name = s.getFqName() + "::AddSelector::Add";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.getSelectorTableModifier().row.equivalent("TablePageContainerAddSelectorAddActionDefinition");
@@ -41,7 +41,7 @@ rule AccessTableTableAddSelectorAddAction
 rule AccessTableTableAddSelectorBackAction
 	transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorBackAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorBackAction");
  		t.name = s.getFqName() + "::AddSelector::Back";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.getSelectorTableModifier().row.equivalent("TablePageContainerBackActionDefinition");
@@ -53,7 +53,7 @@ rule AccessTableTableAddSelectorBackAction
 rule AccessTableTableAddSelectorTableFilterAction
 	transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableFilterAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableFilterAction");
  		t.name = s.getFqName() + "::AddSelector::Table::Filter";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.targetDataElement = s.actorAccess.target.equivalent("RelationType");
@@ -66,7 +66,7 @@ rule AccessTableTableAddSelectorTableFilterAction
 rule AccessTableTableAddSelectorTableRangeAction
 	transform s: JSL!UIMenuTableDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableRangeAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessTableTableAddSelectorTableRangeAction");
  		t.name = s.getFqName() + "::AddSelector::Table::Range";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.targetDataElement = s.actorAccess.target.equivalent("RelationType");

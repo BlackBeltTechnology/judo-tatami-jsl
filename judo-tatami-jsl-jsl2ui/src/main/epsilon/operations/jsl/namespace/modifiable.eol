@@ -193,3 +193,28 @@ operation JSL!Modifiable getSelectorTableModifier(): JSL!Modifier {
 operation JSL!Modifiable getTextModifier(): JSL!Modifier {
     return self.modifiers.selectOne(m | m.isTypeOf(JSL!TextModifier));
 }
+
+@cached
+operation JSL!Modifiable getMenuModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!MenuModifier));
+}
+
+@cached
+operation JSL!Modifiable getProfileModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!ProfileModifier));
+}
+
+@cached
+operation JSL!Modifiable getApplicationTitleModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!ApplicationTitleModifier));
+}
+
+@cached
+operation JSL!Modifiable getDashboardModifier(): JSL!Modifier {
+    return self.modifiers.selectOne(m | m.isTypeOf(JSL!DashboardModifier));
+}
+
+@cached
+operation JSL!Modifiable isDashBoard(): Boolean {
+    return self.modifiers.exists (m | m.isTypeOf(JSL!DashboardModifier) and not m.`false`);
+}

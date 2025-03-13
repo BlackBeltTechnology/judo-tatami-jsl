@@ -1,9 +1,9 @@
 rule CardPageContainer
     transform s: JSL!UICardDeclaration
     to t: UI!ui::PageContainer {
-        guard: rootMenu.containsVisualElement(s)
+        guard: frontend.containsVisualElement(s)
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainer");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardPageContainer");
         t.name = s.getFqName() + "::Card::PageContainer";
         t.label = s.getLabelWithNameFallback();
         t.titleFrom = UI!ui::TitleFrom#LABEL;
@@ -13,7 +13,7 @@ rule CardPageContainer
         t.dataElement = s.map.transfer.equivalent("ClassType");
         t.onInit = s.equivalent("TableTableRefreshActionDefinition");
 
-        rootMenu.equivalent("Application").pageContainers.add(t);
+        frontend.equivalent("Application").pageContainers.add(t);
 
         /*
         for (dataFeature in s.additionalMaskFeatures) {
@@ -29,7 +29,7 @@ rule CardPageContainer
 rule CardPageContainerButtonGroup
     transform s: JSL!UICardDeclaration
     to t: UI!ui::ButtonGroup {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainerButtonGroup");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardPageContainerButtonGroup");
  		t.name = s.getFqName() + "::PageActions";
  		t.label = "Actions";
 
@@ -44,14 +44,14 @@ rule CardPageContainerBackButtonIcon
     to t: UI!ui::Icon {
     	t.iconName = "arrow-left";
     	t.name = s.name + "BackIcon";
-    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainerBackButtonIcon");
+    	t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardPageContainerBackButtonIcon");
 }
 
 @lazy
 rule CardPageContainerBackActionDefinition
     transform s: JSL!UICardDeclaration
     to t: UI!ui::BackActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainerBackActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardPageContainerBackActionDefinition");
  		t.name = s.getFqName() + "::Back";
         log.debug("CardPageContainerBackActionDefinition: " + t.name);
 }
@@ -60,7 +60,7 @@ rule CardPageContainerBackActionDefinition
 rule CardPageContainerBackButton
     transform s: JSL!UICardDeclaration
     to t: UI!ui::Button {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainerBackButton");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardPageContainerBackButton");
  		t.name = s.getFqName() + "::Back";
     	t.label = "Back";
     	t.buttonStyle = "text";
@@ -74,7 +74,7 @@ rule CardPageContainerVisualElement
     transform s: JSL!UICardDeclaration
     to t: UI!ui::Flex {
         __pos.put(t, 0);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardPageContainerVisualElement");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardPageContainerVisualElement");
         t.name = s.name;
         t.direction = UI!Axis#VERTICAL;
         t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
@@ -89,7 +89,7 @@ rule CardPageContainerVisualElement
 rule CardTable
     transform s: JSL!UICardDeclaration
     to t: UI!ui::Table {
-        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/CardTable";
+        var id = frontend.name + "/(jsl/" + s.getId() + ")/CardTable";
         t.setId(id);
         t.col = 12d;
         t.label = s.getLabelWithNameFallback();
@@ -125,7 +125,7 @@ rule CardTable
 rule CardTableButtonGroup
     transform s: JSL!UICardDeclaration
     to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableButtonGroup");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardTableButtonGroup");
         t.name = s.name + "::CardTableButtonGroup";
         t.label = "Actions";
 
@@ -141,7 +141,7 @@ rule CardTableButtonGroup
 rule CardTableRowButtonGroup
     transform s: JSL!UICardDeclaration
     to t: UI!ui::ButtonGroup {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TableRowButtonGroup");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/TableRowButtonGroup");
         t.name = s.name + "TableRowButtonGroup";
         t.label = "Actions";
 
@@ -156,7 +156,7 @@ rule CardTableRowButtonGroup
 rule CardTableFilterButton
     transform s: JSL!UICardDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableFilterButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardTableFilterButton");
         t.name = s.name + "::Filter";
         t.icon = s.equivalent("CardTableFilterButtonIcon");
         t.label = "Filter";
@@ -170,7 +170,7 @@ rule CardTableFilterButton
 rule CardTableFilterButtonIcon
     transform s: JSL!UICardDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableFilterButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardTableFilterButtonIcon");
         t.name = s.name + "FilterIcon";
         t.iconName = "filter";
 
@@ -181,7 +181,7 @@ rule CardTableFilterButtonIcon
 rule CardTableFilterActionDefinition
     transform s: JSL!UICardDeclaration
     to t: UI!ui::FilterActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableFilterActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardTableFilterActionDefinition");
         t.name = s.name + "::Filter";
         t.targetType = s.map.transfer.equivalent("ClassType");
 
@@ -192,7 +192,7 @@ rule CardTableFilterActionDefinition
 rule CardTableRefreshButton
     transform s: JSL!UICardDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableRefreshButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardTableRefreshButton");
         t.name = s.name + "::Refresh";
         t.icon = s.equivalent("CardTableRefreshButtonIcon");
         t.label = "Refresh";
@@ -206,7 +206,7 @@ rule CardTableRefreshButton
 rule CardTableRefreshButtonIcon
     transform s: JSL!UICardDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableRefreshButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardTableRefreshButtonIcon");
         t.name = s.name + "RefreshIcon";
         t.iconName = "refresh";
 
@@ -217,7 +217,7 @@ rule CardTableRefreshButtonIcon
 rule CardTableRefreshActionDefinition
     transform s: JSL!UICardDeclaration
     to t: UI!ui::RefreshActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardTableRefreshActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardTableRefreshActionDefinition");
         t.name = s.name + "::Refresh";
         t.targetType = s.map.transfer.equivalent("ClassType");
 
@@ -228,7 +228,7 @@ rule CardTableRefreshActionDefinition
 rule CardOpenPageButton
     transform s: JSL!UICardDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardOpenPageButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardOpenPageButton");
         t.name = s.name + "::View";
         t.icon = s.equivalent("CardOpenPageButtonIcon");
         t.label = "View";
@@ -242,7 +242,7 @@ rule CardOpenPageButton
 rule CardOpenPageButtonIcon
     transform s: JSL!UICardDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardOpenPageButtonIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardOpenPageButtonIcon");
         t.name = s.name + "OpenPageIcon";
         t.iconName = "visibility";
 
@@ -253,7 +253,7 @@ rule CardOpenPageButtonIcon
 rule CardOpenPageActionDefinition
     transform s: JSL!UICardDeclaration
     to t: UI!ui::OpenPageActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardOpenPageActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardOpenPageActionDefinition");
         t.name = s.name + "::View";
         t.targetType = s.map.transfer.equivalent("ClassType");
 
@@ -264,7 +264,7 @@ rule CardOpenPageActionDefinition
 rule CardWidgetDeclarationPrimitiveColumn
     transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::Column {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardWidgetDeclarationPrimitiveColumn");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardWidgetDeclarationPrimitiveColumn");
         t.name = s.name;
         t.format = "%s";
         t.label = s.getLabelWithNameFallback();
@@ -281,7 +281,7 @@ rule CardWidgetDeclarationPrimitiveColumn
 rule CardColumnDeclarationColumnIcon
     transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::Icon {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardColumnDeclarationColumnIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardColumnDeclarationColumnIcon");
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "FieldIcon";
 
@@ -292,7 +292,7 @@ rule CardColumnDeclarationColumnIcon
 rule CardWidgetDeclarationPrimitiveColumnFilter
     transform s: JSL!UIViewWidgetDeclaration
     to t: UI!ui::Filter {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/CardWidgetDeclarationPrimitiveColumnFilter");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/CardWidgetDeclarationPrimitiveColumnFilter");
         t.name = s.name + "Filter";
         t.attributeType = s.getTransferFieldDeclarationEquivalent();
         t.label = s.getLabelWithNameFallback();
