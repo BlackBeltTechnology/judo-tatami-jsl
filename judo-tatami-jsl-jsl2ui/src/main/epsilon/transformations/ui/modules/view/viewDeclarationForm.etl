@@ -1,9 +1,9 @@
 rule FormPageContainer
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::PageContainer {
-        guard: rootMenu.containsVisualElement(s) and s.form.isDefined() and s.form
+        guard: frontend.containsVisualElement(s) and s.form.isDefined() and s.form
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainer");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/FormPageContainer");
         if (__pos.get(t).isUndefined()) {
             __pos.put(t, 0);
         }
@@ -16,7 +16,7 @@ rule FormPageContainer
         t.onInit = s.equivalent("FormPageContainerGetTemplateActionDefinition");
         t.templateAction = s.equivalent("FormPageContainerGetTemplateActionDefinition");
 
-        rootMenu.equivalent("Application").pageContainers.add(t);
+        frontend.equivalent("Application").pageContainers.add(t);
 
         log.debug("Create FormPageContainer: " + t.name);
 }
@@ -25,10 +25,10 @@ rule FormPageContainer
 rule FormPageContainerVisualElement
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Flex {
-        guard: rootMenu.containsVisualElement(s) and s.form.isDefined() and s.form
+        guard: frontend.containsVisualElement(s) and s.form.isDefined() and s.form
 
         __pos.put(t, 0);
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerVisualElement");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/FormPageContainerVisualElement");
         t.name = s.name;
         t.direction = UI!Axis#VERTICAL;
         t.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
@@ -42,7 +42,7 @@ rule FormPageContainerVisualElement
 rule FormPageContainerButtonGroup
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::ButtonGroup {
-		var id = rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerButtonGroup";
+		var id = frontend.name + "/(jsl/" + s.getId() + ")/FormPageContainerButtonGroup";
 	    t.setId(id);
  		t.name = s.getFqName() + "::PageActions";
  		t.label = "Actions";
@@ -56,7 +56,7 @@ rule FormPageContainerButtonGroup
 rule FormPageContainerBackActionDefinition
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::BackActionDefinition  {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerBackActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/FormPageContainerBackActionDefinition");
  		t.name = s.getFqName() + "::Back";
         log.debug("FormPageContainerBackActionDefinition: " + t.name);
 }
@@ -67,14 +67,14 @@ rule FormPageContainerBackButtonIcon
     to t: UI!ui::Icon {
     	t.iconName = "arrow-left";
     	t.name = s.name + "BackButtonIcon";
-    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerBackButtonIcon");
+    	t.setId(frontend.name + "/(jsl/" + s.getId() + ")/FormPageContainerBackButtonIcon");
 }
 
 @lazy
 rule FormPageContainerBackButton
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Button {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerBackButton");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/FormPageContainerBackButton");
  		t.name = s.getFqName() + "::Back";
     	t.label = "Back";
     	t.buttonStyle = "text";
@@ -88,7 +88,7 @@ rule FormPageContainerBackButton
 rule FormPageContainerCreateButtonIcon
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Icon {
-    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerCreateButtonIcon");
+    	t.setId(frontend.name + "/(jsl/" + s.getId() + ")/FormPageContainerCreateButtonIcon");
     	t.name = s.name + "CreateButtonIcon";
     	t.iconName = "content-save";
 
@@ -99,7 +99,7 @@ rule FormPageContainerCreateButtonIcon
 rule FormPageContainerCreateButton
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::Button {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerCreateButton");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/FormPageContainerCreateButton");
  		t.name = s.getFqName() + "::Create";
     	t.label = "Create";
     	t.buttonStyle = "contained";
@@ -113,7 +113,7 @@ rule FormPageContainerCreateButton
 rule FormPageContainerCreateActionDefinition
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::CreateActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerCreateActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/FormPageContainerCreateActionDefinition");
         t.name = s.getFqName() + "::Create";
 
         /*
@@ -129,7 +129,7 @@ rule FormPageContainerCreateActionDefinition
 rule FormPageContainerGetTemplateActionDefinition
     transform s: JSL!UIViewDeclaration
     to t: UI!ui::GetTemplateActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/FormPageContainerGetTemplateActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/FormPageContainerGetTemplateActionDefinition");
  		t.name = s.getFqName() + "::GetTemplate";
 		t.targetType = s.map.transfer.equivalent("ClassType");
 

@@ -1,17 +1,23 @@
 rule AccessViewPageDefinition
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::PageDefinition {
-        guard: rootMenu.containsVisualElement(s)
+        guard: frontend.containsVisualElement(s)
 
         var relation = s.actorAccess.target;
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewPageDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessViewPageDefinition");
         t.name = s.getFqName() + "::AccessViewPage";
         t.container = s.referenceType.equivalent("ViewPageContainer");
+        t.dashboard = s.isDashBoard(); // TODO https://blackbelt.atlassian.net/browse/JNG-6253
 
-        rootMenu.equivalent("Application").pages.add(t);
+        frontend.equivalent("Application").pages.add(t);
 
         t.dataElement = relation.equivalent("RelationType");
+
+        // TODO https://blackbelt.atlassian.net/browse/JNG-6254
+        if (s.isNestedInProfile()) {
+          frontend.equivalent("Application").profilePage = t;
+    	}
 
         if (s.referenceType.isOpenInDialog()) {
             t.openInDialog = true;
@@ -116,7 +122,7 @@ rule AccessViewPageDefinition
 rule AccessViewBackAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewBackAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessViewBackAction");
         t.name = s.name + "::Back";
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerBackActionDefinition");
 
@@ -127,7 +133,7 @@ rule AccessViewBackAction
 rule AccessViewRefreshAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewRefreshAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessViewRefreshAction");
  		t.name = s.name + "::Refresh";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerRefreshActionDefinition");
@@ -139,7 +145,7 @@ rule AccessViewRefreshAction
 rule AccessViewUpdateAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewUpdateAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessViewUpdateAction");
  		t.name = s.name + "::Update";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerUpdateActionDefinition");
@@ -151,7 +157,7 @@ rule AccessViewUpdateAction
 rule AccessViewDeleteAction
     transform s: JSL!UIMenuLinkDeclaration
     to t: UI!ui::Action {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/AccessViewDeleteAction");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/AccessViewDeleteAction");
  		t.name = s.name + "::Delete";
         t.ownerDataElement = s.actorAccess.target.equivalent("RelationType");
         t.actionDefinition = s.referenceType.equivalent("ViewPageContainerDeleteActionDefinition");

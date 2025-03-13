@@ -2,14 +2,14 @@
 rule ViewLinkCreateFormPageDefinition
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::PageDefinition {
-        guard: rootMenu.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
+        guard: frontend.containsVisualElement(s) and s.getCreateFormModifier().isDefined()
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormPageDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormPageDefinition");
         t.name = s.getFqName() + "::FormPage";
         t.container = s.getCreateFormModifier().form.equivalent("FormPageContainer");
         t.openInDialog = true;
 
-        rootMenu.equivalent("Application").pages.add(t);
+        frontend.equivalent("Application").pages.add(t);
 
         t.dataElement = s.transferRelation.target.equivalent("RelationType");
 
@@ -71,7 +71,7 @@ rule ViewLinkCreateFormPageDefinition
 rule ViewLinkCreateFormCreateAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormCreateAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormCreateAction");
         t.name = s.name + "::Create";
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerCreateActionDefinition");
         t.targetPageDefinition = s.equivalent("ViewLinkPageDefinition");
@@ -83,7 +83,7 @@ rule ViewLinkCreateFormCreateAction
 rule ViewLinkCreateFormBackAction
     transform s: JSL!UIViewLinkDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormBackAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewLinkCreateFormBackAction");
         t.name = s.name + "::Back";
         t.actionDefinition = s.getCreateFormModifier().form.equivalent("FormPageContainerBackActionDefinition");
 

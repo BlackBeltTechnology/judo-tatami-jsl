@@ -11,6 +11,23 @@ operation JSL!UIMenuLinkDeclaration getFqName(): String {
     return self.name;
 }
 
+@cached
+operation JSL!UIMenuLinkDeclaration getFrontend(): JSL!UIFrontendDeclaration {
+    if (self.eContainer.isDefined()) {
+        return self.eContainer.getFrontend();
+    }
+    return null;
+}
+
+@cached
+operation JSL!UIMenuLinkDeclaration getActorDeclaration(): JSL!ActorDeclaration {
+    var root = self.UIFrontendDeclaration();
+    if (root.isDefined()) {
+        return root.getActorDeclaration();
+    }
+    return null;
+}
+
 operation JSL!UIMenuLinkDeclaration getExposedVisualElements(ves: Set): Set {
     if (ves.contains(self)) {
         return ves;

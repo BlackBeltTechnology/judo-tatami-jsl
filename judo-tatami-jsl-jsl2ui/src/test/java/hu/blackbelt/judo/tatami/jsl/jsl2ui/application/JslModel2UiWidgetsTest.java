@@ -144,9 +144,10 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 access UserTransfer user <= User.any() create delete update;
             }
 
-            menu WidgetsApp(WidgetsActor a) {
-                link UserView user <= a.user label:"User" icon:"tools" form:UserForm view:UserView;
-            }
+            frontend WidgetsApp(WidgetsActor a)
+                menu: {
+                    link UserView user <= a.user label:"User" icon:"tools" form:UserForm view:UserView;
+                };
         """));
 
         transform();
@@ -494,10 +495,11 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 access UserTransfer[] users <= User.all() create update;
             }
 
-            menu RelationWidgets(RelationWidgetsActor a) {
-                link UserView user <= a.user label:"User" icon:"tools";
-                table UserRow[] users <= a.users label:"Users" icon:"tools" form:UserForm view:UserView;
-            }
+            frontend RelationWidgets(RelationWidgetsActor a)
+                menu: {
+                    link UserView user <= a.user label:"User" icon:"tools";
+                    table UserRow[] users <= a.users label:"Users" icon:"tools" form:UserForm view:UserView;
+                };
         """));
 
         transform();

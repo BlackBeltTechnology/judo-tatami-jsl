@@ -1,9 +1,9 @@
 rule ViewActionDeclarationButton
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
-        guard: rootMenu.containsVisualElement(s) and not s.eContainer.isKindOf(JSL!UIRowDeclaration) and not s.eContainer.isKindOf(JSL!ActionGroupModifier)
+        guard: frontend.containsVisualElement(s) and not s.eContainer.isKindOf(JSL!UIRowDeclaration) and not s.eContainer.isKindOf(JSL!ActionGroupModifier)
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationButton");
         t.name = s.name;
         t.buttonStyle = "text";
         var label = s.getLabelModifier();
@@ -54,7 +54,7 @@ rule ViewActionDeclarationButton
 rule ViewActionDeclarationCallOperationActionDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::ParameterlessCallOperationActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationCallOperationActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationCallOperationActionDefinition");
     	t.name = s.getFqName() + "::Call";
     	t.`operation` = s.transferAction.target.equivalent("OperationType");
 
@@ -65,7 +65,7 @@ rule ViewActionDeclarationCallOperationActionDefinition
 rule ViewActionDeclarationOpenSelectorActionDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::OpenOperationInputSelectorActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenSelectorActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenSelectorActionDefinition");
         t.name = s.getFqName() + "::Open::Selector";
  		t.selectorFor = s.equivalent("OperationInputSelectorCallActionDefinition");
         log.debug("ViewActionDeclarationOpenSelectorActionDefinition: " + t.name);
@@ -75,7 +75,7 @@ rule ViewActionDeclarationOpenSelectorActionDefinition
 rule ViewActionDeclarationOpenFormActionDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::OpenOperationInputFormActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenFormActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewActionDeclarationOpenFormActionDefinition");
     	t.name = s.getFqName() + "::Open::Operation::Form";
         log.debug("ViewActionDeclarationOpenFormActionDefinition: " + t.name);
 }
@@ -84,7 +84,7 @@ rule ViewActionDeclarationOpenFormActionDefinition
 rule ViewAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/ViewAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/ViewAction");
         t.name = s.getFqName() + "::Action";
 
         if (s.isOpenOperationFormAction()) {
@@ -126,7 +126,7 @@ rule ViewAction
 rule OperationInputFormPageDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::PageDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormPageDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputFormPageDefinition");
         t.openInDialog = true;
         t.name = s.getFqName() + "::OperationInputForm";
         t.container = s.parameterType.equivalent("FormPageContainer");
@@ -140,7 +140,7 @@ rule OperationInputFormPageDefinition
 
         t.container.actionButtonGroup.buttons.add(s.equivalent("OperationInputFormCallActionButton"));
 
-        rootMenu.equivalent("Application").pages.add(t);
+        frontend.equivalent("Application").pages.add(t);
 
         log.debug("Create OperationInputFormPageDefinition: " + t.name);
 }
@@ -149,7 +149,7 @@ rule OperationInputFormPageDefinition
 rule OperationInputFormBackAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormBackAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputFormBackAction");
         t.name = s.name + "::Back";
         t.ownerDataElement = s.equivalent("OperationType");
         t.actionDefinition = s.parameterType.equivalent("FormPageContainerBackActionDefinition");
@@ -161,7 +161,7 @@ rule OperationInputFormBackAction
 rule OperationInputFormGetTemplateAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormGetTemplateAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputFormGetTemplateAction");
         t.name = s.name + "::GetTemplate";
         t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
         t.actionDefinition = s.parameterType.equivalent("FormPageContainerGetTemplateActionDefinition");
@@ -172,7 +172,7 @@ rule OperationInputFormGetTemplateAction
 rule OperationInputFormCallActionButton
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallActionButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallActionButton");
         t.name = s.getFqName() + "::CallAction";
         t.buttonStyle = "contained";
         t.actionDefinition = s.equivalent("OperationInputFormCallActionDefinition");
@@ -201,7 +201,7 @@ rule OperationInputFormCallActionButton
 rule OperationInputFormCallActionButtonIcon
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Icon {
-    	t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallActionButtonIcon");
+    	t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallActionButtonIcon");
     	t.iconName = s.getIconModifier().value.value;
     	t.name = s.name + "Icon";
 }
@@ -210,7 +210,7 @@ rule OperationInputFormCallActionButtonIcon
 rule OperationInputFormCallActionDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::InputFormCallOperationActionDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallActionDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallActionDefinition");
     	t.name = s.getFqName() + "::FormCall";
     	t.`operation` = s.transferAction.target.equivalent("OperationType");
 
@@ -221,7 +221,7 @@ rule OperationInputFormCallActionDefinition
 rule OperationInputSelectorPageDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::PageDefinition {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorPageDefinition");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorPageDefinition");
         t.name = s.getFqName() + "::OperationInputSelector";
         t.openInDialog = true;
         t.container = s.getSelectorTableModifier().row.equivalent("TablePageContainer");
@@ -234,7 +234,7 @@ rule OperationInputSelectorPageDefinition
         t.actions.add(s.equivalent("OperationInputSelectorFilterAction"));
         t.actions.add(s.equivalent("OperationInputSelectorCallAction"));
 
-        rootMenu.equivalent("Application").pages.add(t);
+        frontend.equivalent("Application").pages.add(t);
 
         log.debug("OperationInputSelectorPageDefinition: " + t.name);
 }
@@ -243,7 +243,7 @@ rule OperationInputSelectorPageDefinition
 rule OperationInputSelectorCallActionButton
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Button {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallActionButton");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallActionButton");
         t.name = s.getFqName() + "::CallAction";
         t.buttonStyle = "contained";
         t.actionDefinition = s.equivalent("OperationInputSelectorCallActionDefinition");
@@ -272,7 +272,7 @@ rule OperationInputSelectorCallActionButton
 rule OperationInputSelectorCallActionDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::InputSelectorCallOperationActionDefinition {
-	    t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallActionDefinition");
+	    t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallActionDefinition");
     	t.name = s.getFqName() + "::SelectorCall";
     	t.`operation` = s.transferAction.target.equivalent("OperationType");
 
@@ -283,7 +283,7 @@ rule OperationInputSelectorCallActionDefinition
 rule OperationInputSelectorBackAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorBackAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorBackAction");
         t.name = s.name + "::Back";
         t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
         t.actionDefinition = s.getSelectorTableModifier().row.equivalent("TablePageContainerBackActionDefinition");
@@ -295,7 +295,7 @@ rule OperationInputSelectorBackAction
 rule OperationInputSelectorCallAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorCallAction");
         t.name = s.name + "::CallOperation";
         // t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
         t.targetDataElement = s.transferAction.target.equivalent("OperationType");
@@ -311,7 +311,7 @@ rule OperationInputSelectorCallAction
 rule OperationInputSelectorRangeAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorRangeAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorRangeAction");
         t.name = s.name + "::Refresh";
         t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
         t.targetDataElement = s.transferAction.target.equivalent("OperationType").input;
@@ -324,7 +324,7 @@ rule OperationInputSelectorRangeAction
 rule OperationInputSelectorFilterAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorFilterAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputSelectorFilterAction");
         t.name = s.name + "::Filter";
         t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
         t.targetDataElement = s.transferAction.target.equivalent("OperationType").input;
@@ -337,7 +337,7 @@ rule OperationInputSelectorFilterAction
 rule OperationInputFormCallAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationInputFormCallAction");
         t.name = s.name + "::CallOperation";
         t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
         t.targetDataElement = s.transferAction.target.equivalent("OperationType");
@@ -353,7 +353,7 @@ rule OperationInputFormCallAction
 rule OperationOutputPageDefinition
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::PageDefinition {
-        var id = rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputPageDefinition";
+        var id = frontend.name + "/(jsl/" + s.getId() + ")/OperationOutputPageDefinition";
         var uiOp = s.transferAction.target.equivalent("OperationType");
 
         t.setId(id);
@@ -396,7 +396,7 @@ rule OperationOutputPageDefinition
             */
         }
 
-        rootMenu.equivalent("Application").pages.add(t);
+        frontend.equivalent("Application").pages.add(t);
 
         log.debug("OperationOutputPageDefinition " + t.name);
 }
@@ -405,7 +405,7 @@ rule OperationOutputPageDefinition
 rule OperationOutputBackAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputBackAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationOutputBackAction");
         t.name = s.name + "::Back";
         t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
         t.actionDefinition = s.`return`.equivalent("ViewPageContainerBackActionDefinition");
@@ -417,7 +417,7 @@ rule OperationOutputBackAction
 rule OperationOutputRefreshAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputRefreshAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationOutputRefreshAction");
         t.name = s.name + "::Refresh";
         t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
         t.actionDefinition = s.`return`.equivalent("ViewPageContainerRefreshActionDefinition");
@@ -429,7 +429,7 @@ rule OperationOutputRefreshAction
 rule OperationOutputUpdateAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputUpdateAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationOutputUpdateAction");
         t.name = s.name + "::Update";
         t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
         t.actionDefinition = s.`return`.equivalent("ViewPageContainerUpdateActionDefinition");
@@ -441,7 +441,7 @@ rule OperationOutputUpdateAction
 rule OperationOutputDeleteAction
     transform s: JSL!UIActionDeclaration
     to t: UI!ui::Action {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/OperationOutputDeleteAction");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/OperationOutputDeleteAction");
         t.name = s.getFqName() + "::Delete";
         t.ownerDataElement = s.transferAction.target.equivalent("OperationType");
         t.actionDefinition = s.`return`.equivalent("ViewPageContainerDeleteActionDefinition");

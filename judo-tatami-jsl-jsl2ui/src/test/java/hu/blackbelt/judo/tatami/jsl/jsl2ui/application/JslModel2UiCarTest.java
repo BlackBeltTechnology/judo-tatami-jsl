@@ -106,9 +106,10 @@ public class JslModel2UiCarTest extends AbstractTest  {
                 column String type <= ct.type;
             }
 
-            menu CarApp(UserActor usr) {
-                table CarRow[] cars <= usr.cars form:CarForm view:CarView;
-            }
+            frontend CarApp(UserActor usr)
+                menu: {
+                    table CarRow[] cars <= usr.cars form:CarForm view:CarView;
+                };
         """));
 
         transform();

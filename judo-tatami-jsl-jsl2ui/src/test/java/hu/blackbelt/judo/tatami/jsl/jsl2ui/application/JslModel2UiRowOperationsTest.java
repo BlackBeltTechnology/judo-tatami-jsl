@@ -137,10 +137,10 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
                      	access TransferX[] txs <= Entity1.all() create:true update:true;
                      }
                 
-                     menu M(A a) {
-                     	table RowX[] vxs <= a.txs view:ViewX form:FormX;
-                     }
-                
+                     frontend M(A a)
+                        menu: {
+                            table RowX[] vxs <= a.txs view:ViewX form:FormX;
+                         };
                 """.formatted(name);
     }
 

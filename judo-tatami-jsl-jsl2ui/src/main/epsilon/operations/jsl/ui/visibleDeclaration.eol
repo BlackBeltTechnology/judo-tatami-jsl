@@ -1,15 +1,3 @@
-/*
-@cached
-operation JSL!VisibleDeclaration getId(): String {
-    return (self.eContainer.getId() + "/" + self.name);
-}
-
-@cached
-operation JSL!VisibleDeclaration getFqName(): String {
-    return self.eContainer.getFqName() + "::" + self.name;
-}
-*/
-
 operation Any getPos(): Integer {
     if (self.eContainer.isKindOf(JSL!UIViewDeclaration)) {
         return self.eContainer.members.indexOf(self);
@@ -21,4 +9,17 @@ operation Any getPos(): Integer {
         return self.eContainer.members.indexOf(self);
     }
     return __pos.get(self).isDefined() ? __pos.get(self) : 0;
+}
+
+operation Any isNestedInProfile(): Boolean {
+    var parent: Any = self.eContainer;
+    var profile: JSL!ProfileModifier;
+    while (parent.isDefined() and profile.isUndefined()) {
+        if (parent.isTypeOf(JSL!ProfileModifier)) {
+            profile = parent;
+        } else {
+            parent = parent.eContainer;
+        }
+    }
+    return profile.isDefined();
 }

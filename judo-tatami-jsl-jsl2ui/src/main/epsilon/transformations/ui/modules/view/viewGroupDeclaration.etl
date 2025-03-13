@@ -64,9 +64,9 @@ rule GroupVisualElement
     transform s: JSL!UIViewGroupDeclaration
     to t: UI!ui::Flex
     extends AbstractViewGroupDeclaration {
-        guard: rootMenu.containsVisualElement(s)
+        guard: frontend.containsVisualElement(s)
 
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/GroupVisualElement");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/GroupVisualElement");
 
         if (not s.eContainer.isKindOf(JSL!UIViewTabsDeclaration)) {
             var holder = t;
@@ -85,7 +85,7 @@ rule GroupVisualElement
 rule GroupFrame
     transform s: JSL!UIViewGroupDeclaration
     to t: UI!ui::Frame {
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/GroupFrame");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/GroupFrame");
 }
 
 @lazy
@@ -95,19 +95,19 @@ rule GroupIcon
     to t: UI!ui::Icon {
         t.iconName = s.getIconModifier().value.value;
         t.name = s.name + "GroupIcon";
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/GroupIcon");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/GroupIcon");
 }
 
 @greedy
 rule TabGroup
     transform s: JSL!UIViewGroupDeclaration
     to t: UI!ui::Tab {
-        guard: s.eContainer.isKindOf(JSL!UIViewTabsDeclaration) and rootMenu.containsVisualElement(s)
+        guard: s.eContainer.isKindOf(JSL!UIViewTabsDeclaration) and frontend.containsVisualElement(s)
 
         s.eContainer.equivalent("TabBarVisualElement").tabs.add(t);
         t.element = s.equivalent("GroupVisualElement");
         t.name = t.element.name;
-        t.setId(rootMenu.name + "/(jsl/" + s.getId() + ")/TabGroup");
+        t.setId(frontend.name + "/(jsl/" + s.getId() + ")/TabGroup");
 
         log.debug("TabGroup: " + t.name);
 }
