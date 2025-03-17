@@ -84,6 +84,7 @@ rule CreateGetRangeRelationOperationForTransferTypeOutputParameter
         log.debug("Created CreateGetRangeRelationOperationForTransferTypeOutputParameter: " + t.name);
 }
 
+/*
 @greedy
 rule CreateGetRangeRelationOperationForEntityTypeInputParameter
     transform s: JSL!TransferRelationDeclaration
@@ -113,6 +114,7 @@ rule CreateGetRangeRelationOperationForEntityTypeOutputParameter
         s.equivalent("CreateGetRangeRelationOperationForEntityType").output = t;
         log.debug("Created CreateGetRangeRelationOperationForEntityTypeOutputParameter: " + t.name);
 }
+*/
 
 @lazy
 @greedy
