@@ -45,6 +45,7 @@ rule CreateListOperationForAccessInputParameter
       t.cardinality = s.equivalent("CreateCardinalityForListAccessInput");
       t.name = "input";
 	  t.type = s.referenceType.equivalent("CreateQueryCustomizerType");
+      t.wrapAsOptional = false;
       s.equivalent("CreateListOperationForAccess").input = t;
       log.debug("Created CreateListOperationForAccessInputParameter: " + t.name);
 }
@@ -59,6 +60,7 @@ rule CreateListOperationForAccessOutputParameter
       t.cardinality = s.equivalent("CreateCardinalityForListAccessOutput");
       t.name = "return";
 	  t.type = s.referenceType.getTransferDeclarationEquivalent();
+      t.wrapAsOptional = false;
       s.equivalent("CreateListOperationForAccess").output = t;
       log.debug("Created CreateListOperationForAccessOutputParameter: " + t.name);
 }
