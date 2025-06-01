@@ -80,7 +80,7 @@ rule CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration
       t.setId("(jsl/" + s.getId() + ")/CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
       t.cardinality = s.equivalentDiscriminated("CreateCardinalityForTransferRelationDeclaration", t.getId());
 
-      var entityMember = s.getterExpr.features.first.member;
+      var entityMember = s.getterExpr.features.first().member;
 
       if (entityMember.isKindOf(JSL!EntityFieldDeclaration) and not entityMember.isCalculated()) {
           t.binding = entityMember.equivalent("CreateContainmentFromField");

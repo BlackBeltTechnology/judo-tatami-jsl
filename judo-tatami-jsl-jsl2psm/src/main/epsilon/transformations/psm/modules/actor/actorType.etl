@@ -331,7 +331,7 @@ rule CreateActorTypeClaim
         t.dataType = field.referenceType.getPrimitiveDeclarationEquivalent();
         t.required = field.getTransferFieldDeclarationEquivalent().required;
 
-        t.binding = field.getterExpr.features.first.member.equivalent("CreateAttributeFromField");
+        t.binding = field.getterExpr.features.first().member.equivalent("CreateAttributeFromField");
         s.getActorDeclarationEquivalent().attributes.add(t);
 
         log.debug("Created ActorType Claim: " + t.name);
