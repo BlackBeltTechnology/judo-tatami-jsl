@@ -59,27 +59,27 @@
         <junit-version>5.5.1</junit-version>
         <surefire-version>3.5.1</surefire-version>
 
-        <epsilon-runtime-version>2.8.0-SNAPSHOT</epsilon-runtime-version>
+        <epsilon-runtime-version>2.8.0.20250601_204925_56fd7ee5_feature_JNG_6310_UpdateEpsilon</epsilon-runtime-version>
         <antlr-runtime-version>3.2</antlr-runtime-version>
         <build-helper-maven-plugin-version>3.3.0</build-helper-maven-plugin-version>
 
         <!-- Model versions -->
-        <judo-meta-jsl-version>1.0.3-SNAPSHOT</judo-meta-jsl-version>
-        <judo-meta-rdbms-version>1.0.2-SNAPSHOT</judo-meta-rdbms-version>
-        <judo-meta-jql-version>1.0.4-SNAPSHOT</judo-meta-jql-version>
-        <judo-meta-ui-version>1.1.0-SNAPSHOT</judo-meta-ui-version>
-        <judo-meta-psm-version>1.3.0-SNAPSHOT</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.4-SNAPSHOT</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.5-SNAPSHOT</judo-meta-expression-version>
-        <judo-meta-liquibase-version>1.0.2-SNAPSHOT</judo-meta-liquibase-version>
-        <judo-dao-api-version>1.0.4.20250521_140838_63edcd65_develop</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.4-SNAPSHOT</judo-sdk-common-version>
-        <judo-dispatcher-api-version>1.0.3.20241127_150146_84f2988d_develop</judo-dispatcher-api-version>
-        <judo-operation-utils-version>1.1.3-SNAPSHOT</judo-operation-utils-version>
+        <judo-meta-jsl-version>1.0.3.20250602_090711_ac699c33_feature_JNG_6310_UpdateEpsilon</judo-meta-jsl-version>
+        <judo-meta-rdbms-version>1.0.2.20250602_090735_ecef9ef1_feature_JNG_6310_UpdateEpsilon</judo-meta-rdbms-version>
+        <judo-meta-jql-version>1.0.4.20250602_090807_7bc1d933_feature_JNG_6310_UpdateEpsilon</judo-meta-jql-version>
+        <judo-meta-ui-version>1.1.0.20250602_090656_89bc9374_feature_JNG_6310_UpdateEpsilon</judo-meta-ui-version>
+        <judo-meta-psm-version>1.3.0.20250602_090705_7981ad0b_feature_JNG_6310_UpdateEpsilon</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.4.20250602_090702_148f6b2e_feature_JNG_6310_UpdateEpsilon</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.5.20250602_091457_09e1d468_feature_JNG_6310_UpdateEpsilon</judo-meta-expression-version>
+        <judo-meta-liquibase-version>1.0.2.20250602_090720_32838559_feature_JNG_6310_UpdateEpsilon</judo-meta-liquibase-version>
+        <judo-dao-api-version>1.0.4.20250601_195940_6f6f2f06_feature_JNG_6310_UpdateEpsilon</judo-dao-api-version>
+        <judo-sdk-common-version>1.0.4.20250602_091354_e9089c56_feature_JNG_6310_UpdateEpsilon</judo-sdk-common-version>
+        <judo-dispatcher-api-version>1.0.3.20250601_195954_884c8770_feature_JNG_6310_UpdateEpsilon</judo-dispatcher-api-version>
+        <judo-operation-utils-version>1.1.3.20250602_091349_470a5ac0_feature_JNG_6310_UpdateEpsilon</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6-SNAPSHOT</judo-runtime-core-version>
-        <judo-tatami-base-version>1.1.6-SNAPSHOT</judo-tatami-base-version>
-        <judo-tatami-core-version>1.1.4-SNAPSHOT</judo-tatami-core-version>
+        <judo-runtime-core-version>1.0.6.20250602_112607_e23bc96d_feature_JNG_6310_UpdateEpsilon</judo-runtime-core-version>
+        <judo-tatami-base-version>1.1.6.20250522_041901_3e0e2992_develop</judo-tatami-base-version>
+        <judo-tatami-core-version>1.1.4.20250601_205245_92329438_feature_JNG_6310_UpdateEpsilon</judo-tatami-core-version>
 
         <!-- Code Quality-->
         <sonar-maven-plugin-version>3.9.1.2184</sonar-maven-plugin-version>
