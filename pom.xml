@@ -77,8 +77,8 @@
         <judo-dispatcher-api-version>1.0.3.20250601_195954_884c8770_feature_JNG_6310_UpdateEpsilon</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20250602_091349_470a5ac0_feature_JNG_6310_UpdateEpsilon</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20250602_112607_e23bc96d_feature_JNG_6310_UpdateEpsilon</judo-runtime-core-version>
-        <judo-tatami-base-version>1.1.6.20250522_041901_3e0e2992_develop</judo-tatami-base-version>
+        <judo-runtime-core-version>1.0.6.20250602_122610_28abe296_feature_JNG_6310_UpdateEpsilon</judo-runtime-core-version>
+        <judo-tatami-base-version>1.1.6.20250602_113350_f8965406_feature_JNG_6310_UpdateEpsilon</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20250601_205245_92329438_feature_JNG_6310_UpdateEpsilon</judo-tatami-core-version>
 
         <!-- Code Quality-->
