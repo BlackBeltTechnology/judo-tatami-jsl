@@ -347,7 +347,7 @@ entity Customer {
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <judo-runtime-core-version>1.0.0</judo-runtime-core-version>  <!--1-->
+        <judo-runtime-core-version>1.0.6.20250604_173456_21d07cdf_feature_JNG_6310_UpdateEpsilon</judo-runtime-core-version>  <!--1-->
         <judo-tatami-jsl-version>1.1.0</judo-tatami-jsl-version> <!--2-->
     </properties>
     <build>
