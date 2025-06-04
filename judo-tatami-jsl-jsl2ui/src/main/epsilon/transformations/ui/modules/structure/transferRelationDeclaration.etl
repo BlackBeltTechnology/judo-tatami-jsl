@@ -23,7 +23,7 @@ rule AbstractRelationType
         if (s.reads()) {
             t.memberType = UI!ui::data::MemberType#DERIVED;
         } else if (s.maps()) {
-            var entityMember = s.getterExpr.features.first.member;
+            var entityMember = s.getterExpr.features.first().member;
 
             if (not entityMember.isTypeOf(JSL!EntityRelationOppositeInjected)) {
                 if (entityMember.isCalculated()) {
