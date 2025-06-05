@@ -344,10 +344,10 @@ entity Customer {
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
 
-        <judo-runtime-core-version>1.0.0</judo-runtime-core-version>  <!--1-->
+        <judo-runtime-core-version>1.0.6</judo-runtime-core-version>  <!--1-->
         <judo-tatami-jsl-version>1.1.0</judo-tatami-jsl-version> <!--2-->
     </properties>
     <build>
