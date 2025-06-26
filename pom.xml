@@ -67,7 +67,7 @@
         <judo-meta-jsl-version>1.0.3.20250621_041956_24f7e051_develop</judo-meta-jsl-version>
         <judo-meta-rdbms-version>1.0.2.20250621_043434_c2c79717_develop</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.4.20250621_041949_1538bc18_develop</judo-meta-jql-version>
-        <judo-meta-ui-version>1.1.0.20250623_075924_7f3f9ca5_feature_JNG_6228_OperationMenuItem</judo-meta-ui-version>
+        <judo-meta-ui-version>1.1.0.20250625_122137_5e96c242_develop</judo-meta-ui-version>
         <judo-meta-psm-version>1.3.0.20250621_042529_ff1dc829_develop</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.4.20250621_043332_3efe853d_develop</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.5.20250621_043816_7d34c0b9_develop</judo-meta-expression-version>
