@@ -44,10 +44,10 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.createTraceModelResource;
-import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.createTraceModelResourceFromEObjectMap;
-import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.getTransformationTraceFromEtlExecutionContext;
-import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.resolveTransformationTraceAsEObjectMap;
+import static hu.blackbelt.judo.tatami.util.TransformationTraceExtractor.createTraceModelResource;
+import static hu.blackbelt.judo.tatami.util.TransformationTraceExtractor.createTraceModelResourceFromEObjectMap;
+import static hu.blackbelt.judo.tatami.util.TransformationTraceExtractor.getTransformationTraceFromEtlExecutionContext;
+import static hu.blackbelt.judo.tatami.util.TransformationTraceExtractor.resolveTransformationTraceAsEObjectMap;
 
 @Builder(builderMethodName = "jsl2PsmTransformationTraceBuilder")
 public class Jsl2PsmTransformationTrace implements TransformationTrace {

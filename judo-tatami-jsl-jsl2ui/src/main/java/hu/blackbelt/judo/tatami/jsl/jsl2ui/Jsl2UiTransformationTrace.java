@@ -19,8 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
-import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.createTraceModelResourceFromEObjectMap;
+import static hu.blackbelt.judo.tatami.util.TransformationTraceExtractor.createTraceModelResource;
+import static hu.blackbelt.judo.tatami.util.TransformationTraceExtractor.createTraceModelResourceFromEObjectMap;
+import static hu.blackbelt.judo.tatami.util.TransformationTraceExtractor.getTransformationTraceFromEtlExecutionContext;
+import static hu.blackbelt.judo.tatami.util.TransformationTraceExtractor.resolveTransformationTraceAsEObjectMap;
 
 @Builder(builderMethodName = "jsl2UiTransformationTraceBuilder")
 public class Jsl2UiTransformationTrace implements TransformationTrace {
