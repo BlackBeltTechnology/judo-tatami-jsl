@@ -80,6 +80,7 @@
         <judo-runtime-core-version>1.0.6.20250818_024652_34874920_feature_JNG_6322_Minimiize_Karaf_Size</judo-runtime-core-version>
         <judo-tatami-base-version>1.1.6.20250818_024115_5a7ed7ae_feature_JNG_6322_Minimiize_Karaf_Size</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20250818_010038_2c4e76da_feature_JNG_6322_Minimiize_Karaf_Size</judo-tatami-core-version>
+        <judo-tatami-util-version>1.0.0.20250818_020952_1d35adee_feature_JNG_6322_Minimiize_Karaf_Size</judo-tatami-util-version>
 
         <!-- Code Quality-->
         <sonar-maven-plugin-version>3.9.1.2184</sonar-maven-plugin-version>
@@ -423,6 +424,12 @@
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-core</artifactId>
                 <version>${judo-tatami-core-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-util</artifactId>
+                <version>${judo-tatami-util-version}</version>
             </dependency>
 
             <dependency>
