@@ -25,6 +25,7 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.support.JslDslModelResourceSupport;
 import hu.blackbelt.judo.meta.ui.PageContainer;
 import hu.blackbelt.judo.meta.ui.PageDefinition;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.judo.meta.ui.runtime.UiValidator;
 import hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
@@ -43,8 +44,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.SaveArguments.jslDslSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
-import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
 import static hu.blackbelt.judo.tatami.jsl.jsl2ui.Jsl2Ui.Jsl2UiParameter.jsl2UiParameter;
@@ -138,7 +137,7 @@ abstract public class AbstractTest {
             log.error(uiModel.getDiagnosticsAsString());
         }
         assertTrue(uiModel.isValid());
-        validateUi(slf4jlog, uiModel, calculateUiValidationScriptURI());
+        UiValidator.validateUi(slf4jlog, uiModel);
     }
 
     public Jsl2Ui.Jsl2UiParameter.Jsl2UiParameterBuilder addTransformationParameters(String testName, Jsl2Ui.Jsl2UiParameter.Jsl2UiParameterBuilder parameters) {
