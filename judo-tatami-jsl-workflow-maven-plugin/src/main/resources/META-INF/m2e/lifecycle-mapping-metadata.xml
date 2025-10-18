@@ -22,7 +22,7 @@
     <pluginExecution>
       <pluginExecutionFilter>
         <goals>
-          <goal>psm-default-workflow</goal>
+          <goal>default-model-workflow</goal>
         </goals>
       </pluginExecutionFilter>
       <action>
