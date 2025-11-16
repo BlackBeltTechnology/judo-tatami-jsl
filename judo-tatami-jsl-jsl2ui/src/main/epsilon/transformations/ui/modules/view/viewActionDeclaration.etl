@@ -138,7 +138,7 @@ rule OperationInputFormPageDefinition
             t.actions.add(s.equivalent("OperationInputFormGetTemplateAction"));
         }
 
-        t.container.actionButtonGroup.buttons.add(s.equivalent("OperationInputFormCallActionButton"));
+        t.container.actionButtonGroups.get(0).buttons.add(s.equivalent("OperationInputFormCallActionButton"));
 
         frontend.equivalent("Application").pages.add(t);
 
@@ -226,7 +226,7 @@ rule OperationInputSelectorPageDefinition
         t.openInDialog = true;
         t.container = s.getSelectorTableModifier().row.equivalent("TablePageContainer");
         t.isSelector = true;
-        t.container.actionButtonGroup.buttons.add(s.equivalent("OperationInputSelectorCallActionButton"));
+        t.container.actionButtonGroups.get(0).buttons.add(s.equivalent("OperationInputSelectorCallActionButton"));
         t.dataElement = s.transferAction.target.equivalent("OperationType").input;
 
         t.actions.add(s.equivalent("OperationInputSelectorBackAction"));

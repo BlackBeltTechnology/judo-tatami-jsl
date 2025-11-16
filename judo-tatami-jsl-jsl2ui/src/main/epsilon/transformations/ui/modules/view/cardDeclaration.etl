@@ -9,7 +9,7 @@ rule CardPageContainer
         t.titleFrom = UI!ui::TitleFrom#LABEL;
         t.type = UI!ui::PageContainerType#TABLE;
         t.children.add(s.equivalent("CardPageContainerVisualElement"));
-        t.actionButtonGroup = s.equivalent("CardPageContainerButtonGroup");
+        t.actionButtonGroups.add(s.equivalent("CardPageContainerButtonGroup"));
         t.dataElement = s.map.transfer.equivalent("ClassType");
         t.onInit = s.equivalent("TableTableRefreshActionDefinition");
 
