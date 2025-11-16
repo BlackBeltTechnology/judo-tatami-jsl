@@ -10,7 +10,7 @@ rule ViewPageContainer
         t.name = s.getFqName() + "::View::PageContainer";
         t.label = s.getLabelWithNameFallback();
         t.children.add(s.equivalent("ViewPageContainerVisualElement"));
-        t.actionButtonGroup = s.equivalent("ViewPageContainerButtonGroup");
+        t.actionButtonGroups.add(s.equivalent("ViewPageContainerButtonGroup"));
         t.dataElement = s.map.transfer.equivalent("ClassType");
         t.type = UI!ui::PageContainerType#VIEW;
         t.onInit = s.equivalent("ViewPageContainerRefreshActionDefinition");

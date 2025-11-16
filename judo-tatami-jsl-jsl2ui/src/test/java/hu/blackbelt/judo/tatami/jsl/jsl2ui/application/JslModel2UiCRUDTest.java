@@ -1239,7 +1239,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
         PageDefinition pageDefinition = pages.stream().filter(p -> p.getName().equals("RelatedFormCRUD::UserView::level::related::FormPage")).findFirst().orElseThrow();
         PageContainer pageContainer = pageDefinition.getContainer();
-        List<Button> buttons = pageContainer.getActionButtonGroup().getButtons();
+        List<Button> buttons = pageContainer.getActionButtonGroups().get(0).getButtons();
         List<Action> actions = pageDefinition.getActions();
 
         ClassType classType = (ClassType) application.getClassTypes().stream().filter(c -> ((ClassType) c).getName().equals("RelatedFormCRUD::RelatedTransfer")).findFirst().orElseThrow();

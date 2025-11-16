@@ -10,7 +10,7 @@ rule FormPageContainer
         t.label = s.getLabelWithNameFallback();
         t.name = s.getFqName() + "::Create::PageContainer";
         t.children.add(s.equivalent("FormPageContainerVisualElement"));
-        t.actionButtonGroup = s.equivalent("FormPageContainerButtonGroup");
+        t.actionButtonGroups.add(s.equivalent("FormPageContainerButtonGroup"));
         t.dataElement = s.map.transfer.equivalent("ClassType");
         t.type = UI!ui::PageContainerType#FORM;
         t.onInit = s.equivalent("FormPageContainerGetTemplateActionDefinition");

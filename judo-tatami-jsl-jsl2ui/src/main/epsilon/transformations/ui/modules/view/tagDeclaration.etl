@@ -9,7 +9,7 @@ rule TagPageContainer
         t.titleFrom = UI!ui::TitleFrom#LABEL;
         t.type = UI!ui::PageContainerType#TABLE;
         t.children.add(s.equivalent("TagPageContainerVisualElement"));
-        t.actionButtonGroup = s.equivalent("TagPageContainerButtonGroup");
+        t.actionButtonGroups.add(s.equivalent("TagPageContainerButtonGroup"));
         t.dataElement = s.map.transfer.equivalent("ClassType");
         t.onInit = s.equivalent("TableTableRefreshActionDefinition");
 
