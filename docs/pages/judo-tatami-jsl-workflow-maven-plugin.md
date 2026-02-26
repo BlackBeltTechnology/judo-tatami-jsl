@@ -51,8 +51,8 @@ flowchart LR
 |-------|------------|
 | **JslDsl** | The JUDO Specification Language source code (`.jsl` files). |
 | **JSL** | The XMI representation of JslDsl, parsed from the source. |
-| **PSM** | Platform-Specific Model — the formal JUDO domain definition in XMI format. |
-| **ASM** | Architecture-Specific Model — Ecore metamodel-based XMI representation used by the platform runtime. |
+| **PSM** | Platform Specific Model — the formal JUDO domain definition in XMI format. |
+| **ASM** | Architecture Specific Model — Ecore metamodel-based XMI representation used by the platform runtime. |
 | **UI** | User Interface model — describes views, widgets, navigation, and data bindings for frontend generation. |
 | **Measure** | Measurement model for correct unit handling. |
 | **RDBMS** | Relational database model in XMI, generated per database dialect. |

@@ -41,8 +41,8 @@ flowchart LR
 | Model | Description |
 |-------|-------------|
 | **JSL** | The JUDO Specification Language source. Human-written `.jsl` files that define the domain model. |
-| **PSM** | Platform-Specific Model. The formal JUDO domain definition in XMI format. |
-| **ASM** | Architecture-Specific Model. An Ecore metamodel-based XMI representation of the PSM, consumed directly by the runtime platform. |
+| **PSM** | Platform Specific Model. The formal JUDO domain definition in XMI format. |
+| **ASM** | Architecture Specific Model. An Ecore metamodel-based XMI representation of the PSM, consumed directly by the runtime platform. |
 | **UI** | User Interface model. Describes frontend views, navigation, widgets, and data bindings. |
 | **Measure** | Measurement model for correct unit handling. |
 | **RDBMS** | Relational database model in XMI form, generated per database dialect (PostgreSQL, HSQLDB). |
