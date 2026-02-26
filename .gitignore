@@ -66,7 +66,8 @@ wercker.env
 
 /**/diagram/
 
-.claude
+.claude/commands/opsx
+.claude/skills/openspec-*.md
 .gemini
 .opencode
 .agent
