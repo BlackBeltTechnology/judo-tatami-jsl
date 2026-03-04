@@ -32,6 +32,35 @@ Key facts:
 
 - [judo-tatami-jsl-workflow-maven-plugin-test/pom.xml](judo-tatami-jsl-workflow-maven-plugin-test/pom.xml): End-to-end integration tests for the Maven plugin
 
+## Depends on
+
+- [judo-meta-asm](../../models/judo-meta-asm): models/judo-meta-asm
+- [judo-meta-expression](../../models/judo-meta-expression): models/judo-meta-expression
+- [judo-meta-jql](../../models/judo-meta-jql): models/judo-meta-jql
+- [judo-meta-jsl](../../models/judo-meta-jsl): models/judo-meta-jsl
+- [judo-meta-liquibase](../../models/judo-meta-liquibase): models/judo-meta-liquibase
+- [judo-meta-psm](../../models/judo-meta-psm): models/judo-meta-psm
+- [judo-meta-rdbms](../../models/judo-meta-rdbms): models/judo-meta-rdbms
+- [judo-meta-ui](../../models/judo-meta-ui): models/judo-meta-ui
+- [osgi-repackaged-bundles](../../packages/osgi-repackaged-bundles): packages/osgi-repackaged-bundles
+- [judo-dao-api](../judo-dao-api): runtime/judo-dao-api
+- [judo-dispatcher-api](../judo-dispatcher-api): runtime/judo-dispatcher-api
+- [judo-operation-utils](../judo-operation-utils): runtime/judo-operation-utils
+- [judo-runtime-core](../judo-runtime-core): runtime/judo-runtime-core
+- [judo-sdk-common](../judo-sdk-common): runtime/judo-sdk-common
+- [judo-tatami-base](../judo-tatami-base): runtime/judo-tatami-base
+- [judo-tatami-core](../judo-tatami-core): runtime/judo-tatami-core
+- [judo-tatami-util](../judo-tatami-util): runtime/judo-tatami-util
+- [epsilon-runtime](../../tools/epsilon-runtime): tools/epsilon-runtime
+
+## Used by
+
+- [community-documentation](../../community-documentation): community-documentation
+- [documentation](../../documentation): documentation
+- [judo-runtime-core-jsl](../judo-runtime-core-jsl): runtime/judo-runtime-core-jsl
+- [judo-jsl-springboot-parent](../../spring/judo-jsl-springboot-parent): spring/judo-jsl-springboot-parent
+- [judo-spring-maven-plugin](../../spring/judo-spring-maven-plugin): spring/judo-spring-maven-plugin
+
 ## Optional
 
 - [.github/workflows/build.yml](.github/workflows/build.yml): Main CI build pipeline (GitHub Actions)
