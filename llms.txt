@@ -1,0 +1,40 @@
+# JUDO Tatami JSL
+
+> Model transformation engine that converts JSL (JUDO Specification Language) source files into runtime-ready target models (PSM, ASM, UI, RDBMS, Liquibase, Expression, Keycloak) for the JUDO platform.
+
+Key facts:
+- Java 21, Maven 3.9.4 (multi-module, 6 modules)
+- Built on Eclipse Epsilon 2.8.0 (ETL/EOL model-to-model transformations) and Eclipse EMF (Ecore metamodeling)
+- Transforms `.jsl` files through a pipeline: JSL → PSM → ASM → RDBMS → Liquibase, JSL → UI, ASM → Expression/Keycloak
+- Packaged as a Maven plugin (`default-model-workflow` goal) for build-time code generation
+- Multi-dialect database support (PostgreSQL, HSQLDB)
+- Part of the JUDO ecosystem (depends on judo-meta-* metamodels and judo-tatami-core workflow infrastructure)
+- License: Eclipse Public License 2.0 (EPL-2.0)
+
+## Docs
+
+- [README.md](README.md): Project overview, transformation pipeline diagram, quick start guide
+- [AGENTS.md](AGENTS.md): Full developer guide with build commands, architecture, module descriptions, and coding conventions
+- [CONTRIBUTING.md](CONTRIBUTING.md): Contribution guidelines and development setup
+- [Workflow Maven Plugin Reference](docs/pages/judo-tatami-jsl-workflow-maven-plugin.md): Full parameter reference and usage examples for the Maven plugin
+
+## Modules — Transformation
+
+- [judo-tatami-jsl-jsl2psm/pom.xml](judo-tatami-jsl-jsl2psm/pom.xml): JSL to Platform Specific Model (PSM) transformation using Epsilon ETL; contains ~60 EOL operation scripts
+- [judo-tatami-jsl-jsl2ui/pom.xml](judo-tatami-jsl-jsl2ui/pom.xml): JSL to UI model transformation using Epsilon ETL; contains ~40 EOL operation scripts
+
+## Modules — Orchestration
+
+- [judo-tatami-jsl-workflow/pom.xml](judo-tatami-jsl-workflow/pom.xml): Core workflow orchestration; configures and runs the full transformation pipeline with parallel execution support
+- [judo-tatami-jsl-workflow-maven-plugin/pom.xml](judo-tatami-jsl-workflow-maven-plugin/pom.xml): Maven Mojo plugin (`default-model-workflow` goal) that bridges Maven parameters to the workflow engine
+
+## Modules — Testing
+
+- [judo-tatami-jsl-workflow-maven-plugin-test/pom.xml](judo-tatami-jsl-workflow-maven-plugin-test/pom.xml): End-to-end integration tests for the Maven plugin
+
+## Optional
+
+- [.github/workflows/build.yml](.github/workflows/build.yml): Main CI build pipeline (GitHub Actions)
+- [.github/workflows/release.yml](.github/workflows/release.yml): Release automation workflow
+- [LICENSE.txt](LICENSE.txt): Eclipse Public License 2.0 text
+- [logback-test.xml](logback-test.xml): Shared Logback test logging configuration
