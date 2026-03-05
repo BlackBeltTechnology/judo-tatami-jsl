@@ -1,0 +1,69 @@
+# JUDO Tatami JSL
+
+> Model transformation engine that converts JSL (JUDO Specification Language) source files into runtime-ready target models (PSM, ASM, UI, RDBMS, Liquibase, Expression, Keycloak) for the JUDO platform.
+
+Key facts:
+- Java 21, Maven 3.9.4 (multi-module, 6 modules)
+- Built on Eclipse Epsilon 2.8.0 (ETL/EOL model-to-model transformations) and Eclipse EMF (Ecore metamodeling)
+- Transforms `.jsl` files through a pipeline: JSL → PSM → ASM → RDBMS → Liquibase, JSL → UI, ASM → Expression/Keycloak
+- Packaged as a Maven plugin (`default-model-workflow` goal) for build-time code generation
+- Multi-dialect database support (PostgreSQL, HSQLDB)
+- Part of the JUDO ecosystem (depends on judo-meta-* metamodels and judo-tatami-core workflow infrastructure)
+- License: Eclipse Public License 2.0 (EPL-2.0)
+
+## Docs
+
+- [README.md](README.md): Project overview, transformation pipeline diagram, quick start guide
+- [AGENTS.md](AGENTS.md): Full developer guide with build commands, architecture, module descriptions, and coding conventions
+- [CONTRIBUTING.md](CONTRIBUTING.md): Contribution guidelines and development setup
+- [Workflow Maven Plugin Reference](docs/pages/judo-tatami-jsl-workflow-maven-plugin.md): Full parameter reference and usage examples for the Maven plugin
+
+## Modules — Transformation
+
+- [judo-tatami-jsl-jsl2psm/pom.xml](judo-tatami-jsl-jsl2psm/pom.xml): JSL to Platform Specific Model (PSM) transformation using Epsilon ETL; contains ~60 EOL operation scripts
+- [judo-tatami-jsl-jsl2ui/pom.xml](judo-tatami-jsl-jsl2ui/pom.xml): JSL to UI model transformation using Epsilon ETL; contains ~40 EOL operation scripts
+
+## Modules — Orchestration
+
+- [judo-tatami-jsl-workflow/pom.xml](judo-tatami-jsl-workflow/pom.xml): Core workflow orchestration; configures and runs the full transformation pipeline with parallel execution support
+- [judo-tatami-jsl-workflow-maven-plugin/pom.xml](judo-tatami-jsl-workflow-maven-plugin/pom.xml): Maven Mojo plugin (`default-model-workflow` goal) that bridges Maven parameters to the workflow engine
+
+## Modules — Testing
+
+- [judo-tatami-jsl-workflow-maven-plugin-test/pom.xml](judo-tatami-jsl-workflow-maven-plugin-test/pom.xml): End-to-end integration tests for the Maven plugin
+
+## Depends on
+
+- [judo-meta-asm](../../models/judo-meta-asm): ASM metamodel — Ecore-based architecture model with builders and validation
+- [judo-meta-expression](../../models/judo-meta-expression): Expression metamodel — type-safe numeric, string, temporal, and collection expressions
+- [judo-meta-jql](../../models/judo-meta-jql): JQL metamodel — Xtext-based declarative query language
+- [judo-meta-jsl](../../models/judo-meta-jsl): JSL language toolchain — grammar, parser, validator, code generator, and LSP servers
+- [judo-meta-liquibase](../../models/judo-meta-liquibase): Liquibase database change management metamodel
+- [judo-meta-psm](../../models/judo-meta-psm): PSM metamodel — foundational platform-specific data model
+- [judo-meta-rdbms](../../models/judo-meta-rdbms): RDBMS schema metamodel with incremental evolution tracking
+- [judo-meta-ui](../../models/judo-meta-ui): UI metamodel — pages, containers, tables, inputs, and data bindings
+- [osgi-repackaged-bundles](../../packages/osgi-repackaged-bundles): Third-party libraries repackaged as OSGi bundles for Karaf
+- [judo-dao-api](../judo-dao-api): Core DAO interfaces for CRUD, query, navigation, and validation
+- [judo-dispatcher-api](../judo-dispatcher-api): Dispatcher API contracts for routing API calls to runtime actions
+- [judo-operation-utils](../judo-operation-utils): Base classes and collection operations for generated operation scripts
+- [judo-runtime-core](../judo-runtime-core): Multi-module runtime engine — data access, business logic, REST, and security
+- [judo-sdk-common](../judo-sdk-common): Base classes for generated SDK — entity identity, DAO base, and query filters
+- [judo-tatami-base](../judo-tatami-base): PSM transformation pipeline — models to schemas, expressions, and configurations
+- [judo-tatami-core](../judo-tatami-core): EMF transformation trace tracking and composable workflow engine
+- [judo-tatami-util](../judo-tatami-util): Utility facade for EMF model transformation traces
+- [epsilon-runtime](../../tools/epsilon-runtime): Eclipse Epsilon runtime for Maven and OSGi environments
+
+## Used by
+
+- [community-documentation](../../community-documentation): Community-facing JUDO platform documentation
+- [documentation](../../documentation): JUDO platform documentation
+- [judo-runtime-core-jsl](../judo-runtime-core-jsl): JSL support for runtime core — model parsing through to DAOs and schema
+- [judo-jsl-springboot-parent](../../spring/judo-jsl-springboot-parent): Parent POM for JUDO JSL Spring Boot applications
+- [judo-spring-maven-plugin](../../spring/judo-spring-maven-plugin): Maven plugin transforming JSL models into Spring Boot application code
+
+## Optional
+
+- [.github/workflows/build.yml](.github/workflows/build.yml): Main CI build pipeline (GitHub Actions)
+- [.github/workflows/release.yml](.github/workflows/release.yml): Release automation workflow
+- [LICENSE.txt](LICENSE.txt): Eclipse Public License 2.0 text
+- [logback-test.xml](logback-test.xml): Shared Logback test logging configuration
