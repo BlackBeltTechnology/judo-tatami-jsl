@@ -34,32 +34,32 @@ Key facts:
 
 ## Depends on
 
-- [judo-meta-asm](../../models/judo-meta-asm): models/judo-meta-asm
-- [judo-meta-expression](../../models/judo-meta-expression): models/judo-meta-expression
-- [judo-meta-jql](../../models/judo-meta-jql): models/judo-meta-jql
-- [judo-meta-jsl](../../models/judo-meta-jsl): models/judo-meta-jsl
-- [judo-meta-liquibase](../../models/judo-meta-liquibase): models/judo-meta-liquibase
-- [judo-meta-psm](../../models/judo-meta-psm): models/judo-meta-psm
-- [judo-meta-rdbms](../../models/judo-meta-rdbms): models/judo-meta-rdbms
-- [judo-meta-ui](../../models/judo-meta-ui): models/judo-meta-ui
-- [osgi-repackaged-bundles](../../packages/osgi-repackaged-bundles): packages/osgi-repackaged-bundles
-- [judo-dao-api](../judo-dao-api): runtime/judo-dao-api
-- [judo-dispatcher-api](../judo-dispatcher-api): runtime/judo-dispatcher-api
-- [judo-operation-utils](../judo-operation-utils): runtime/judo-operation-utils
-- [judo-runtime-core](../judo-runtime-core): runtime/judo-runtime-core
-- [judo-sdk-common](../judo-sdk-common): runtime/judo-sdk-common
-- [judo-tatami-base](../judo-tatami-base): runtime/judo-tatami-base
-- [judo-tatami-core](../judo-tatami-core): runtime/judo-tatami-core
-- [judo-tatami-util](../judo-tatami-util): runtime/judo-tatami-util
-- [epsilon-runtime](../../tools/epsilon-runtime): tools/epsilon-runtime
+- [judo-meta-asm](../../models/judo-meta-asm): ASM metamodel — Ecore-based architecture model with builders and validation
+- [judo-meta-expression](../../models/judo-meta-expression): Expression metamodel — type-safe numeric, string, temporal, and collection expressions
+- [judo-meta-jql](../../models/judo-meta-jql): JQL metamodel — Xtext-based declarative query language
+- [judo-meta-jsl](../../models/judo-meta-jsl): JSL language toolchain — grammar, parser, validator, code generator, and LSP servers
+- [judo-meta-liquibase](../../models/judo-meta-liquibase): Liquibase database change management metamodel
+- [judo-meta-psm](../../models/judo-meta-psm): PSM metamodel — foundational platform-specific data model
+- [judo-meta-rdbms](../../models/judo-meta-rdbms): RDBMS schema metamodel with incremental evolution tracking
+- [judo-meta-ui](../../models/judo-meta-ui): UI metamodel — pages, containers, tables, inputs, and data bindings
+- [osgi-repackaged-bundles](../../packages/osgi-repackaged-bundles): Third-party libraries repackaged as OSGi bundles for Karaf
+- [judo-dao-api](../judo-dao-api): Core DAO interfaces for CRUD, query, navigation, and validation
+- [judo-dispatcher-api](../judo-dispatcher-api): Dispatcher API contracts for routing API calls to runtime actions
+- [judo-operation-utils](../judo-operation-utils): Base classes and collection operations for generated operation scripts
+- [judo-runtime-core](../judo-runtime-core): Multi-module runtime engine — data access, business logic, REST, and security
+- [judo-sdk-common](../judo-sdk-common): Base classes for generated SDK — entity identity, DAO base, and query filters
+- [judo-tatami-base](../judo-tatami-base): PSM transformation pipeline — models to schemas, expressions, and configurations
+- [judo-tatami-core](../judo-tatami-core): EMF transformation trace tracking and composable workflow engine
+- [judo-tatami-util](../judo-tatami-util): Utility facade for EMF model transformation traces
+- [epsilon-runtime](../../tools/epsilon-runtime): Eclipse Epsilon runtime for Maven and OSGi environments
 
 ## Used by
 
-- [community-documentation](../../community-documentation): community-documentation
-- [documentation](../../documentation): documentation
-- [judo-runtime-core-jsl](../judo-runtime-core-jsl): runtime/judo-runtime-core-jsl
-- [judo-jsl-springboot-parent](../../spring/judo-jsl-springboot-parent): spring/judo-jsl-springboot-parent
-- [judo-spring-maven-plugin](../../spring/judo-spring-maven-plugin): spring/judo-spring-maven-plugin
+- [community-documentation](../../community-documentation): Community-facing JUDO platform documentation
+- [documentation](../../documentation): JUDO platform documentation
+- [judo-runtime-core-jsl](../judo-runtime-core-jsl): JSL support for runtime core — model parsing through to DAOs and schema
+- [judo-jsl-springboot-parent](../../spring/judo-jsl-springboot-parent): Parent POM for JUDO JSL Spring Boot applications
+- [judo-spring-maven-plugin](../../spring/judo-spring-maven-plugin): Maven plugin transforming JSL models into Spring Boot application code
 
 ## Optional
 
