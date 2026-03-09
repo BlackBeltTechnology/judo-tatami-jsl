@@ -22,6 +22,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.application;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.ActorDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TransferDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.UIFrontendDeclaration;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.Authentication;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
@@ -84,6 +85,8 @@ public class ActorDeclarationRules {
             target.getPackageNameTokens().add(0, defaultModelName);
             target.setIsActor(true);
 
+            ctx.addToResource(target);
+
             LOG.debug("Create class type (Actor): {}", target.getName());
             return target;
         };
@@ -122,6 +125,14 @@ public class ActorDeclarationRules {
                     + "/(jsl/" + getJslId(source) + ")/Authentication");
 
             target.setRealm(getRealm(source).getValue().getValue());
+
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
+            if (app != null) {
+                app.setAuthentication(target);
+            }
+
+            ctx.addToResource(target);
 
             LOG.debug("Create Authentication: {}", target.getRealm());
             return target;
