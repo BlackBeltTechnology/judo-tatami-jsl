@@ -46,6 +46,9 @@ import java.util.stream.Collectors;
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.SaveArguments.jslDslSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
+import hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.Jsl2UiZetaTransformation;
+
 import static hu.blackbelt.judo.tatami.jsl.jsl2ui.Jsl2Ui.Jsl2UiParameter.jsl2UiParameter;
 import static hu.blackbelt.judo.tatami.jsl.jsl2ui.Jsl2Ui.executeJsl2UiTransformation;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -117,21 +120,34 @@ abstract public class AbstractTest {
     }
 
     protected void transform() throws Exception {
+        transform(TransformationMode.ETL);
+    }
+
+    protected void transform(TransformationMode mode) throws Exception {
         // Create empty UI model
         uiModel = buildUiModel().name(jslModel.getName()).build();
         uiModelWrapper = UiModelResourceSupport.uiModelResourceSupportBuilder().resourceSet(uiModel.getResourceSet()).build();
         jslModelWrapper = JslDslModelResourceSupport.jslDslModelResourceSupportBuilder().resourceSet(jslModel.getResourceSet()).build();
 
         assertTrue(jslModel.isValid());
-//        validateJsl(log, jslModel, calculateEsmValidationScriptURI());
 
-
-        // Make transformation which returns the trace with the serialized URI's
-        executeJsl2UiTransformation(addTransformationParameters(testName, jsl2UiParameter()
-                .log(slf4jlog)
-                .jslModel(jslModel)
-                .uiModel(uiModel)
-                .createTrace(true)));
+        if (mode == TransformationMode.ZETA) {
+            log.info("Running ZETA transformation for test: {}", testName);
+            Jsl2UiZetaTransformation.builder()
+                    .jslModel(jslModel)
+                    .uiModel(uiModel)
+                    .defaultModelName(jslModel.getName())
+                    .build()
+                    .execute();
+        } else {
+            log.info("Running ETL transformation for test: {}", testName);
+            // Make transformation which returns the trace with the serialized URI's
+            executeJsl2UiTransformation(addTransformationParameters(testName, jsl2UiParameter()
+                    .log(slf4jlog)
+                    .jslModel(jslModel)
+                    .uiModel(uiModel)
+                    .createTrace(true)));
+        }
 
         if (!uiModel.isValid()) {
             log.error(uiModel.getDiagnosticsAsString());

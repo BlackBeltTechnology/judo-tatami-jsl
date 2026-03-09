@@ -28,6 +28,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmWork;
+import hu.blackbelt.judo.tatami.jsl.jsl2ui.Jsl2UiWork;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -78,7 +79,14 @@ public abstract class AbstractTatamiPipelineWorkflow {
 
         transformationContext.put(Jsl2PsmWork.Jsl2PsmWorkParameter.jsl2PsmWorkParameter()
                         .generateBehaviours(parameters.getGenerateBehaviours())
-                .createTrace(!parameters.getIgnoreJsl2PsmTrace()).build());
+                .createTrace(!parameters.getIgnoreJsl2PsmTrace())
+                .transformationMode(parameters.getTransformationMode())
+                .build());
+
+        transformationContext.put(Jsl2UiWork.Jsl2UiWorkParameter.jsl2UiWorkParameter()
+                .createTrace(false)
+                .transformationMode(parameters.getTransformationMode())
+                .build());
 
         transformationContext.put(psm2AsmWorkParameter()
                 .createTrace(!parameters.getIgnorePsm2AsmTrace())

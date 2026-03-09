@@ -24,9 +24,7 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.ActorDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ApplicationTitleModifier;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TransferDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.UIFrontendDeclaration;
-import hu.blackbelt.judo.meta.ui.Application;
-import hu.blackbelt.judo.meta.ui.NavigationController;
-import hu.blackbelt.judo.meta.ui.Theme;
+import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.zeta.annotation.Greedy;
 import hu.blackbelt.judo.zeta.annotation.Lazy;
@@ -147,6 +145,68 @@ public class FrontendDeclarationRules {
             ctx.addToResource(target);
 
             LOG.debug("Created NavigationController: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = EMPTY_DASHBOARD_PAGE_DEFINITION, description = "Create empty DashboardPageDefinition when no dashboard items")
+    @Greedy
+    @Transform(type = UIFrontendDeclaration.class)
+    @To(type = PageDefinition.class)
+    public TransformFunction<UIFrontendDeclaration, PageDefinition> emptyDashboardPageDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            if (source != frontend || hasDashboard(source)) {
+                return null;
+            }
+
+            PageDefinition target = ctx.createTarget(PageDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/EmptyDashboardPageDefinition");
+
+            target.setName(getFqName(source) + "::DashboardPage");
+            target.setDashboard(true);
+
+            ActorDeclaration actorDeclaration = ctx.getAttribute("actorDeclaration");
+            ClassType actorCt = ctx.equivalent(actorDeclaration, ClassType.class, ACTOR);
+            target.setDataElement(actorCt);
+
+            PageContainer container = ctx.equivalent(source,
+                    PageContainer.class, EMPTY_DASHBOARD_PAGE_CONTAINER);
+            target.setContainer(container);
+
+            Application app = ctx.equivalent(source, Application.class, APPLICATION);
+            app.getPages().add(target);
+
+            LOG.debug("EmptyDashboardPageDefinition [{}]", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = EMPTY_DASHBOARD_PAGE_CONTAINER, description = "Create empty DashboardPageContainer when no dashboard items")
+    @Lazy
+    @Transform(type = UIFrontendDeclaration.class)
+    @To(type = PageContainer.class)
+    public TransformFunction<UIFrontendDeclaration, PageContainer> emptyDashboardPageContainer() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+
+            PageContainer target = ctx.createTarget(PageContainer.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/EmptyDashboardPageContainer");
+
+            target.setName(getFqName(source) + "::Dashboard");
+            target.setLabel("Dashboard");
+            target.setType(PageContainerType.VIEW);
+
+            ActorDeclaration actorDeclaration = ctx.getAttribute("actorDeclaration");
+            ClassType actorCt = ctx.equivalent(actorDeclaration, ClassType.class, ACTOR);
+            target.setDataElement(actorCt);
+
+            Application app = ctx.equivalent(source, Application.class, APPLICATION);
+            app.getPageContainers().add(target);
+
+            LOG.debug("EmptyDashboardPageContainer [{}]", target.getName());
             return target;
         };
     }

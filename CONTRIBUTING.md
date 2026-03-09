@@ -3,7 +3,7 @@
 ## Installing the correct versions of Java, Maven and necessary dependencies
 
 Please make sure your development environment complies with the requirements discussed under the relevant section of the parent
-project's https://github.com/BlackBeltTechnology/judo-community/blob/develop/CONTRIBUTING.adoc[CONTRIBUTING] guide.
+project's [CONTRIBUTING](https://github.com/BlackBeltTechnology/judo-community/blob/develop/CONTRIBUTING.adoc) guide.
 
 ## Code Structure
 
@@ -33,11 +33,11 @@ We will be insisting on a minimal reproduction in order to save maintainers' tim
 bugs. We understand that sometimes it might be hard to extract essentials bits of code from a larger codebase, but we
 really need to isolate the problem before we can fix it.
 
-You can file new issues by filling out our https://github.com/BlackBeltTechnology/judo-tatami-jsl/issues/new/choose[issue form].
+You can file new issues by filling out our [issue form](https://github.com/BlackBeltTechnology/judo-tatami-jsl/issues/new/choose).
 
 ### Submitting a PR
 
-This project follows https://guides.github.com/activities/forking/[GitHub's standard forking model]. Please fork the
+This project follows [GitHub's standard forking model](https://guides.github.com/activities/forking/). Please fork the
 project to submit pull requests.
 
 ## Commands

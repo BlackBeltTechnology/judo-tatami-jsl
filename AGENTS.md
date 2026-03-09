@@ -8,7 +8,7 @@
 **Build System:** Maven 3.9.4+ with OSGi bundles
 **Version:** 1.1.4-SNAPSHOT
 
-This project contains the **JSL (Judo Specification Language) transformation pipeline** for the JUDO platform. It transforms JSL source models into PSM (Platform Specific Model) and UI (User Interface) models using Epsilon ETL (Epsilon Transformation Language). The workflow module then orchestrates the full chain from JSL through PSM, ASM, RDBMS, Liquibase, Expression, Measure, Keycloak, and UI models by delegating to the downstream `judo-tatami` (judo-tatami-base) transformation modules.
+This project contains the **JSL (Judo Specification Language) transformation pipeline** for the JUDO platform. It transforms JSL source models into PSM (Platform Specific Model) and UI (User Interface) models using two transformation engines: **Epsilon ETL** (Epsilon Transformation Language) and **Zeta** (Java-based annotation-driven framework). The workflow module orchestrates the full chain from JSL through PSM, ASM, RDBMS, Liquibase, Expression, Measure, Keycloak, and UI models by delegating to the downstream `judo-tatami` (judo-tatami-base) transformation modules.
 
 ## Code Instructions
 
@@ -25,12 +25,12 @@ This project contains the **JSL (Judo Specification Language) transformation pip
 
 ```
 judo-tatami-jsl/
-├── judo-tatami-jsl-jsl2psm/                    # JSL to PSM transformation (ETL)
-├── judo-tatami-jsl-jsl2ui/                      # JSL to UI transformation (ETL)
+├── judo-tatami-jsl-jsl2psm/                    # JSL to PSM transformation (ETL + Zeta)
+├── judo-tatami-jsl-jsl2ui/                      # JSL to UI transformation (ETL + Zeta)
 ├── judo-tatami-jsl-workflow/                    # Workflow orchestration (full pipeline)
 ├── judo-tatami-jsl-workflow-maven-plugin/       # Maven plugin for running workflows
 ├── judo-tatami-jsl-workflow-maven-plugin-test/  # Maven plugin integration test
-├── docs/                                        # Documentation (AsciiDoc)
+├── docs/                                        # Documentation
 └── openspec/                                    # OpenSpec change management
 ```
 
@@ -115,15 +115,36 @@ src/main/epsilon/
 
 **Tests:** 33 test files organized by domain (entity, type, transferobject, derived, operation, actor, namespace, error, functions).
 
+**Zeta Structure:**
+```
+src/main/java/.../jsl2psm/zeta/
+├── Jsl2PsmZetaTransformation.java    # Main entry point (builder pattern)
+├── Jsl2PsmHelper.java                # Utility methods (ID handling, thread-safe adds)
+├── Jsl2PsmRuleNames.java             # Constants for all rule names
+└── rules/
+    ├── namespace/NamespaceRules.java  # Model and package creation
+    ├── type/TypeRules.java            # Primitive types
+    ├── data/                          # Entity types, attributes, relations
+    ├── structure/                     # Transfer objects
+    ├── derived/                       # Derived properties
+    ├── action/                        # Operations and behaviours
+    └── actor/                         # Actor types and access control
+```
+
+**Zeta Tests:**
+- `src/test/java/.../dual/` - Dual transformation tests comparing ETL and Zeta
+- `src/test/java/.../perf/` - Performance comparison tests (discovery + realistic)
+
 ### judo-tatami-jsl-jsl2ui
 
-**Purpose:** Transforms JSL models into UI models using Epsilon ETL. Generates complete user interface specifications including applications, pages, navigation, widgets, and actions.
+**Purpose:** Transforms JSL models into UI models using Epsilon ETL or Zeta. Generates complete user interface specifications including applications, pages, navigation, widgets, and actions.
 
 **Key Classes:**
 | Class | Purpose |
 |-------|---------|
 | `Jsl2Ui.java` | Core transformation orchestrator. Executes ETL per `UIFrontendDeclaration` |
-| `Jsl2UiWork.java` | Workflow integration class |
+| `Jsl2UiWork.java` | Workflow integration class (supports TransformationMode) |
+| `Jsl2UiZetaTransformation.java` | Zeta transformation entry point (builder pattern) |
 | `Jsl2UiTransformationTrace.java` | Tracks JSL-to-UI element mappings |
 | `Jsl2UiTransformationService.java` | OSGi Declarative Service |
 
@@ -151,7 +172,25 @@ src/main/epsilon/transformations/ui/
 - `defaultModelName` - Model name for package tokens
 - `ecoreUtil`, `jslUtils`, `uiUtils` - Utility instances
 
-**Tests:** 11 test classes covering applications, CRUD, navigation, operations, widgets, data types, row operations, action groups.
+**Tests:** 11 ETL test classes covering applications, CRUD, navigation, operations, widgets, data types, row operations, action groups.
+
+**Zeta Structure:**
+```
+src/main/java/.../jsl2ui/zeta/
+├── Jsl2UiZetaTransformation.java      # Main entry point (builder, per-frontend execution)
+├── Jsl2UiHelper.java                  # Utility methods
+├── Jsl2UiRuleNames.java               # Constants for all rule names
+└── rules/
+    ├── application/                    # FrontendDeclaration, ActorDeclaration, ActorGroup, Modifiables
+    ├── structure/                      # TransferDeclaration, fields, relations, actions
+    ├── type/                           # TypeRules, DataTypeOperationRules
+    └── view/                           # ViewDeclaration, RowDeclaration, CardDeclaration, TagDeclaration, ActionGroups, MenuTable, MenuLink
+```
+
+**Zeta Tests:**
+- `src/test/java/.../zeta/` - Zeta-specific unit tests (Application, View, ListItem, RowOps, ActionGroups)
+- `src/test/java/.../dual/` - Dual transformation tests comparing ETL and Zeta
+- `src/test/java/.../perf/` - Performance comparison tests
 
 ### judo-tatami-jsl-workflow
 
@@ -165,7 +204,7 @@ src/main/epsilon/transformations/ui/
 | `PsmDefaultWorkflow.java` | PSM-based workflow (skips JSL→PSM) |
 | `DefaultWorkflow.java` | Alias for JslDefaultWorkflow |
 | `WorkflowHelper.java` | Factory for all transformation Work items |
-| `DefaultWorkflowSetupParameters.java` | Workflow configuration (builder pattern) |
+| `DefaultWorkflowSetupParameters.java` | Workflow configuration (builder pattern, includes `transformationMode`) |
 | `DefaultWorkflowMetricsCollector.java` | Thread-safe execution metrics |
 | `DefaultWorkflowSave.java` | Model saving utilities |
 
@@ -420,7 +459,7 @@ This project uses OpenSpec for change management. See `openspec/AGENTS.md` for:
 ## Important Notes
 
 1. **ETL files are the source of truth** for transformation logic in this project
-2. **No Zeta transformations** - This project uses only Epsilon ETL (unlike judo-tatami-base which has Zeta alternatives)
+2. **Dual transformation engines** - Both ETL and Zeta are supported. Select via `TransformationMode` (ETL, ZETA). Zeta rules are in `src/main/java/.../zeta/rules/` directories
 3. **JSL is the source language** - Not ESM. JSL is a higher-level DSL that compiles to PSM
 4. **OSGi compatibility** is maintained through Felix bundle plugin
 5. **Transformation traces** allow mapping between source and target elements
