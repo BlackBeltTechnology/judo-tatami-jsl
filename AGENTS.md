@@ -69,6 +69,56 @@ judo-tatami-jsl/
 | `judo-tatami-jsl-workflow-maven-plugin-test/` | Integration Test | End-to-end tests for the Maven plugin |
 | `docs/` | Documentation | Markdown documentation and Antora configuration |
 
+## Transformation Engines (ETL and Zeta)
+
+Both `judo-tatami-jsl-jsl2psm` and `judo-tatami-jsl-jsl2ui` ship two engines: **Epsilon ETL** (`.etl`/`.eol` scripts, original) and **Zeta** (Java-based, annotation-driven rules). Select via `TransformationMode` (`ETL`, `ZETA`) — in the workflow and the Maven plugin `transformationMode` parameter.
+
+### jsl2psm
+
+**Zeta Structure:**
+```
+src/main/java/.../jsl2psm/zeta/
+├── Jsl2PsmZetaTransformation.java    # Main entry point (builder pattern)
+├── Jsl2PsmHelper.java                # Utility methods (ID handling, thread-safe adds)
+├── Jsl2PsmRuleNames.java             # Constants for all rule names
+└── rules/
+    ├── namespace/NamespaceRules.java  # Model and package creation
+    ├── type/TypeRules.java            # Primitive types
+    ├── data/                          # Entity types, attributes, relations
+    ├── structure/                     # Transfer objects
+    ├── derived/                       # Derived properties
+    ├── action/                        # Operations and behaviours
+    └── actor/                         # Actor types and access control
+```
+
+**Zeta Tests:**
+- `src/test/java/.../dual/` - Dual transformation tests comparing ETL and Zeta
+- `src/test/java/.../perf/` - Performance comparison tests (discovery + realistic)
+
+### jsl2ui
+
+**Zeta Structure:**
+```
+src/main/java/.../jsl2ui/zeta/
+├── Jsl2UiZetaTransformation.java      # Main entry point (builder, per-frontend execution)
+├── Jsl2UiHelper.java                  # Utility methods
+├── Jsl2UiRuleNames.java               # Constants for all rule names
+└── rules/
+    ├── application/                    # FrontendDeclaration, ActorDeclaration, ActorGroup, Modifiables
+    ├── structure/                      # TransferDeclaration, fields, relations, actions
+    ├── type/                           # TypeRules, DataTypeOperationRules
+    └── view/                           # ViewDeclaration, RowDeclaration, CardDeclaration, TagDeclaration, ActionGroups, MenuTable, MenuLink
+```
+
+**Zeta Tests:**
+- `src/test/java/.../zeta/` - Zeta-specific unit tests (Application, View, ListItem, RowOps, ActionGroups)
+- `src/test/java/.../dual/` - Dual transformation tests comparing ETL and Zeta
+- `src/test/java/.../perf/` - Performance comparison tests
+
+### Performance testing
+
+Performance/equivalence tests (ETL vs Zeta) are excluded from the default build; run with `mvn test -Pperformance -pl judo-tatami-jsl-jsl2psm` (or `-pl judo-tatami-jsl-jsl2ui`). External models: `-Djudo.test.discovery.basedir=/path/to/jsl/files`.
+
 ## Technology Stack
 
 ### Core Technologies
@@ -143,6 +193,8 @@ mvn clean verify                                     # Full verification (tests 
 - **Release:** Automated via `release.yml` workflow; creates PRs to both `master` and `develop`
 
 ## Important Notes
+
+- **Dual transformation engines** - Both ETL and Zeta are supported. Select via `TransformationMode` (ETL, ZETA). Zeta rules are in `src/main/java/.../zeta/rules/` directories
 
 1. **Epsilon scripts are the core transformation logic.** Most feature changes involve editing `.etl` and `.eol` files under `src/main/epsilon/transformations/`, not Java code.
 2. **The pipeline runs transformations in parallel by default** (`runInParallel=true`). Individual steps can be toggled on/off with `ignore*` flags.

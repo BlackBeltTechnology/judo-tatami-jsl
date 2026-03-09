@@ -22,6 +22,7 @@ package hu.blackbelt.judo.tatami.jsl.workflow;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -109,6 +110,9 @@ public class DefaultWorkflowSetupParameters {
 
     @Builder.Default
     private Boolean useCache = true;
+
+    @Builder.Default
+    private TransformationMode transformationMode = TransformationMode.ETL;
 
     @Builder.Default
     Boolean rdbmsCreateSimpleName = false;
