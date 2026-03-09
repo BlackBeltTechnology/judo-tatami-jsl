@@ -49,7 +49,9 @@ import hu.blackbelt.judo.meta.psm.type.NumericType;
 import hu.blackbelt.judo.meta.psm.type.StringType;
 import hu.blackbelt.judo.meta.psm.type.TimeType;
 import hu.blackbelt.judo.meta.psm.type.TimestampType;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.Jsl2PsmParameter;
+import hu.blackbelt.judo.tatami.jsl.jsl2psm.zeta.Jsl2PsmZetaTransformation;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.AfterEach;
@@ -144,24 +146,38 @@ abstract public class AbstractTest {
     }
 
     protected void transform() throws Exception {
+        transform(TransformationMode.ETL);
+    }
+
+    protected void transform(TransformationMode mode) throws Exception {
         // Create empty PSM model
         psmModel = buildPsmModel().build();
         psmModelWrapper = PsmModelResourceSupport.psmModelResourceSupportBuilder().resourceSet(psmModel.getResourceSet()).build();
         jslModelWrapper = JslDslModelResourceSupport.jslDslModelResourceSupportBuilder().resourceSet(jslModel.getResourceSet()).build();
 
         assertTrue(jslModel.isValid());
-//        validateJsl(log, jslModel, calculateEsmValidationScriptURI());
 
-
-        // Make transformation which returns the trace with the serialized URI's
-        jsl2PsmTransformationTrace = executeJsl2PsmTransformation(addTransformationParameters(testName, jsl2PsmParameter()
-                .log(slf4jlog)
-                .jslModel(jslModel)
-                .psmModel(psmModel)
-                .parallel(true)
-                .useCache(true)
-                .generateBehaviours(generateBehaviours())
-                .createTrace(true)));
+        if (mode == TransformationMode.ZETA) {
+            log.info("Running ZETA transformation for test: {}", testName);
+            Jsl2PsmZetaTransformation.builder()
+                    .jslModel(jslModel)
+                    .psmModel(psmModel)
+                    .defaultModelName(jslModel.getName())
+                    .generateBehaviours(generateBehaviours())
+                    .build()
+                    .execute();
+        } else {
+            // ETL transformation (default)
+            log.info("Running ETL transformation for test: {}", testName);
+            jsl2PsmTransformationTrace = executeJsl2PsmTransformation(addTransformationParameters(testName, jsl2PsmParameter()
+                    .log(slf4jlog)
+                    .jslModel(jslModel)
+                    .psmModel(psmModel)
+                    .parallel(true)
+                    .useCache(true)
+                    .generateBehaviours(generateBehaviours())
+                    .createTrace(true)));
+        }
 
         assertTrue(psmModel.isValid());
         validatePsm(createLog(), psmModel, calculatePsmValidationScriptURI());

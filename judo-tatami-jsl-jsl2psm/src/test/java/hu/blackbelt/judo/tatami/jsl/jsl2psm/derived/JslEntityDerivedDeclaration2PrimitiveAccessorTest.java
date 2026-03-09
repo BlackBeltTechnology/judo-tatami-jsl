@@ -25,9 +25,11 @@ import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -63,8 +65,9 @@ public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractT
         }
     }
 
-    @Test
-    void testPrimitiveDerivedDeclarationModel() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testPrimitiveDerivedDeclarationModel(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model PrimitiveDerivedDeclarationModel;\n" +
@@ -82,7 +85,7 @@ public class JslEntityDerivedDeclaration2PrimitiveAccessorTest extends AbstractT
                         )
         );
 
-        transform();
+        transform(mode);
 
         assertDataProperty("_Test", "value");
         assertTrue(assertDataProperty("_Test", "value").isPrimitive());

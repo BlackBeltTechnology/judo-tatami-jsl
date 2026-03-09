@@ -24,10 +24,12 @@ import org.slf4j.Logger;
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,14 +65,15 @@ public class JslEntityDeclaration2PsmDefaultTransferObjectTypeTest extends Abstr
         }
     }
 
-    @Test
-    void testCreateDefaultTransferObjectType() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testCreateDefaultTransferObjectType(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
                 List.of(new File("src/test/resources/transferobject/TestCreateDefaultTransferObjectTypeModel.jsl"))
         );
 
-        transform();
+        transform(mode);
 
         assertTrue(assertMappedTransferObject("Person").isAbstract());
         assertMappedTransferObject("PersonWithAge");

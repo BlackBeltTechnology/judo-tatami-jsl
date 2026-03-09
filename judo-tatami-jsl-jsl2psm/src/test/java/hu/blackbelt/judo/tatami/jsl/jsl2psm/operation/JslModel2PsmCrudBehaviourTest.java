@@ -33,8 +33,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,14 +80,15 @@ public class JslModel2PsmCrudBehaviourTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testBehaviours() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testBehaviours(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
                 List.of(new File("src/test/resources/operation/CrudBehaviourTestModel.jsl"))
         );
 
-        transform();
+        transform(mode);
 
         assertMappedTransferObject("MappedTransfer");
         assertThat(assertMappedTransferObject("MappedTransfer").getOperations().size(), equalTo(19));

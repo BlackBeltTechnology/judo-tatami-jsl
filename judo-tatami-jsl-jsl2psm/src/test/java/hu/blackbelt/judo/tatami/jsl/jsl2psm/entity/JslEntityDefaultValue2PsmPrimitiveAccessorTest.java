@@ -26,11 +26,13 @@ import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.derived.PrimitiveAccessor;
 import hu.blackbelt.judo.meta.psm.derived.StaticData;
 import hu.blackbelt.judo.meta.psm.type.FlatPrimitiveType;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,13 +69,14 @@ public class JslEntityDefaultValue2PsmPrimitiveAccessorTest extends AbstractTest
         }
     }
 
-    @Test
-    void testDefaultValues() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testDefaultValues(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromFiles(
                 List.of(new File("src/test/resources/entity/TestDefaultExpressionModel.jsl"))
         );
 
-        transform();
+        transform(mode);
 
         assertDefault("LiteralEntity", "booleanLiteral", "true", () -> assertBooleanType("Boolean"));
         assertDefault("LiteralEntity", "intLiteral", "1", () -> assertNumericType("Integer"));

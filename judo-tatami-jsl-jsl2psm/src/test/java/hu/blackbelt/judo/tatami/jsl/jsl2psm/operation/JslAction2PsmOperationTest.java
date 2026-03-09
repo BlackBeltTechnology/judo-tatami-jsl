@@ -31,8 +31,10 @@ import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,14 +79,15 @@ public class JslAction2PsmOperationTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testActions() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testActions(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
                 List.of(new File("src/test/resources/operation/ActionsTestModel.jsl"))
         );
 
-        transform();
+        transform(mode);
 
         assertUnmappedTransferObject("UnmappedTransfer");
         assertThat(assertUnmappedTransferObject("UnmappedTransfer").getOperations().size(), equalTo(12));
