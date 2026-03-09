@@ -88,26 +88,26 @@
 
 ## 6. JSL2UI Zeta Scaffold + Core Rules (Phase 5)
 
-- [ ] 6.1 Port 243 EOL operations from jsl2ui `operations/` to static helper classes
-- [ ] 6.2 Create `Jsl2UiRuleNames.java` with constants for all 397 rule names
-- [ ] 6.3 Create `Jsl2UiHelper.java` with UI-specific utility methods
-- [ ] 6.4 Create `Jsl2UiZetaTransformation.java` with per-frontend iteration, `@PreExecution` position init, `@PostExecution` sorting
-- [ ] 6.5 TDD: Write Zeta unit tests for application rules
-- [ ] 6.6 Implement `zeta/rules/application/ActorDeclarationRules.java` (2 rules from `actorDeclaration.etl`)
-- [ ] 6.7 Implement `zeta/rules/application/ActorGroupDeclarationRules.java` (1 rule from `actorGroupDeclaration.etl`)
-- [ ] 6.8 Implement `zeta/rules/application/ModifiableRules.java` (2 rules from `modifiable.etl`)
-- [ ] 6.9 TDD: Write Zeta unit tests for structure rules
-- [ ] 6.10 Implement `zeta/rules/structure/TransferDeclarationRules.java` (1 rule from `transferDeclaration.etl`)
-- [ ] 6.11 Implement `zeta/rules/structure/TransferActionDeclarationRules.java` (5 rules from `transferActionDeclaration.etl`)
-- [ ] 6.12 Implement `zeta/rules/structure/TransferFieldDeclarationRules.java` (4 rules from `transferFieldDeclaration.etl`)
-- [ ] 6.13 Implement `zeta/rules/structure/TransferRelationDeclarationRules.java` (3 rules from `transferRelationDeclaration.etl`)
-- [ ] 6.14 TDD: Write Zeta unit tests for type rules
-- [ ] 6.15 Implement `zeta/rules/type/TypeRules.java` (10 rules from `type.etl`)
-- [ ] 6.16 Implement `zeta/rules/type/DataTypeOperationRules.java` (21 rules from `dataTypeOperation.etl`)
-- [ ] 6.17 Add `TransformationMode` field to `Jsl2UiWorkParameter`
-- [ ] 6.18 Update `Jsl2UiWork.execute()` to dispatch between ETL and Zeta
-- [ ] 6.19 Create `Jsl2UiDualTransformationTest.java` (informational)
-- [ ] 6.20 Verify build: `mvn clean test -pl judo-tatami-jsl-jsl2ui`
+- [x] 6.1 Port 243 EOL operations from jsl2ui `operations/` to static helper classes
+- [x] 6.2 Create `Jsl2UiRuleNames.java` with constants for all 397 rule names
+- [x] 6.3 Create `Jsl2UiHelper.java` with UI-specific utility methods
+- [x] 6.4 Create `Jsl2UiZetaTransformation.java` with per-frontend iteration, `@PreExecution` position init, `@PostExecution` sorting
+- [x] 6.5 TDD: Write Zeta unit tests for application rules
+- [x] 6.6 Implement `zeta/rules/application/ActorDeclarationRules.java` (2 rules from `actorDeclaration.etl`)
+- [x] 6.7 Implement `zeta/rules/application/ActorGroupDeclarationRules.java` (1 rule from `actorGroupDeclaration.etl`)
+- [x] 6.8 Implement `zeta/rules/application/ModifiableRules.java` (2 rules from `modifiable.etl`)
+- [x] 6.9 TDD: Write Zeta unit tests for structure rules
+- [x] 6.10 Implement `zeta/rules/structure/TransferDeclarationRules.java` (1 rule from `transferDeclaration.etl`)
+- [x] 6.11 Implement `zeta/rules/structure/TransferActionDeclarationRules.java` (5 rules from `transferActionDeclaration.etl`)
+- [x] 6.12 Implement `zeta/rules/structure/TransferFieldDeclarationRules.java` (4 rules from `transferFieldDeclaration.etl`)
+- [x] 6.13 Implement `zeta/rules/structure/TransferRelationDeclarationRules.java` (3 rules from `transferRelationDeclaration.etl`)
+- [x] 6.14 TDD: Write Zeta unit tests for type rules
+- [x] 6.15 Implement `zeta/rules/type/TypeRules.java` (10 rules from `type.etl`)
+- [x] 6.16 Implement `zeta/rules/type/DataTypeOperationRules.java` (21 rules from `dataTypeOperation.etl`)
+- [x] 6.17 Add `TransformationMode` field to `Jsl2UiWorkParameter`
+- [x] 6.18 Update `Jsl2UiWork.execute()` to dispatch between ETL and Zeta
+- [x] 6.19 Create `Jsl2UiDualTransformationTest.java` (informational)
+- [x] 6.20 Verify build: `mvn clean test -pl judo-tatami-jsl-jsl2ui`
 
 ## 7. JSL2UI View Rules (Phase 6)
 
