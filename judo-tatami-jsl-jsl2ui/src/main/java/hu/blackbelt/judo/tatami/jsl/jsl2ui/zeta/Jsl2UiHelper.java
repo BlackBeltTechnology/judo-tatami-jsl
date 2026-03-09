@@ -223,8 +223,10 @@ public final class Jsl2UiHelper {
         return getModifier(modifiable, MimeTypesModifier.class);
     }
 
-    public static DetailModifier getDetail(Modifiable modifiable) {
-        return getModifier(modifiable, DetailModifier.class);
+    // Note: DetailModifier referenced in EOL but does not exist in current JSL metamodel.
+    // Keeping as type-safe Modifier lookup for forward compatibility.
+    public static Modifier getDetail(Modifiable modifiable) {
+        return getModifierByType(modifiable, "detail");
     }
 
     public static boolean isOpenInDialog(Modifiable modifiable) {
@@ -386,22 +388,22 @@ public final class Jsl2UiHelper {
     public static Set<EObject> getAllMenuDeclarations(ActorDeclaration actor) {
         Set<EObject> menuDeclarations = new LinkedHashSet<>();
         for (EObject member : actor.getMembers()) {
-            if (member instanceof ActorLinkDeclaration) {
+            if (member instanceof UIMenuGroupDeclaration) {
+                menuDeclarations.addAll(getAllMenuDeclarations((UIMenuGroupDeclaration) member));
+            } else if (member instanceof UIMenuLinkDeclaration || member instanceof UIMenuTableDeclaration) {
                 menuDeclarations.add(member);
-            } else if (member instanceof ActorGroupDeclaration) {
-                menuDeclarations.addAll(getAllMenuDeclarations((ActorGroupDeclaration) member));
             }
         }
         return menuDeclarations;
     }
 
-    public static Set<EObject> getAllMenuDeclarations(ActorGroupDeclaration group) {
+    public static Set<EObject> getAllMenuDeclarations(UIMenuGroupDeclaration group) {
         Set<EObject> menuDeclarations = new LinkedHashSet<>();
         for (EObject member : group.getMembers()) {
-            if (member instanceof ActorLinkDeclaration) {
+            if (member instanceof UIMenuGroupDeclaration) {
+                menuDeclarations.addAll(getAllMenuDeclarations((UIMenuGroupDeclaration) member));
+            } else if (member instanceof UIMenuLinkDeclaration || member instanceof UIMenuTableDeclaration) {
                 menuDeclarations.add(member);
-            } else if (member instanceof ActorGroupDeclaration) {
-                menuDeclarations.addAll(getAllMenuDeclarations((ActorGroupDeclaration) member));
             }
         }
         return menuDeclarations;
@@ -444,7 +446,7 @@ public final class Jsl2UiHelper {
         }
 
         for (TransferActionDeclaration action : actions) {
-            for (TransferDeclaration error : action.getErrors()) {
+            for (ErrorDeclaration error : action.getErrors()) {
                 if (!transfers.contains(error)) {
                     transfers.add(error);
                 }
@@ -452,8 +454,11 @@ public final class Jsl2UiHelper {
             if (action.getParameterType() != null && !transfers.contains(action.getParameterType())) {
                 transfers.add(action.getParameterType());
             }
-            if (action.getReturn() != null && !transfers.contains(action.getReturn())) {
-                transfers.add(action.getReturn());
+            if (action.getReturn() instanceof TransferDeclaration) {
+                TransferDeclaration returnType = (TransferDeclaration) action.getReturn();
+                if (!transfers.contains(returnType)) {
+                    transfers.add(returnType);
+                }
             }
         }
     }
@@ -535,7 +540,7 @@ public final class Jsl2UiHelper {
         fields.addAll(self.getMembers().stream()
                 .filter(TransferFieldDeclaration.class::isInstance)
                 .map(TransferFieldDeclaration.class::cast)
-                .filter(f -> f.getReferenceType() != null && f.getReferenceType().getPrimitive() != null)
+                .filter(f -> f.getReferenceType() != null)
                 .collect(Collectors.toList()));
         for (TransferMemberDeclaration member : self.getMembers()) {
             if (member instanceof UIViewPanelDeclaration) {
@@ -552,7 +557,7 @@ public final class Jsl2UiHelper {
             fields.addAll(group.getMembers().stream()
                     .filter(TransferFieldDeclaration.class::isInstance)
                     .map(TransferFieldDeclaration.class::cast)
-                    .filter(f -> f.getReferenceType() != null && f.getReferenceType().getPrimitive() != null)
+                    .filter(f -> f.getReferenceType() != null)
                     .collect(Collectors.toList()));
             for (EObject member : group.getMembers()) {
                 if (member instanceof UIViewPanelDeclaration) {
@@ -632,11 +637,11 @@ public final class Jsl2UiHelper {
     // =========================================================================
 
     public static boolean isCalculated(TransferFieldDeclaration field) {
-        return JSL_UTILS.isCalculated(field);
+        return field.getGetterExpr() != null;
     }
 
     public static boolean isRequired(TransferFieldDeclaration field) {
-        return JSL_UTILS.isRequired(field);
+        return JSL_UTILS.isRequired((TransferMemberDeclaration) field);
     }
 
     public static boolean isMaps(TransferDataDeclaration decl) {
@@ -659,17 +664,23 @@ public final class Jsl2UiHelper {
     }
 
     public static boolean isSortable(TransferFieldDeclaration field) {
-        if (field.getReferenceType() == null || field.getReferenceType().getPrimitive() == null) {
-            return false;
-        }
-        return (isMaps(field) || isReads(field)) && isSortableOrFilterablePrimitive(field.getReferenceType().getPrimitive());
+        String primitive = getPrimitiveTypeName(field);
+        if (primitive == null) return false;
+        return (isMaps(field) || isReads(field)) && isSortableOrFilterablePrimitive(primitive);
     }
 
     public static boolean isFilterable(TransferFieldDeclaration field) {
-        if (field.getReferenceType() == null || field.getReferenceType().getPrimitive() == null) {
-            return false;
+        String primitive = getPrimitiveTypeName(field);
+        if (primitive == null) return false;
+        return (isMaps(field) || isReads(field)) && isSortableOrFilterablePrimitive(primitive);
+    }
+
+    private static String getPrimitiveTypeName(TransferFieldDeclaration field) {
+        PrimitiveDeclaration refType = field.getReferenceType();
+        if (refType instanceof DataTypeDeclaration) {
+            return ((DataTypeDeclaration) refType).getPrimitive();
         }
-        return (isMaps(field) || isReads(field)) && isSortableOrFilterablePrimitive(field.getReferenceType().getPrimitive());
+        return null;
     }
 
     private static boolean isSortableOrFilterablePrimitive(String primitive) {
