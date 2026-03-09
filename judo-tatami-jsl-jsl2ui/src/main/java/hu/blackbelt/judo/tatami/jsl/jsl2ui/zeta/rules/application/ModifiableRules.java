@@ -81,6 +81,8 @@ public class ModifiableRules {
             target.setIconName(source.getValue().getValue());
             target.setName(getJslId(source) + "/Icon");
 
+            ctx.addToResource(target);
+
             return target;
         };
     }
@@ -99,6 +101,7 @@ public class ModifiableRules {
      * </pre>
      */
     @TransformRule(name = CLAIM_MODIFIER, description = "Create Claim from ClaimModifier")
+    @Greedy
     @Transform(type = ClaimModifier.class)
     @To(type = Claim.class)
     public TransformFunction<ClaimModifier, Claim> claimModifier() {
@@ -122,6 +125,8 @@ public class ModifiableRules {
             if (auth != null) {
                 auth.getClaims().add(target);
             }
+
+            ctx.addToResource(target);
 
             return target;
         };

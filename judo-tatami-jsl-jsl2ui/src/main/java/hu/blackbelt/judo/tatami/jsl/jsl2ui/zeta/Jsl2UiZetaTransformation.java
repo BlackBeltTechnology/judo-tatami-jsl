@@ -172,13 +172,22 @@ public class Jsl2UiZetaTransformation {
     private TransformationRegistry createRegistry() {
         TransformationRegistry registry = new TransformationRegistry();
 
-        // Application rules (actor, authentication, menu groups, modifiers)
+        // Application rules (frontend, actor, authentication, menu groups, modifiers)
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.application.FrontendDeclarationRules.class);
         registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.application.ActorDeclarationRules.class);
         registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.application.ActorGroupDeclarationRules.class);
         registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.application.ModifiableRules.class);
 
-        // Structure rules will be registered here (tasks 6.10-6.13)
-        // Type rules will be registered here (tasks 6.15-6.16)
+        // Structure rules (transfer declarations, fields, relations, actions)
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.structure.TransferDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.structure.TransferFieldDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.structure.TransferRelationDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.structure.TransferActionDeclarationRules.class);
+
+        // Type rules (data types, operator enumerations)
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.type.TypeRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.type.DataTypeOperationRules.class);
+
         // View rules will be registered here (tasks 7.2-7.38)
 
         return registry;

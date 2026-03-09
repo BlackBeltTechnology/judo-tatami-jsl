@@ -2,11 +2,13 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.AbstractTransformationWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
+import hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.Jsl2UiZetaTransformation;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -32,6 +34,8 @@ public class Jsl2UiWork extends AbstractTransformationWork {
         Boolean createTrace = false;
         @Builder.Default
         Boolean parallel = true;
+        @Builder.Default
+        TransformationMode transformationMode = TransformationMode.fromSystemProperty();
     }
 
     final URI transformationScriptRoot;
@@ -57,15 +61,29 @@ public class Jsl2UiWork extends AbstractTransformationWork {
         Jsl2UiWorkParameter workParam = getTransformationContext().getByClass(Jsl2UiWorkParameter.class)
                 .orElseGet(() -> Jsl2UiWorkParameter.jsl2UiWorkParameter().build());
 
-        /*Jsl2UiTransformationTrace jsl2UiTransformationTrace = */executeJsl2UiTransformation(Jsl2Ui.Jsl2UiParameter.jsl2UiParameter()
-                .jslModel(jslModel.get())
-                .uiModel(uiModel)
-                .log(getTransformationContext().getByClass(Logger.class).orElse(null))
-                .scriptUri(transformationScriptRoot)
-                .createTrace(workParam.createTrace)
-                .parallel(workParam.parallel));
+        TransformationMode mode = workParam.transformationMode;
+        log.info("JSL2UI transformation mode: {}", mode);
 
-//        getTransformationContext().put(jsl2UiTransformationTrace);
+        if (mode.isEtl()) {
+            /*Jsl2UiTransformationTrace jsl2UiTransformationTrace = */executeJsl2UiTransformation(Jsl2Ui.Jsl2UiParameter.jsl2UiParameter()
+                    .jslModel(jslModel.get())
+                    .uiModel(uiModel)
+                    .log(getTransformationContext().getByClass(Logger.class).orElse(null))
+                    .scriptUri(transformationScriptRoot)
+                    .createTrace(workParam.createTrace)
+                    .parallel(workParam.parallel));
+
+//            getTransformationContext().put(jsl2UiTransformationTrace);
+        }
+
+        if (mode.isZeta()) {
+            Jsl2UiZetaTransformation.builder()
+                    .jslModel(jslModel.get())
+                    .uiModel(uiModel)
+                    .defaultModelName(jslModel.get().getName())
+                    .build()
+                    .execute();
+        }
     }
 
     public static void main(String[] args) throws IOException, JslDslModel.JslDslValidationException, UiModel.UiValidationException {
