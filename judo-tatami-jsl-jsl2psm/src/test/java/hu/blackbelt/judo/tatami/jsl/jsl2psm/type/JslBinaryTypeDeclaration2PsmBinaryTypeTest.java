@@ -26,7 +26,9 @@ import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -62,8 +64,9 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testDeclaration() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testDeclaration(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model DeclarationModel;\n" +
@@ -72,7 +75,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 )
         );
 
-        transform();
+        transform(mode);
 
         assertBinaryType("Picture");
         assertEquals(assertBinaryType("Picture").getName(), "Picture");
@@ -81,8 +84,9 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
         assertEquals(assertBinaryType("Picture").getMaxFileSize(), 1048576);
     }
 
-    @Test
-    void testEntityMemberRequired() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testEntityMemberRequired(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model EntityMemberRequiredModel;\n" +
@@ -95,7 +99,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 )
         );
 
-        transform();
+        transform(mode);
 
         assertBinaryType("Picture");
         assertEquals(assertBinaryType("Picture").getMimeTypes(), Arrays.asList("image/png", "image/*"));
@@ -107,8 +111,9 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
     }
 
-    @Test
-    void testEntityMemberInheritance() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testEntityMemberInheritance(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model EntityMemberInheritanceModel;\n" +
@@ -124,7 +129,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 )
         );
 
-        transform();
+        transform(mode);
 
         assertBinaryType("Picture");
         assertEquals(assertBinaryType("Picture"), assertAttribute("_User", "profilePicture").getDataType());
@@ -135,8 +140,9 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
 
     }
 
-    @Test
-    void testEntityMemberIdentifier() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testEntityMemberIdentifier(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model EntityMemberIdentifierModel;\n" +
@@ -149,7 +155,7 @@ public class JslBinaryTypeDeclaration2PsmBinaryTypeTest extends AbstractTest {
                 )
         );
 
-        transform();
+        transform(mode);
 
         assertBinaryType("Picture");
         assertEquals(assertBinaryType("Picture"), assertAttribute("_User", "profilePicture").getDataType());

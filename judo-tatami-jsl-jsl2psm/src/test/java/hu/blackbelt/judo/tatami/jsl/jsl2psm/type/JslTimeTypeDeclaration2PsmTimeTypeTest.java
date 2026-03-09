@@ -26,7 +26,9 @@ import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -61,8 +63,9 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testDeclaration() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testDeclaration(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model DeclarationModel;\n" +
@@ -71,13 +74,14 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
                 )
         );
 
-        transform();
+        transform(mode);
 
         assertTimeType("MyTime");
     }
 
-    @Test
-    void testEntityMember() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testEntityMember(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model EntityMemberModel;\n" +
@@ -90,7 +94,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
                 )
         );
 
-        transform();
+        transform(mode);
 
         assertTimeType("MyTime");
         assertEquals(assertTimeType("MyTime"), assertAttribute("_Person", "arrivalTime").getDataType());
@@ -101,8 +105,9 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
 
     }
 
-    @Test
-    void testEntityMemberRequired() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testEntityMemberRequired(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model EntityMemberRequiredModel;\n" +
@@ -115,7 +120,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
                 )
         );
 
-        transform();
+        transform(mode);
 
         assertTimeType("MyTime");
         assertEquals(assertTimeType("MyTime"), assertAttribute("_Person", "arrivalTime").getDataType());
@@ -125,8 +130,9 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
         assertTrue(assertMappedTransferObjectAttribute("Person", "arrivalTime").isRequired());
     }
 
-    @Test
-    void testEntityMemberInheritance() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testEntityMemberInheritance(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model EntityMemberInheritanceModel;\n" +
@@ -142,7 +148,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
                 )
         );
 
-        transform();
+        transform(mode);
 
         assertTimeType("MyTime");
         assertEquals(assertTimeType("MyTime"), assertAttribute("_Person", "arrivalTime").getDataType());
@@ -152,8 +158,9 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
         assertEquals(assertTimeType("MyTime"), assertMappedTransferObjectAttribute("StudentPerson", "arrivalTime").getDataType());
     }
 
-    @Test
-    void testEntityMemberIdentifier() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testEntityMemberIdentifier(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model EntityMemberIdentifierModel;\n" +
@@ -166,7 +173,7 @@ public class JslTimeTypeDeclaration2PsmTimeTypeTest extends AbstractTest {
                 )
         );
 
-        transform();
+        transform(mode);
 
         assertTimeType("MyTime");
         assertEquals(assertTimeType("MyTime"), assertAttribute("_Person", "arrivalTime").getDataType());

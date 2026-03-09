@@ -26,8 +26,10 @@ import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.type.FlatPrimitiveType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,14 +67,15 @@ public class JslErrorDeclaration2PsmUnmappedTransferObjectTypeTest extends Abstr
         }
     }
 
-    @Test
-    void testCreateErrorType() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testCreateErrorType(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
                 List.of(new File("src/test/resources/error/ErrorTestModel.jsl"))
         );
 
-        transform();
+        transform(mode);
 
         assertEquals(3, getUnmappedTransferObjectTypes().size());
 

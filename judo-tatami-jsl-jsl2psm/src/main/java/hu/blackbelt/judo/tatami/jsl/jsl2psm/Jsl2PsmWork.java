@@ -23,9 +23,11 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm;
 import org.slf4j.Logger;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.*;
+import hu.blackbelt.judo.tatami.jsl.jsl2psm.zeta.Jsl2PsmZetaTransformation;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +55,8 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
         Boolean parallel = true;
         @Builder.Default
         Boolean generateBehaviours = true;
+        @Builder.Default
+        TransformationMode transformationMode = TransformationMode.fromSystemProperty();
     }
 
     final URI transformationScriptRoot;
@@ -78,16 +82,31 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
         Jsl2PsmWorkParameter workParam = getTransformationContext().getByClass(Jsl2PsmWorkParameter.class)
                 .orElseGet(() -> Jsl2PsmWorkParameter.jsl2PsmWorkParameter().build());
 
-        Jsl2PsmTransformationTrace jsl2PsmTransformationTrace = executeJsl2PsmTransformation(Jsl2Psm.Jsl2PsmParameter.jsl2PsmParameter()
-                .jslModel(jslModel.get())
-                .psmModel(psmModel)
-                .log(getTransformationContext().getByClass(Logger.class).orElse(null))
-                .scriptUri(transformationScriptRoot)
-                .createTrace(workParam.createTrace)
-                .generateBehaviours(workParam.generateBehaviours)
-                .parallel(workParam.parallel));
+        TransformationMode mode = workParam.transformationMode;
+        log.info("JSL2PSM transformation mode: {}", mode);
 
-        getTransformationContext().put(jsl2PsmTransformationTrace);
+        if (mode.isEtl()) {
+            Jsl2PsmTransformationTrace jsl2PsmTransformationTrace = executeJsl2PsmTransformation(Jsl2Psm.Jsl2PsmParameter.jsl2PsmParameter()
+                    .jslModel(jslModel.get())
+                    .psmModel(psmModel)
+                    .log(getTransformationContext().getByClass(Logger.class).orElse(null))
+                    .scriptUri(transformationScriptRoot)
+                    .createTrace(workParam.createTrace)
+                    .generateBehaviours(workParam.generateBehaviours)
+                    .parallel(workParam.parallel));
+
+            getTransformationContext().put(jsl2PsmTransformationTrace);
+        }
+
+        if (mode.isZeta()) {
+            Jsl2PsmZetaTransformation.builder()
+                    .jslModel(jslModel.get())
+                    .psmModel(psmModel)
+                    .defaultModelName(jslModel.get().getName())
+                    .generateBehaviours(workParam.generateBehaviours)
+                    .build()
+                    .execute();
+        }
     }
 
     public static void main(String[] args) throws IOException, JslDslModel.JslDslValidationException, PsmModel.PsmValidationException {

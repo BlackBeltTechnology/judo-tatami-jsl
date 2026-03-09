@@ -26,8 +26,11 @@ import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.derived.DataProperty;
 import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,15 +70,16 @@ public class JslInstanceFunctionTranslationTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testInstanceFunctionTest() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testInstanceFunctionTest(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
                 "TestInstanceFunctionModel",
                 List.of(new File("src/test/resources/function/TestInstanceFunctionModel.jsl"), new File("src/test/resources/function/ImportedTestInstanceFunctionModel.jsl"))
         );
 
-        transform();
+        transform(mode);
 
         final Set<NavigationProperty> navigationProperties = psmModelWrapper.getStreamOfPsmDerivedNavigationProperty().collect(Collectors.toSet());
         assertEquals(3, navigationProperties.size());

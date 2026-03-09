@@ -31,13 +31,15 @@ import hu.blackbelt.judo.meta.psm.derived.StaticData;
 import hu.blackbelt.judo.meta.psm.derived.StaticNavigation;
 import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
 import hu.blackbelt.judo.meta.psm.service.*;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,15 +76,16 @@ public class JslTransferObjectChoices2PsmTransferObjectTypeTest extends Abstract
         }
     }
 
-    @Test
-    void testTransferObjectChicesModel() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testTransferObjectChicesModel(TransformationMode mode) throws Exception {
 
         
         jslModel = JslParser.getModelFromFiles(
                 List.of(new File("src/test/resources/transferobject/TestTransferObjectChoicesModel.jsl"))
         );
 
-        transform();
+        transform(mode);
         
         assertUnmappedTransferObject("Unmapped");
         assertEquals(5, assertUnmappedTransferObject("Unmapped").getRelations().size());

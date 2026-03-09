@@ -32,8 +32,10 @@ import hu.blackbelt.judo.meta.psm.type.StringType;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.core.IsEqual;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -71,8 +73,9 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testImportModel() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testImportModel(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings("ns2::c",
                 ImmutableList.of(
@@ -99,7 +102,7 @@ public class JslMultipleJslModelImportTest extends AbstractTest {
 
                 ));
 
-        transform();
+        transform(mode);
 
         final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
         assertEquals(2, psmEntityTypes.size());

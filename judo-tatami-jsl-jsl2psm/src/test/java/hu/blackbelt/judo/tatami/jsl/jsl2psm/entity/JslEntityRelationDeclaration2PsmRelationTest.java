@@ -27,12 +27,14 @@ import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.data.*;
 import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,8 +72,9 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
         }
     }
 
-    @Test
-    void testEntityUnidirectionalCompositionRelationType() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testEntityUnidirectionalCompositionRelationType(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model EntityUnidirectionalCompositionRelationTypeModel;\n" +
@@ -89,7 +92,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
                 )
         );
 
-        transform();
+        transform(mode);
 
         assertEquals(3, getEntityTypes().size());
 
@@ -123,8 +126,9 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
 
     }
 
-    @Test
-    void testEntityUnidirectionalCompositionInheritedRelationType() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testEntityUnidirectionalCompositionInheritedRelationType(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model EntityUnidirectionalCompositionInheritedRelationTypeModel;\n" +
@@ -147,7 +151,7 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
                 )
         );
 
-        transform();
+        transform(mode);
 
         assertEquals(5, getEntityTypes().size());
 
@@ -178,15 +182,16 @@ public class JslEntityRelationDeclaration2PsmRelationTest extends AbstractTest  
 
     }
 
-    @Test
-    void testEntityAsssociationRelation() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testEntityAsssociationRelation(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromFiles(
                 "AssociationRelationTestModel",
                 List.of(new File("src/test/resources/entity/AssociationRelationTestModel.jsl"))
         );
 
-        transform();
+        transform(mode);
 
         EntityType lead = assertEntityType("_Lead");
         EntityType customer = assertEntityType("_Customer");

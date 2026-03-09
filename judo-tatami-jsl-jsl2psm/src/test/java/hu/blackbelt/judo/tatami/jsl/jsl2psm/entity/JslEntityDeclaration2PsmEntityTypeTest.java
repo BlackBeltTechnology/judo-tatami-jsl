@@ -25,11 +25,13 @@ import org.slf4j.Logger;
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -68,8 +70,9 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testCreateEntityType() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testCreateEntityType(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model EntityTypeCreateModel;\n" +
@@ -83,7 +86,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
                 )
         );
 
-        transform();
+        transform(mode);
 
 //        final Set<EntityType> psmEntityTypes = psmModelWrapper.getStreamOfPsmDataEntityType().collect(Collectors.toSet());
         assertEquals(3, getEntityTypes().size());
@@ -100,8 +103,9 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
         assertThat(psmEntityType3SuperTypeNames, IsEqual.equalTo(jslEntityType3SuperTypeNames));
     }
 
-    @Test
-    void testEntityLocalName() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testEntityLocalName(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model First::Second::EntityLocaleNameModel;\n" +
@@ -111,7 +115,7 @@ public class JslEntityDeclaration2PsmEntityTypeTest extends AbstractTest {
                 )
         );
 
-        transform();
+        transform(mode);
 
         final Set<hu.blackbelt.judo.meta.psm.namespace.Package> psmPackageTypes = psmModelWrapper.getStreamOfPsmNamespacePackage().collect(Collectors.toSet());
         assertEquals(3, psmPackageTypes.size());

@@ -24,11 +24,13 @@ import org.slf4j.Logger;
 import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -65,13 +67,14 @@ public class JslNamespace2PsmNamespaceTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testCreateModel() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testCreateModel(TransformationMode mode) throws Exception {
 
         jslModel = JslParser.getModelFromStrings(
                 List.of("model TestModel;"));
 
-        transform();
+        transform(mode);
 
         final Optional<Model> lookupPSMModel = psmModelWrapper.getStreamOfPsmNamespaceModel()
                 .findAny();
