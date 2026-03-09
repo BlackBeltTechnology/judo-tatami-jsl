@@ -22,6 +22,11 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.*;
 import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
+import hu.blackbelt.judo.meta.ui.ButtonGroup;
+import hu.blackbelt.judo.meta.ui.Flex;
+import hu.blackbelt.judo.meta.ui.TabController;
+import hu.blackbelt.judo.meta.ui.VisualElement;
+import hu.blackbelt.judo.meta.ui.data.AttributeType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.XMIResource;
@@ -301,6 +306,72 @@ public final class Jsl2UiHelper {
 
     public static Modifier getRows(Modifiable modifiable) {
         return getModifierByType(modifiable, "rows");
+    }
+
+    public static double getModifierDoubleValue(Modifier mod) {
+        if (mod instanceof WidthModifier) {
+            return ((WidthModifier) mod).getValue().doubleValue();
+        }
+        if (mod instanceof HeightModifier) {
+            return ((HeightModifier) mod).getValue().doubleValue();
+        }
+        if (mod instanceof RowsModifier) {
+            return ((RowsModifier) mod).getValue().doubleValue();
+        }
+        // Fallback: use reflection for modifiers with getValue() returning BigInteger
+        try {
+            java.lang.reflect.Method m = mod.getClass().getMethod("getValue");
+            Object val = m.invoke(mod);
+            if (val instanceof java.math.BigInteger) {
+                return ((java.math.BigInteger) val).doubleValue();
+            }
+        } catch (Exception e) { /* ignore */ }
+        return 0.0;
+    }
+
+    public static int getModifierIntValue(Modifier mod) {
+        if (mod instanceof WidthModifier) {
+            return ((WidthModifier) mod).getValue().intValue();
+        }
+        if (mod instanceof HeightModifier) {
+            return ((HeightModifier) mod).getValue().intValue();
+        }
+        if (mod instanceof RowsModifier) {
+            return ((RowsModifier) mod).getValue().intValue();
+        }
+        // Fallback: use reflection for modifiers with getValue() returning BigInteger
+        try {
+            java.lang.reflect.Method m = mod.getClass().getMethod("getValue");
+            Object val = m.invoke(mod);
+            if (val instanceof java.math.BigInteger) {
+                return ((java.math.BigInteger) val).intValue();
+            }
+        } catch (Exception e) { /* ignore */ }
+        return 0;
+    }
+
+    public static boolean isCenter(Modifier mod) {
+        if (mod instanceof HAlignModifier) {
+            return ((HAlignModifier) mod).isCenter();
+        }
+        if (mod instanceof VAlignModifier) {
+            return ((VAlignModifier) mod).isCenter();
+        }
+        return false;
+    }
+
+    public static boolean isRight(Modifier mod) {
+        if (mod instanceof HAlignModifier) {
+            return ((HAlignModifier) mod).isRight();
+        }
+        return false;
+    }
+
+    public static boolean isBottom(Modifier mod) {
+        if (mod instanceof VAlignModifier) {
+            return ((VAlignModifier) mod).isBottom();
+        }
+        return false;
     }
 
     public static CreateFormModifier getCreateFormModifier(Modifiable modifiable) {
@@ -1258,5 +1329,106 @@ public final class Jsl2UiHelper {
             LOG.warn(" !!!! MISSING VISUAL ELEMENT: {}", getNameReflective(element));
         }
         return result;
+    }
+
+    // =========================================================================
+    // uiContainer() - resolve JSL container to equivalent UI container
+    // Ported from viewDeclaration.eol, viewGroupDeclaration.eol, etc.
+    // =========================================================================
+
+    /**
+     * Resolves the UI container for a JSL element's parent.
+     * This matches the polymorphic `uiContainer()` EOL operation.
+     *
+     * @param jslContainer the JSL container (UIViewDeclaration, UIViewGroupDeclaration, etc.)
+     * @param ctx the transformation context for resolving equivalents
+     * @return the equivalent UI VisualElement that serves as the container
+     */
+    public static VisualElement resolveUiContainer(EObject jslContainer,
+            hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        if (jslContainer instanceof UIViewDeclaration) {
+            UIViewDeclaration view = (UIViewDeclaration) jslContainer;
+            if (view.isForm()) {
+                return ctx.equivalent(view, Flex.class, Jsl2UiRuleNames.FORM_PAGE_CONTAINER_VISUAL_ELEMENT);
+            }
+            return ctx.equivalent(view, Flex.class, Jsl2UiRuleNames.VIEW_PAGE_CONTAINER_VISUAL_ELEMENT);
+        } else if (jslContainer instanceof UIViewGroupDeclaration) {
+            return ctx.equivalent(jslContainer, Flex.class, Jsl2UiRuleNames.GROUP_VISUAL_ELEMENT);
+        } else if (jslContainer instanceof UIViewTabsDeclaration) {
+            return ctx.equivalent(jslContainer, TabController.class, Jsl2UiRuleNames.TAB_BAR_VISUAL_ELEMENT);
+        } else if (jslContainer instanceof UIActionGroupDeclaration) {
+            return ctx.equivalent(jslContainer, ButtonGroup.class, Jsl2UiRuleNames.ACTION_GROUP_VISUAL_ELEMENT);
+        }
+        LOG.warn("Cannot resolve uiContainer for: {}", jslContainer);
+        return null;
+    }
+
+    /**
+     * Gets the primitive type name from a UIViewWidgetDeclaration's transfer field.
+     * Used for widget type dispatch in view rules.
+     */
+    public static String getWidgetPrimitive(UIViewWidgetDeclaration widget) {
+        if (widget.getTransferField() == null || widget.getTransferField().getTarget() == null) {
+            return null;
+        }
+        PrimitiveDeclaration refType = widget.getTransferField().getTarget().getReferenceType();
+        if (refType instanceof DataTypeDeclaration) {
+            return ((DataTypeDeclaration) refType).getPrimitive();
+        }
+        if (refType instanceof EnumDeclaration) {
+            return "enum";
+        }
+        return null;
+    }
+
+    /**
+     * Gets the equivalent AttributeType for a UIViewWidgetDeclaration.
+     * Matches the ETL operation getTransferFieldDeclarationEquivalent().
+     */
+    public static AttributeType getTransferFieldDeclarationEquivalent(UIViewWidgetDeclaration widget,
+            hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        TransferFieldDeclaration field = widget.getTransferField().getTarget();
+        if (field == null) return null;
+
+        if (isMaps(field)) {
+            return ctx.equivalent(field, AttributeType.class, Jsl2UiRuleNames.CREATE_MAPPED_TRANSFER_ATTRIBUTE);
+        } else if (isReads(field)) {
+            return ctx.equivalent(field, AttributeType.class, Jsl2UiRuleNames.CREATE_DERIVED_TRANSFER_ATTRIBUTE);
+        } else {
+            return ctx.equivalent(field, AttributeType.class, Jsl2UiRuleNames.CREATE_TRANSIENT_TRANSFER_ATTRIBUTE);
+        }
+    }
+
+    public static AttributeType getColumnTransferFieldEquivalent(UIRowColumnDeclaration column,
+            hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        if (column.getTransferField() == null || column.getTransferField().getTarget() == null) return null;
+        TransferFieldDeclaration field = column.getTransferField().getTarget();
+        return getTransferFieldAttributeType(field, ctx);
+    }
+
+    /**
+     * Gets the TransferFieldDeclaration for a UITagDeclaration.
+     * Matches the ETL operation UITagDeclaration.getTransferFieldDeclaration().
+     */
+    public static TransferFieldDeclaration getTransferFieldDeclaration(UITagDeclaration tag) {
+        TextModifier textMod = getTextModifier(tag);
+        if (textMod == null || textMod.getTransferField() == null) return null;
+        return textMod.getTransferField().getTarget();
+    }
+
+    /**
+     * Gets the equivalent AttributeType for any TransferFieldDeclaration,
+     * routing to the correct rule based on maps/reads/transient.
+     */
+    public static AttributeType getTransferFieldAttributeType(TransferFieldDeclaration field,
+            hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        if (field == null) return null;
+        if (isMaps(field)) {
+            return ctx.equivalent(field, AttributeType.class, Jsl2UiRuleNames.CREATE_MAPPED_TRANSFER_ATTRIBUTE);
+        } else if (isReads(field)) {
+            return ctx.equivalent(field, AttributeType.class, Jsl2UiRuleNames.CREATE_DERIVED_TRANSFER_ATTRIBUTE);
+        } else {
+            return ctx.equivalent(field, AttributeType.class, Jsl2UiRuleNames.CREATE_TRANSIENT_TRANSFER_ATTRIBUTE);
+        }
     }
 }

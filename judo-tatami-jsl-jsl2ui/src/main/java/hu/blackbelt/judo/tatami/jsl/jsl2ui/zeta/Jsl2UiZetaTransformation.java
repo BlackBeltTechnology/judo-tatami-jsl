@@ -188,7 +188,28 @@ public class Jsl2UiZetaTransformation {
         registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.type.TypeRules.class);
         registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.type.DataTypeOperationRules.class);
 
-        // View rules will be registered here (tasks 7.2-7.38)
+        // View rules (view declarations, forms, groups, tabs, widgets)
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewDeclarationFormRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewGroupDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewTabsDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewWidgetDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewTableDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewLinkDeclarationRules.class);
+
+        // Menu rules (menu tables, menu links)
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.MenuTableDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.MenuLinkDeclarationRules.class);
+
+        // Row, card, tag rules (table page containers)
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.RowDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.CardDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.TagDeclarationRules.class);
+
+        // Action rules (action groups, row actions, view actions)
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ActionGroupDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.RowActionDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewActionDeclarationRules.class);
 
         return registry;
     }
