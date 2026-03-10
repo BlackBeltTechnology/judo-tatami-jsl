@@ -1,0 +1,27 @@
+model ActorWithMenuLinkModel;
+type string String min-size:0 max-size:255;
+type numeric Integer precision:9 scale:0;
+type boolean Boolean;
+type date Date;
+type timestamp Timestamp;
+widget string StringWidget;
+widget numeric NumericWidget;
+widget boolean BooleanWidget;
+widget date DateWidget;
+widget timestamp TimestampWidget;
+widget enum ComboWidget;
+actor TestActor human {
+    field String name;
+}
+transfer TestActorTransfer(TestActor ta) {
+    field String name <= ta.name;
+}
+view ProfileView(TestActorTransfer t) {
+    group main {
+        widget StringWidget name <= t.name;
+    }
+}
+frontend TestMenu(TestActor a)
+    menu: {
+        link ProfileView profile <= TestActor#asActor() label:"Profile";
+    };

@@ -30,11 +30,13 @@ import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,8 +86,11 @@ class Jsl2UiWorkTest {
         jslModel.saveJslDslModel(jslDslSaveArgumentsBuilder().file(new File(JSL_FILE_LOCATION)).build());
     }
 
-    @Test
-    void testSimpleWorkflow() throws IOException, UiModel.UiValidationException {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testSimpleWorkflow(TransformationMode mode) throws IOException, UiModel.UiValidationException {
+        transformationContext.put(Jsl2UiWork.Jsl2UiWorkParameter.jsl2UiWorkParameter()
+                .transformationMode(mode).build());
         WorkFlow workflow = aNewSequentialFlow().execute(jsl2UiWork).build();
 
         WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();

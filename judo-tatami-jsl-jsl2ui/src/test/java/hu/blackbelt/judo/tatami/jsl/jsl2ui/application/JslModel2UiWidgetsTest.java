@@ -6,9 +6,11 @@ import hu.blackbelt.judo.meta.ui.data.AttributeType;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -47,8 +49,9 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testBasicWidgets() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testBasicWidgets(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("BasicWidgetsTestModel", List.of("""
             model BasicWidgetsTestModel;
 
@@ -150,7 +153,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 };
         """));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -395,8 +398,9 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
         assertTrue(formLevel1Timestamp instanceof DateTimeInput);
     }
 
-    @Test
-    void testRelationWidgets() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testRelationWidgets(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("RelationWidgetsTestModel", List.of("""
             model RelationWidgetsTestModel;
 
@@ -502,7 +506,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
                 };
         """));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 

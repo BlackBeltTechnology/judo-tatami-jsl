@@ -22,6 +22,8 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.*;
 import hu.blackbelt.judo.meta.ui.*;
+import hu.blackbelt.judo.meta.ui.data.ClassType;
+import hu.blackbelt.judo.meta.ui.data.OperationType;
 import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.zeta.annotation.Greedy;
 import hu.blackbelt.judo.zeta.annotation.Lazy;
@@ -34,6 +36,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.Jsl2UiHelper.*;
@@ -125,6 +129,119 @@ public class MenuLinkDeclarationRules {
 
             RelationType relType = ctx.equivalent(relation, RelationType.class, RELATION_TYPE);
             target.setDataElement(relType);
+
+            // Profile page assignment (ported from menuLinkDeclarationViewPage.etl)
+            if (isNestedInProfile(source)) {
+                Application app2 = ctx.equivalent(frontend, Application.class, APPLICATION);
+                app2.setProfilePage(target);
+            }
+
+            if (isOpenInDialog(source.getReferenceType())) {
+                target.setOpenInDialog(true);
+            }
+
+            UIViewDeclaration view = source.getReferenceType();
+            List<UIActionDeclaration> actionDeclarationsToProcess = new ArrayList<>(getAllActionDeclarations(view));
+
+            // Link processing
+            for (UIViewLinkDeclaration link : getOwnLinks(view)) {
+                TransferRelationDeclaration lRelation = link.getTransferRelation().getTarget();
+
+                target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                        VIEW_LINK_DECLARATION_OPEN_PAGE_ACTION, getJslId(source)));
+                if (isRefreshAllowed(lRelation) && !isEager(lRelation)) {
+                    if (link.isButton()) {
+                        target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                                VIEW_LINK_DECLARATION_PRE_FETCH_ACTION, getJslId(source)));
+                    } else {
+                        target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                                VIEW_LINK_DECLARATION_REFRESH_ACTION, getJslId(source)));
+                    }
+                }
+                if (getCreateFormModifier(link) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_OPEN_FORM_ACTION, getJslId(source)));
+                }
+                if (isDeleteAllowed(lRelation) && !link.isButton()) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_ROW_DELETE_ACTION, getJslId(source)));
+                }
+                if (getSelectorTableModifier(link) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_OPEN_SET_SELECTOR_DIALOG_ACTION, getJslId(source)));
+                }
+                if (getSelectorTableModifier(link) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_UNSET_ACTION, getJslId(source)));
+                }
+            }
+
+            // Table processing
+            for (UIViewTableDeclaration table : getOwnTables(view)) {
+                TransferRelationDeclaration tRelation = table.getTransferRelation().getTarget();
+
+                if (getUpdateViewModifier(table) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_OPEN_PAGE_ACTION, getJslId(source)));
+                }
+                if (isFilterSupported(tRelation)) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_FILTER_ACTION, getJslId(source)));
+                }
+                if (isRefreshAllowed(tRelation)) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_REFRESH_ACTION, getJslId(source)));
+                }
+                if (getCreateFormModifier(table) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_OPEN_CREATE_ACTION, getJslId(source)));
+                }
+                if (isDeleteAllowed(tRelation)) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_ROW_DELETE_ACTION, getJslId(source)));
+                }
+                if (getSelectorTableModifier(table) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_OPEN_ADD_SELECTOR_ACTION, getJslId(source)));
+                }
+                if (getSelectorTableModifier(table) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_CLEAR_ACTION, getJslId(source)));
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_BULK_REMOVE_ACTION, getJslId(source)));
+                }
+                if (table.getReferenceType() instanceof UITagDeclaration) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_TAGS_DECLARATION_AUTOCOMPLETE_RANGE_ACTION, getJslId(source)));
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_TAGS_DECLARATION_AUTOCOMPLETE_ADD_ACTION, getJslId(source)));
+                }
+
+                for (UIActionDeclaration actionDeclaration : getAllActionDeclarations(table)) {
+                    Action viewAction = ctx.equivalentDiscriminated(actionDeclaration, Action.class,
+                            VIEW_ACTION, getJslId(source));
+                    viewAction.setOwnerDataElement(ctx.equivalent(tRelation, RelationType.class, RELATION_TYPE));
+                    viewAction.setTargetDataElement(ctx.equivalent(actionDeclaration.getTransferAction().getTarget(),
+                            OperationType.class, OPERATION_TYPE));
+                    target.getActions().add(viewAction);
+                    actionDeclarationsToProcess.remove(actionDeclaration);
+
+                    if (viewAction.getActionDefinition() instanceof ParameterlessCallOperationActionDefinition pcoad
+                            && pcoad.getTargetType() == null) {
+                        pcoad.setTargetType(ctx.equivalent(tRelation.getReferenceType(), ClassType.class, CLASS_TYPE));
+                    }
+                }
+            }
+
+            // Remaining action declarations (direct view-level actions)
+            for (UIActionDeclaration actionDeclaration : actionDeclarationsToProcess) {
+                Action viewAction = ctx.equivalentDiscriminated(actionDeclaration, Action.class,
+                        VIEW_ACTION, getJslId(source));
+                viewAction.setOwnerDataElement(relType);
+                viewAction.setTargetDataElement(ctx.equivalent(actionDeclaration.getTransferAction().getTarget(),
+                        OperationType.class, OPERATION_TYPE));
+                target.getActions().add(viewAction);
+            }
 
             // Back action
             target.getActions().add(ctx.equivalent(source, Action.class,

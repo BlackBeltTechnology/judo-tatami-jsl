@@ -105,6 +105,10 @@ public final class Jsl2UiHelper {
         if (element instanceof ModelDeclaration) {
             return ((ModelDeclaration) element).getName();
         }
+        // MenuModifier and ProfileModifier have no name — delegate to container
+        if (element instanceof MenuModifier || element instanceof ProfileModifier) {
+            return getFqName(element.eContainer());
+        }
         try {
             java.lang.reflect.Method nameMethod = element.getClass().getMethod("getName");
             String name = (String) nameMethod.invoke(element);
@@ -1261,6 +1265,126 @@ public final class Jsl2UiHelper {
             // tag itself is the leaf
         }
         return ves;
+    }
+
+    // =========================================================================
+    // UIViewDeclaration getOwnLinks/getOwnTables/getAllActionDeclarations
+    // (ported from viewDeclaration.eol)
+    // =========================================================================
+
+    /**
+     * Returns links directly owned by this view (not nested in sub-views).
+     * Ported from viewDeclaration.eol getOwnLinks().
+     */
+    public static Set<UIViewLinkDeclaration> getOwnLinks(UIViewDeclaration view) {
+        Set<EObject> all = getExposedVisualElements(view, new LinkedHashSet<>());
+        Set<UIViewLinkDeclaration> result = new LinkedHashSet<>();
+        for (EObject ve : all) {
+            if (ve instanceof UIViewLinkDeclaration link) {
+                EObject parent = link.eContainer();
+                while (parent != null && !(parent instanceof UIViewDeclaration)) {
+                    parent = parent.eContainer();
+                }
+                if (parent == view) {
+                    result.add(link);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns tables directly owned by this view (not nested in sub-views).
+     * Ported from viewDeclaration.eol getOwnTables().
+     */
+    public static Set<UIViewTableDeclaration> getOwnTables(UIViewDeclaration view) {
+        Set<EObject> all = getExposedVisualElements(view, new LinkedHashSet<>());
+        Set<UIViewTableDeclaration> result = new LinkedHashSet<>();
+        for (EObject ve : all) {
+            if (ve instanceof UIViewTableDeclaration table) {
+                EObject parent = table.eContainer();
+                while (parent != null && !(parent instanceof UIViewDeclaration)) {
+                    parent = parent.eContainer();
+                }
+                if (parent == view) {
+                    result.add(table);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns all action declarations from a view, recursively collecting from
+     * groups, tabs, action groups, and direct members. Sorted by name + id.
+     * Ported from viewDeclaration.eol getAllActionDeclarations().
+     */
+    public static List<UIActionDeclaration> getAllActionDeclarations(UIViewDeclaration view) {
+        Set<UIActionDeclaration> result = new LinkedHashSet<>();
+        collectActionDeclarations(view.getMembers(), result);
+        return result.stream()
+                .sorted((a, b) -> {
+                    String keyA = (a.getName() != null ? a.getName() : "") + getJslId(a);
+                    String keyB = (b.getName() != null ? b.getName() : "") + getJslId(b);
+                    return keyA.compareTo(keyB);
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns all action declarations from a table declaration.
+     * Collects from action group modifier and from row/card/tag members.
+     * Ported from viewTableDeclaration.eol getAllActionDeclarations().
+     */
+    public static List<UIActionDeclaration> getAllActionDeclarations(UIViewTableDeclaration table) {
+        Set<UIActionDeclaration> result = new LinkedHashSet<>();
+        ActionGroupModifier agm = getActionGroupModifier(table);
+        if (agm != null) {
+            for (EObject action : agm.getActions()) {
+                if (action instanceof UIActionDeclaration ad) {
+                    result.add(ad);
+                }
+            }
+        }
+        UIListItemDeclaration refType = table.getReferenceType();
+        if (refType instanceof UIRowDeclaration row) {
+            for (EObject member : row.getMembers()) {
+                if (member instanceof UIActionDeclaration ad) {
+                    result.add(ad);
+                }
+            }
+        } else if (refType instanceof UICardDeclaration card) {
+            for (EObject member : card.getMembers()) {
+                if (member instanceof UIActionDeclaration ad) {
+                    result.add(ad);
+                }
+            }
+        }
+        return new java.util.ArrayList<>(result);
+    }
+
+    private static void collectActionDeclarations(List<? extends EObject> members, Set<UIActionDeclaration> result) {
+        for (EObject member : members) {
+            if (member instanceof UIActionDeclaration ad) {
+                result.add(ad);
+            } else if (member instanceof UIViewGroupDeclaration group) {
+                collectActionDeclarations(group.getMembers(), result);
+            } else if (member instanceof UIViewTabsDeclaration tabs) {
+                for (UIViewPanelDeclaration panel : tabs.getPanels()) {
+                    if (panel instanceof UIViewGroupDeclaration g) {
+                        collectActionDeclarations(g.getMembers(), result);
+                    } else if (panel instanceof UIViewTabsDeclaration t) {
+                        collectActionDeclarations(java.util.Collections.singletonList(t), result);
+                    }
+                }
+            } else if (member instanceof UIActionGroupDeclaration agd) {
+                for (EObject agMember : agd.getMembers()) {
+                    if (agMember instanceof UIActionDeclaration ad) {
+                        result.add(ad);
+                    }
+                }
+            }
+        }
     }
 
     // =========================================================================

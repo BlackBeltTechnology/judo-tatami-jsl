@@ -23,6 +23,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view;
 import hu.blackbelt.judo.meta.jsl.jsldsl.*;
 import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.AttributeType;
+import hu.blackbelt.judo.meta.ui.data.EnumerationMember;
 import hu.blackbelt.judo.zeta.annotation.Greedy;
 import hu.blackbelt.judo.zeta.annotation.Lazy;
 import hu.blackbelt.judo.zeta.annotation.To;
@@ -285,10 +286,17 @@ public class ViewWidgetDeclarationRules {
 
             EnumerationCombo target = ctx.createTarget(EnumerationCombo.class);
             applyAbstractWidget(source, target, ctx);
-            ctx.setElementId(target, frontend.getName()
-                    + "/(jsl/" + getJslId(source) + ")/EnumerationTypeCombo");
+            String id = frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/EnumerationTypeCombo";
+            ctx.setElementId(target, id);
 
             addToParentContainer(source, target, ctx);
+
+            EnumDeclaration enumDecl = (EnumDeclaration) source.getTransferField().getTarget().getReferenceType();
+            for (EnumLiteral literal : enumDecl.getLiterals()) {
+                target.getOptions().add(ctx.equivalentDiscriminated(literal, Option.class,
+                        ENUMERATION_MEMBER_OPTION, id));
+            }
 
             LOG.debug("EnumerationTypeCombo: {}", target.getName());
             return target;
@@ -309,12 +317,41 @@ public class ViewWidgetDeclarationRules {
 
             EnumerationRadio target = ctx.createTarget(EnumerationRadio.class);
             applyAbstractWidget(source, target, ctx);
-            ctx.setElementId(target, frontend.getName()
-                    + "/(jsl/" + getJslId(source) + ")/EnumerationTypeRadio");
+            String id = frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/EnumerationTypeRadio";
+            ctx.setElementId(target, id);
 
             addToParentContainer(source, target, ctx);
 
+            EnumDeclaration enumDecl = (EnumDeclaration) source.getTransferField().getTarget().getReferenceType();
+            for (EnumLiteral literal : enumDecl.getLiterals()) {
+                target.getOptions().add(ctx.equivalentDiscriminated(literal, Option.class,
+                        ENUMERATION_MEMBER_OPTION, id));
+            }
+
             LOG.debug("EnumerationTypeRadio: {}", target.getName());
+            return target;
+        };
+    }
+
+    // =========================================================================
+    // EnumerationMemberOption (ported from enumLiteral.etl)
+    // =========================================================================
+
+    @TransformRule(name = ENUMERATION_MEMBER_OPTION, description = "Create Option for EnumLiteral")
+    @Lazy
+    @Transform(type = EnumLiteral.class)
+    @To(type = Option.class)
+    public TransformFunction<EnumLiteral, Option> enumerationMemberOption() {
+        return (source, ctx) -> {
+            ActorDeclaration actorDeclaration = ctx.getAttribute("actorDeclaration");
+            Option target = ctx.createTarget(Option.class);
+            ctx.setElementId(target, actorDeclaration.getName()
+                    + "/(jsl/" + getJslId(source) + ")/EnumerationMemberOption");
+            target.setSelected(false);
+            target.setName(source.getName());
+            target.setEnumerationMember(ctx.equivalent(source, EnumerationMember.class,
+                    CREATE_ENUMERATION_MEMBER));
             return target;
         };
     }

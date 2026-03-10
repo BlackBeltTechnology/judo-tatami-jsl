@@ -7,7 +7,9 @@ import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -178,11 +180,12 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testSummaryCRUD() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testSummaryCRUD(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("SummaryCRUD", List.of(createModelString("SummaryCRUD")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -545,11 +548,12 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         ), allActions.stream().map(NamedElement::getFQName).sorted().toList());
     }
 
-    @Test
-    void testAccessViewCRUD() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testAccessViewCRUD(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("AccessViewCRUD", List.of(createModelString("AccessViewCRUD")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -679,11 +683,12 @@ public class JslModel2UiCRUDTest extends AbstractTest {
 
     }
 
-    @Test
-    void testSingleRelationViewCRUD() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testSingleRelationViewCRUD(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("SingleRelationViewCRUD", List.of(createModelString("SingleRelationViewCRUD")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -1014,11 +1019,12 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(myJumperSetSelectorrangeAction.getActionDefinition(), myJumperSetSelectorRefresh.getActionDefinition());
     }
 
-    @Test
-    void testRelatedRowDetailViewCRUD() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testRelatedRowDetailViewCRUD(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("RelatedRowDetailViewCRUD", List.of(createModelString("RelatedRowDetailViewCRUD")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -1226,11 +1232,12 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(myJumpersRowDeleteAction.getActionDefinition(), myJumpersRowDelete.getActionDefinition());
     }
 
-    @Test
-    void testRelatedFormCRUD() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testRelatedFormCRUD(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("RelatedFormCRUD", List.of(createModelString("RelatedFormCRUD")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -1283,11 +1290,12 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertEquals(relatedCreateActions.getActionDefinition(), myJumpersView.getActionDefinition());
     }
 
-    @Test
-    void testAccessFormsRelationActions() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testAccessFormsRelationActions(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("AccessFormsRelationActions", List.of(createModelString("AccessFormsRelationActions")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -1349,11 +1357,12 @@ public class JslModel2UiCRUDTest extends AbstractTest {
         assertTrue(userFormRelatedCollectionOpenPage.getIsOpenPageAction());
     }
 
-    @Test
-    void testRelationFormsRelationActions() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testRelationFormsRelationActions(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("testRelationFormsRelationActions", List.of(createModelString("testRelationFormsRelationActions")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 

@@ -2,10 +2,12 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.*;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -117,11 +119,12 @@ public class JSLModel2UiListItemTest extends AbstractTest  {
         }
     }
 
-    @Test
-    void testCards() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testCards(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("Cards", List.of(createModelString("Cards")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -238,11 +241,12 @@ public class JSLModel2UiListItemTest extends AbstractTest  {
         assertEquals(relatedViewPage, inlineCardsOpenPageAction.getTargetPageDefinition());
     }
 
-    @Test
-    void testTags() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testTags(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("Tags", List.of(createModelString("Tags")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 

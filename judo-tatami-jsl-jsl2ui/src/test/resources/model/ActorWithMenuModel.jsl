@@ -1,0 +1,34 @@
+model ActorWithMenuModel;
+type string String min-size:0 max-size:255;
+type numeric Integer precision:9 scale:0;
+type boolean Boolean;
+type date Date;
+type timestamp Timestamp;
+widget string StringWidget;
+widget numeric NumericWidget;
+widget boolean BooleanWidget;
+widget date DateWidget;
+widget timestamp TimestampWidget;
+widget enum ComboWidget;
+entity Person {
+    field String name;
+}
+transfer PersonTransfer(Person p) {
+    field String name <= p.name;
+    event update onUpdate;
+}
+row PersonRow(PersonTransfer p) {
+    column String name <= p.name;
+}
+view PersonView(PersonTransfer p) {
+    group main {
+        widget StringWidget name <= p.name;
+    }
+}
+actor TestActor {
+    access PersonTransfer[] persons <= Person.all() update;
+}
+frontend TestMenu(TestActor a)
+    menu: {
+        table PersonRow[] persons <= a.persons label:"Persons" view:PersonView;
+    };

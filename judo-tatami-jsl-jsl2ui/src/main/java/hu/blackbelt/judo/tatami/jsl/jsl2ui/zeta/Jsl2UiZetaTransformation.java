@@ -196,6 +196,8 @@ public class Jsl2UiZetaTransformation {
         registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewWidgetDeclarationRules.class);
         registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewTableDeclarationRules.class);
         registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewLinkDeclarationRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewLinkDeclarationViewPageRules.class);
+        registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.ViewTableDeclarationViewPageRules.class);
 
         // Menu rules (menu tables, menu links)
         registry.register(hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view.MenuTableDeclarationRules.class);

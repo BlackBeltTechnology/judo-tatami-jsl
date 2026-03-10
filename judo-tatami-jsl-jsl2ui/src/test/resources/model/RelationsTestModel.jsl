@@ -1,0 +1,120 @@
+model RelationsTestModel;
+
+import judo::types;
+
+widget string StringWidget;
+
+entity User {
+    identifier String email required;
+
+    field EntityRelated containment;
+    field EntityRelated[] containmentCollection;
+
+    relation EntityRelated association;
+    relation EntityRelated[] associationCollection;
+    relation EntityRelated derivedContainment <= self.containment;
+    relation EntityRelated[] derivedContainmentCollection <= self.containmentCollection;
+}
+
+entity EntityRelated {
+    field String hello;
+
+    relation User user opposite-add:userRelatedOpposite;
+    relation User userCollection opposite-add:userRelatedOppositeCollection[];
+}
+
+transfer UserTransfer(User u) {
+    field String email <=> u.email;
+
+    relation EntityRelatedTransfer association <= u.association create:true update:true delete:true;
+    relation EntityRelatedTransfer[] associationCollection <= u.associationCollection create:true update:true delete:true;
+    relation EntityRelatedTransfer eagerAssociation <= u.association eager:true;
+    relation EntityRelatedTransfer[] eagerAssociationCollection <= u.associationCollection eager:true;
+    relation EntityRelatedTransfer userRelatedOpposite <= u.userRelatedOpposite create:true update:true delete:true;
+
+    relation EntityRelatedTransfer containment <= u.containment;
+    relation EntityRelatedTransfer[] containmentCollection <= u.containmentCollection;
+
+    relation EntityRelatedTransfer derivedLazyStatic <= EntityRelated.any();
+    relation EntityRelatedTransfer derivedLazyStaticEager <= EntityRelated.any() eager:true;
+    relation EntityRelatedTransfer[] derivedLazyCollectionStatic <= EntityRelated.all();
+    relation EntityRelatedTransfer[] derivedLazyCollectionStaticEager <= EntityRelated.all() eager:true;
+
+    relation EntityRelatedTransfer derivedContainment <= u.containment;
+    relation EntityRelatedTransfer derivedEagerContainment <= u.containment eager:true;
+    relation EntityRelatedTransfer[] derivedContainmentCollection <= u.containmentCollection;
+    relation EntityRelatedTransfer[] derivedEagerContainmentCollection <= u.containmentCollection eager:true;
+
+    relation EntityRelatedTransfer lazyTransientWithDefault default:EntityRelated.any();
+    relation EntityRelatedTransfer[] lazyTransientCollectionWithDefault default:EntityRelated.all();
+
+    relation EntityRelatedTransfer unmapped;
+    relation EntityRelatedTransfer unmappedRequired required:true;
+    relation EntityRelatedTransfer[] unmappedCollection;
+
+    event create onCreate;
+    event update onUpdate;
+    event delete onDelete;
+}
+
+transfer EntityRelatedTransfer(EntityRelated e) {
+    field String hello <= e.hello;
+    field String transient;
+
+    event create onCreate;
+    event update onUpdate;
+    event delete onDelete;
+}
+
+view UserView(UserTransfer u) {
+    link UnmappedRelated unmappedLazy <= u.unmapped;
+    link UnmappedRelated unmappedLazyRequired <= u.unmappedRequired;
+    table UnmappedRelatedRow[] unmappedLazyCollection <= u.unmappedCollection;
+
+    link MappedRelated lazyAssociation <= u.association;
+    table MappedRelatedRow[] lazyAssociationCollection <= u.associationCollection;
+    link MappedRelated lazyAssociationOpposite <= u.userRelatedOpposite;
+
+    link MappedRelated derivedLazyContainment <= u.containment;
+    table MappedRelatedRow[] derivedLazyContainmentCollection <= u.containmentCollection;
+
+    link MappedRelated derivedEagerContainment <= u.derivedEagerContainment;
+    table MappedRelatedRow[] derivedEagerContainmentCollection <= u.derivedEagerContainmentCollection;
+
+    link MappedRelated derivedEagerAssociation <= u.eagerAssociation;
+    table MappedRelatedRow[] derivedEagerAssociationCollection <= u.eagerAssociationCollection;
+
+    link MappedRelated derivedLazyStatic <= u.derivedLazyStatic;
+    table MappedRelatedRow[] derivedLazyCollectionStatic <= u.derivedLazyCollectionStatic;
+
+    link MappedRelated derivedEagerStatic <= u.derivedLazyStaticEager;
+    table MappedRelatedRow[] derivedEagerCollectionStatic <= u.derivedLazyCollectionStaticEager;
+
+    link MappedRelated lazyTransientWithDefault <= u.lazyTransientWithDefault;
+    table MappedRelatedRow[] lazyTransientCollectionWithDefault <= u.lazyTransientCollectionWithDefault;
+}
+
+view UnmappedRelated(EntityRelatedTransfer t) {
+    widget StringWidget transient <= t.transient label:"Transient Field";
+}
+
+row UnmappedRelatedRow(EntityRelatedTransfer t) {
+    column String transient <= t.transient label:"Transient";
+}
+
+view MappedRelated(EntityRelatedTransfer e) {
+    widget StringWidget mappedAttribute <= e.hello;
+}
+
+row MappedRelatedRow(EntityRelatedTransfer e) {
+    column String mappedAttribute <= e.hello label:"Mapped Attribute";
+}
+
+actor Actor realm:"COMPANY" claim:"email" identity:UserTransfer::email {
+    access UserTransfer user <= User.any() create delete update;
+}
+
+frontend TestApp(Actor a)
+    menu: {
+        link UserView user <= a.user label:"User";
+    };

@@ -1,0 +1,15 @@
+model SecurityTestModel;
+
+import judo::types;
+
+entity User {
+    identifier String email required;
+}
+
+transfer UserTransfer(User u) {
+    field String email <=> u.email;
+}
+
+actor Actor realm:"COMPANY" claim:"email" identity:UserTransfer::email;
+
+frontend ActorApp(Actor usr);

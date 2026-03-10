@@ -21,11 +21,14 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.structure;
  */
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.ActorDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.DataTypeDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.EnumDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.PrimitiveDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TransferDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TransferFieldDeclaration;
 import hu.blackbelt.judo.meta.ui.data.AttributeType;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
+import hu.blackbelt.judo.meta.ui.data.DataType;
 import hu.blackbelt.judo.meta.ui.data.MemberType;
 import hu.blackbelt.judo.zeta.annotation.Greedy;
 import hu.blackbelt.judo.zeta.annotation.To;
@@ -58,6 +61,29 @@ public class TransferFieldDeclarationRules {
     private static final Logger LOG = LoggerFactory.getLogger(TransferFieldDeclarationRules.class);
 
     /**
+     * Ported from primitiveDeclaration.eol getPrimitiveDeclarationEquivalent().
+     */
+    private DataType getPrimitiveDeclarationEquivalent(PrimitiveDeclaration pd,
+                                                        hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        if (pd instanceof DataTypeDeclaration dtd && dtd.getPrimitive() != null) {
+            return switch (dtd.getPrimitive()) {
+                case "numeric" -> ctx.equivalent(pd, DataType.class, CREATE_NUMERIC_TYPE);
+                case "date" -> ctx.equivalent(pd, DataType.class, CREATE_DATE_TYPE);
+                case "time" -> ctx.equivalent(pd, DataType.class, CREATE_TIME_TYPE);
+                case "timestamp" -> ctx.equivalent(pd, DataType.class, CREATE_TIMESTAMP_TYPE);
+                case "boolean" -> ctx.equivalent(pd, DataType.class, CREATE_BOOLEAN_TYPE);
+                case "string" -> ctx.equivalent(pd, DataType.class, CREATE_STRING_TYPE);
+                case "binary" -> ctx.equivalent(pd, DataType.class, CREATE_BINARY_TYPE);
+                default -> null;
+            };
+        }
+        if (pd instanceof EnumDeclaration) {
+            return ctx.equivalent(pd, DataType.class, CREATE_ENUMERATION_TYPE);
+        }
+        return null;
+    }
+
+    /**
      * Common logic from AbstractCreateTransferAttribute.
      * Returns null if the guard fails.
      */
@@ -70,6 +96,8 @@ public class TransferFieldDeclarationRules {
 
         AttributeType target = ctx.createTarget(AttributeType.class);
         target.setName(source.getName());
+        target.setDataType(getPrimitiveDeclarationEquivalent(
+                (PrimitiveDeclaration) source.getReferenceType(), ctx));
         target.setIsRequired(isRequired(source));
         target.setIsFilterable(isFilterable(source));
 

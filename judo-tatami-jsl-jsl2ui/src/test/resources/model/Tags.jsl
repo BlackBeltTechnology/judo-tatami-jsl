@@ -1,0 +1,71 @@
+model Tags;
+
+import judo::types;
+
+widget numeric NumericWidget;
+widget string StringWidget;
+
+entity Entity1 {
+    field Integer number;
+    field String blaa;
+    relation Entity2[] relatedCollection;
+}
+
+entity Entity2 {
+    field String name;
+    field String hello;
+}
+
+transfer Transfer1(Entity1 e1) {
+    field Integer number <=> e1.number;
+    field String blaa <=> e1.blaa;
+    relation Transfer2[] relatedCollection <= e1.relatedCollection update;
+
+    event update onUpdate;
+}
+
+transfer Transfer2(Entity2 e2) {
+    field String name <=> e2.name;
+    field String hello <=> e2.hello;
+
+    event update onUpdate;
+}
+
+view View1(Transfer1 t1) {
+    widget NumericWidget number <=> t1.number;
+    widget StringWidget blaa <=> t1.blaa;
+
+    group level {
+        table Card2[] relatedCollection <= t1.relatedCollection view:View2;
+        table Tag2[] relatedTagCollection <= t1.relatedCollection view:View2;
+    }
+}
+
+view View2(Transfer2 t2) {
+    widget StringWidget name <=> t2.name;
+    widget StringWidget hello <=> t2.hello;
+}
+
+card Card1(Transfer1 t1) {
+    widget NumericWidget number <=> t1.number;
+    widget StringWidget blaa <=> t1.blaa;
+}
+
+card Card2(Transfer2 t2) {
+    widget StringWidget name <=> t2.name;
+    widget StringWidget hello <=> t2.hello;
+}
+
+tag Tag1(Transfer1 t1) text:t1.blaa;
+
+tag Tag2(Transfer2 t2) text:t2.name;
+
+actor A {
+    access Transfer1[] t1s <= Entity1.all() update:true;
+}
+
+frontend M(A a)
+    menu: {
+        table Card1[] v1s <= a.t1s view:View1;
+        table Tag1[] t1s <= a.t1s view:View1;
+    };

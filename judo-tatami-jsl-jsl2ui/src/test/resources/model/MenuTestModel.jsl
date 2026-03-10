@@ -1,0 +1,48 @@
+model MenuTestModel;
+
+import judo::types;
+
+entity User {
+    identifier String userName required;
+}
+
+entity Product {
+    identifier String name required;
+    field Integer price required;
+}
+
+transfer UserTransfer(User u) {
+    field String userName <= u.userName required;
+}
+
+transfer ProductTransfer(Product p) {
+    field String name <= p.name required;
+    field String price <= p.price.asString() + " HUF";
+}
+
+row UsersRow(UserTransfer u) {
+    column String userName <= u.userName label:"Username";
+}
+
+row ProductsRow(ProductTransfer p) {
+    column String name <= p.name label:"Name";
+    column String price <= p.price label:"Price";
+}
+
+actor Actor {
+    access ProductTransfer[] products <= Product.all();
+    access ProductTransfer[] products2 <= Product.all();
+    access UserTransfer[] users <= User.all();
+}
+
+frontend MenuActor(Actor usr)
+    menu: {
+        group first label:"Group1" {
+            group second label:"Group2" {
+                table ProductsRow[] products <= usr.products label:"Products" icon:"close";
+            }
+            table ProductsRow[] products2 <= usr.products2 label:"Products2";
+        }
+        table UsersRow[] users <= usr.users label:"Users" icon:"account-multiple";
+    }
+    title: "Yayy, JSL!";

@@ -1,0 +1,98 @@
+model BasicWidgetsTestModel;
+
+type binary Binary max-file-size: 1MB  mime-type: ["image/*"];
+type boolean Boolean;
+type date Date;
+type numeric Numeric scale: 0 precision: 9;
+type string String min-size: 0 max-size: 255;
+type time Time;
+type timestamp Timestamp;
+
+widget binary BinaryWidget;
+widget boolean BooleanWidget;
+widget date DateWidget;
+widget enum ComboWidget;
+widget enum RadioWidget;
+widget numeric NumericWidget;
+widget string StringWidget;
+widget time TimeWidget;
+widget timestamp TimestampWidget;
+
+enum MyEnum {
+    Atomic = 0;
+    Bombastic = 1;
+    Crazy = 2;
+}
+
+entity User {
+    identifier String email required;
+    field Binary binary;
+    field String string;
+    field Boolean boolean;
+    field Date date;
+    field Numeric numeric;
+    field Time time;
+    field Timestamp timestamp;
+    field MyEnum `enum` default:MyEnum#Bombastic;
+}
+
+transfer UserTransfer(User u) {
+    field String email <=> u.email required;
+    field Binary binary <= u.binary;
+    field String string <= u.string;
+    field Boolean boolean <= u.boolean;
+    field Date date <= u.date;
+    field Numeric numeric <= u.numeric;
+    field Time time <= u.time;
+    field Timestamp timestamp <= u.timestamp;
+    field MyEnum `enum` <=> u.`enum` default:MyEnum#Crazy;
+
+    event create onCreate;
+    event update onUpdate;
+    event delete onDelete;
+}
+
+view UserView(UserTransfer u) {
+    group level1 label:"Yo" icon:"text" {
+        group level2 width:12 frame:true icon:"unicorn" label:"Level 2" stretch:true {
+            widget StringWidget email <= u.email icon:"text" label: "My Email" predictive;
+            widget BinaryWidget binaryDerived <= u.binary icon:"binary" label:"Binary Derived";
+            widget StringWidget stringTextAreaDerived <= u.string icon:"string" label:"String TextArea Derived" lines:5;
+            widget StringWidget stringDerived <= u.string icon:"string" label:"String Derived";
+        }
+
+        group level22 width:6 frame:true icon:"dog" label:"Level 2 - 2" orientation:horizontal {
+            widget BooleanWidget booleanDerived <= u.boolean icon:"boolean" label:"Boolean Derived";
+            widget DateWidget dateDerived <= u.date icon:"date" label:"Date Derived";
+            widget NumericWidget numericDerived <= u.numeric icon:"numeric" label:"Numeric Derived";
+        }
+
+        tabs tabs0 orientation:horizontal width:6 {
+            group tab1 label:"Tab1" icon:"numbers" h-align:left {
+                widget TimeWidget timeDerived <= u.time icon:"time" label:"Time Derived";
+            }
+
+            group tab2 label:"Tab2" icon:"numbers" h-align:right {
+                widget TimestampWidget timestampDerived <= u.timestamp icon:"timestamp" label:"Timestamp Derived";
+                widget ComboWidget mappedEnum <= u.`enum` icon:"enum" label:"Mapped Enum";
+                widget RadioWidget mappedRadioEnum <= u.`enum` icon:"enum 2" label:"Mapped Radio Enum";
+            }
+        }
+    }
+}
+
+form UserForm(UserTransfer u) {
+    widget StringWidget email <= u.email icon:"text" label: "My Email";
+    group level1 label:"Yo" icon:"text" {
+        widget TimestampWidget timestampDerived <= u.timestamp icon:"timestamp" label:"Timestamp Derived";
+    }
+}
+
+actor WidgetsActor {
+    access UserTransfer user <= User.any() create delete update;
+}
+
+frontend WidgetsApp(WidgetsActor a)
+    menu: {
+        link UserView user <= a.user label:"User" icon:"tools" form:UserForm view:UserView;
+    };

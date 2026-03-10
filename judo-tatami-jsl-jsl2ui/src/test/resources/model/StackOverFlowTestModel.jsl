@@ -1,0 +1,78 @@
+model StackOverFlowTestModel;
+
+import judo::types;
+
+widget string StringWidget;
+
+entity A {
+    field String name;
+    field B[] bs;
+}
+
+entity B {
+    field C[] cs;
+}
+
+entity C {
+    relation D[] ds opposite: c;
+}
+
+entity D {
+    relation C c opposite: ds;
+}
+
+transfer ATransfer(A a) {
+    field String name <=> a.name;
+    relation BTransfer[] bs <= a.bs eager:true create:true delete:true update:true;
+
+    event create createOn;
+    event update updateOn;
+    event delete deleteOn;
+}
+
+transfer BTransfer(B b) {
+    relation CTransfer[] cs <= b.cs eager:true create:true delete:true update:true;
+
+    event create createOn;
+    event update updateOn;
+    event delete deleteOn;
+}
+
+transfer CTransfer(C c) {
+    relation DTransfer[] ds <= c.ds eager:true create:true delete:true update:true;
+
+    event create createOn;
+    event update updateOn;
+    event delete deleteOn;
+}
+
+transfer DTransfer(D d) {
+    relation CTransfer c <= d.c create:true delete:true update:true;
+
+    event create createOn;
+    event update updateOn;
+    event delete deleteOn;
+}
+
+form AForm(ATransfer a) {
+    widget StringWidget name <= a.name icon: "atom-variant";
+}
+
+view AView(ATransfer a) {
+    widget StringWidget name <= a.name;
+}
+
+row ARow(ATransfer a) {
+    column String name <= a.name;
+}
+
+// Actor
+
+actor Actor {
+    access ATransfer[] `as` <= A.all() create delete update;
+}
+
+frontend actorApp(Actor act)
+    menu: {
+        table ARow[] asTable <= act.`as` form:AForm view:AView; // this cause the stackoverflow
+    };
