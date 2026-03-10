@@ -1,4 +1,4 @@
-## ADDED Requirements
+## MODIFIED Requirements
 
 ### Requirement: Existing tests run with both ETL and Zeta engines
 All existing jsl2psm and jsl2ui test suites SHALL be parameterized using `@ParameterizedTest` with `@EnumSource(TransformationMode.class)` to run each test case against both the ETL and Zeta transformation engines.
@@ -15,6 +15,10 @@ All existing jsl2psm and jsl2ui test suites SHALL be parameterized using `@Param
 - **WHEN** an existing jsl2ui test executes with either TransformationMode
 - **THEN** the test SHALL pass with the selected engine
 
+#### Scenario: jsl2ui tests are parameterized like jsl2psm
+- **WHEN** all 12 jsl2ui test classes are updated
+- **THEN** each test method SHALL use `@ParameterizedTest @EnumSource(TransformationMode.class)` and call `transform(mode)`
+
 ### Requirement: DualTransformationTest compares ETL and Zeta output
 The system SHALL provide `Jsl2PsmDualTransformationTest` and `Jsl2UiDualTransformationTest` classes that run the same JSL model through both ETL and Zeta engines and assert output equivalence using `ModelComparator`.
 
@@ -25,6 +29,10 @@ The system SHALL provide `Jsl2PsmDualTransformationTest` and `Jsl2UiDualTransfor
 #### Scenario: jsl2ui dual test detects equivalent models
 - **WHEN** a representative JSL model is transformed by both ETL and Zeta jsl2ui engines
 - **THEN** `ModelComparator.assertEquivalent()` in STRUCTURAL mode SHALL pass with zero differences
+
+#### Scenario: jsl2ui dual test passes for all test models
+- **WHEN** the 10 dual test cases (including the 9 currently disabled) are run
+- **THEN** all SHALL pass with `ModelComparator` reporting EQUIVALENT in STRUCTURAL mode
 
 #### Scenario: Dual test reports differences during development
 - **WHEN** `ModelComparator` detects differences between ETL and Zeta output
@@ -47,3 +55,10 @@ During phased implementation, each phase SHALL include dedicated Zeta unit tests
 #### Scenario: Zeta unit test is written before implementation
 - **WHEN** a new set of Zeta rules is about to be implemented
 - **THEN** a failing test SHALL exist before the rules are coded
+
+### Requirement: Redundant zeta test classes are removed
+The 5 separate `zeta/` test classes SHALL be deleted when their coverage is fully subsumed by parameterized tests running with `TransformationMode.ZETA`.
+
+#### Scenario: Zeta test classes deleted after parameterization
+- **WHEN** all 12 jsl2ui test classes pass with `TransformationMode.ZETA`
+- **THEN** the 5 separate zeta/ test classes SHALL be removed from the codebase
