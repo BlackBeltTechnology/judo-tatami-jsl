@@ -1,0 +1,91 @@
+model MultipleActorsTestModel;
+
+import judo::types;
+
+widget string StringWidget;
+
+entity User {
+    identifier String userName required;
+}
+
+entity User2 {
+    identifier String userName2 required;
+}
+
+entity Product {
+    identifier String name required;
+    field Integer price required;
+}
+
+entity Product2 {
+    identifier String name2 required;
+    field Integer price2 required;
+}
+
+transfer UserTransfer(User u) {
+    field String userName <= u.userName;
+}
+
+transfer User2Transfer(User2 u) {
+    field String userName2 <= u.userName2;
+}
+
+transfer ProductTransfer(Product p) {
+    field String name required;
+    field Integer priceOriginal <= p.price;
+    field String price <= p.price.asString() + " HUF";
+
+    event update onUpdate;
+}
+
+transfer Product2Transfer(Product2 p) {
+    field String name2 required;
+    field Integer price2Original <= p.price2;
+    field String price2 <= p.price2.asString() + " HUF";
+
+    event update onUpdate;
+}
+
+view ProductView(ProductTransfer product) {
+    widget StringWidget name <= product.name;
+    widget StringWidget price <= product.price;
+}
+
+view Product2View(Product2Transfer product2) {
+    widget StringWidget name2 <= product2.name2;
+    widget StringWidget price2 <= product2.price2;
+}
+
+row ProductsRow(ProductTransfer product) {
+    column String name <= product.name label:"Name";
+    column String price <= product.price label:"Price";
+}
+
+row ProductsRow2(Product2Transfer product2) {
+    column String name2 <= product2.name2 label:"Name 2";
+    column String price2 <= product2.price2 label:"Price 2";
+}
+
+actor Actor1 {
+    access ProductTransfer[] products <= Product.all() update;
+}
+
+actor Actor2 {
+    access Product2Transfer[] products2 <= Product2.all() update;
+}
+
+frontend App1(Actor1 a)
+    menu: {
+        group first label:"Group1" {
+            table ProductsRow[] products1 <= a.products label:"Products1" view:ProductView;
+        }
+        table ProductsRow[] allProducts <= a.products label:"All Products" icon:"tools" view:ProductView;
+    };
+
+frontend App2(Actor2 a)
+    menu: {
+        group first label:"Group2" {
+            table ProductsRow2[] products2 <= a.products2 label:"Products2" view:Product2View;
+        }
+        table ProductsRow2[] allProducts2 <= a.products2 label:"All Products 2" icon:"tools" view:Product2View dashboard;
+    };

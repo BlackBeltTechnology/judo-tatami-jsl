@@ -3,10 +3,12 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.application;
 import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.*;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -129,11 +131,12 @@ public class JslModel2UiOperationsTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testOperationsOnViews() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testOperationsOnViews(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("OperationsOnViews", List.of(createModelString("OperationsOnViews")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -240,11 +243,12 @@ public class JslModel2UiOperationsTest extends AbstractTest {
         assertEquals("Us all", myAction3Button.getTooltipText());
     }
 
-    @Test
-    void testParameterlessVoidOperationsOnViews() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testParameterlessVoidOperationsOnViews(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("ParameterlessVoidOperationsOnViews", List.of(createModelString("ParameterlessVoidOperationsOnViews")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -274,11 +278,12 @@ public class JslModel2UiOperationsTest extends AbstractTest {
 
     }
 
-    @Test
-    void testOperationsOnViewsWithInputSelectors() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testOperationsOnViewsWithInputSelectors(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("OperationsOnViewsWithInputSelectors", List.of(createModelString("OperationsOnViewsWithInputSelectors")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -386,11 +391,12 @@ public class JslModel2UiOperationsTest extends AbstractTest {
 
     }
 
-    @Test
-    void testOperationsOnViewsWithInputForms() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testOperationsOnViewsWithInputForms(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("OperationsOnViewsWithInputForms", List.of(createModelString("OperationsOnViewsWithInputForms")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 

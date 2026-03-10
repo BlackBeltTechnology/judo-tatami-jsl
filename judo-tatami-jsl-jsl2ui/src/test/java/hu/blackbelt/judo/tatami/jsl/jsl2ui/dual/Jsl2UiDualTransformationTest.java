@@ -27,11 +27,12 @@ import hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.Jsl2UiZetaTransformation;
 import hu.blackbelt.judo.tatami.test.util.ModelComparator;
 import hu.blackbelt.judo.tatami.test.util.ModelComparator.ComparisonMode;
 import hu.blackbelt.judo.tatami.test.util.ModelComparator.ComparisonResult;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,8 +50,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * Runs the same JSL model through both ETL and Zeta transformations,
  * then compares the resulting UI models using ModelComparator in STRICT mode.
  */
-@Slf4j
 public class Jsl2UiDualTransformationTest {
+
+    private static final Logger log = LoggerFactory.getLogger(Jsl2UiDualTransformationTest.class);
 
     private static final String TARGET_TEST_CLASSES = "target/test-classes/dual";
 
@@ -145,7 +147,6 @@ public class Jsl2UiDualTransformationTest {
         """);
     }
 
-    @Disabled("Zeta gap: menu naming, missing AccessTableViewPage, missing ClassType in dataElements")
     @Test
     void testActorWithMenu() throws Exception {
         assertModelsEquivalent("actorWithMenu", "ActorWithMenuModel",
@@ -175,7 +176,7 @@ public class Jsl2UiDualTransformationTest {
                 "    };\n");
     }
 
-    @Disabled("Zeta gap: menu link naming, missing pages and ClassType elements")
+    @Disabled("JSL parser cannot parse TestActor#asActor() syntax - JslParseException")
     @Test
     void testActorWithMenuLink() throws Exception {
         assertModelsEquivalent("actorWithMenuLink", "ActorWithMenuLinkModel",
@@ -198,7 +199,6 @@ public class Jsl2UiDualTransformationTest {
                 "    };\n");
     }
 
-    @Disabled("Zeta gap: menu naming, missing AccessTableViewPage, missing ClassType in dataElements")
     @Test
     void testEntityWithCRUD() throws Exception {
         assertModelsEquivalent("entityWithCRUD", "CRUDModel",
@@ -233,7 +233,6 @@ public class Jsl2UiDualTransformationTest {
                 "    };\n");
     }
 
-    @Disabled("Zeta gap: menu naming, missing AccessTableViewPage, missing ClassType in dataElements")
     @Test
     void testRelationsAndNavigation() throws Exception {
         assertModelsEquivalent("relationsAndNavigation", "RelationsModel",
@@ -278,7 +277,6 @@ public class Jsl2UiDualTransformationTest {
                 "    };\n");
     }
 
-    @Disabled("Zeta gap: menu naming, missing AccessTableViewPage, missing ClassType in dataElements")
     @Test
     void testWidgets() throws Exception {
         assertModelsEquivalent("widgets", "WidgetsModel",
@@ -320,7 +318,6 @@ public class Jsl2UiDualTransformationTest {
                 "    };\n");
     }
 
-    @Disabled("Zeta gap: menu naming, missing AccessTableViewPage, missing ClassType in dataElements")
     @Test
     void testEnumTypes() throws Exception {
         assertModelsEquivalent("enumTypes", "EnumModel",
@@ -358,7 +355,6 @@ public class Jsl2UiDualTransformationTest {
                 "    };\n");
     }
 
-    @Disabled("Zeta gap: menu naming, missing AccessTableViewPage, missing ClassType in dataElements")
     @Test
     void testRowDeclarations() throws Exception {
         assertModelsEquivalent("rowDeclarations", "RowModel",
@@ -389,7 +385,6 @@ public class Jsl2UiDualTransformationTest {
                 "    };\n");
     }
 
-    @Disabled("Zeta gap: menu naming, missing AccessTableViewPage, missing ClassType in dataElements")
     @Test
     void testActionGroups() throws Exception {
         assertModelsEquivalent("actionGroups", "ActionGroupModel",
@@ -424,7 +419,6 @@ public class Jsl2UiDualTransformationTest {
                 "    };\n");
     }
 
-    @Disabled("Zeta gap: menu naming, missing AccessTableViewPage, missing ClassType in dataElements")
     @Test
     void testTabs() throws Exception {
         assertModelsEquivalent("tabs", "TabsModel",

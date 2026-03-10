@@ -1,0 +1,49 @@
+model RelationsModel;
+type string String min-size:0 max-size:255;
+type numeric Integer precision:9 scale:0;
+type boolean Boolean;
+type date Date;
+type timestamp Timestamp;
+widget string StringWidget;
+widget numeric NumericWidget;
+widget boolean BooleanWidget;
+widget date DateWidget;
+widget timestamp TimestampWidget;
+widget enum ComboWidget;
+entity Category {
+    field String name;
+}
+entity Product {
+    field String name;
+    relation Category category;
+}
+transfer CategoryTransfer(Category c) {
+    field String name <= c.name;
+    event update onUpdate;
+}
+transfer ProductTransfer(Product p) {
+    field String name <= p.name;
+    relation CategoryTransfer category <= p.category;
+    event update onUpdate;
+}
+row ProductRow(ProductTransfer p) {
+    column String name <= p.name;
+}
+view CategoryView(CategoryTransfer c) {
+    group main {
+        widget StringWidget name <= c.name;
+    }
+}
+view ProductView(ProductTransfer p) {
+    group main {
+        widget StringWidget name <= p.name;
+        link CategoryView category <= p.category icon:"category" label:"Category";
+    }
+}
+actor TestActor {
+    access ProductTransfer[] products <= Product.all() update;
+}
+frontend TestMenu(TestActor a)
+    menu: {
+        table ProductRow[] products <= a.products label:"Products" view:ProductView;
+    };

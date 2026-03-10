@@ -1,0 +1,46 @@
+model WidgetsModel;
+type string String min-size:0 max-size:255;
+type numeric Integer precision:9 scale:0;
+type boolean Boolean;
+type date Date;
+type timestamp Timestamp;
+widget string StringWidget;
+widget numeric NumericWidget;
+widget boolean BooleanWidget;
+widget date DateWidget;
+widget timestamp TimestampWidget;
+widget enum ComboWidget;
+entity Record {
+    field String name;
+    field Integer count;
+    field Boolean active;
+    field Date created;
+    field Timestamp modified;
+}
+transfer RecordTransfer(Record r) {
+    field String name <= r.name;
+    field Integer count <= r.count;
+    field Boolean active <= r.active;
+    field Date created <= r.created;
+    field Timestamp modified <= r.modified;
+    event update onUpdate;
+}
+row RecordRow(RecordTransfer r) {
+    column String name <= r.name;
+}
+view RecordView(RecordTransfer r) {
+    group details {
+        widget StringWidget name <= r.name;
+        widget NumericWidget count <= r.count;
+        widget BooleanWidget active <= r.active;
+        widget DateWidget created <= r.created;
+        widget TimestampWidget modified <= r.modified;
+    }
+}
+actor TestActor {
+    access RecordTransfer[] records <= Record.all() update;
+}
+frontend TestMenu(TestActor a)
+    menu: {
+        table RecordRow[] records <= a.records label:"Records" view:RecordView;
+    };

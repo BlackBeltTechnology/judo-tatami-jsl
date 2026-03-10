@@ -4,10 +4,12 @@ import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
 import hu.blackbelt.judo.meta.ui.Application;
 import hu.blackbelt.judo.meta.ui.NamedElement;
 import hu.blackbelt.judo.meta.ui.data.*;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -46,8 +48,9 @@ public class JslModel2UiDataTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testBasicData() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testBasicData(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("BasicDataTestModel", List.of("""
             model BasicDataTestModel;
 
@@ -110,7 +113,7 @@ public class JslModel2UiDataTest extends AbstractTest {
             frontend ActorApp(Actor a);
         """));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -261,8 +264,9 @@ public class JslModel2UiDataTest extends AbstractTest {
         asserter.assertAttributeType(timestampMapped, "timestampMapped", "Timestamp", MemberType.MAPPED, false, true, false);
     }
 
-    @Test
-    void testBasicDataCrossTransfers() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testBasicDataCrossTransfers(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("BasicDataCrossTransfersTestModel", List.of("""
             model BasicDataCrossTransfersTestModel;
 
@@ -307,7 +311,7 @@ public class JslModel2UiDataTest extends AbstractTest {
                 };
         """));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -343,8 +347,9 @@ public class JslModel2UiDataTest extends AbstractTest {
         tr2Asserter.assertAttributeType(integer, "integer", "Integer", MemberType.DERIVED, false, true, true);
     }
 
-    @Test
-    void testRelations() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testRelations(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("RelationsTestModel", List.of("""
             model RelationsTestModel;
 
@@ -468,7 +473,7 @@ public class JslModel2UiDataTest extends AbstractTest {
                 };
         """));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 

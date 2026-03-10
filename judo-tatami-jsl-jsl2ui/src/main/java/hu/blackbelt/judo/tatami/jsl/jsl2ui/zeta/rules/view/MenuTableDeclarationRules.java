@@ -22,7 +22,9 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.*;
 import hu.blackbelt.judo.meta.ui.*;
+import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.meta.ui.data.MemberType;
+import hu.blackbelt.judo.meta.ui.data.OperationType;
 import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.zeta.annotation.Greedy;
 import hu.blackbelt.judo.zeta.annotation.Lazy;
@@ -35,6 +37,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.Jsl2UiHelper.*;
@@ -263,6 +267,246 @@ public class MenuTableDeclarationRules {
             target.setName(source.getName() + "::RowDelete");
             target.setActionDefinition(ctx.equivalent(source.getReferenceType(),
                     ActionDefinition.class, TABLE_ROW_DELETE_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    // =========================================================================
+    // AccessTableViewPageDefinition (@greedy) — ported from menuTableDeclarationViewPage.etl
+    // =========================================================================
+
+    @TransformRule(name = ACCESS_TABLE_VIEW_PAGE_DEFINITION, description = "Create PageDefinition for table view page")
+    @Greedy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = PageDefinition.class)
+    public TransformFunction<UIMenuTableDeclaration, PageDefinition> accessTableViewPageDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            if (!containsVisualElement(frontend, source)) return null;
+            if (getUpdateViewModifier(source) == null) return null;
+
+            TransferRelationDeclaration relation = source.getActorAccess().getTarget();
+
+            PageDefinition target = ctx.createTarget(PageDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableViewPageDefinition");
+            target.setName(getFqName(source) + "::AccessTableViewPage");
+
+            target.setContainer(ctx.equivalent(getUpdateViewModifier(source).getView(),
+                    PageContainer.class, VIEW_PAGE_CONTAINER));
+
+            RelationType relType = ctx.equivalent(relation, RelationType.class, RELATION_TYPE);
+            target.setDataElement(relType);
+            relType.setMemberType(MemberType.ACCESS);
+
+            if (isOpenInDialog(getUpdateViewModifier(source).getView())) {
+                target.setOpenInDialog(true);
+            }
+
+            UIViewDeclaration view = getUpdateViewModifier(source).getView();
+            List<UIActionDeclaration> actionDeclarationsToProcess = new ArrayList<>(getAllActionDeclarations(view));
+
+            // Link processing
+            for (UIViewLinkDeclaration link : getOwnLinks(view)) {
+                TransferRelationDeclaration lRelation = link.getTransferRelation().getTarget();
+
+                target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                        VIEW_LINK_DECLARATION_OPEN_PAGE_ACTION, getJslId(source)));
+                if (isRefreshAllowed(lRelation) && !isEager(lRelation)) {
+                    if (link.isButton()) {
+                        target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                                VIEW_LINK_DECLARATION_PRE_FETCH_ACTION, getJslId(source)));
+                    } else {
+                        target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                                VIEW_LINK_DECLARATION_REFRESH_ACTION, getJslId(source)));
+                    }
+                }
+                if (getCreateFormModifier(link) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_OPEN_FORM_ACTION, getJslId(source)));
+                }
+                if (isDeleteAllowed(lRelation) && !link.isButton()) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_ROW_DELETE_ACTION, getJslId(source)));
+                }
+                if (getSelectorTableModifier(link) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_OPEN_SET_SELECTOR_DIALOG_ACTION, getJslId(source)));
+                }
+                if (getSelectorTableModifier(link) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_UNSET_ACTION, getJslId(source)));
+                }
+            }
+
+            // Table processing
+            for (UIViewTableDeclaration table : getOwnTables(view)) {
+                TransferRelationDeclaration tRelation = table.getTransferRelation().getTarget();
+
+                if (getUpdateViewModifier(table) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_OPEN_PAGE_ACTION, getJslId(source)));
+                }
+                if (isFilterSupported(tRelation)) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_FILTER_ACTION, getJslId(source)));
+                }
+                if (isRefreshAllowed(tRelation)) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_REFRESH_ACTION, getJslId(source)));
+                }
+                if (getCreateFormModifier(table) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_OPEN_CREATE_ACTION, getJslId(source)));
+                }
+                if (isDeleteAllowed(tRelation)) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_ROW_DELETE_ACTION, getJslId(source)));
+                }
+                if (getSelectorTableModifier(table) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_OPEN_ADD_SELECTOR_ACTION, getJslId(source)));
+                }
+                if (getSelectorTableModifier(table) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_CLEAR_ACTION, getJslId(source)));
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_BULK_REMOVE_ACTION, getJslId(source)));
+                }
+                if (table.getReferenceType() instanceof UITagDeclaration) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_TAGS_DECLARATION_AUTOCOMPLETE_RANGE_ACTION, getJslId(source)));
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_TAGS_DECLARATION_AUTOCOMPLETE_ADD_ACTION, getJslId(source)));
+                }
+
+                for (UIActionDeclaration actionDeclaration : getAllActionDeclarations(table)) {
+                    Action viewAction = ctx.equivalentDiscriminated(actionDeclaration, Action.class,
+                            VIEW_ACTION, getJslId(source));
+                    viewAction.setOwnerDataElement(ctx.equivalent(tRelation, RelationType.class, RELATION_TYPE));
+                    viewAction.setTargetDataElement(ctx.equivalent(actionDeclaration.getTransferAction().getTarget(),
+                            OperationType.class, OPERATION_TYPE));
+                    target.getActions().add(viewAction);
+                    actionDeclarationsToProcess.remove(actionDeclaration);
+
+                    if (viewAction.getActionDefinition() instanceof ParameterlessCallOperationActionDefinition pcoad
+                            && pcoad.getTargetType() == null) {
+                        pcoad.setTargetType(ctx.equivalent(tRelation.getReferenceType(), ClassType.class, CLASS_TYPE));
+                    }
+                }
+            }
+
+            // Remaining action declarations (direct view-level actions)
+            for (UIActionDeclaration actionDeclaration : actionDeclarationsToProcess) {
+                Action viewAction = ctx.equivalentDiscriminated(actionDeclaration, Action.class,
+                        VIEW_ACTION, getJslId(source));
+                viewAction.setOwnerDataElement(relType);
+                viewAction.setTargetDataElement(ctx.equivalent(actionDeclaration.getTransferAction().getTarget(),
+                        OperationType.class, OPERATION_TYPE));
+                target.getActions().add(viewAction);
+            }
+
+            // Standard actions
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    ACCESS_TABLE_VIEW_BACK_ACTION));
+            if (isRefreshAllowed(relation)) {
+                target.getActions().add(ctx.equivalent(source, Action.class,
+                        ACCESS_TABLE_VIEW_REFRESH_ACTION));
+            }
+            if (isUpdateAllowed(relation)) {
+                target.getActions().add(ctx.equivalent(source, Action.class,
+                        ACCESS_TABLE_VIEW_UPDATE_ACTION));
+            }
+            if (isDeleteAllowed(relation)) {
+                target.getActions().add(ctx.equivalent(source, Action.class,
+                        ACCESS_TABLE_VIEW_DELETE_ACTION));
+            }
+
+            // Add to application pages
+            Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
+            app.getPages().add(target);
+
+            LOG.debug("AccessTableViewPageDefinition: {}", target.getName());
+            return target;
+        };
+    }
+
+    // =========================================================================
+    // Access table view lazy action rules — ported from menuTableDeclarationViewPage.etl
+    // =========================================================================
+
+    @TransformRule(name = ACCESS_TABLE_VIEW_BACK_ACTION, description = "Create back action for view page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTableViewBackAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableViewBackAction");
+            target.setName(source.getName() + "::Back");
+            target.setOwnerDataElement(ctx.equivalent(source.getActorAccess().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getUpdateViewModifier(source).getView(),
+                    ActionDefinition.class, VIEW_PAGE_CONTAINER_BACK_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TABLE_VIEW_REFRESH_ACTION, description = "Create refresh action for view page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTableViewRefreshAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableViewRefreshAction");
+            target.setName(source.getName() + "::Refresh");
+            target.setOwnerDataElement(ctx.equivalent(source.getActorAccess().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getUpdateViewModifier(source).getView(),
+                    ActionDefinition.class, VIEW_PAGE_CONTAINER_REFRESH_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TABLE_VIEW_UPDATE_ACTION, description = "Create update action for view page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTableViewUpdateAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableViewUpdateAction");
+            target.setName(source.getName() + "::Update");
+            target.setOwnerDataElement(ctx.equivalent(source.getActorAccess().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getUpdateViewModifier(source).getView(),
+                    ActionDefinition.class, VIEW_PAGE_CONTAINER_UPDATE_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TABLE_VIEW_DELETE_ACTION, description = "Create delete action for view page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTableViewDeleteAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableViewDeleteAction");
+            target.setName(getFqName(source) + "::Delete");
+            target.setOwnerDataElement(ctx.equivalent(source.getActorAccess().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getUpdateViewModifier(source).getView(),
+                    ActionDefinition.class, VIEW_PAGE_CONTAINER_DELETE_ACTION_DEFINITION));
             return target;
         };
     }

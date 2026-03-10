@@ -5,11 +5,12 @@ import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.meta.ui.data.DataType;
 import hu.blackbelt.judo.meta.ui.data.RelationType;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -48,8 +49,9 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testActors() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testActors(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("ApplicationTestModel", List.of("""
             model ApplicationTestModel;
 
@@ -58,7 +60,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             frontend AppMenu(AppActor a);
         """));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -91,8 +93,9 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals("#8C8C8C", theme.getSubtitleColor());
     }
 
-    @Test
-    void testMenu() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testMenu(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("MenuTestModel", List.of("""
             model MenuTestModel;
 
@@ -144,7 +147,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 title: "Yayy, JSL!";
         """));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -197,8 +200,9 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals("close", third1.getIcon().getIconName());
     }
 
-    @Test
-    void testMultipleActors() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testMultipleActors(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("MultipleActorsTestModel", List.of("""
             model MultipleActorsTestModel;
 
@@ -293,7 +297,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 };
         """));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -441,8 +445,9 @@ public class JslModel2UiApplicationTest extends AbstractTest {
         assertEquals("App2/(jsl/MultipleActorsTestModel/App2/allProducts2)/AccessTablePageDefinition", getXMIID(dashboard2Page));
     }
 
-    @Test
-    void testSecurity() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testSecurity(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("SecurityTestModel", List.of("""
             model SecurityTestModel;
 
@@ -461,7 +466,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             frontend ActorApp(Actor usr);
         """));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -502,8 +507,9 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
     }
 
-    @Test
-    void testMenuStackOverFlow() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testMenuStackOverFlow(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("StackOverFlowTestModel", List.of("""
         model StackOverFlowTestModel;
         
@@ -585,7 +591,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
             };
         """));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -595,8 +601,9 @@ public class JslModel2UiApplicationTest extends AbstractTest {
 
     }
 
-    @Test
-    void testProfile() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL", "ZETA"})
+    void testProfile(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("ProfileModel", List.of("""
             model ProfileModel;
 
@@ -651,7 +658,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
                 };
         """));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 

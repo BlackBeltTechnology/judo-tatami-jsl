@@ -1,0 +1,51 @@
+model ProfileModel;
+
+import judo::types;
+
+widget string StringWidget;
+
+entity User {
+    identifier String userName required;
+}
+
+entity Product {
+    identifier String name required;
+    field Integer price required;
+}
+
+transfer UserTransfer(User u) {
+    field String userName <= u.userName;
+
+    event update onUpdate;
+}
+
+transfer ProductTransfer(Product p) {
+    field String name required;
+
+    event update onUpdate;
+}
+
+view UserView(UserTransfer u) {
+    widget StringWidget userName <= u.userName;
+}
+
+view ProductView(ProductTransfer product) {
+    widget StringWidget name <= product.name;
+}
+
+row ProductsRow(ProductTransfer product) {
+    column String name <= product.name label:"Name";
+}
+
+actor Actor1 {
+    access ProductTransfer[] products <= Product.all() update;
+    access UserTransfer user <= User.any() update;
+}
+
+frontend App1(Actor1 a)
+    menu: {
+        table ProductsRow[] allProducts <= a.products label:"All Products" icon:"tools" view:ProductView;
+    }
+    profile: {
+        link UserView myProfile <= a.user label:"My Profile";
+    };

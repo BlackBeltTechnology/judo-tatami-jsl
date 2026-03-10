@@ -88,13 +88,6 @@ public class TransferDeclarationRules {
                 target.setIsOptional(true);
             }
 
-            // Add to Application's dataElements
-            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
-            Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
-            if (app != null) {
-                app.getDataElements().add(target);
-            }
-
             // Check if this is the identity transfer declaration
             TransferDeclaration identity = getIdentityTransferDeclaration(actorDeclaration);
             if (identity != null && identity == source) {
@@ -103,7 +96,12 @@ public class TransferDeclarationRules {
 
             target.setIsActor(source instanceof ActorDeclaration);
 
-            ctx.addToResource(target);
+            // Add to Application's dataElements (containment — do NOT call addToResource after this)
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
+            if (app != null) {
+                app.getDataElements().add(target);
+            }
 
             LOG.debug("Create ClassType: {}", target.getName());
             return target;

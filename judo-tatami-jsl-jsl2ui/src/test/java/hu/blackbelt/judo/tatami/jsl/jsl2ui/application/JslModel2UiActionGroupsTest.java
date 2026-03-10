@@ -5,10 +5,12 @@ import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.meta.ui.data.DataElement;
 import hu.blackbelt.judo.meta.ui.data.RelationType;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -151,11 +153,12 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
         }
     }
 
-    @Test
-    void testTableOperations() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testTableOperations(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("TableOperations", List.of(createModelString("TableOperations")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 
@@ -289,11 +292,12 @@ public class JslModel2UiActionGroupsTest extends AbstractTest {
         assertEquals("text", myAction6.getButtonStyle());
     }
 
-    @Test
-    void testLinkOperations() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    void testLinkOperations(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("LinkOperations", List.of(createModelString("LinkOperations")));
 
-        transform();
+        transform(mode);
 
         List<Application> apps = uiModelWrapper.getStreamOfUiApplication().toList();
 

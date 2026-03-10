@@ -1,0 +1,41 @@
+model BasicDataCrossTransfersTestModel;
+
+import judo::types;
+
+entity Entity1 {
+    field String string;
+    field Boolean boolean;
+}
+
+entity Entity2 {
+    field Integer integer;
+}
+
+transfer Transfer1(Entity1 e1) {
+    field String string <= e1.string;
+    field Boolean boolean <= e1.boolean;
+}
+
+transfer Transfer2(Entity2 e2) {
+    field Integer integer <= e2.integer;
+}
+
+row Transfer1Row(Transfer1 t1) {
+    column String string <= t1.string label:"String";
+    column Boolean boolean <= t1.boolean label:"Boolean";
+}
+
+row Transfer2Row(Transfer2 t2) {
+    column Integer integer <= t2.integer label:"Integer";
+}
+
+actor Actor1 {
+    access Transfer1[] tr1s <= Entity1.all();
+    access Transfer2[] tr2s <= Entity2.all();
+}
+
+frontend TestApp(Actor1 a)
+    menu: {
+        table Transfer1Row[] tr1s <= a.tr1s label:"TR1S";
+        table Transfer2Row[] tr2s <= a.tr2s label:"TR2S";
+    };
