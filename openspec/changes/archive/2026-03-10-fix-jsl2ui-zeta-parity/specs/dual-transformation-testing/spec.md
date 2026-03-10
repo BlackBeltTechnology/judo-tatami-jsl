@@ -22,39 +22,9 @@ All existing jsl2psm and jsl2ui test suites SHALL be parameterized using `@Param
 ### Requirement: DualTransformationTest compares ETL and Zeta output
 The system SHALL provide `Jsl2PsmDualTransformationTest` and `Jsl2UiDualTransformationTest` classes that run the same JSL model through both ETL and Zeta engines and assert output equivalence using `ModelComparator`.
 
-#### Scenario: jsl2psm dual test detects equivalent models
-- **WHEN** a representative JSL model is transformed by both ETL and Zeta jsl2psm engines
-- **THEN** `ModelComparator.assertEquivalent()` in STRUCTURAL mode SHALL pass with zero differences
-
-#### Scenario: jsl2ui dual test detects equivalent models
-- **WHEN** a representative JSL model is transformed by both ETL and Zeta jsl2ui engines
-- **THEN** `ModelComparator.assertEquivalent()` in STRUCTURAL mode SHALL pass with zero differences
-
 #### Scenario: jsl2ui dual test passes for all test models
 - **WHEN** the 10 dual test cases (including the 9 currently disabled) are run
 - **THEN** all SHALL pass with `ModelComparator` reporting EQUIVALENT in STRUCTURAL mode
-
-#### Scenario: Dual test reports differences during development
-- **WHEN** `ModelComparator` detects differences between ETL and Zeta output
-- **THEN** the test SHALL log a detailed report including difference type, element path, and count
-
-### Requirement: ModelComparator from tatami-test-utils is used
-The system SHALL use the `ModelComparator` class from `judo-tatami-test-utils` (test-scoped dependency) for model comparison. It SHALL NOT create a new comparator implementation.
-
-#### Scenario: ModelComparator dependency is test-scoped
-- **WHEN** the project builds
-- **THEN** `judo-tatami-test-utils` SHALL be present only in test classpath
-
-### Requirement: Phase-scoped Zeta unit tests follow TDD
-During phased implementation, each phase SHALL include dedicated Zeta unit tests that test only the rules implemented in that phase. These tests SHALL be written before the implementation (TDD).
-
-#### Scenario: Zeta unit test for namespace rules
-- **WHEN** Phase 1 namespace rules are being implemented
-- **THEN** a dedicated test SHALL verify Model and Package creation from a minimal JSL model using only the Zeta engine
-
-#### Scenario: Zeta unit test is written before implementation
-- **WHEN** a new set of Zeta rules is about to be implemented
-- **THEN** a failing test SHALL exist before the rules are coded
 
 ### Requirement: Redundant zeta test classes are removed
 The 5 separate `zeta/` test classes SHALL be deleted when their coverage is fully subsumed by parameterized tests running with `TransformationMode.ZETA`.
