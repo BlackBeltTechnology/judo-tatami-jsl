@@ -1,0 +1,24 @@
+model CardinalityIdTestModel;
+
+type numeric Numeric scale: 0 precision: 9;
+type string String min-size: 0 max-size: 255;
+
+entity Parent {
+    field String name;
+    relation Child[] children;
+}
+
+entity Child {
+    field String label;
+    field Numeric value;
+}
+
+transfer ParentT maps Parent as p {
+    field String name <=> p.name;
+    relation ChildT[] children <= p.children;
+}
+
+transfer ChildT maps Child as c {
+    field String label <=> c.label;
+    field Numeric value <=> c.value;
+}

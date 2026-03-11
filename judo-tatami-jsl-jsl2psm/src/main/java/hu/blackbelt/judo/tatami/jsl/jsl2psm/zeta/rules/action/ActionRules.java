@@ -420,6 +420,7 @@ public class ActionRules {
             target.setCardinality(createCardinality(ctx, "(jsl/" + getJslId(source) + ")/CreateCardinalityForTransferActionDeclarationEntityInput", 1, 1));
             target.setName(source.getParamaterName());
             target.setType(getTransferDeclarationEquivalent(source.getParameterType(), ctx));
+            target.setWrapAsOptional(false);
 
             // s.equivalent("CreateBoundOperationForEntityType").input = t
             BoundOperation op = ctx.equivalent(source, BoundOperation.class,
@@ -450,6 +451,7 @@ public class ActionRules {
             target.setCardinality(createCardinality(ctx, "(jsl/" + getJslId(source) + ")/CreateCardinalityForTransferActionDeclarationEntityOutput", 1, 1));
             target.setName("return");
             target.setType(getTransferDeclarationEquivalent((TransferDeclaration) source.getReturn(), ctx));
+            target.setWrapAsOptional(false);
 
             // s.equivalent("CreateBoundOperationForEntityType").output = t
             BoundOperation op = ctx.equivalent(source, BoundOperation.class,

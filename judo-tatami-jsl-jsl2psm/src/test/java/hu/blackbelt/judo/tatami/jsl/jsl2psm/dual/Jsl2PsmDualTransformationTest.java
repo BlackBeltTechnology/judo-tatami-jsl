@@ -1140,4 +1140,146 @@ public class Jsl2PsmDualTransformationTest {
 
         assertDeepEquivalence("enumerations", jslModel);
     }
+
+    // ========================
+    // STRICT comparison tests (using test resource .jsl files)
+    // These reproduce diffs found in discovery comparison tests
+    // ========================
+
+    private void assertStrictEquivalence(String testName, JslDslModel jslModel) throws Exception {
+        PsmModel etlResult = executeEtl(jslModel);
+        PsmModel zetaResult = executeZeta(jslModel);
+
+        org.eclipse.emf.ecore.resource.Resource etlResource = etlResult.getResourceSet().getResources().get(0);
+        org.eclipse.emf.ecore.resource.Resource zetaResource = zetaResult.getResourceSet().getResources().get(0);
+
+        ComparisonResult result = ModelComparator.compare(etlResource, zetaResource, ComparisonMode.STRICT);
+
+        if (!result.isEquivalent()) {
+            String msg = "STRICT COMPARISON FAILED for " + testName + ": " + result.getDifferenceCount() + " differences\n"
+                    + result.getDetailedReport();
+            log.error(msg);
+        } else {
+            log.info("STRICT COMPARISON PASSED for {}: zero differences", testName);
+        }
+
+        assertTrue(result.isEquivalent(),
+                "Strict comparison failed for " + testName + ":\n" + result.getDetailedReport());
+    }
+
+    @Test
+    void testStrictComparison_unmappedTransfer() throws Exception {
+        JslDslModel jslModel = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/transferobject/TestCreateUnmappedTransferObjectTypeModel.jsl")));
+        assertStrictEquivalence("unmappedTransfer", jslModel);
+    }
+
+    @Test
+    void testStrictComparison_choices() throws Exception {
+        JslDslModel jslModel = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/transferobject/TestTransferObjectChoicesModel.jsl")));
+        assertStrictEquivalence("choices", jslModel);
+    }
+
+    @Test
+    void testStrictComparison_defaultTransfer() throws Exception {
+        JslDslModel jslModel = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/transferobject/TestCreateDefaultTransferObjectTypeModel.jsl")));
+        assertStrictEquivalence("defaultTransfer", jslModel);
+    }
+
+    @Test
+    void testStrictComparison_derivedRelation() throws Exception {
+        JslDslModel jslModel = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/derived/TestDerivedRelationModel.jsl")));
+        assertStrictEquivalence("derivedRelation", jslModel);
+    }
+
+    @Test
+    void testStrictComparison_actor() throws Exception {
+        JslDslModel jslModel = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/actor/ActorTestModel.jsl")));
+        assertStrictEquivalence("actor", jslModel);
+    }
+
+    @Test
+    void testStrictComparison_anonymousActor() throws Exception {
+        JslDslModel jslModel = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/actor/AnonymousActorTestModel.jsl")));
+        assertStrictEquivalence("anonymousActor", jslModel);
+    }
+
+    @Test
+    void testStrictComparison_association() throws Exception {
+        JslDslModel jslModel = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/entity/AssociationRelationTestModel.jsl")));
+        assertStrictEquivalence("association", jslModel);
+    }
+
+    @Test
+    void testStrictComparison_actions() throws Exception {
+        JslDslModel jslModel = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/operation/ActionsTestModel.jsl")));
+        assertStrictEquivalence("actions", jslModel);
+    }
+
+    @Test
+    void testStrictComparison_crudBehaviour() throws Exception {
+        // This model requires generateBehaviours=true
+        JslDslModel jslModel = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/operation/CrudBehaviourTestModel.jsl")));
+
+        // ETL with behaviours
+        PsmModel etlPsm = buildPsmModel().build();
+        executeJsl2PsmTransformation(jsl2PsmParameter()
+                .log(createLog())
+                .jslModel(jslModel)
+                .psmModel(etlPsm)
+                .parallel(true)
+                .useCache(true)
+                .generateBehaviours(true)
+                .createTrace(false));
+
+        // Re-parse for Zeta
+        JslDslModel jslModelZeta = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/operation/CrudBehaviourTestModel.jsl")));
+
+        // Zeta with behaviours
+        PsmModel zetaPsm = buildPsmModel().build();
+        Jsl2PsmZetaTransformation.builder()
+                .jslModel(jslModelZeta)
+                .psmModel(zetaPsm)
+                .defaultModelName(jslModelZeta.getName())
+                .generateBehaviours(true)
+                .build()
+                .execute();
+
+        org.eclipse.emf.ecore.resource.Resource etlResource = etlPsm.getResourceSet().getResources().get(0);
+        org.eclipse.emf.ecore.resource.Resource zetaResource = zetaPsm.getResourceSet().getResources().get(0);
+
+        ComparisonResult result = ModelComparator.compare(etlResource, zetaResource, ComparisonMode.STRICT);
+
+        if (!result.isEquivalent()) {
+            String msg = "STRICT COMPARISON FAILED for crudBehaviour: " + result.getDifferenceCount() + " differences\n"
+                    + result.getDetailedReport();
+            log.error(msg);
+        }
+
+        assertTrue(result.isEquivalent(),
+                "Strict comparison failed for crudBehaviour:\n" + result.getDetailedReport());
+    }
+
+    @Test
+    void testStrictComparison_cardinalityIds() throws Exception {
+        JslDslModel jslModel = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/dual/CardinalityIdTestModel.jsl")));
+        assertStrictEquivalence("cardinalityIds", jslModel);
+    }
+
+    @Test
+    void testStrictComparison_associationPartners() throws Exception {
+        JslDslModel jslModel = JslParser.getModelFromFiles(
+                List.of(new java.io.File("src/test/resources/entity/AssociationRelationTestModel.jsl")));
+        assertStrictEquivalence("associationPartners", jslModel);
+    }
 }

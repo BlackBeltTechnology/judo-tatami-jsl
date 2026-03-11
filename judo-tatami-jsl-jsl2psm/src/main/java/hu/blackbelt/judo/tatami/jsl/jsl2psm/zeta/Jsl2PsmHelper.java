@@ -932,6 +932,65 @@ public final class Jsl2PsmHelper {
     }
 
     // =========================================================================
+    // Sortable / Filterable helpers (ported from transferFieldDeclaration.eol)
+    // =========================================================================
+
+    /**
+     * Check if a TransferFieldDeclaration is sortable.
+     * Ported from transferFieldDeclaration.eol: isSortable()
+     *
+     * A field is sortable if it maps or reads AND its reference type is a
+     * non-binary primitive (string, numeric, date, timestamp, time, boolean).
+     */
+    public static boolean isSortable(TransferFieldDeclaration field) {
+        if (field.getReferenceType() == null) return false;
+        String primitive = getPrimitiveKind(field.getReferenceType());
+        if (primitive == null) return false;
+        return (isMaps(field) || isReads(field)) && isSortablePrimitive(primitive);
+    }
+
+    /**
+     * Check if a TransferFieldDeclaration is filterable.
+     * Ported from transferFieldDeclaration.eol: isFilterable()
+     *
+     * Same logic as isSortable — a field is filterable if it maps or reads
+     * AND its reference type is a non-binary primitive.
+     */
+    public static boolean isFilterable(TransferFieldDeclaration field) {
+        if (field.getReferenceType() == null) return false;
+        String primitive = getPrimitiveKind(field.getReferenceType());
+        if (primitive == null) return false;
+        return (isMaps(field) || isReads(field)) && isSortablePrimitive(primitive);
+    }
+
+    /**
+     * Check if a TransferDeclaration has at least one sortable field.
+     * Ported from transferDeclaration.eol: hasSortableField()
+     */
+    public static boolean hasSortableField(TransferDeclaration td) {
+        return td.getMembers().stream()
+                .filter(TransferFieldDeclaration.class::isInstance)
+                .map(TransferFieldDeclaration.class::cast)
+                .anyMatch(Jsl2PsmHelper::isSortable);
+    }
+
+    private static boolean isSortablePrimitive(String primitive) {
+        return "string".equals(primitive)
+                || "numeric".equals(primitive)
+                || "date".equals(primitive)
+                || "timestamp".equals(primitive)
+                || "time".equals(primitive)
+                || "boolean".equals(primitive);
+    }
+
+    private static String getPrimitiveKind(PrimitiveDeclaration refType) {
+        if (refType instanceof DataTypeDeclaration) {
+            return ((DataTypeDeclaration) refType).getPrimitive();
+        }
+        return null;
+    }
+
+    // =========================================================================
     // Cardinality creation helpers
     // =========================================================================
 
@@ -1090,7 +1149,13 @@ public final class Jsl2PsmHelper {
         TransferObjectRelation target = ctx.create(TransferObjectRelation.class);
         ctx.setElementId(target, discriminator + "/CloneTransferObjectRelationFromEntityFieldForDefaultTransferObjectType/" + getJslId(field));
         target.setName(field.getName());
-        target.setEmbedded(true);
+        // ETL: extends abstract rule which sets embedded = s.isEager() (true by default for EntityFieldDeclaration)
+        target.setEmbedded(isEager(field));
+        // ETL: embeddedCreate/Update/Delete = not s.eContainer.isAbstract()
+        boolean isContainerAbstract = isAbstract(field.eContainer());
+        target.setEmbeddedCreate(!isContainerAbstract);
+        target.setEmbeddedUpdate(!isContainerAbstract);
+        target.setEmbeddedDelete(!isContainerAbstract);
         Containment binding = ctx.equivalent(field, Containment.class,
                 Jsl2PsmRuleNames.CREATE_CONTAINMENT_FROM_FIELD);
         target.setBinding(binding);
@@ -1113,7 +1178,13 @@ public final class Jsl2PsmHelper {
         TransferObjectRelation target = ctx.create(TransferObjectRelation.class);
         ctx.setElementId(target, discriminator + "/CloneTransferObjectRelationFromEntityRelationForDefaultTransferObjectType/" + getJslId(rel));
         target.setName(rel.getName());
-        target.setEmbedded(true);
+        // ETL: extends abstract rule which sets embedded = s.isEager() (false by default for EntityRelationDeclaration)
+        target.setEmbedded(isEager(rel));
+        // ETL: embeddedCreate/Update/Delete = not s.eContainer.isAbstract()
+        boolean isContainerAbstract = isAbstract(rel.eContainer());
+        target.setEmbeddedCreate(!isContainerAbstract);
+        target.setEmbeddedUpdate(!isContainerAbstract);
+        target.setEmbeddedDelete(!isContainerAbstract);
         AssociationEnd binding = ctx.equivalent(rel, AssociationEnd.class,
                 Jsl2PsmRuleNames.CREATE_DECLARED_ASSOCIATION_END);
         target.setBinding(binding);
@@ -1123,6 +1194,10 @@ public final class Jsl2PsmHelper {
         target.setTarget(refTO);
         target.setCardinality(createCardinalityFromModifiable(ctx, rel,
                 discriminator + "/CloneCardinalityFromEntityRelationForDefaultTransferObjectType/" + getJslId(rel)));
+        // Clone default value if present
+        if (getDefault(rel) != null) {
+            // Note: default value is handled separately via cloneDefaultRelation
+        }
         return target;
     }
 
@@ -1142,7 +1217,11 @@ public final class Jsl2PsmHelper {
         String entityName = ((EntityDeclaration) rel.eContainer()).getName();
         target.setName((prefix != null ? prefix : "") + rel.getName()
                 + (midfix != null ? midfix : "") + entityName + (postfix != null ? postfix : ""));
-        target.setEmbedded(true);
+        // ETL: extends abstract rule which sets embedded = false for default value relations
+        target.setEmbedded(false);
+        target.setEmbeddedCreate(false);
+        target.setEmbeddedUpdate(false);
+        target.setEmbeddedDelete(false);
         NavigationProperty binding = ctx.equivalent(dm,
                 NavigationProperty.class,
                 Jsl2PsmRuleNames.CREATE_DEFAULT_NAVIGATION_PROPERTY_FOR_DEFAULT_TRANSFER_OBJECT);
@@ -1166,7 +1245,12 @@ public final class Jsl2PsmHelper {
         TransferObjectRelation target = ctx.create(TransferObjectRelation.class);
         ctx.setElementId(target, discriminator + "/CloneTransferObjectDerivedRelationForDefaultTransferObjectType/" + getJslId(rel));
         target.setName(rel.getName());
-        target.setEmbedded(true);
+        // ETL: extends abstract rule which sets embedded = s.isEager() (false by default for derived relations)
+        target.setEmbedded(isEager(rel));
+        // ETL: embeddedCreate/Update/Delete = false for derived relations
+        target.setEmbeddedCreate(false);
+        target.setEmbeddedUpdate(false);
+        target.setEmbeddedDelete(false);
         NavigationProperty binding = ctx.equivalent(rel, NavigationProperty.class,
                 Jsl2PsmRuleNames.CREATE_NAVIGATION_PROPERTY);
         target.setBinding(binding);

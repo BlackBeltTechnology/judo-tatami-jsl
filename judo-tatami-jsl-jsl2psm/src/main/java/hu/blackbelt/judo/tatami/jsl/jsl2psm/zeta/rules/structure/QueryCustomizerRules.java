@@ -664,31 +664,34 @@ public class QueryCustomizerRules {
         return td.getMap() != null && (isFilterable(field) || isSortable(field));
     }
 
-    // Helper methods for sortable/filterable checks
-    private static boolean hasSortableField(TransferDeclaration td) {
-        return td.getMembers().stream()
-                .filter(m -> m instanceof TransferFieldDeclaration)
-                .map(m -> (TransferFieldDeclaration) m)
-                .anyMatch(QueryCustomizerRules::isSortable);
-    }
+    // --- Post-execution hook ---
 
-    private static boolean isSortable(TransferFieldDeclaration field) {
-        // Delegates to JslDslModelExtension
-        try {
-            var method = field.getClass().getMethod("isSortable");
-            return (Boolean) method.invoke(field);
-        } catch (Exception e) {
-            // Fallback - check modifiers for "sortable" type
-            return field.getModifiers().stream().anyMatch(m -> "sortable".equals(m.getType()));
+    /**
+     * Assigns sequential ordinals to EnumerationMembers with ordinal == -1.
+     * Mirrors the ETL @post block in jslToPsm.etl.
+     */
+    @PostExecution
+    public void setEnumerationOrdinals(hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        org.eclipse.emf.ecore.resource.ResourceSet psmResourceSet = ctx.getAttribute("__psmResourceSet");
+        if (psmResourceSet == null) return;
+
+        java.util.Set<EnumerationType> enumsToFix = new java.util.LinkedHashSet<>();
+        var iterator = psmResourceSet.getAllContents();
+        while (iterator.hasNext()) {
+            var next = iterator.next();
+            if (next instanceof EnumerationMember) {
+                EnumerationMember member = (EnumerationMember) next;
+                if (member.getOrdinal() == -1 && member.eContainer() instanceof EnumerationType) {
+                    enumsToFix.add((EnumerationType) member.eContainer());
+                }
+            }
         }
-    }
-
-    private static boolean isFilterable(TransferFieldDeclaration field) {
-        try {
-            var method = field.getClass().getMethod("isFilterable");
-            return (Boolean) method.invoke(field);
-        } catch (Exception e) {
-            return field.getModifiers().stream().anyMatch(m -> "filterable".equals(m.getType()));
+        for (EnumerationType enumType : enumsToFix) {
+            int index = 0;
+            for (EnumerationMember member : enumType.getMembers()) {
+                member.setOrdinal(index++);
+            }
+            LOG.debug("@PostExecution: set ordinals for enumeration {}", enumType.getName());
         }
     }
 }

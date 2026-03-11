@@ -130,7 +130,7 @@ public class ContainmentRules {
                     + (midfix != null ? midfix : "") + transferDecl.getName() + (postfix != null ? postfix : ""));
 
             target.setTarget(((hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType) getTransferDeclarationEquivalent(rel.getReferenceType(), ctx)).getEntityType());
-            target.setCardinality(createCardinalityFromModifiable(ctx, rel, "CreateCardinalityForTransferRelationDeclaration"));
+            target.setCardinality(createCardinalityFromModifiable(ctx, rel, "CreateCardinalityFor/CreateReadsStaticNavigationForUnmappedTransferObjectTransferRelationDeclaration"));
 
             Package modelRoot = getModelRoot(rel, ctx);
             addElement(modelRoot, target);
@@ -163,7 +163,7 @@ public class ContainmentRules {
                     + (midfix != null ? midfix : "") + transferDecl.getName() + (postfix != null ? postfix : ""));
 
             target.setTarget(((hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType) getTransferDeclarationEquivalent(rel.getReferenceType(), ctx)).getEntityType());
-            target.setCardinality(createCardinalityFromModifiable(ctx, rel, "CreateCardinalityForTransferRelationDeclaration"));
+            target.setCardinality(createCardinalityFromModifiable(ctx, rel, "CreateCardinalityFor/CreateReadsNavigationPropertyForMappedTransferObjectTransferRelationDeclaration"));
 
             hu.blackbelt.judo.meta.psm.data.EntityType entityType = ctx.equivalent(
                     transferDecl.getMap().getEntity(),
@@ -228,7 +228,7 @@ public class ContainmentRules {
                     + (midfix != null ? midfix : "") + transferDecl.getName() + (postfix != null ? postfix : ""));
 
             target.setTarget(((hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType) getTransferDeclarationEquivalent(rel.getReferenceType(), ctx)).getEntityType());
-            target.setCardinality(createCardinalityFromModifiable(ctx, rel, "CreateCardinalityForTransferRelationDeclaration"));
+            target.setCardinality(createCardinalityFromModifiable(ctx, rel, "CreateCardinalityFor/CreateDefaultNavigationPropertyForMappedTransferObjectConstructor"));
 
             hu.blackbelt.judo.meta.psm.data.EntityType entityType = ctx.equivalent(
                     transferDecl.getMap().getEntity(),
@@ -289,7 +289,7 @@ public class ContainmentRules {
                     + (midfix != null ? midfix : "") + transferDecl.getName() + (postfix != null ? postfix : ""));
 
             target.setTarget(((hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType) getTransferDeclarationEquivalent(rel.getReferenceType(), ctx)).getEntityType());
-            target.setCardinality(createCardinalityFromModifiable(ctx, rel, "CreateCardinalityForTransferRelationDeclaration"));
+            target.setCardinality(createCardinalityFromModifiable(ctx, rel, "CreateCardinalityFor/CreateDefaultStaticNavigationForUnmappedTransferObjectConstructor"));
 
             Package modelRoot = getModelRoot(rel, ctx);
             addElement(modelRoot, target);

@@ -54,7 +54,7 @@ public class TransferRelationRules {
 
             populateBaseTransferRelation(source, target, ctx);
 
-            Cardinality cardinality = createCardinalityFromModifiable(ctx, source, "CreateCardinalityForTransferRelationDeclaration");
+            Cardinality cardinality = createCardinalityFromModifiable(ctx, source, "CreateCardinalityFor/CreateTransientTransferObjectRelationForTransferRelationDeclaration");
             target.setCardinality(cardinality);
 
             // Default value
@@ -98,7 +98,7 @@ public class TransferRelationRules {
 
             populateBaseTransferRelation(source, target, ctx);
 
-            Cardinality cardinality = createCardinalityFromModifiable(ctx, source, "CreateCardinalityForTransferRelationDeclaration");
+            Cardinality cardinality = createCardinalityFromModifiable(ctx, source, "CreateCardinalityFor/CreateDerivedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
             target.setCardinality(cardinality);
 
             TransferDeclaration container = (TransferDeclaration) source.eContainer();
@@ -106,14 +106,10 @@ public class TransferRelationRules {
                 NavigationProperty binding = ctx.equivalent(source.getGetterExpr(), NavigationProperty.class,
                         CREATE_READS_NAVIGATION_PROPERTY_FOR_MAPPED_TRANSFER_OBJECT_TRANSFER_RELATION_DECLARATION);
                 target.setBinding(binding);
-            } else {
-                // For unmapped, binding is a StaticNavigation; use reflective EMF
-                EObject binding = ctx.equivalent(source.getGetterExpr(), EObject.class,
-                        CREATE_READS_STATIC_NAVIGATION_FOR_UNMAPPED_TRANSFER_OBJECT_TRANSFER_RELATION_DECLARATION);
-                if (binding != null) {
-                    target.eSet(target.eClass().getEStructuralFeature("binding"), binding);
-                }
             }
+            // For unmapped, ETL calls s.getterExpr.equivalent("CreateReadsReferenceExpressionForUnmapped...")
+            // which returns null (no such rule exists). The StaticNavigation IS created but NOT used as binding.
+            // Match ETL: binding stays null for unmapped transfer derived relations.
 
             TransferObjectType transferObj = getTransferDeclarationEquivalent(container, ctx);
             addTransferRelation(transferObj, target);
@@ -142,7 +138,7 @@ public class TransferRelationRules {
 
             populateBaseTransferRelation(source, target, ctx);
 
-            Cardinality cardinality = createCardinalityFromModifiable(ctx, source, "CreateCardinalityForTransferRelationDeclaration");
+            Cardinality cardinality = createCardinalityFromModifiable(ctx, source, "CreateCardinalityFor/CreateMappedTransferObjectEmbeddedRelationForTransferRelationDeclaration");
             target.setCardinality(cardinality);
 
             // Binding based on entity member type
@@ -206,7 +202,7 @@ public class TransferRelationRules {
             TransferObjectType targetTO = getTransferDeclarationEquivalent(relDecl.getReferenceType(), ctx);
             target.setTarget(targetTO);
 
-            Cardinality cardinality = createCardinalityFromModifiable(ctx, relDecl, "CreateCardinalityForTransferRelationDeclaration");
+            Cardinality cardinality = createCardinalityFromModifiable(ctx, relDecl, "CreateCardinalityFor/CreateTransferEntityDefaultValueRelationForMappedTransferObjectConstructor");
             target.setCardinality(cardinality);
 
             TransferObjectType transferObj = getTransferDeclarationEquivalent(transfer, ctx);
@@ -254,7 +250,7 @@ public class TransferRelationRules {
                 target.eSet(target.eClass().getEStructuralFeature("target"), targetType);
             }
 
-            Cardinality cardinality = createCardinalityFromModifiable(ctx, relDecl, "CreateCardinalityForTransferRelationDeclaration");
+            Cardinality cardinality = createCardinalityFromModifiable(ctx, relDecl, "CreateCardinalityFor/CreateTransferEntityDefaultValueRelationForUnmappedTransferObjectConstructor");
             target.setCardinality(cardinality);
 
             TransferObjectType transferObj = getTransferDeclarationEquivalent(transfer, ctx);

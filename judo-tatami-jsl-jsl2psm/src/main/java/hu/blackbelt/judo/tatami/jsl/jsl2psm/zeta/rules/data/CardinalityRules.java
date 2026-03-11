@@ -205,4 +205,31 @@ public class CardinalityRules {
         QueryDeclaration query = (QueryDeclaration) eObject;
         return query.getReferenceType() instanceof EntityDeclaration;
     }
+
+    // --- Post-execution hook ---
+
+    /**
+     * Normalizes all Cardinality XMI IDs to match ETL @post block behavior:
+     * {@code c.setId(c.eContainer.getId() + "/cardinality")}
+     */
+    @PostExecution
+    public void normalizeCardinalityIds(hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        org.eclipse.emf.ecore.resource.ResourceSet psmResourceSet = ctx.getAttribute("__psmResourceSet");
+        if (psmResourceSet == null) return;
+
+        var iterator = psmResourceSet.getAllContents();
+        while (iterator.hasNext()) {
+            var next = iterator.next();
+            if (next instanceof Cardinality) {
+                Cardinality c = (Cardinality) next;
+                if (c.eContainer() != null) {
+                    String containerId = ctx.getElementId(c.eContainer());
+                    if (containerId != null) {
+                        ctx.setElementId(c, containerId + "/cardinality");
+                    }
+                }
+            }
+        }
+        LOG.debug("@PostExecution: normalized cardinality IDs");
+    }
 }
