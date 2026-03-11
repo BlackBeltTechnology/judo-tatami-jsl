@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.zeta.Jsl2PsmHelper.*;
@@ -121,6 +122,14 @@ public class DefaultTransferObjectTypeRules {
                         addTransferRelation(target, clonedRel);
                     }
                 }
+
+                // ETL: for (o in JSL!EntityRelationOppositeInjected.all().select(o | o.eContainer.getReferenceType() == entity))
+                //          t.relations.add(o.equivalent("CloneTransferObjectAssociatedOppositeRelationForDefaultTransferObjectType"));
+                for (EntityRelationOppositeInjected opposite : findOppositesTargeting(parentEntity, ctx)) {
+                    TransferObjectRelation clonedOpp = ctx.equivalent(opposite,
+                            TransferObjectRelation.class, CLONE_TRANSFER_OBJECT_ASSOCIATED_OPPOSITE_RELATION_FOR_DEFAULT_TRANSFER_OBJECT_TYPE);
+                    addTransferRelation(target, clonedOpp);
+                }
             }
 
             // Add to model root package
@@ -130,6 +139,35 @@ public class DefaultTransferObjectTypeRules {
             LOG.debug("Created default MappedTransferObjectType: {}", target.getName());
             return target;
         };
+    }
+
+    // --- Helper methods ---
+
+    /**
+     * Find all EntityRelationOppositeInjected instances where the containing relation's
+     * reference type equals the given entity. This matches ETL's:
+     * JSL!EntityRelationOppositeInjected.all().select(o | o.eContainer.getReferenceType() == entity)
+     */
+    private static List<EntityRelationOppositeInjected> findOppositesTargeting(
+            EntityDeclaration entity,
+            hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        List<EntityRelationOppositeInjected> result = new ArrayList<>();
+        for (org.eclipse.emf.ecore.resource.Resource resource : ctx.getSourceResourceSet().getResources()) {
+            var it = resource.getAllContents();
+            while (it.hasNext()) {
+                EObject obj = it.next();
+                if (obj instanceof EntityRelationOppositeInjected) {
+                    EntityRelationOppositeInjected opposite = (EntityRelationOppositeInjected) obj;
+                    if (opposite.eContainer() instanceof EntityRelationDeclaration) {
+                        EntityRelationDeclaration rel = (EntityRelationDeclaration) opposite.eContainer();
+                        if (rel.getReferenceType() == entity) {
+                            result.add(opposite);
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     // --- Guard methods ---

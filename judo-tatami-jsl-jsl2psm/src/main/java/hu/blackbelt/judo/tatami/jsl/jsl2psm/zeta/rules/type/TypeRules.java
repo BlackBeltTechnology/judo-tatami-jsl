@@ -2,6 +2,9 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.zeta.rules.type;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.DataTypeDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EnumDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.NavigationBaseDeclarationReference;
+import hu.blackbelt.judo.meta.jsl.jsldsl.PrimitiveDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.QueryParameterDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EnumLiteral;
 import hu.blackbelt.judo.meta.jsl.jsldsl.MaxFileSizeModifier;
 import hu.blackbelt.judo.meta.jsl.jsldsl.MaxSizeModifier;
@@ -360,5 +363,40 @@ public class TypeRules {
             Package modelPackage = ctx.equivalent(modelDecl, Package.class);
             addElement(modelPackage, target);
         }
+    }
+
+    // --- Post-execution hook ---
+
+    /**
+     * Materializes primitive types referenced via NavigationBaseDeclarationReference.
+     * Mirrors ETL @post block:
+     * {@code for (c in JSL!NavigationBaseDeclarationReference.all().select(n | n.reference.isKindOf(JSL!PrimitiveDeclaration))) {
+     *     var dummy = c.reference.getPrimitiveDeclarationEquivalent();
+     * }}
+     *
+     * This ensures primitive types that are only referenced indirectly (e.g., via query parameter types)
+     * still get their PSM equivalents created even if no @Greedy rule matched them directly.
+     */
+    @PostExecution
+    public void materializePrimitiveTypes(hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        org.eclipse.emf.ecore.resource.ResourceSet jslResourceSet = ctx.getAttribute("__jslResourceSet");
+        if (jslResourceSet == null) return;
+
+        var iterator = jslResourceSet.getAllContents();
+        while (iterator.hasNext()) {
+            var next = iterator.next();
+            if (next instanceof NavigationBaseDeclarationReference) {
+                NavigationBaseDeclarationReference navRef = (NavigationBaseDeclarationReference) next;
+                if (navRef.getReference() instanceof PrimitiveDeclaration) {
+                    PrimitiveDeclaration primitiveDecl = (PrimitiveDeclaration) navRef.getReference();
+                    try {
+                        ctx.equivalent(primitiveDecl, hu.blackbelt.judo.meta.psm.type.Primitive.class);
+                    } catch (Exception e) {
+                        LOG.debug("Could not materialize primitive type: {}", e.getMessage());
+                    }
+                }
+            }
+        }
+        LOG.debug("@PostExecution: materialized primitive types from NavigationBaseDeclarationReference");
     }
 }

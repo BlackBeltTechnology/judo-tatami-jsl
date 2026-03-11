@@ -5,12 +5,14 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.EntityRelationDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityRelationOpposite;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityRelationOppositeInjected;
 import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
-import hu.blackbelt.judo.meta.psm.type.Cardinality;
 import hu.blackbelt.judo.zeta.annotation.*;
 import hu.blackbelt.judo.zeta.transformation.core.TransformFunction;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.zeta.Jsl2PsmHelper.*;
 import static hu.blackbelt.judo.tatami.jsl.jsl2psm.zeta.Jsl2PsmRuleNames.*;
@@ -131,5 +133,81 @@ public class AssociationRules {
         if (!(eObject instanceof EntityRelationDeclaration)) return false;
         EntityRelationDeclaration rel = (EntityRelationDeclaration) eObject;
         return isReferenceTypeEntity(rel) && !isCalculated(rel);
+    }
+
+    // --- Post-execution hook ---
+
+    /**
+     * Sets AssociationEnd.partner references after all rules have completed.
+     * Deferred from rule bodies because Zeta caches targets after rule body completion,
+     * making recursive equivalent() calls create duplicates for circular references.
+     */
+    @PostExecution
+    public void setPartners(hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        ResourceSet jslResourceSet = ctx.getAttribute("__jslResourceSet");
+        if (jslResourceSet == null) return;
+
+        Collection<EntityRelationDeclaration> allRelations = getAllContents(jslResourceSet, EntityRelationDeclaration.class);
+
+        for (EntityRelationDeclaration relDecl : allRelations) {
+            if (isCalculated(relDecl) || !isReferenceTypeEntity(relDecl)) {
+                continue;
+            }
+
+            AssociationEnd declaredEnd = ctx.equivalent(relDecl,
+                    AssociationEnd.class, CREATE_DECLARED_ASSOCIATION_END);
+            if (declaredEnd == null) continue;
+
+            EntityRelationOpposite opposite = getOpposite(relDecl);
+            if (opposite == null) continue;
+
+            EntityRelationDeclaration oppositeTypeRef = getOppositeType(opposite);
+            if (oppositeTypeRef != null) {
+                AssociationEnd partnerEnd = ctx.equivalent(oppositeTypeRef,
+                        AssociationEnd.class, CREATE_DECLARED_ASSOCIATION_END);
+                if (partnerEnd != null) {
+                    declaredEnd.setPartner(partnerEnd);
+                }
+            }
+
+            if (opposite instanceof EntityRelationOppositeInjected) {
+                EntityRelationOppositeInjected injected = (EntityRelationOppositeInjected) opposite;
+                if (injected.getName() != null && !injected.getName().isEmpty()) {
+                    AssociationEnd partnerEnd = ctx.equivalent(injected,
+                            AssociationEnd.class, CREATE_NAMED_OPPOSITE_ASSOCIATION_END);
+                    if (partnerEnd != null) {
+                        declaredEnd.setPartner(partnerEnd);
+                    }
+                }
+            }
+        }
+
+        Collection<EntityRelationOppositeInjected> allOpposites = getAllContents(jslResourceSet, EntityRelationOppositeInjected.class);
+        for (EntityRelationOppositeInjected injected : allOpposites) {
+            AssociationEnd oppositeEnd = ctx.equivalent(injected,
+                    AssociationEnd.class, CREATE_NAMED_OPPOSITE_ASSOCIATION_END);
+            if (oppositeEnd == null) continue;
+
+            EntityRelationDeclaration relationAddedFrom = (EntityRelationDeclaration) injected.eContainer();
+            AssociationEnd partner = ctx.equivalent(relationAddedFrom,
+                    AssociationEnd.class, CREATE_DECLARED_ASSOCIATION_END);
+            if (partner != null) {
+                oppositeEnd.setPartner(partner);
+            }
+        }
+
+        LOG.debug("@PostExecution: set association partners");
+    }
+
+    private static <T extends EObject> Collection<T> getAllContents(ResourceSet resourceSet, Class<T> type) {
+        java.util.List<T> result = new java.util.ArrayList<>();
+        var iterator = resourceSet.getAllContents();
+        while (iterator.hasNext()) {
+            var next = iterator.next();
+            if (type.isInstance(next)) {
+                result.add(type.cast(next));
+            }
+        }
+        return result;
     }
 }

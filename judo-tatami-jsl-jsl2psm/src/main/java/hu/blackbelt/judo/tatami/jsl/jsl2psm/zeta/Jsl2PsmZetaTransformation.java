@@ -1,11 +1,7 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm.zeta;
 
-import hu.blackbelt.judo.meta.jsl.jsldsl.EntityRelationDeclaration;
-import hu.blackbelt.judo.meta.jsl.jsldsl.EntityRelationOpposite;
-import hu.blackbelt.judo.meta.jsl.jsldsl.EntityRelationOppositeInjected;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ModelDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
-import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.zeta.common.ExtensionMethodRegistry;
 import hu.blackbelt.judo.zeta.common.ModelProvider;
@@ -104,7 +100,7 @@ public class Jsl2PsmZetaTransformation {
         TransformationExecutor executor = TransformationExecutor.builder()
                 .registry(registry)
                 .context(context)
-                .parallel(false)
+                .parallel(true)
                 .etlCompatibilityMode(true)
                 .build();
         log.info("Phase 3 - Create executor: {}ms", System.currentTimeMillis() - phaseStart);
@@ -264,6 +260,8 @@ public class Jsl2PsmZetaTransformation {
         context.setAttribute("defaultActionInputParameterRangeNamePostfix", "");
         context.setAttribute("defaultActionInputParameterRangeNameMidfix", "_ActionInputParameterRange_");
         context.setAttribute("generateBehaviours", generateBehaviours);
+        context.setAttribute("__jslResourceSet", jslModel.getResourceSet());
+        context.setAttribute("__psmResourceSet", psmModel.getResourceSet());
 
         return context;
     }
@@ -317,76 +315,14 @@ public class Jsl2PsmZetaTransformation {
     }
 
     /**
-     * Post-processing: set AssociationEnd partners.
-     *
-     * Partner assignment is deferred from the greedy rule execution because
-     * ETL pre-allocates targets before rule bodies execute (so equivalent() returns
-     * the pre-created target), while Zeta's getOrCreate() caches results AFTER
-     * rule bodies complete, causing recursive equivalent() calls to create duplicates.
+     * Post-processing is now handled by @PostExecution hooks in rule classes:
+     * - AssociationRules.setPartners() — bidirectional association partner linking
+     * - QueryCustomizerRules.setEnumerationOrdinals() — enumeration ordinal assignment
+     * - CardinalityRules.normalizeCardinalityIds() — cardinality XMI ID normalization
+     * - TypeRules.materializePrimitiveTypes() — force lazy primitive type creation
      */
     private void postProcess(TransformationContext context) {
-        setAssociationPartners(context);
-    }
-
-    private void setAssociationPartners(TransformationContext context) {
-        ModelProvider modelProvider = new Jsl2PsmModelProvider();
-        Collection<EntityRelationDeclaration> allRelations = modelProvider.getAllContents(
-                jslModel.getResourceSet(), EntityRelationDeclaration.class);
-
-        for (EntityRelationDeclaration relDecl : allRelations) {
-            // Only for non-calculated entity relations that have association ends
-            if (Jsl2PsmHelper.isCalculated(relDecl) || !Jsl2PsmHelper.isReferenceTypeEntity(relDecl)) {
-                continue;
-            }
-
-            AssociationEnd declaredEnd = context.equivalent(relDecl,
-                    AssociationEnd.class, Jsl2PsmRuleNames.CREATE_DECLARED_ASSOCIATION_END);
-            if (declaredEnd == null) continue;
-
-            EntityRelationOpposite opposite = Jsl2PsmHelper.getOpposite(relDecl);
-            if (opposite == null) continue;
-
-            // Check if opposite has an oppositeType reference (EntityRelationOppositeReferenced)
-            EntityRelationDeclaration oppositeTypeRef = Jsl2PsmHelper.getOppositeType(opposite);
-            if (oppositeTypeRef != null) {
-                AssociationEnd partnerEnd = context.equivalent(oppositeTypeRef,
-                        AssociationEnd.class, Jsl2PsmRuleNames.CREATE_DECLARED_ASSOCIATION_END);
-                if (partnerEnd != null) {
-                    declaredEnd.setPartner(partnerEnd);
-                }
-            }
-
-            // Check if opposite is a named injected opposite (EntityRelationOppositeInjected)
-            if (opposite instanceof EntityRelationOppositeInjected) {
-                EntityRelationOppositeInjected injected = (EntityRelationOppositeInjected) opposite;
-                if (injected.getName() != null && !injected.getName().isEmpty()) {
-                    AssociationEnd partnerEnd = context.equivalent(injected,
-                            AssociationEnd.class, Jsl2PsmRuleNames.CREATE_NAMED_OPPOSITE_ASSOCIATION_END);
-                    if (partnerEnd != null) {
-                        declaredEnd.setPartner(partnerEnd);
-                    }
-                }
-            }
-        }
-
-        // Also set partners for named opposite association ends (EntityRelationOppositeInjected)
-        Collection<EntityRelationOppositeInjected> allOpposites = modelProvider.getAllContents(
-                jslModel.getResourceSet(), EntityRelationOppositeInjected.class);
-
-        for (EntityRelationOppositeInjected injected : allOpposites) {
-            AssociationEnd oppositeEnd = context.equivalent(injected,
-                    AssociationEnd.class, Jsl2PsmRuleNames.CREATE_NAMED_OPPOSITE_ASSOCIATION_END);
-            if (oppositeEnd == null) continue;
-
-            EntityRelationDeclaration relationAddedFrom = (EntityRelationDeclaration) injected.eContainer();
-            AssociationEnd partner = context.equivalent(relationAddedFrom,
-                    AssociationEnd.class, Jsl2PsmRuleNames.CREATE_DECLARED_ASSOCIATION_END);
-            if (partner != null) {
-                oppositeEnd.setPartner(partner);
-            }
-        }
-
-        log.debug("Post-processing: set {} association partners", allRelations.size());
+        // All post-processing moved to @PostExecution hooks
     }
 
     private class Jsl2PsmModelProvider implements ModelProvider {
