@@ -512,6 +512,155 @@ public class MenuTableDeclarationRules {
     }
 
     // =========================================================================
+    // Access table create form page rules — ported from menuTableDeclarationFormPage.etl
+    // =========================================================================
+
+    @TransformRule(name = ACCESS_TABLE_CREATE_FORM_PAGE_DEFINITION, description = "Create PageDefinition for create form page")
+    @Greedy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = PageDefinition.class)
+    public TransformFunction<UIMenuTableDeclaration, PageDefinition> accessTableCreateFormPageDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            if (!containsVisualElement(frontend, source)) return null;
+            if (getCreateFormModifier(source) == null) return null;
+
+            TransferRelationDeclaration relation = source.getActorAccess().getTarget();
+            UIViewDeclaration form = getCreateFormModifier(source).getForm();
+
+            PageDefinition target = ctx.createTarget(PageDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableCreateFormPageDefinition");
+            target.setName(getFqName(source) + "::AccessFormPage");
+            target.setOpenInDialog(true);
+            target.setContainer(ctx.equivalent(form, PageContainer.class, FORM_PAGE_CONTAINER));
+
+            RelationType relType = ctx.equivalent(relation, RelationType.class, RELATION_TYPE);
+            target.setDataElement(relType);
+            relType.setMemberType(MemberType.ACCESS);
+
+            // Standard actions
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    ACCESS_TABLE_CREATE_FORM_BACK_ACTION));
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    ACCESS_TABLE_CREATE_FORM_CREATE_ACTION));
+            if (isTemplateAllowed(relation)) {
+                target.getActions().add(ctx.equivalent(source, Action.class,
+                        ACCESS_TABLE_CREATE_FORM_GET_TEMPLATE_ACTION));
+            }
+
+            // Link processing
+            for (UIViewLinkDeclaration link : getOwnLinks(form)) {
+                TransferRelationDeclaration lRelation = link.getTransferRelation().getTarget();
+
+                target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                        VIEW_LINK_DECLARATION_OPEN_PAGE_ACTION, getJslId(source)));
+
+                if (getSelectorTableModifier(link) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_OPEN_SET_SELECTOR_DIALOG_ACTION, getJslId(source)));
+                }
+                if (getSelectorTableModifier(link) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_UNSET_ACTION, getJslId(source)));
+                }
+            }
+
+            // Table processing
+            for (UIViewTableDeclaration table : getOwnTables(form)) {
+                TransferRelationDeclaration tRelation = table.getTransferRelation().getTarget();
+
+                if (getUpdateViewModifier(table) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_OPEN_PAGE_ACTION, getJslId(source)));
+                }
+                if (isFilterSupported(tRelation)) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_FILTER_ACTION, getJslId(source)));
+                }
+                if (getSelectorTableModifier(table) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_OPEN_ADD_SELECTOR_ACTION, getJslId(source)));
+                }
+                if (getSelectorTableModifier(table) != null) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_CLEAR_ACTION, getJslId(source)));
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_DECLARATION_BULK_REMOVE_ACTION, getJslId(source)));
+                }
+                if (table.getReferenceType() instanceof UITagDeclaration) {
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_TAGS_DECLARATION_AUTOCOMPLETE_RANGE_ACTION, getJslId(source)));
+                    target.getActions().add(ctx.equivalentDiscriminated(table, Action.class,
+                            VIEW_TABLE_TAGS_DECLARATION_AUTOCOMPLETE_ADD_ACTION, getJslId(source)));
+                }
+            }
+
+            // Add to application pages
+            Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
+            app.getPages().add(target);
+
+            LOG.debug("AccessTableCreateFormPageDefinition: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TABLE_CREATE_FORM_BACK_ACTION, description = "Create back action for create form page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTableCreateFormBackAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableCreateFormBackAction");
+            target.setName(source.getName() + "::Back");
+            target.setActionDefinition(ctx.equivalent(getCreateFormModifier(source).getForm(),
+                    ActionDefinition.class, FORM_PAGE_CONTAINER_BACK_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TABLE_CREATE_FORM_GET_TEMPLATE_ACTION, description = "Create get template action for create form page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTableCreateFormGetTemplateAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableCreateFormGetTemplateAction");
+            target.setName(source.getName() + "::GetTemplate");
+            target.setActionDefinition(ctx.equivalent(getCreateFormModifier(source).getForm(),
+                    ActionDefinition.class, FORM_PAGE_CONTAINER_GET_TEMPLATE_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TABLE_CREATE_FORM_CREATE_ACTION, description = "Create create action for create form page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTableCreateFormCreateAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableCreateFormCreateAction");
+            target.setName(source.getName() + "::Create");
+            target.setOwnerDataElement(ctx.equivalent(source.getActorAccess().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getCreateFormModifier(source).getForm(),
+                    ActionDefinition.class, FORM_PAGE_CONTAINER_CREATE_ACTION_DEFINITION));
+            target.setTargetPageDefinition(ctx.equivalent(source, PageDefinition.class,
+                    ACCESS_TABLE_VIEW_PAGE_DEFINITION));
+            return target;
+        };
+    }
+
+    // =========================================================================
     // Helper
     // =========================================================================
 
