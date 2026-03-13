@@ -1,0 +1,40 @@
+model MenuTableWithFormPage;
+
+import judo::types;
+
+widget string StringWidget;
+
+entity Product {
+    identifier String name required;
+    field Integer price required;
+}
+
+transfer ProductTransfer(Product p) {
+    field String name <= p.name required;
+    field String price <= p.price.asString() + " HUF";
+
+    event create onCreate;
+    event update onUpdate;
+    event delete onDelete;
+}
+
+row ProductRow(ProductTransfer p) {
+    column String name <= p.name label:"Name";
+    column String price <= p.price label:"Price";
+}
+
+form ProductForm(ProductTransfer p) {
+    group main {
+        widget StringWidget name <= p.name label:"Name";
+    }
+}
+
+actor TestActor {
+    access ProductTransfer[] products <= Product.all() create update delete;
+}
+
+frontend TestFrontend(TestActor a)
+    menu: {
+        table ProductRow[] products <= a.products label:"Products" icon:"products" form:ProductForm;
+    }
+    title: "Menu Table With Form Page Test";

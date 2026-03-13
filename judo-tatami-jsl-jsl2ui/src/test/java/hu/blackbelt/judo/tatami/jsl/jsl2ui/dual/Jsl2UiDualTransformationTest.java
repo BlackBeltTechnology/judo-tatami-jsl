@@ -454,4 +454,172 @@ public class Jsl2UiDualTransformationTest {
                 "        table OrderRow[] orders <= a.orders label:\"Orders\" view:OrderView;\n" +
                 "    };\n");
     }
+
+    @Test
+    void testMenuTableWithFormPage() throws Exception {
+        assertModelsEquivalent("menuTableWithFormPage", "MenuTableWithFormPage",
+                "model MenuTableWithFormPage;\n" +
+                "import judo::types;\n" +
+                "widget string StringWidget;\n" +
+                "entity Product {\n" +
+                "    identifier String name required;\n" +
+                "    field Integer price required;\n" +
+                "}\n" +
+                "transfer ProductTransfer(Product p) {\n" +
+                "    field String name <= p.name required;\n" +
+                "    field String price <= p.price.asString() + \" HUF\";\n" +
+                "    event create onCreate;\n" +
+                "    event update onUpdate;\n" +
+                "    event delete onDelete;\n" +
+                "}\n" +
+                "row ProductRow(ProductTransfer p) {\n" +
+                "    column String name <= p.name label:\"Name\";\n" +
+                "    column String price <= p.price label:\"Price\";\n" +
+                "}\n" +
+                "form ProductForm(ProductTransfer p) {\n" +
+                "    group main {\n" +
+                "        widget StringWidget name <= p.name label:\"Name\";\n" +
+                "    }\n" +
+                "}\n" +
+                "actor TestActor {\n" +
+                "    access ProductTransfer[] products <= Product.all() create update delete;\n" +
+                "}\n" +
+                "frontend TestFrontend(TestActor a)\n" +
+                "    menu: {\n" +
+                "        table ProductRow[] products <= a.products label:\"Products\" icon:\"products\" form:ProductForm;\n" +
+                "    }\n" +
+                "    title: \"Menu Table With Form Page Test\";\n");
+    }
+
+    @Test
+    void testMenuLinkWithFormPage() throws Exception {
+        assertModelsEquivalent("menuLinkWithFormPage", "MenuLinkWithFormPage",
+                "model MenuLinkWithFormPage;\n" +
+                "import judo::types;\n" +
+                "widget string StringWidget;\n" +
+                "entity User {\n" +
+                "    identifier String email required;\n" +
+                "    field String name;\n" +
+                "}\n" +
+                "transfer UserTransfer(User u) {\n" +
+                "    field String email <= u.email required;\n" +
+                "    field String name <= u.name;\n" +
+                "    event create onCreate;\n" +
+                "    event update onUpdate;\n" +
+                "    event delete onDelete;\n" +
+                "}\n" +
+                "view UserView(UserTransfer u) {\n" +
+                "    group main {\n" +
+                "        widget StringWidget name <= u.name label:\"Name\";\n" +
+                "    }\n" +
+                "}\n" +
+                "form UserForm(UserTransfer u) {\n" +
+                "    group main {\n" +
+                "        widget StringWidget name <= u.name label:\"Name\";\n" +
+                "    }\n" +
+                "}\n" +
+                "actor TestActor {\n" +
+                "    access UserTransfer user <= User.any() create update delete;\n" +
+                "}\n" +
+                "frontend TestFrontend(TestActor a)\n" +
+                "    menu: {\n" +
+                "        link UserView user <= a.user label:\"User\" icon:\"user\" view:UserView form:UserForm;\n" +
+                "    }\n" +
+                "    title: \"Menu Link With Form Page Test\";\n");
+    }
+
+    @Test
+    void testViewTableWithFormPage() throws Exception {
+        assertModelsEquivalent("viewTableWithFormPage", "ViewTableWithFormPage",
+                "model ViewTableWithFormPage;\n" +
+                "import judo::types;\n" +
+                "widget string StringWidget;\n" +
+                "entity User {\n" +
+                "    identifier String email required;\n" +
+                "    field String name;\n" +
+                "}\n" +
+                "entity Order {\n" +
+                "    field String orderName;\n" +
+                "    relation User user;\n" +
+                "}\n" +
+                "transfer UserTransfer(User u) {\n" +
+                "    field String name <= u.name;\n" +
+                "    event create onCreate;\n" +
+                "    event update onUpdate;\n" +
+                "}\n" +
+                "transfer OrderTransfer(Order o) {\n" +
+                "    field String orderName <= o.orderName;\n" +
+                "    relation UserTransfer user <= o.user create update;\n" +
+                "    event create onCreate;\n" +
+                "    event update onUpdate;\n" +
+                "    event delete onDelete;\n" +
+                "}\n" +
+                "row OrderRow(OrderTransfer o) {\n" +
+                "    column String orderName <= o.orderName;\n" +
+                "}\n" +
+                "view OrderView(OrderTransfer o) {\n" +
+                "    group main {\n" +
+                "        widget StringWidget orderName <= o.orderName;\n" +
+                "    }\n" +
+                "}\n" +
+                "form OrderForm(OrderTransfer o) {\n" +
+                "    group main {\n" +
+                "        widget StringWidget orderName <= o.orderName;\n" +
+                "    }\n" +
+                "}\n" +
+                "actor TestActor {\n" +
+                "    access OrderTransfer[] orders <= Order.all() create update delete;\n" +
+                "}\n" +
+                "frontend TestFrontend(TestActor a)\n" +
+                "    menu: {\n" +
+                "        table OrderRow[] orders <= a.orders label:\"Orders\" view:OrderView form:OrderForm;\n" +
+                "    }\n" +
+                "    title: \"View Table With Form Page Test\";\n");
+    }
+
+    @Test
+    void testViewLinkWithFormPage() throws Exception {
+        assertModelsEquivalent("viewLinkWithFormPage", "ViewLinkWithFormPage",
+                "model ViewLinkWithFormPage;\n" +
+                "import judo::types;\n" +
+                "widget string StringWidget;\n" +
+                "entity User {\n" +
+                "    identifier String email required;\n" +
+                "    field String name;\n" +
+                "}\n" +
+                "entity Order {\n" +
+                "    field String orderName;\n" +
+                "    relation User user;\n" +
+                "}\n" +
+                "transfer UserTransfer(User u) {\n" +
+                "    field String name <= u.name;\n" +
+                "    event create onCreate;\n" +
+                "    event update onUpdate;\n" +
+                "}\n" +
+                "transfer OrderTransfer(Order o) {\n" +
+                "    field String orderName <= o.orderName;\n" +
+                "    relation UserTransfer user <= o.user create update;\n" +
+                "    event create onCreate;\n" +
+                "    event update onUpdate;\n" +
+                "    event delete onDelete;\n" +
+                "}\n" +
+                "view OrderView(OrderTransfer o) {\n" +
+                "    group main {\n" +
+                "        widget StringWidget orderName <= o.orderName;\n" +
+                "    }\n" +
+                "}\n" +
+                "form OrderForm(OrderTransfer o) {\n" +
+                "    group main {\n" +
+                "        widget StringWidget orderName <= o.orderName;\n" +
+                "    }\n" +
+                "}\n" +
+                "actor TestActor {\n" +
+                "    access OrderTransfer order <= Order.any() create update delete;\n" +
+                "}\n" +
+                "frontend TestFrontend(TestActor a)\n" +
+                "    menu: {\n" +
+                "        link OrderView order <= a.order label:\"Order\" icon:\"order\" view:OrderView form:OrderForm;\n" +
+                "    }\n" +
+                "    title: \"View Link With Form Page Test\";\n");
+    }
 }
