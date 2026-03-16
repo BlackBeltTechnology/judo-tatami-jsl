@@ -941,7 +941,7 @@ public class Jsl2PsmDualTransformationTest {
         org.eclipse.emf.ecore.resource.Resource etlResource = etlResult.getResourceSet().getResources().get(0);
         org.eclipse.emf.ecore.resource.Resource zetaResource = zetaResult.getResourceSet().getResources().get(0);
 
-        ComparisonResult result = ModelComparator.compare(etlResource, zetaResource, ComparisonMode.STRUCTURAL);
+        ComparisonResult result = ModelComparator.compare(etlResource, zetaResource, ComparisonMode.STRICT);
 
         if (!result.isEquivalent()) {
             String msg = "DEEP COMPARISON FAILED for " + testName + ": " + result.getDifferenceCount() + " differences\n"
