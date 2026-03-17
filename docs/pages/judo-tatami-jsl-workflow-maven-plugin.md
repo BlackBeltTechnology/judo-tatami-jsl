@@ -1,18 +1,15 @@
 # Tatami JSL Workflow Maven Plugin
 
-This plugin manages and executes generators for JUDO JSL Application codes.
-
-It generates persistence DAO's and Guice Injector based bootstrap.
+This plugin manages and executes the complete JUDO JSL model transformation pipeline during a Maven build. It takes `.jsl` source files and generates all the runtime models needed by the JUDO platform: PSM, ASM, UI, RDBMS schemas, Liquibase DDL, expression models, and optionally Keycloak configuration.
 
 ## Requirements
 
-- Maven 3.6 and Java 21
+- Java 21+
+- Maven 3.9.4+
 
 ## Installation
 
-Include the plugin as a dependency in your Maven project. Change `LATEST_VERSION` to the latest tagged version.
-
-Generating application with minimal settings.
+Add the plugin to your `pom.xml`. Replace `LATEST_VERSION` with the current release version.
 
 ```xml
 <plugin>
@@ -33,33 +30,39 @@ Generating application with minimal settings.
 
 ## Generation Pipeline
 
-The plugin executes model conversion pipeline started with the `.jsl` defined models.
-The different models represent different architectural models, which are used by
-the corresponding architectural element.
-
-Model pipeline for `.jsl`:
+The plugin runs a multi-stage model transformation pipeline that starts with `.jsl` source files and produces all models needed by the JUDO runtime.
 
 ```mermaid
-graph LR
-    JslDsl -->|JslParser| JSL
+flowchart LR
+    JslDsl[".jsl files"] -->|JslParser| JSL["JSL XMI"]
     JSL -->|Jsl2Psm| PSM
-    JSL -->|Jsl2Ui| UI
+    JSL -->|Jsl2Ui| UI["UI Model"]
     PSM -->|Psm2Asm| ASM
     PSM -->|Psm2Measure| Measure
-    ASM -->|Asm2Rdbms| RDBMS["RDBMS (hsqldb, postgresql)"]
-    RDBMS -->|Rdbms2Liquibase| Liquibase["Liquibase (hsqldb, postgresql)"]
+    ASM -->|Asm2Rdbms| RDBMS["RDBMS<br/>(hsqldb, postgresql)"]
+    ASM -->|Asm2Expression| Expression
+    ASM -->|Asm2Keycloak| Keycloak
+    RDBMS -->|Rdbms2Liquibase| Liquibase["Liquibase<br/>(hsqldb, postgresql)"]
 ```
 
-- **JslDsl** - The JUDO Specification Language model. The source code of the model.
-- **JSL** - The XMI representation of JslDsl.
-- **PSM** - Platform Specific Model. It is the formal JUDO definition of platform domain in XMI format.
-- **ASM** - Architecture Specific Model. It is Ecore metamodel based XMI representation of PSM. This model and its derivative models are used by the platform.
-- **UI** - User Interface Model. Generated from JSL frontend/view/row declarations.
-- **Measure** - Special measure model, which helps the correct measurement handling.
-- **RDBMS** - Relational Data Model in XMI form. It is generated in dialect-dependent form.
-- **Liquibase** - This model contains RDBMS model definition for DDL generation. It will create the RDBMS schema in a database for the defined ASM model.
+### Model Descriptions
+
+| Model | What it is |
+|-------|------------|
+| **JslDsl** | The JUDO Specification Language source code (`.jsl` files). |
+| **JSL** | The XMI representation of JslDsl, parsed from the source. |
+| **PSM** | Platform Specific Model — the formal JUDO domain definition in XMI format. |
+| **ASM** | Architecture Specific Model — Ecore metamodel-based XMI representation used by the platform runtime. |
+| **UI** | User Interface model — describes views, widgets, navigation, and data bindings for frontend generation. |
+| **Measure** | Measurement model for correct unit handling. |
+| **RDBMS** | Relational database model in XMI, generated per database dialect. |
+| **Liquibase** | DDL generation model for creating and migrating the database schema. |
+| **Expression** | Expression model for query evaluation and derived attributes. |
+| **Keycloak** | (Optional) Identity and access management configuration. |
 
 ## Plugin Parameters
+
+Below is the full configuration with all available parameters and their defaults:
 
 ```xml
 <execution>
@@ -69,103 +72,132 @@ graph LR
         <goal>default-workflow</goal>
     </goals>
     <configuration>
-        <sources>${project.basedir}/src/main/resources/model</sources>         <!-- 1 -->
-        <destination>${project.basedir}/target/generated-sources/model</destination> <!-- 2 -->
-        <modelNames/>                                                           <!-- 3 -->
-        <modelVersion>${project.version}</modelVersion>                         <!-- 4 -->
+        <sources>${project.basedir}/src/main/resources/model</sources>
+        <destination>${project.basedir}/target/generated-sources/model</destination>
+        <modelNames/>
+        <modelVersion>${project.version}</modelVersion>
 
-        <useDependencies>false</useDependencies>                                <!-- 5 -->
+        <useDependencies>false</useDependencies>
 
-        <dialects>hsqldb,postgresql</dialects>                                  <!-- 6 -->
+        <dialects>hsqldb,postgresql</dialects>
 
-        <transformationMode>ETL</transformationMode>                            <!-- 7 -->
-
-        <ignoreJsl2Psm>false</ignoreJsl2Psm>                                   <!-- 8 -->
-        <ignoreJsl2Ui>false</ignoreJsl2Ui>                                     <!-- 9 -->
-        <ignorePsm2Asm>false</ignorePsm2Asm>                                  <!-- 10 -->
-        <ignorePsm2AsmTrace>false</ignorePsm2AsmTrace>                        <!-- 11 -->
-        <ignorePsm2Measure>false</ignorePsm2Measure>                          <!-- 12 -->
-        <ignorePsm2MeasureTrace>false</ignorePsm2MeasureTrace>                <!-- 13 -->
-        <ignoreAsm2Rdbms>false</ignoreAsm2Rdbms>                              <!-- 14 -->
-        <ignoreAsm2RdbmsTrace>false</ignoreAsm2RdbmsTrace>                    <!-- 15 -->
-        <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>                  <!-- 16 -->
-        <ignoreAsm2Expression>false</ignoreAsm2Expression>                    <!-- 17 -->
-        <useCache>false</useCache>                                             <!-- 18 -->
-        <runInParallel>true</runInParallel>                                    <!-- 19 -->
-        <saveModels>true</saveModels>                                          <!-- 20 -->
-        <enableMetrics>true</enableMetrics>                                    <!-- 21 -->
-        <validateModels>false</validateModels>                                 <!-- 22 -->
-        <rdbmsCreateSimpleName>false</rdbmsCreateSimpleName>                   <!-- 23 -->
-        <rdbmsNameSize>-1</rdbmsNameSize>                                      <!-- 24 -->
-        <rdbmsShortNameSize>-1</rdbmsShortNameSize>                            <!-- 25 -->
-        <rdbmsTablePrefix>T_</rdbmsTablePrefix>                                <!-- 26 -->
-        <rdbmsColumnPrefix>C_</rdbmsColumnPrefix>                              <!-- 27 -->
-        <rdbmsForeignKeyPrefix>FK_</rdbmsForeignKeyPrefix>                    <!-- 28 -->
-        <rdbmsInverseForeignKeyPrefix>FK_INV_</rdbmsInverseForeignKeyPrefix>  <!-- 29 -->
-        <rdbmsJunctionTablePrefix>J_</rdbmsJunctionTablePrefix>               <!-- 30 -->
-        <rdbmsTableNameMaxSize>-1</rdbmsTableNameMaxSize>                      <!-- 31 -->
-        <rdbmsColumnNameMaxSize>-1</rdbmsColumnNameMaxSize>                    <!-- 32 -->
-        <ignoreAsm2Keycloak>true</ignoreAsm2Keycloak>                         <!-- 33 -->
-        <ignoreAsm2KeycloakTrace>true</ignoreAsm2KeycloakTrace>               <!-- 34 -->
+        <ignoreJsl2Psm>false</ignoreJsl2Psm>
+        <ignoreJsl2Ui>false</ignoreJsl2Ui>
+        <ignorePsm2Asm>false</ignorePsm2Asm>
+        <ignorePsm2AsmTrace>false</ignorePsm2AsmTrace>
+        <ignorePsm2Measure>false</ignorePsm2Measure>
+        <ignorePsm2MeasureTrace>false</ignorePsm2MeasureTrace>
+        <ignoreAsm2Rdbms>false</ignoreAsm2Rdbms>
+        <ignoreAsm2RdbmsTrace>false</ignoreAsm2RdbmsTrace>
+        <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>
+        <ignoreAsm2Expression>false</ignoreAsm2Expression>
+        <useCache>false</useCache>
+        <runInParallel>true</runInParallel>
+        <saveModels>true</saveModels>
+        <enableMetrics>true</enableMetrics>
+        <validateModels>false</validateModels>
+        <rdbmsCreateSimpleName>false</rdbmsCreateSimpleName>
+        <rdbmsNameSize>-1</rdbmsNameSize>
+        <rdbmsShortNameSize>-1</rdbmsShortNameSize>
+        <rdbmsTablePrefix>T_</rdbmsTablePrefix>
+        <rdbmsColumnPrefix>C_</rdbmsColumnPrefix>
+        <rdbmsForeignKeyPrefix>FK_</rdbmsForeignKeyPrefix>
+        <rdbmsInverseForeignKeyPrefix>FK_INV_</rdbmsInverseForeignKeyPrefix>
+        <rdbmsJunctionTablePrefix>J_</rdbmsJunctionTablePrefix>
+        <rdbmsTableNameMaxSize>-1</rdbmsTableNameMaxSize>
+        <rdbmsColumnNameMaxSize>-1</rdbmsColumnNameMaxSize>
+        <ignoreAsm2Keycloak>true</ignoreAsm2Keycloak>
+        <ignoreAsm2KeycloakTrace>true</ignoreAsm2KeycloakTrace>
     </configuration>
 </execution>
 ```
 
-URI type parameters can be file or mvn with the following coordinate:
+### Parameter Reference
+
+#### Source and Destination
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `sources` | `src/main/resources/model` | Comma-separated list of source URIs. Can be filesystem directories (scanned recursively for `.jsl` files) or Maven artifact URIs. |
+| `destination` | `${project.basedir}/target/generated-sources/model` | Output directory for all generated models, traces, and source code. |
+| `modelNames` | *(all)* | Logical model names to compile. When multiple `.jsl` files exist, this limits which models are processed. |
+| `modelVersion` | `${project.version}` | Version string stored in generated models. |
+| `useDependencies` | `false` | When `true`, scans all Maven dependencies transitively for `.jsl` files. |
+
+> **Important:** If generated source code needs to be compiled, either use `build-helper-maven-plugin` to add the source folder, or enable the `compileSdk` and `createSdkJar` options.
+
+URI parameters support both filesystem paths and Maven coordinates:
 `mvn:<groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>[!path/in/archive]`
 
-| # | Parameter | Default | Description |
-|---|-----------|---------|-------------|
-| 1 | `sources` | `src/main/resources/model` | Sources URI. Comma-separated list. When models are defined, adds them; when a directory, scans recursively for `.jsl` files. |
-| 2 | `destination` | `${project.basedir}/target/generated-sources/model` | Destination path where transformation output is generated. Contains intermediate models, traces and source code. |
-| 3 | `modelNames` | (none) | Logical model names. When multiple `.jsl` files exist, only compile the listed models. |
-| 4 | `modelVersion` | `${project.version}` | Version number stored in generated models. |
-| 5 | `useDependencies` | `false` | Use maven dependencies as source of JSL files. Scans all dependencies transitively for `.jsl` files. |
-| 6 | `dialects` | `hsqldb,postgresql` | Comma-separated list of dialects to generate. Valid: `hsqldb`, `postgresql`. |
-| 7 | `transformationMode` | `ETL` | Transformation engine to use. Valid: `ETL`, `ZETA`. |
-| 8 | `ignoreJsl2Psm` | `false` | Skip JSL to PSM transformation. |
-| 9 | `ignoreJsl2Ui` | `false` | Skip JSL to UI transformation. |
-| 10 | `ignorePsm2Asm` | `false` | Skip PSM to ASM transformation. |
-| 11 | `ignorePsm2AsmTrace` | `true` | Skip PSM to ASM trace generation. |
-| 12 | `ignorePsm2Measure` | `false` | Skip PSM to Measure transformation. |
-| 13 | `ignorePsm2MeasureTrace` | `true` | Skip PSM to Measure trace generation. |
-| 14 | `ignoreAsm2Rdbms` | `false` | Skip ASM to RDBMS transformation. |
-| 15 | `ignoreAsm2RdbmsTrace` | `false` | Skip ASM to RDBMS trace generation. |
-| 16 | `ignoreRdbms2Liquibase` | `false` | Skip RDBMS to Liquibase transformation. |
-| 17 | `ignoreAsm2Expression` | `false` | Skip ASM to Expression transformation. |
-| 18 | `useCache` | `false` | Use cache in model transformations. |
-| 19 | `runInParallel` | `true` | Run transformations in parallel when possible. |
-| 20 | `saveModels` | `false` | Save models after execution. |
-| 21 | `enableMetrics` | `true` | Enable generation time statistics after execution. |
-| 22 | `validateModels` | `false` | Validate models on load and save. |
-| 23 | `rdbmsCreateSimpleName` | `false` | Use model name as SQL name (no namespace collision check). |
-| 24 | `rdbmsNameSize` | `-1` | Full SQL name size (-1 for database default). |
-| 25 | `rdbmsShortNameSize` | `-1` | Short SQL name size for namespace fragments (-1 for database default). |
-| 26 | `rdbmsTablePrefix` | `T_` | Table name prefix (`-` for no prefix). |
-| 27 | `rdbmsColumnPrefix` | `C_` | Column name prefix (`-` for no prefix). |
-| 28 | `rdbmsForeignKeyPrefix` | `FK_` | Foreign key prefix (`-` for no prefix). |
-| 29 | `rdbmsInverseForeignKeyPrefix` | `FK_INV_` | Inverse foreign key prefix (`-` for no prefix). |
-| 30 | `rdbmsJunctionTablePrefix` | `J_` | Junction table prefix (`-` for no prefix). |
-| 31 | `rdbmsTableNameMaxSize` | `-1` | Maximum table name size (-1 for database default). |
-| 32 | `rdbmsColumnNameMaxSize` | `-1` | Maximum column name size (-1 for database default). |
-| 33 | `ignoreAsm2Keycloak` | `true` | Skip ASM to Keycloak transformation. |
-| 34 | `ignoreAsm2KeycloakTrace` | `true` | Skip ASM to Keycloak trace generation. |
+#### Transformation Toggles
 
-## Example
+Each transformation step can be individually disabled:
 
-**`src/main/model/salesmodel.jsl`:**
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `ignoreJsl2Psm` | `false` | Skip JSL → PSM transformation |
+| `ignoreJsl2Ui` | `false` | Skip JSL → UI transformation |
+| `ignorePsm2Asm` | `false` | Skip PSM → ASM transformation |
+| `ignorePsm2Measure` | `false` | Skip PSM → Measure transformation |
+| `ignoreAsm2Rdbms` | `false` | Skip ASM → RDBMS transformation |
+| `ignoreAsm2Expression` | `false` | Skip ASM → Expression transformation |
+| `ignoreRdbms2Liquibase` | `false` | Skip RDBMS → Liquibase transformation |
+| `ignoreAsm2Keycloak` | `true` | Skip ASM → Keycloak transformation |
+
+#### Trace Toggles
+
+Transformation traces map source elements to target elements, useful for debugging and impact analysis:
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `ignorePsm2AsmTrace` | `true` | Skip PSM → ASM trace generation |
+| `ignorePsm2MeasureTrace` | `true` | Skip PSM → Measure trace generation |
+| `ignoreAsm2RdbmsTrace` | `false` | Skip ASM → RDBMS trace generation |
+| `ignoreAsm2KeycloakTrace` | `false` | Skip ASM → Keycloak trace generation |
+
+#### Execution Options
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `runInParallel` | `true` | Run independent transformations in parallel on multicore systems |
+| `enableMetrics` | `true` | Collect and report transformation timing statistics |
+| `validateModels` | `false` | Validate models on load and save |
+| `saveModels` | `false` | Persist transformed models to the destination directory |
+| `useCache` | `false` | Cache intermediate transformation results |
+| `dialects` | `hsqldb,postgresql` | Comma-separated list of database dialects to generate for |
+
+#### RDBMS Naming Configuration
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `rdbmsCreateSimpleName` | `false` | Use model name directly as SQL name (no namespace collision check) |
+| `rdbmsNameSize` | `-1` | Full SQL name size limit; `-1` uses database-specific default |
+| `rdbmsShortNameSize` | `-1` | Short SQL name (namespace fragment) size; `-1` uses database-specific default |
+| `rdbmsTablePrefix` | `T_` | Prefix for table names; use `-` for no prefix |
+| `rdbmsColumnPrefix` | `C_` | Prefix for column names; use `-` for no prefix |
+| `rdbmsForeignKeyPrefix` | `FK_` | Prefix for foreign key names; use `-` for no prefix |
+| `rdbmsInverseForeignKeyPrefix` | `FK_INV_` | Prefix for inverse foreign key names; use `-` for no prefix |
+| `rdbmsJunctionTablePrefix` | `J_` | Prefix for junction table names; use `-` for no prefix |
+| `rdbmsTableNameMaxSize` | `-1` | Maximum table name length; `-1` uses database-specific default |
+| `rdbmsColumnNameMaxSize` | `-1` | Maximum column name length; `-1` uses database-specific default |
+
+## Complete Example
+
+### JSL Model
+
+`src/main/model/salesmodel.jsl`:
 
 ```
 model SalesModel;
 
-type numeric Integer precision:9 scale:0;
-type string String min-size:0 max-size:128;
-type string PhoneNumber min-size:0 max-size:32 regex:"^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$";
+type numeric Integer(precision = 9, scale = 0);
+type string String(min-size = 0, max-size = 128);
+type string PhoneNumber(min-size = 0, max-size = 32, regex = "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$");
 type boolean Boolean;
 
 type date Date;
 type timestamp Timestamp;
-type binary Binary mime-type:["text/plain"] max-file-size:1 GB;
+type binary Binary(mime-types = ["text/plain"], max-file-size=1 GB);
 
 error MyError {
     field Integer code;
@@ -208,7 +240,7 @@ entity Customer {
 }
 ```
 
-**`pom.xml`:**
+### Maven POM
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -229,8 +261,10 @@ entity Customer {
         <judo-runtime-core-version>1.0.6</judo-runtime-core-version>
         <judo-tatami-jsl-version>1.1.0</judo-tatami-jsl-version>
     </properties>
+
     <build>
         <plugins>
+            <!-- 1. Run the JSL transformation pipeline -->
             <plugin>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-jsl-workflow-maven-plugin</artifactId>
@@ -250,6 +284,27 @@ entity Customer {
                     <dialects>hsqldb</dialects>
                 </configuration>
             </plugin>
+
+            <!-- 2. Add generated SDK source to the compile path -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/target/model/sdk/SalesModel</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -262,6 +317,16 @@ entity Customer {
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-jsl2psm</artifactId>
+                <version>${judo-tatami-jsl-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-workflow</artifactId>
+                <version>${judo-tatami-jsl-version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -270,6 +335,123 @@ entity Customer {
             <groupId>hu.blackbelt.judo.runtime</groupId>
             <artifactId>judo-runtime-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.runtime</groupId>
+            <artifactId>judo-runtime-core-guice-hsqldb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo</groupId>
+            <artifactId>judo-dao-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo</groupId>
+            <artifactId>judo-dispatcher-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo</groupId>
+            <artifactId>judo-sdk-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.mapper</groupId>
+            <artifactId>mapper-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
 ```
+
+### Test Class
+
+`src/test/java/hu/blackbelt/judo/test/salesmodel/SalesModelTest.java`:
+
+```java
+package hu.blackbelt.judo.test.salesmodel;
+
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import hu.blackbelt.judo.runtime.core.guice.JudoDefaultModule;
+import hu.blackbelt.judo.runtime.core.guice.JudoModelHolder;
+import hu.blackbelt.judo.runtime.core.guice.dao.rdbms.hsqldb.JudoHsqldbModules;
+import hu.blackbelt.judo.runtime.core.dao.rdbms.hsqldb.HsqldbDialect;
+import hu.blackbelt.judo.test.salesmodel.daoprovider.salesmodel.SalesModelDaoModules;
+import hu.blackbelt.judo.test.salesmodel.sdk.salesmodel.salesmodel.Person;
+import hu.blackbelt.judo.test.salesmodel.sdk.salesmodel.salesmodel.SalesPerson;
+import hu.blackbelt.judo.sdk.query.StringFilter;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@Slf4j
+class SalesModelTest {
+
+    Injector injector;                              // Guice injector for service lookup
+
+    @Inject
+    SalesPerson.SalesPersonDao salesPersonDao;      // Generated SDK DAO
+
+    @Inject
+    Person.PersonDao personDao;                     // Generated SDK DAO
+
+    @BeforeEach
+    void init() {
+        // Load generated runtime models from the filesystem
+        JudoModelHolder modelHolder = JudoModelHolder
+                .loadFromURL("SalesModel", new File("target/model").toURI(), new HsqldbDialect());
+
+        // Wire up Guice modules: HSQLDB runtime + generated DAOs
+        injector = Guice.createInjector(
+                JudoHsqldbModules.builder().build(),
+                new SalesModelDaoModules(),
+                new JudoDefaultModule(this, modelHolder));
+    }
+
+    @Test
+    public void test() {
+        // Create a SalesPerson via the generated DAO
+        SalesPerson createdSalesPerson = salesPersonDao.create(SalesPerson.builder()
+                .withFirstName("Test")
+                .withLastName("Elek")
+                .build());
+
+        assertEquals("Test", createdSalesPerson.getFirstName());
+        assertEquals("Elek", createdSalesPerson.getLastName());
+
+        // Search using generated filter API
+        List<SalesPerson> personList = salesPersonDao.search()
+                .filterByFirstName(StringFilter.equalTo("Test"))
+                .execute();
+
+        assertEquals(1, personList.size());
+
+        // Create a Person (abstract entity becomes concrete via generated SDK)
+        Person createdPerson = personDao.create(Person.builder()
+                .withFirstName("Masik")
+                .withLastName("Test")
+                .build());
+
+        assertEquals("Masik", createdPerson.getFirstName());
+        assertEquals("Test", createdPerson.getLastName());
+    }
+}
+```
+
+**Key points about the example:**
+
+1. `judo-runtime-core-version` — the runtime that loads and executes the transformed models
+2. `judo-tatami-jsl-version` — the Tatami JSL version for the transformation plugin
+3. `build-helper-maven-plugin` — adds generated SDK source code into the normal Maven compilation pipeline

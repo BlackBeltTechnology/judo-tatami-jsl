@@ -2,13 +2,17 @@
 
 ## Project Overview
 
+
 **Repository:** BlackBeltTechnology/judo-tatami-jsl
 **License:** Eclipse Public License 2.0 (EPL-2.0)
 **Java Version:** 21
-**Build System:** Maven 3.9.4+ with OSGi bundles
-**Version:** 1.1.4-SNAPSHOT
+**Build System:** Maven 3.9.4 with Maven Wrapper (`./mvnw`)
 
-This project contains the **JSL (Judo Specification Language) transformation pipeline** for the JUDO platform. It transforms JSL source models into PSM (Platform Specific Model) and UI (User Interface) models using two transformation engines: **Epsilon ETL** (Epsilon Transformation Language) and **Zeta** (Java-based annotation-driven framework). The workflow module orchestrates the full chain from JSL through PSM, ASM, RDBMS, Liquibase, Expression, Measure, Keycloak, and UI models by delegating to the downstream `judo-tatami` (judo-tatami-base) transformation modules.
+1. **Model transformation engine** — converts JSL (JUDO Specification Language) source files into a chain of runtime models (PSM, ASM, UI, RDBMS, Liquibase, Expression, Keycloak)
+2. **Built on Eclipse Epsilon** — uses ETL (Epsilon Transformation Language) and EOL (Epsilon Object Language) scripts for declarative model-to-model transformations
+3. **Maven plugin integration** — packages the transformation pipeline as a Maven plugin (`default-model-workflow` goal) for build-time code generation
+4. **Multi-dialect database support** — generates RDBMS schemas for PostgreSQL and HSQLDB
+5. **Part of the JUDO ecosystem** — depends on judo-meta-* metamodels and judo-tatami-core workflow infrastructure
 
 ## Code Instructions
 
@@ -25,445 +29,131 @@ This project contains the **JSL (Judo Specification Language) transformation pip
 
 ```
 judo-tatami-jsl/
-├── judo-tatami-jsl-jsl2psm/                    # JSL to PSM transformation (ETL + Zeta)
-├── judo-tatami-jsl-jsl2ui/                      # JSL to UI transformation (ETL + Zeta)
-├── judo-tatami-jsl-workflow/                    # Workflow orchestration (full pipeline)
-├── judo-tatami-jsl-workflow-maven-plugin/       # Maven plugin for running workflows
-├── judo-tatami-jsl-workflow-maven-plugin-test/  # Maven plugin integration test
-├── docs/                                        # Documentation
-└── openspec/                                    # OpenSpec change management
+├── judo-tatami-jsl-jsl2psm/           # JSL → PSM transformation module
+│   ├── src/main/java/                 #   Java orchestration (Jsl2Psm, expression translation)
+│   └── src/main/epsilon/              #   Epsilon ETL/EOL transformation scripts
+├── judo-tatami-jsl-jsl2ui/            # JSL → UI transformation module
+│   ├── src/main/java/                 #   Java orchestration (Jsl2Ui)
+│   └── src/main/epsilon/              #   Epsilon ETL/EOL transformation scripts
+├── judo-tatami-jsl-workflow/          # Pipeline orchestration module
+│   └── src/main/java/                 #   Workflow engine, configuration, metrics
+├── judo-tatami-jsl-workflow-maven-plugin/      # Maven Mojo plugin
+│   └── src/main/java/                 #   DefaultWorkflowMojo, artifact resolution
+├── judo-tatami-jsl-workflow-maven-plugin-test/ # Plugin integration tests
+├── docs/                              # Documentation (Markdown)
+├── .github/workflows/                 # CI/CD pipelines (GitHub Actions)
+├── pom.xml                            # Parent POM (all modules, dependency management)
+└── logback-test.xml                   # Shared test logging configuration
 ```
 
-## Transformation Pipeline
+## Core Modules
 
-```
-JSL (Judo Specification Language - .jsl files)
-  ├→ (judo-tatami-jsl-jsl2psm) → PSM (Platform Specific Model)
-  │   ├→ (judo-tatami-psm2asm*) → ASM (Abstract Semantic Model)
-  │   │   ├→ (judo-tatami-asm2rdbms*) → RDBMS Schema (per dialect: hsqldb, postgresql)
-  │   │   │   └→ (judo-tatami-rdbms2liquibase*) → Liquibase Changelog
-  │   │   ├→ (judo-tatami-asm2expression*) → Expression Model
-  │   │   └→ (judo-tatami-asm2keycloak*) → Keycloak Config
-  │   └→ (judo-tatami-psm2measure*) → Measure Model
-  └→ (judo-tatami-jsl-jsl2ui) → UI Model
+### Transformation Modules
 
-* = downstream transformations from judo-tatami-base, orchestrated by judo-tatami-jsl-workflow
-```
+| Module | Type | Purpose |
+|--------|------|---------|
+| `judo-tatami-jsl-jsl2psm/` | Library | Transforms JSL models to PSM using Epsilon ETL. Contains `Jsl2Psm.java` (orchestrator), `JslExpressionToJqlExpression.java` (expression translation), and ~60 EOL operation scripts in `src/main/epsilon/transformations/psm/`. |
+| `judo-tatami-jsl-jsl2ui/` | Library | Transforms JSL models to UI models using Epsilon ETL. Contains `Jsl2Ui.java` (orchestrator) and ~40 EOL operation scripts in `src/main/epsilon/transformations/ui/`. Processes each `UIFrontendDeclaration` separately. |
 
-## Module Details
+### Orchestration Modules
 
-### judo-tatami-jsl-jsl2psm
+| Module | Type | Purpose |
+|--------|------|---------|
+| `judo-tatami-jsl-workflow/` | Library | Core workflow orchestration. `AbstractTatamiPipelineWorkflow` configures and runs the full transformation pipeline (JSL→PSM→ASM→RDBMS→Liquibase, JSL→UI, etc.). `WorkflowHelper` is the factory. `DefaultWorkflowSetupParameters` holds all configuration via builder pattern. |
+| `judo-tatami-jsl-workflow-maven-plugin/` | Maven Plugin | `DefaultWorkflowMojo` — Maven Mojo (`default-model-workflow` goal, default phase: COMPILE). Bridges Maven parameters to `DefaultWorkflowSetupParameters` and executes the workflow. |
 
-**Purpose:** Transforms JSL models into PSM models using Epsilon ETL.
+### Test & Documentation Modules
 
-**Key Classes:**
-| Class | Purpose |
-|-------|---------|
-| `Jsl2Psm.java` | Main transformation entry point. Executes ETL with configurable parameters |
-| `Jsl2PsmWork.java` | Workflow integration class (extends AbstractTransformationWork) |
-| `Jsl2PsmTransformationTrace.java` | Tracks mapping between JSL and PSM elements |
-| `JslExpressionToJqlExpression.java` | Converts JSL expressions to JQL (Judo Query Language) |
-| `Jsl2JqlFunction.java` | JSL function to JQL function translation |
-| `Jsl2PsmTransformationService.java` | OSGi Declarative Service |
-
-**ETL Structure:**
-```
-src/main/epsilon/
-├── transformations/psm/
-│   ├── jslToPsm.etl                    # Main transformation entry point
-│   └── modules/
-│       ├── namespace/namespace.etl      # Model and package creation
-│       ├── data/                        # Entity types, attributes, relations
-│       │   ├── entityType.etl
-│       │   ├── association.etl
-│       │   ├── containment.etl
-│       │   ├── cardinality.etl
-│       │   ├── primitiveTypedElement.etl
-│       │   └── query.etl
-│       ├── type/type.etl               # Primitive types (string, numeric, date, etc.)
-│       ├── derived/                     # Derived properties and queries
-│       │   ├── dataProperty.etl
-│       │   ├── navigationProperty.etl
-│       │   ├── entityQuery.etl
-│       │   └── expressionType.etl
-│       ├── structure/                   # Transfer objects (mapped and unmapped)
-│       │   ├── entityDeclarationDefaultTransferObjectType.etl
-│       │   ├── transferDeclarationTransferObjectType.etl
-│       │   ├── transferDeclarationQueryCustomizer.etl
-│       │   └── ... (attributes, relations)
-│       ├── action/                      # Operations and behaviours
-│       │   ├── action.etl
-│       │   ├── actorBehaviour.etl
-│       │   ├── deleteBehaviour.etl
-│       │   ├── updateBehaviour.etl
-│       │   └── ... (CRUD behaviours)
-│       └── actor/                       # Actor types and access control
-│           ├── actorType.etl
-│           └── access.etl
-└── operations/                          # EOL helper operations
-    ├── _importAll.eol
-    ├── utils.eol
-    └── jsl/                             # JSL-specific operations
-```
-
-**Transformation Parameters (Jsl2PsmParameter):**
-- `createTrace` - Enable/disable trace generation
-- `parallel` - Enable parallel execution
-- `generateBehaviours` - Generate CRUD behaviours
-- `useCache` - Enable model caching
-- Naming prefixes/suffixes for entities, transfer objects, parameters
-
-**Tests:** 33 test files organized by domain (entity, type, transferobject, derived, operation, actor, namespace, error, functions).
-
-**Zeta Structure:**
-```
-src/main/java/.../jsl2psm/zeta/
-├── Jsl2PsmZetaTransformation.java    # Main entry point (builder pattern)
-├── Jsl2PsmHelper.java                # Utility methods (ID handling, thread-safe adds)
-├── Jsl2PsmRuleNames.java             # Constants for all rule names
-└── rules/
-    ├── namespace/NamespaceRules.java  # Model and package creation
-    ├── type/TypeRules.java            # Primitive types
-    ├── data/                          # Entity types, attributes, relations
-    ├── structure/                     # Transfer objects
-    ├── derived/                       # Derived properties
-    ├── action/                        # Operations and behaviours
-    └── actor/                         # Actor types and access control
-```
-
-**Zeta Tests:**
-- `src/test/java/.../dual/` - Dual transformation tests comparing ETL and Zeta
-- `src/test/java/.../perf/` - Performance comparison tests (discovery + realistic)
-
-### judo-tatami-jsl-jsl2ui
-
-**Purpose:** Transforms JSL models into UI models using Epsilon ETL or Zeta. Generates complete user interface specifications including applications, pages, navigation, widgets, and actions.
-
-**Key Classes:**
-| Class | Purpose |
-|-------|---------|
-| `Jsl2Ui.java` | Core transformation orchestrator. Executes ETL per `UIFrontendDeclaration` |
-| `Jsl2UiWork.java` | Workflow integration class (supports TransformationMode) |
-| `Jsl2UiZetaTransformation.java` | Zeta transformation entry point (builder pattern) |
-| `Jsl2UiTransformationTrace.java` | Tracks JSL-to-UI element mappings |
-| `Jsl2UiTransformationService.java` | OSGi Declarative Service |
-
-**ETL Structure:**
-```
-src/main/epsilon/transformations/ui/
-├── jslToUi.etl                          # Main transformation (imports 46 modules)
-└── modules/
-    ├── application/                     # Actor declarations, actor groups
-    ├── structure/                       # Transfer objects, fields, relations, actions
-    ├── type/                            # Data types, type operations
-    └── view/                            # Views, menus, pages, widgets (22 files)
-        ├── viewDeclaration.etl
-        ├── viewTableDeclaration.etl
-        ├── menuTableDeclaration.etl
-        ├── menuLinkDeclaration.etl
-        ├── cardDeclaration.etl
-        ├── tagDeclaration.etl
-        └── ...
-```
-
-**Context Variables Injected into ETL:**
-- `frontend` - Current `UIFrontendDeclaration` being transformed
-- `actorDeclaration` - Associated `ActorDeclaration`
-- `defaultModelName` - Model name for package tokens
-- `ecoreUtil`, `jslUtils`, `uiUtils` - Utility instances
-
-**Tests:** 11 ETL test classes covering applications, CRUD, navigation, operations, widgets, data types, row operations, action groups.
-
-**Zeta Structure:**
-```
-src/main/java/.../jsl2ui/zeta/
-├── Jsl2UiZetaTransformation.java      # Main entry point (builder, per-frontend execution)
-├── Jsl2UiHelper.java                  # Utility methods
-├── Jsl2UiRuleNames.java               # Constants for all rule names
-└── rules/
-    ├── application/                    # FrontendDeclaration, ActorDeclaration, ActorGroup, Modifiables
-    ├── structure/                      # TransferDeclaration, fields, relations, actions
-    ├── type/                           # TypeRules, DataTypeOperationRules
-    └── view/                           # ViewDeclaration, RowDeclaration, CardDeclaration, TagDeclaration, ActionGroups, MenuTable, MenuLink
-```
-
-**Zeta Tests:**
-- `src/test/java/.../zeta/` - Zeta-specific unit tests (Application, View, ListItem, RowOps, ActionGroups)
-- `src/test/java/.../dual/` - Dual transformation tests comparing ETL and Zeta
-- `src/test/java/.../perf/` - Performance comparison tests
-
-### judo-tatami-jsl-workflow
-
-**Purpose:** Orchestrates the full transformation pipeline from JSL through all intermediate models.
-
-**Key Classes:**
-| Class | Purpose |
-|-------|---------|
-| `AbstractTatamiPipelineWorkflow.java` | Core pipeline orchestration with parallel/sequential modes |
-| `JslDefaultWorkflow.java` | JSL-based workflow entry point |
-| `PsmDefaultWorkflow.java` | PSM-based workflow (skips JSL→PSM) |
-| `DefaultWorkflow.java` | Alias for JslDefaultWorkflow |
-| `WorkflowHelper.java` | Factory for all transformation Work items |
-| `DefaultWorkflowSetupParameters.java` | Workflow configuration (builder pattern, includes `transformationMode`) |
-| `DefaultWorkflowMetricsCollector.java` | Thread-safe execution metrics |
-| `DefaultWorkflowSave.java` | Model saving utilities |
-
-**Execution Modes:**
-
-Parallel (default):
-```
-1. Parallel Validations (PSM validation)
-2. Parallel JSL Transformations (JSL→PSM, JSL→UI)
-3. Parallel PSM Transformations (PSM→ASM, PSM→Measure)
-4. Parallel ASM Transformations (ASM→Expression, ASM→Keycloak, ASM→RDBMS per dialect)
-5. Parallel RDBMS Transformations (RDBMS→Liquibase per dialect)
-```
-
-**Configuration Flags:**
-- `ignoreJsl2Psm`, `ignoreJsl2Ui` - Skip JSL transformations
-- `ignorePsm2Asm`, `ignorePsm2Measure` - Skip PSM transformations
-- `ignoreAsm2Rdbms`, `ignoreAsm2Expression`, `ignoreAsm2Keycloak` (default: true) - Skip ASM transformations
-- `ignoreRdbms2Liquibase` - Skip RDBMS transformation
-- `dialectList` - Database dialects (e.g., "hsqldb", "postgresql")
-- `rdbmsTablePrefix`, `rdbmsColumnPrefix`, etc. - RDBMS naming conventions
-
-### judo-tatami-jsl-workflow-maven-plugin
-
-**Purpose:** Maven plugin that executes the JSL transformation pipeline as part of a Maven build.
-
-**Goal:** `default-model-workflow` (default phase: `COMPILE`)
-
-**Key Configuration Parameters:**
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `sources` | `${project.basedir}/src/main/model` | Source directories for `.jsl` files |
-| `destination` | `${project.basedir}/target/model` | Output directory for generated models |
-| `dialects` | `postgresql,hsqldb` | Database dialects to generate |
-| `saveModels` | `true` | Save transformed models to disk |
-| `runInParallel` | `true` | Enable parallel execution |
-| `useCache` | `true` | Enable transformation cache |
-| `generateBehaviours` | `true` | Generate CRUD behaviours |
-| `ignoreAsm2Keycloak` | `true` | Skip Keycloak generation |
-| All `ignore*` flags | varies | Skip individual transformations |
-
-**Generated Output Files:**
-```
-<modelName>-jsl.model                    # JSL model (XMI)
-<modelName>-psm.model                    # PSM model
-<modelName>-asm.model                    # ASM model
-<modelName>-ui.model                     # UI model
-<modelName>-measure.model                # Measure model
-<modelName>-expression.model             # Expression model
-<modelName>-rdbms_<dialect>.model        # RDBMS model per dialect
-<modelName>-liquibase_<dialect>.changelog.xml  # Liquibase changelog per dialect
-<modelName>-keycloak.model               # Keycloak config (if enabled)
-<modelName>-jsl2psm.model               # Transformation trace
-<modelName>-psm2asm.model               # Transformation trace
-<modelName>-asm2rdbms_<dialect>.model    # Transformation trace
-```
-
-### judo-tatami-jsl-workflow-maven-plugin-test
-
-**Purpose:** Integration test module that validates the Maven plugin using a simple JSL model with `Person`, `User`, and `UserActor` declarations.
+| Module | Type | Purpose |
+|--------|------|---------|
+| `judo-tatami-jsl-workflow-maven-plugin-test/` | Integration Test | End-to-end tests for the Maven plugin |
+| `docs/` | Documentation | Markdown documentation and Antora configuration |
 
 ## Technology Stack
 
 ### Core Technologies
-- **Epsilon Runtime** 2.8.0 - ETL/EOL model transformation engine
-- **Eclipse Modeling Framework (EMF)** - Metamodel foundation (ecore 2.38.0, common 2.40.0, xmi 2.38.0)
-- **Apache Felix** 5.1.8 - OSGi bundle plugin
-- **Guava** 30.0-jre - Utility library
-
-### Testing
-- **JUnit Jupiter** 5.5.1 - Test framework
-- **Hamcrest** 2.2 - Assertion library
-- **Mockito** 4.8.0 - Mocking framework
+- **Eclipse Epsilon 2.8.0** — ETL/EOL model transformation engine
+- **Eclipse EMF** — Ecore metamodeling framework, XMI model serialization
+- **ANTLR 3.2** — Parser generator (DSL parsing)
+- **JUDO Metamodels** — judo-meta-jsl (1.0.3), judo-meta-psm (1.3.0), judo-meta-ui (1.1.0), judo-meta-asm (1.1.4), judo-meta-rdbms (1.0.2), judo-meta-jql (1.0.4), judo-meta-expression (1.0.5), judo-meta-liquibase (1.0.2)
+- **judo-tatami-core** — Workflow and Work abstractions (sequential/parallel flow engine)
+- **judo-tatami-base** — Base transformation utilities
 
 ### Build & Quality
-- **Maven 3.9.4+** with wrapper (mvnw)
-- **JaCoCo** 0.8.12 - Code coverage
-- **Lombok** 1.18.34 - Annotation processing
-- **SonarQube** integration (sonar-maven-plugin 3.9.1.2184)
-- **Surefire** 3.5.1 - Test execution
-
-## Key Dependencies
-
-```xml
-<!-- Epsilon Runtime -->
-<epsilon-runtime-version>2.8.0.20251022_112123_14c440b1_develop</epsilon-runtime-version>
-
-<!-- Model Versions -->
-<judo-meta-jsl-version>1.0.3.20260220_043802_c482d4d4_develop</judo-meta-jsl-version>
-<judo-meta-psm-version>1.3.0.20260220_043801_3057adf9_develop</judo-meta-psm-version>
-<judo-meta-asm-version>1.1.4.20260202_143734_65499fd0_develop</judo-meta-asm-version>
-<judo-meta-ui-version>1.1.0.20260303_104354_d8775168_develop</judo-meta-ui-version>
-<judo-meta-rdbms-version>1.0.2.20260202_144825_fd632c1e_develop</judo-meta-rdbms-version>
-<judo-meta-liquibase-version>1.0.2.20260202_143730_43d18c39_develop</judo-meta-liquibase-version>
-<judo-meta-expression-version>1.0.5.20260202_145435_0ec02f4a_develop</judo-meta-expression-version>
-<judo-meta-jql-version>1.0.4.20260202_145048_84ff3d22_develop</judo-meta-jql-version>
-
-<!-- Tatami Framework -->
-<judo-tatami-base-version>1.1.6.20260220_044537_c328291c_develop</judo-tatami-base-version>
-<judo-tatami-core-version>1.1.4.20260202_143500_4fe70cce_develop</judo-tatami-core-version>
-<judo-tatami-util-version>1.0.0.20260202_143554_ef77c3c7_develop</judo-tatami-util-version>
-
-<!-- Runtime -->
-<judo-runtime-core-version>1.0.6.20260220_044935_c04234c8_develop</judo-runtime-core-version>
-<judo-sdk-common-version>1.0.4.20260202_144500_9ef79c87_develop</judo-sdk-common-version>
-```
+- **Maven 3.9.4** with Flatten, Bundle (OSGi), and Build Helper plugins
+- **JUnit 5** (5.5.1) via Maven Surefire 3.5.1
+- **JaCoCo 0.8.12** for code coverage
+- **SonarQube** integration via sonar-maven-plugin
+- **Lombok 1.18.34** — `@Getter`, `@Builder`, `@Slf4j` used throughout
+- **SLF4J 2.0.16 + Logback 1.5.12** for logging
 
 ## Build Commands
 
 ```bash
-# Standard build (all modules)
-mvn clean install
-# or with wrapper
-./mvnw clean install
-
-# Build with modules profile (default, active unless -DskipModules)
-mvn clean install -Pmodules
-
-# Run tests only
-mvn clean test
-
-# Skip tests
-mvn clean install -DskipTests
-
-# Run specific module tests
-mvn clean test -pl judo-tatami-jsl-jsl2psm
-mvn clean test -pl judo-tatami-jsl-jsl2ui
+mvn clean install                                    # Full build (all modules)
+mvn clean test                                       # Run all tests
+mvn clean test -pl judo-tatami-jsl-jsl2psm           # Run tests for one module
+mvn clean test -pl judo-tatami-jsl-jsl2psm -Dtest=ClassName  # Single test class
+mvn clean test -pl judo-tatami-jsl-jsl2psm -Dtest=ClassName#methodName  # Single test method
+mvn clean verify                                     # Full verification (tests + integration)
+./mvnw clean install                                 # Using Maven wrapper
 ```
 
-## Test Structure
+> **Note:** Surefire requires `--add-opens` JVM args for reflective access (configured in the parent POM). Tests use the shared `logback-test.xml` at the project root.
 
-### JSL2PSM Tests (33 files)
-Organized by domain in `src/test/java/hu/blackbelt/judo/tatami/jsl/jsl2psm/`:
-- `entity/` - Entity type transformations
-- `type/` - Primitive types (string, numeric, boolean, date, time, timestamp, binary, enum)
-- `transferobject/` - Mapped, unmapped, and default transfer objects
-- `derived/` - Derived properties, expressions, relations, parameters
-- `operation/` - Actions, CRUD behaviours
-- `actor/` - Actor types, anonymous actors
-- `namespace/` - Model and package creation
-- `error/` - Error declarations
-- `functions/` - Instance function translation
+### Maven Profiles
 
-Base test class: `AbstractTest.java` provides JSL/PSM model loading, transformation execution, trace handling, and helper assertions.
+| Profile | Purpose |
+|---------|---------|
+| `modules` | Activates all submodules (active by default) |
+| `generate-checksum` | Generates checksum artifacts for builds |
+| `sign-artifacts` | GPG-signs artifacts for release |
+| `release-dummy` | Dummy distribution management |
+| `release-judong` | Deploy to judong Nexus repository |
+| `release-central` | Deploy to Maven Central via Sonatype OSSRH |
+| `generate-github-asciidoc-diagrams` | Generates documentation diagrams |
+| `update-source-code-license` | Updates license headers in source files |
 
-### JSL2UI Tests (11 files)
-In `src/test/java/hu/blackbelt/judo/tatami/jsl/jsl2ui/`:
-- `JslModel2UiApplicationTest.java` - Actor, menu, security, profile pages
-- `JslModel2UiCRUDTest.java` - CRUD operations
-- `JslModel2UiNavigationTest.java` - Navigation and dialogs
-- `JslModel2UiOperationsTest.java` - Operations and actions
-- `JslModel2UiWidgetsTest.java` - Widget generation
-- `JslModel2UiDataTest.java` - Data types and relations
-- `JslModel2UiRowOperationsTest.java` - Row-level operations
-- `JslModel2UiActionGroupsTest.java` - Action groups
-- `JSLModel2UiListItemTest.java` - List items, tags, cards
-- `JslModel2UiCarTest.java` - Car domain test
-- `Jsl2UiWorkTest.java` - Workflow integration
+## Key Configuration Files
 
-Tests use `JslParser.getModelFromStrings()` to create JSL models from inline DSL strings.
+| File | Purpose |
+|------|---------|
+| `pom.xml` | Parent POM: all module declarations, dependency management, plugin configuration, build profiles |
+| `logback-test.xml` | Shared Logback configuration for all test modules |
+| `.github/workflows/build.yml` | Main CI build pipeline (GitHub Actions) |
+| `.github/workflows/release.yml` | Release automation workflow |
+| `judo-tatami-jsl-jsl2psm/src/main/epsilon/transformations/psm/jslToPsm.etl` | Main JSL→PSM transformation entry point |
+| `judo-tatami-jsl-jsl2ui/src/main/epsilon/transformations/ui/jslToUi.etl` | Main JSL→UI transformation entry point |
 
-### Workflow Tests
-- `JslDefaultWorkflowTest.java` - End-to-end pipeline test
+## Development Environment
 
-## Code Patterns
+**Required:**
+- Java 21 JDK
+- Maven 3.9.4+
 
-### Transformation Execution
+**Recommended IDE settings:** See `.vscode/settings.json` and `.zed/settings.json` for pre-configured Java settings (auto-format disabled, auto-build disabled, Maven source download enabled).
 
-```java
-// Execute JSL to PSM transformation
-Jsl2PsmTransformationTrace trace = executeJsl2PsmTransformation(
-    Jsl2Psm.Jsl2PsmParameter.jsl2PsmParameter()
-        .jslModel(jslModel)
-        .psmModel(psmModel)
-        .createTrace(true)
-        .parallel(true)
-        .generateBehaviours(true)
-);
-```
+## Git Workflow
 
-### Work Class Pattern
-
-```java
-// Jsl2PsmWork extends AbstractTransformationWork
-Jsl2PsmWork work = new Jsl2PsmWork(TransformationContext.transformationContext()
-    .put(jslModel)
-    .put(psmModel));
-work.execute();
-```
-
-### Expression Translation (JSL to JQL)
-
-```java
-// Convert JSL expression to JQL
-JslExpressionToJqlExpression converter = new JslExpressionToJqlExpression();
-String jqlExpression = converter.convert(jslExpression, context);
-```
-
-### Full Workflow Execution
-
-```java
-DefaultWorkflow workflow = new DefaultWorkflow(
-    DefaultWorkflowSetupParameters.defaultWorkflowSetupParameters()
-        .jslModel(jslModel)
-        .modelName("MyModel")
-        .dialectList(List.of("postgresql", "hsqldb"))
-        .runInParallel(true)
-        .enableMetrics(true)
-);
-workflow.startDefaultWorkflow();
-
-// Access generated models
-PsmModel psm = workflow.getTransformationContext().getByClass(PsmModel.class);
-AsmModel asm = workflow.getTransformationContext().getByClass(AsmModel.class);
-UiModel ui = workflow.getTransformationContext().getByClass(UiModel.class);
-```
-
-## Related Projects
-
-- **judo-tatami-base (judo-tatami)** - Downstream transformation modules (PSM→ASM, ASM→RDBMS, etc.)
-- **judo-meta-jsl** - JSL metamodel and parser
-- **judo-meta-psm** - Platform Specific Model metamodel
-- **judo-meta-asm** - Abstract Semantic Model metamodel
-- **judo-meta-ui** - User Interface metamodel
-- **judo-meta-rdbms** - RDBMS metamodel
-- **judo-meta-liquibase** - Liquibase metamodel
-- **judo-meta-expression** - Expression metamodel
-- **judo-meta-measure** - Measure metamodel
-- **judo-meta-keycloak** - Keycloak metamodel
-- **judo-meta-jql** - JQL (Judo Query Language) metamodel
-- **judo-runtime-core** - Runtime core (used in plugin test)
-- **judo-community** - Parent aggregator project
-
-## Maven Profiles
-
-| Profile | Description | Activation |
-|---------|-------------|------------|
-| `modules` | Build all modules (default) | Active unless `-DskipModules` |
-| `generate-checksum` | Generate artifact checksums | Active unless `-Dignore_checksum` |
-| `sign-artifacts` | GPG sign artifacts | Manual |
-| `release-dummy` | Release to local filesystem | Manual |
-| `release-judong` | Release to JUDO Nexus | Manual |
-| `release-central` | Release to Maven Central | Manual |
-
-## OpenSpec Usage
-
-This project uses OpenSpec for change management. See `openspec/AGENTS.md` for:
-- Creating proposals
-- Change workflow
-- Spec format conventions
+- **Main Branch:** `develop`
+- **Versioning:** `1.1.4-SNAPSHOT` (semantic versioning, GitFlow model)
+- **Branch naming:** `feature/JNG-NUMBER_summary`, `bugfix/JNG-NUMBER_summary`, `release/X.Y.Z`
+- **Commit policy:** Every commit must reference a JIRA ticket (e.g., `JNG-6337`)
+- **CI/CD:** GitHub Actions — build on push to `develop`, deploy on `release/*` branches
+- **Release:** Automated via `release.yml` workflow; creates PRs to both `master` and `develop`
 
 ## Important Notes
 
-1. **ETL files are the source of truth** for transformation logic in this project
-2. **Dual transformation engines** - Both ETL and Zeta are supported. Select via `TransformationMode` (ETL, ZETA). Zeta rules are in `src/main/java/.../zeta/rules/` directories
-3. **JSL is the source language** - Not ESM. JSL is a higher-level DSL that compiles to PSM
-4. **OSGi compatibility** is maintained through Felix bundle plugin
-5. **Transformation traces** allow mapping between source and target elements
-6. **Multi-dialect RDBMS** support - generates per-dialect models (hsqldb, postgresql)
-7. **Parallel execution** is the default mode for the workflow
-8. **Expression translation** - JSL expressions are converted to JQL (Judo Query Language)
-9. **Per-frontend UI generation** - The JSL2UI transformation runs separately for each `UIFrontendDeclaration`
+1. **Epsilon scripts are the core transformation logic.** Most feature changes involve editing `.etl` and `.eol` files under `src/main/epsilon/transformations/`, not Java code.
+2. **The pipeline runs transformations in parallel by default** (`runInParallel=true`). Individual steps can be toggled on/off with `ignore*` flags.
+3. **Transformation traces** map source elements to target elements. They are optional (toggleable) and stored in XMI format.
+4. **All naming conventions for generated RDBMS artifacts** (table prefixes, column prefixes, etc.) are configurable via `DefaultWorkflowSetupParameters` or Maven plugin parameters.
+5. **OSGi support** is included via Maven Bundle Plugin — each module produces an OSGi bundle. The `jsl2psm` and `jsl2ui` modules include OSGi service tracker classes.
+6. **The `judo-tatami-jsl-workflow-maven-plugin-test` module** contains the integration tests that exercise the full pipeline end-to-end.
+
+## Related Documentation
+
+- [Workflow Maven Plugin Reference](docs/pages/judo-tatami-jsl-workflow-maven-plugin.md) — full parameter reference and usage examples
+- [Contributing Guide](CONTRIBUTING.md) — development setup and submission guidelines
+- [CI/CD Flow](/.github/CIFLOW.md) — branching strategy and GitHub Actions workflow diagrams
+- [JUDO Community](https://github.com/BlackBeltTechnology/judo-community) — parent ecosystem documentation

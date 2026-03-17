@@ -1,55 +1,46 @@
 # Contributing to JUDO
 
-## Installing the correct versions of Java, Maven and necessary dependencies
+## Development Environment Setup
 
-Please make sure your development environment complies with the requirements discussed under the relevant section of the parent
-project's [CONTRIBUTING](https://github.com/BlackBeltTechnology/judo-community/blob/develop/CONTRIBUTING.adoc) guide.
+Your development environment must meet the requirements described in the parent project's [CONTRIBUTING guide](https://github.com/BlackBeltTechnology/judo-community/blob/develop/CONTRIBUTING.adoc). In summary:
 
-## Code Structure
+- **Java 21** JDK
+- **Maven 3.9.4+**
 
-This project follows a standard Java project structure, governed by Maven, with potential Maven submodules.
+## Project Structure
 
-TODO: JNG-3832 improve section explaining submodule functionality
+This project follows a standard Maven multi-module layout. See the [README](README.md) for the module dependency diagram and purpose of each module.
 
-## Submission Guidelines
+> **Note:** TODO JNG-3832 — the code structure documentation for individual submodule functionality is being improved.
 
-### Submitting an Issue
+## Submitting an Issue
 
-Before you submit an issue, please search the issue tracker. An issue for your problem may already exist and has been
-resolved, or the discussion might inform you of workarounds readily available.
+Before opening a new issue, search the [issue tracker](https://github.com/BlackBeltTechnology/judo-tatami-jsl/issues) — your problem may already be reported or resolved.
 
-We want to fix all the issues as soon as possible, but before fixing a bug we need to reproduce and confirm it. Having a
-reproducible scenario gives us wealth of important information without going back and forth with you requiring
-additional information, such as:
+To help us reproduce and fix bugs quickly, please include:
 
-- the output of `java -version`, `mvn -version`
-- `pom.xml` or `.flattened-pom.xml` (when applicable)
-- and most importantly - a use-case that fails
+- Output of `java -version` and `mvn -version`
+- Your `pom.xml` or `.flattened-pom.xml` (when applicable)
+- A **minimal reproduction case** that demonstrates the failure
 
-A minimal reproduction allows us to quickly confirm a bug (or point out a coding problem) as well as confirm that we are
-fixing the right problem.
+We will ask for a minimal reproduction if one is not provided, because isolating the problem is the fastest path to a fix.
 
-We will be insisting on a minimal reproduction in order to save maintainers' time and ultimately be able to fix more
-bugs. We understand that sometimes it might be hard to extract essentials bits of code from a larger codebase, but we
-really need to isolate the problem before we can fix it.
+[Open a new issue](https://github.com/BlackBeltTechnology/judo-tatami-jsl/issues/new/choose)
 
-You can file new issues by filling out our [issue form](https://github.com/BlackBeltTechnology/judo-tatami-jsl/issues/new/choose).
+## Submitting a Pull Request
 
-### Submitting a PR
+This project follows [GitHub's standard forking model](https://guides.github.com/activities/forking/). Fork the repository, make your changes, and submit a pull request.
 
-This project follows [GitHub's standard forking model](https://guides.github.com/activities/forking/). Please fork the
-project to submit pull requests.
-
-## Commands
+## Common Commands
 
 ### Run Tests
 
-```sh
-$ mvn clean test
+```bash
+mvn clean test
 ```
 
-### Run Full build
+### Full Build
 
-```sh
-$ mvn clean install
+```bash
+mvn clean install
 ```
