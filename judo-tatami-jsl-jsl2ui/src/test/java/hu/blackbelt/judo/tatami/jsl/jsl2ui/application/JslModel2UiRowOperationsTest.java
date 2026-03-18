@@ -154,7 +154,7 @@ public class JslModel2UiRowOperationsTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testAccessTableRowOperations(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("AccessTableRowOperations", List.of(createModelString("AccessTableRowOperations")));
 

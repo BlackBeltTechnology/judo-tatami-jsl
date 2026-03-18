@@ -181,7 +181,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testSummaryCRUD(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("SummaryCRUD", List.of(createModelString("SummaryCRUD")));
 
@@ -549,7 +549,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testAccessViewCRUD(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("AccessViewCRUD", List.of(createModelString("AccessViewCRUD")));
 
@@ -684,7 +684,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testSingleRelationViewCRUD(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("SingleRelationViewCRUD", List.of(createModelString("SingleRelationViewCRUD")));
 
@@ -1020,7 +1020,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testRelatedRowDetailViewCRUD(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("RelatedRowDetailViewCRUD", List.of(createModelString("RelatedRowDetailViewCRUD")));
 
@@ -1233,7 +1233,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testRelatedFormCRUD(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("RelatedFormCRUD", List.of(createModelString("RelatedFormCRUD")));
 
@@ -1291,7 +1291,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testAccessFormsRelationActions(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("AccessFormsRelationActions", List.of(createModelString("AccessFormsRelationActions")));
 
@@ -1358,7 +1358,7 @@ public class JslModel2UiCRUDTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testRelationFormsRelationActions(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("testRelationFormsRelationActions", List.of(createModelString("testRelationFormsRelationActions")));
 

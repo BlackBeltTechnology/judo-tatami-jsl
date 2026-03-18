@@ -145,6 +145,7 @@ public class ViewActionDeclarationRules {
             target.setName(getFqName(source) + "::Call");
             target.setOperation(ctx.equivalent(source.getTransferAction().getTarget(),
                     OperationType.class, OPERATION_TYPE));
+            ctx.addToResource(target);
             LOG.debug("ViewActionDeclarationCallOperationActionDefinition: {}", target.getName());
             return target;
         };
@@ -164,6 +165,7 @@ public class ViewActionDeclarationRules {
             target.setSelectorFor(ctx.equivalent(source,
                     InputSelectorCallOperationActionDefinition.class,
                     OPERATION_INPUT_SELECTOR_CALL_ACTION_DEFINITION));
+            ctx.addToResource(target);
             LOG.debug("ViewActionDeclarationOpenSelectorActionDefinition: {}", target.getName());
             return target;
         };
@@ -180,6 +182,7 @@ public class ViewActionDeclarationRules {
             ctx.setElementId(target, frontend.getName()
                     + "/(jsl/" + getJslId(source) + ")/ViewActionDeclarationOpenFormActionDefinition");
             target.setName(getFqName(source) + "::Open::Operation::Form");
+            ctx.addToResource(target);
             LOG.debug("ViewActionDeclarationOpenFormActionDefinition: {}", target.getName());
             return target;
         };
@@ -866,6 +869,7 @@ public class ViewActionDeclarationRules {
                     source.getTransferAction().getTarget().getParameterType(),
                     ClassType.class, CLASS_TYPE));
             target.setIsContainedRelationAction(!(source.eContainer() instanceof ActionGroupModifier));
+            ctx.addToResource(target);
             LOG.debug("ViewTableActionDeclarationCallOperationActionDefinition: {}", target.getName());
             return target;
         };
@@ -893,6 +897,7 @@ public class ViewActionDeclarationRules {
             target.setSelectorFor(ctx.equivalent(source,
                     InputSelectorCallOperationActionDefinition.class,
                     OPERATION_INPUT_SELECTOR_CALL_ACTION_DEFINITION));
+            ctx.addToResource(target);
             LOG.debug("ViewTableActionDeclarationOpenSelectorActionDefinition: {}", target.getName());
             return target;
         };
@@ -910,6 +915,7 @@ public class ViewActionDeclarationRules {
                     + "/(jsl/" + getJslId(source) + ")/ViewTableActionDeclarationOpenFormActionDefinition");
             target.setName(getFqName(source) + "::Open::Operation::Form");
             target.setIsContainedRelationAction(true);
+            ctx.addToResource(target);
             LOG.debug("ViewTableActionDeclarationOpenFormActionDefinition: {}", target.getName());
             return target;
         };

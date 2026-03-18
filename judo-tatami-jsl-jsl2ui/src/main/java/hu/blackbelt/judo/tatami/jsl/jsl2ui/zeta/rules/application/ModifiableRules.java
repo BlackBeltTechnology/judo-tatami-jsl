@@ -23,6 +23,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.application;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ActorDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ClaimModifier;
 import hu.blackbelt.judo.meta.jsl.jsldsl.IconModifier;
+import hu.blackbelt.judo.meta.jsl.jsldsl.IdentityModifier;
 import hu.blackbelt.judo.meta.ui.Authentication;
 import hu.blackbelt.judo.meta.ui.Claim;
 import hu.blackbelt.judo.meta.ui.ClaimType;
@@ -116,8 +117,11 @@ public class ModifiableRules {
 
             target.setType(ClaimType.UNDEFINED);
 
-            // Note: attributeType assignment depends on structure rules (TransferFieldAttribute)
-            // which will be wired in later phases
+            // ETL: t.attributeType = s.eContainer.getIdentity().field.getTransferFieldDeclarationEquivalent()
+            IdentityModifier identity = getIdentity(actorDeclaration);
+            if (identity != null && identity.getField() != null) {
+                target.setAttributeType(getTransferFieldAttributeType(identity.getField(), ctx));
+            }
 
             // Add to Authentication
             Authentication auth = ctx.equivalent(actorDeclaration,

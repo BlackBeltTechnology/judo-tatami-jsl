@@ -132,7 +132,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testOperationsOnViews(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("OperationsOnViews", List.of(createModelString("OperationsOnViews")));
 
@@ -392,7 +392,7 @@ public class JslModel2UiOperationsTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testOperationsOnViewsWithInputForms(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("OperationsOnViewsWithInputForms", List.of(createModelString("OperationsOnViewsWithInputForms")));
 

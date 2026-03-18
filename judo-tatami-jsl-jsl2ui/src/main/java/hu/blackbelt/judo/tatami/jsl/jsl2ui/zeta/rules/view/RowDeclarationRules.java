@@ -351,8 +351,9 @@ public class RowDeclarationRules {
             ConcurrentHashMap<EObject, Integer> posMap = ctx.getAttribute("__pos");
 
             Table target = ctx.createTarget(Table.class);
-            ctx.setElementId(target, frontend.getName()
-                    + "/(jsl/" + getJslId(source) + ")/TableTable");
+            String id = frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/TableTable";
+            ctx.setElementId(target, id);
             target.setCol(12.0);
             target.setLabel(getLabelWithNameFallback(source));
             target.setName(source.getName() + "::Table");
@@ -365,17 +366,21 @@ public class RowDeclarationRules {
             }
 
             // Add columns and filters from primitive members
+            // ETL uses equivalentDiscriminated with table id to create separate Column per table context
+            // ETL: s.members.select(m | m.transferField.isDefined() and m.transferField.target.referenceType.`primitive`.isDefined())
             for (EObject member : source.getMembers()) {
                 if (member instanceof UIRowColumnDeclaration) {
                     UIRowColumnDeclaration colDecl = (UIRowColumnDeclaration) member;
-                    if (colDecl.getReferenceType() instanceof DataTypeDeclaration
-                            && ((DataTypeDeclaration) colDecl.getReferenceType()).getPrimitive() != null) {
-                        Column col = ctx.equivalent(colDecl, Column.class,
-                                ROW_COLUMN_DECLARATION_PRIMITIVE_COLUMN);
+                    if (colDecl.getTransferField() != null
+                            && colDecl.getTransferField().getTarget() != null
+                            && colDecl.getTransferField().getTarget().getReferenceType() instanceof DataTypeDeclaration
+                            && ((DataTypeDeclaration) colDecl.getTransferField().getTarget().getReferenceType()).getPrimitive() != null) {
+                        Column col = ctx.equivalentDiscriminated(colDecl, Column.class,
+                                ROW_COLUMN_DECLARATION_PRIMITIVE_COLUMN, id);
                         target.getColumns().add(col);
                         if (col.getAttributeType() != null && col.getAttributeType().isIsFilterable()) {
-                            target.getFilters().add(ctx.equivalent(colDecl, Filter.class,
-                                    ROW_COLUMN_DECLARATION_PRIMITIVE_COLUMN_FILTER));
+                            target.getFilters().add(ctx.equivalentDiscriminated(colDecl, Filter.class,
+                                    ROW_COLUMN_DECLARATION_PRIMITIVE_COLUMN_FILTER, id));
                         }
                     }
                 }

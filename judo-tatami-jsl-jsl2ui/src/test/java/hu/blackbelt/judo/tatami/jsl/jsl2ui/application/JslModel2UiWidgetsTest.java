@@ -50,7 +50,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testBasicWidgets(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("BasicWidgetsTestModel", List.of("""
             model BasicWidgetsTestModel;
@@ -399,7 +399,7 @@ public class JslModel2UiWidgetsTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testRelationWidgets(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("RelationWidgetsTestModel", List.of("""
             model RelationWidgetsTestModel;

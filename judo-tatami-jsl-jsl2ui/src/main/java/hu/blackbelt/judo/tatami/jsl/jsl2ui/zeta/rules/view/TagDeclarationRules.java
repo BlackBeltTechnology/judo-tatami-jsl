@@ -209,8 +209,9 @@ public class TagDeclarationRules {
             ConcurrentHashMap<EObject, Integer> posMap = ctx.getAttribute("__pos");
 
             Table target = ctx.createTarget(Table.class);
-            ctx.setElementId(target, frontend.getName()
-                    + "/(jsl/" + getJslId(source) + ")/TagTable");
+            String id = frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/TagTable";
+            ctx.setElementId(target, id);
             target.setCol(12.0);
             target.setLabel(getLabelWithNameFallback(source));
             target.setName(source.getName() + "::Tags");
@@ -224,12 +225,13 @@ public class TagDeclarationRules {
             }
 
             // Tag uses a single column from getTransferFieldDeclaration()
-            Column col = ctx.equivalent(source, Column.class,
-                    TAG_WIDGET_DECLARATION_PRIMITIVE_COLUMN);
+            // ETL uses equivalentDiscriminated with table id
+            Column col = ctx.equivalentDiscriminated(source, Column.class,
+                    TAG_WIDGET_DECLARATION_PRIMITIVE_COLUMN, id);
             target.getColumns().add(col);
             if (col.getAttributeType() != null && col.getAttributeType().isIsFilterable()) {
-                target.getFilters().add(ctx.equivalent(source, Filter.class,
-                        TAG_WIDGET_DECLARATION_PRIMITIVE_COLUMN_FILTER));
+                target.getFilters().add(ctx.equivalentDiscriminated(source, Filter.class,
+                        TAG_WIDGET_DECLARATION_PRIMITIVE_COLUMN_FILTER, id));
             }
 
             target.setTableActionButtonGroup(ctx.equivalent(source, ButtonGroup.class,

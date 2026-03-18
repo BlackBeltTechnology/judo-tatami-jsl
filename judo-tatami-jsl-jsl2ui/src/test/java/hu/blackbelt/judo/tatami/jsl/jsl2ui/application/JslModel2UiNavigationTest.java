@@ -48,7 +48,7 @@ public class JslModel2UiNavigationTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testNavigation(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("NavigationTestModel", List.of("""
             model NavigationTestModel;

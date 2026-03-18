@@ -126,6 +126,7 @@ public class RowActionDeclarationRules {
             target.setTargetType(ctx.equivalent(
                     source.getTransferAction().getTarget().getParameterType(),
                     ClassType.class, CLASS_TYPE));
+            ctx.addToResource(target);
             LOG.debug("RowActionDeclarationCallOperationActionDefinition: {}", target.getName());
             return target;
         };
@@ -152,6 +153,7 @@ public class RowActionDeclarationRules {
             target.setSelectorFor(ctx.equivalent(source,
                     InputSelectorCallOperationActionDefinition.class,
                     OPERATION_INPUT_SELECTOR_CALL_ACTION_DEFINITION));
+            ctx.addToResource(target);
             LOG.debug("RowActionDeclarationOpenSelectorActionDefinition: {}", target.getName());
             return target;
         };
@@ -168,6 +170,7 @@ public class RowActionDeclarationRules {
             ctx.setElementId(target, frontend.getName()
                     + "/(jsl/" + getJslId(source) + ")/RowActionDeclarationOpenFormActionDefinition");
             target.setName(getFqName(source) + "::Open::Operation::Form");
+            ctx.addToResource(target);
             LOG.debug("RowActionDeclarationOpenFormActionDefinition: {}", target.getName());
             return target;
         };
