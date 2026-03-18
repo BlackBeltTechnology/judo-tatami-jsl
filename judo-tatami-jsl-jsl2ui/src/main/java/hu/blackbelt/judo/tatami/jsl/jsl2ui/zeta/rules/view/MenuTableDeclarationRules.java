@@ -661,6 +661,375 @@ public class MenuTableDeclarationRules {
     }
 
     // =========================================================================
+    // Access table add selector page rules — ported from menuTableDeclarationAddSelectorPage.etl
+    // =========================================================================
+
+    @TransformRule(name = ACCESS_TABLE_TABLE_ADD_SELECTOR_PAGE_DEFINITION, description = "Create PageDefinition for add selector page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = PageDefinition.class)
+    public TransformFunction<UIMenuTableDeclaration, PageDefinition> accessTableTableAddSelectorPageDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            if (getSelectorTableModifier(source) == null) return null;
+
+            TransferRelationDeclaration relation = source.getActorAccess().getTarget();
+
+            PageDefinition target = ctx.createTarget(PageDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableTableAddSelectorPageDefinition");
+            target.setName(getFqName(source) + "::AddSelectorPage");
+
+            target.setContainer(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    PageContainer.class, TABLE_PAGE_CONTAINER));
+
+            RelationType relType = ctx.equivalent(relation, RelationType.class, RELATION_TYPE);
+            target.setDataElement(relType);
+            relType.setMemberType(MemberType.ACCESS);
+
+            target.setOpenInDialog(true);
+            target.setDialogSize(DialogSize.MD);
+            target.setIsSelector(true);
+            target.setIsRelationSelector(true);
+
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    ACCESS_TABLE_TABLE_ADD_SELECTOR_ADD_ACTION));
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    ACCESS_TABLE_TABLE_ADD_SELECTOR_BACK_ACTION));
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    ACCESS_TABLE_TABLE_ADD_SELECTOR_TABLE_FILTER_ACTION));
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    ACCESS_TABLE_TABLE_ADD_SELECTOR_TABLE_RANGE_ACTION));
+
+            Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
+            app.getPages().add(target);
+
+            LOG.debug("AccessTableTableAddSelectorPageDefinition: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TABLE_TABLE_ADD_SELECTOR_ADD_ACTION, description = "Create add action for add selector page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTableTableAddSelectorAddAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableTableAddSelectorAddAction");
+            target.setName(getFqName(source) + "::AddSelector::Add");
+            target.setOwnerDataElement(ctx.equivalent(source.getActorAccess().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_PAGE_CONTAINER_ADD_SELECTOR_ADD_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TABLE_TABLE_ADD_SELECTOR_BACK_ACTION, description = "Create back action for add selector page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTableTableAddSelectorBackAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableTableAddSelectorBackAction");
+            target.setName(getFqName(source) + "::AddSelector::Back");
+            target.setOwnerDataElement(ctx.equivalent(source.getActorAccess().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_PAGE_CONTAINER_BACK_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TABLE_TABLE_ADD_SELECTOR_TABLE_FILTER_ACTION, description = "Create filter action for add selector page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTableTableAddSelectorTableFilterAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableTableAddSelectorTableFilterAction");
+            target.setName(getFqName(source) + "::AddSelector::Table::Filter");
+            target.setOwnerDataElement(ctx.equivalent(source.getActorAccess().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setTargetDataElement(ctx.equivalent(source.getActorAccess().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_TABLE_FILTER_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TABLE_TABLE_ADD_SELECTOR_TABLE_RANGE_ACTION, description = "Create range action for add selector page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTableTableAddSelectorTableRangeAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTableTableAddSelectorTableRangeAction");
+            target.setName(getFqName(source) + "::AddSelector::Table::Range");
+            target.setOwnerDataElement(ctx.equivalent(source.getActorAccess().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setTargetDataElement(ctx.equivalent(source.getActorAccess().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_TABLE_REFRESH_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    // =========================================================================
+    // Access cards page rules — ported from menuTableDeclarationCardsPage.etl
+    // =========================================================================
+
+    @TransformRule(name = ACCESS_CARDS_PAGE_DEFINITION, description = "Create PageDefinition for cards access page")
+    @Greedy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = PageDefinition.class)
+    public TransformFunction<UIMenuTableDeclaration, PageDefinition> accessCardsPageDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            if (!containsVisualElement(frontend, source)) return null;
+            if (!(source.getReferenceType() instanceof UICardDeclaration)) return null;
+
+            TransferRelationDeclaration relation = source.getActorAccess().getTarget();
+
+            PageDefinition target = ctx.createTarget(PageDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessCardsPageDefinition");
+            target.setName(getFqName(source) + "::AccessCardsPage");
+            target.setContainer(ctx.equivalent(source.getReferenceType(),
+                    PageContainer.class, CARD_PAGE_CONTAINER));
+
+            RelationType relType = ctx.equivalent(relation, RelationType.class, RELATION_TYPE);
+            target.setDataElement(relType);
+            relType.setMemberType(MemberType.ACCESS);
+
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    ACCESS_CARDS_BACK_ACTION));
+            if (getUpdateViewModifier(source) != null) {
+                target.getActions().add(ctx.equivalent(source, Action.class,
+                        ACCESS_CARDS_OPEN_PAGE_ACTION));
+            }
+            if (isRefreshAllowed(relation)) {
+                target.getActions().add(ctx.equivalent(source, Action.class,
+                        ACCESS_CARDS_TABLE_REFRESH_ACTION));
+            }
+            if (isFilterSupported(relation)) {
+                target.getActions().add(ctx.equivalent(source, Action.class,
+                        ACCESS_CARDS_TABLE_FILTER_ACTION));
+            }
+
+            Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
+            app.getPages().add(target);
+
+            LOG.debug("AccessCardsPageDefinition: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_CARDS_BACK_ACTION, description = "Create back action for cards page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessCardsBackAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessCardsBackAction");
+            target.setName(source.getName() + "::Back");
+            target.setActionDefinition(ctx.equivalent(source.getReferenceType(),
+                    ActionDefinition.class, CARD_PAGE_CONTAINER_BACK_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_CARDS_TABLE_REFRESH_ACTION, description = "Create refresh action for cards page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessCardsTableRefreshAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessCardsTableRefreshAction");
+            target.setName(source.getName() + "::Refresh");
+            target.setActionDefinition(ctx.equivalent(source.getReferenceType(),
+                    ActionDefinition.class, CARD_TABLE_REFRESH_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_CARDS_TABLE_FILTER_ACTION, description = "Create filter action for cards page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessCardsTableFilterAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessCardsTableFilterAction");
+            target.setName(source.getName() + "::Filter");
+            target.setActionDefinition(ctx.equivalent(source.getReferenceType(),
+                    ActionDefinition.class, CARD_TABLE_FILTER_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_CARDS_OPEN_PAGE_ACTION, description = "Create open page action for cards page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessCardsOpenPageAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessCardsOpenPageAction");
+            target.setName(source.getName() + "::OpenPage");
+            target.setActionDefinition(ctx.equivalent(source.getReferenceType(),
+                    ActionDefinition.class, CARD_OPEN_PAGE_ACTION_DEFINITION));
+            target.setTargetPageDefinition(ctx.equivalent(source, PageDefinition.class,
+                    ACCESS_TABLE_VIEW_PAGE_DEFINITION));
+            return target;
+        };
+    }
+
+    // =========================================================================
+    // Access tags page rules — ported from menuTableDeclarationTagsPage.etl
+    // =========================================================================
+
+    @TransformRule(name = ACCESS_TAGS_PAGE_DEFINITION, description = "Create PageDefinition for tags access page")
+    @Greedy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = PageDefinition.class)
+    public TransformFunction<UIMenuTableDeclaration, PageDefinition> accessTagsPageDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            if (!containsVisualElement(frontend, source)) return null;
+            if (!(source.getReferenceType() instanceof UITagDeclaration)) return null;
+
+            TransferRelationDeclaration relation = source.getActorAccess().getTarget();
+
+            PageDefinition target = ctx.createTarget(PageDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTagsPageDefinition");
+            target.setName(getFqName(source) + "::AccessTagsPage");
+            target.setContainer(ctx.equivalent(source.getReferenceType(),
+                    PageContainer.class, TAG_PAGE_CONTAINER));
+
+            RelationType relType = ctx.equivalent(relation, RelationType.class, RELATION_TYPE);
+            target.setDataElement(relType);
+            relType.setMemberType(MemberType.ACCESS);
+
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    ACCESS_TAGS_BACK_ACTION));
+            if (getUpdateViewModifier(source) != null) {
+                target.getActions().add(ctx.equivalent(source, Action.class,
+                        ACCESS_TAGS_OPEN_PAGE_ACTION));
+            }
+            if (isRefreshAllowed(relation)) {
+                target.getActions().add(ctx.equivalent(source, Action.class,
+                        ACCESS_TAGS_TABLE_REFRESH_ACTION));
+            }
+            if (isFilterSupported(relation)) {
+                target.getActions().add(ctx.equivalent(source, Action.class,
+                        ACCESS_TAGS_TABLE_FILTER_ACTION));
+            }
+
+            Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
+            app.getPages().add(target);
+
+            LOG.debug("AccessTagsPageDefinition: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TAGS_BACK_ACTION, description = "Create back action for tags page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTagsBackAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTagsBackAction");
+            target.setName(source.getName() + "::Back");
+            target.setActionDefinition(ctx.equivalent(source.getReferenceType(),
+                    ActionDefinition.class, TAG_PAGE_CONTAINER_BACK_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TAGS_TABLE_REFRESH_ACTION, description = "Create refresh action for tags page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTagsTableRefreshAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTagsTableRefreshAction");
+            target.setName(source.getName() + "::Refresh");
+            target.setActionDefinition(ctx.equivalent(source.getReferenceType(),
+                    ActionDefinition.class, TAG_TABLE_REFRESH_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TAGS_TABLE_FILTER_ACTION, description = "Create filter action for tags page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTagsTableFilterAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTagsTableFilterAction");
+            target.setName(source.getName() + "::Filter");
+            target.setActionDefinition(ctx.equivalent(source.getReferenceType(),
+                    ActionDefinition.class, TAG_TABLE_FILTER_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = ACCESS_TAGS_OPEN_PAGE_ACTION, description = "Create open page action for tags page")
+    @Lazy
+    @Transform(type = UIMenuTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIMenuTableDeclaration, Action> accessTagsOpenPageAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/AccessTagsOpenPageAction");
+            target.setName(source.getName() + "::OpenPage");
+            target.setActionDefinition(ctx.equivalent(source.getReferenceType(),
+                    ActionDefinition.class, TAG_OPEN_PAGE_ACTION_DEFINITION));
+            target.setTargetPageDefinition(ctx.equivalent(source, PageDefinition.class,
+                    ACCESS_TABLE_VIEW_PAGE_DEFINITION));
+            return target;
+        };
+    }
+
+    // =========================================================================
     // Helper
     // =========================================================================
 

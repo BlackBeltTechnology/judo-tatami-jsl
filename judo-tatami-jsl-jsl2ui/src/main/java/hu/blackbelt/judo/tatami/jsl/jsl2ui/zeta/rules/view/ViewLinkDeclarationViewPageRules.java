@@ -430,4 +430,130 @@ public class ViewLinkDeclarationViewPageRules {
             return target;
         };
     }
+
+    // =========================================================================
+    // View link set selector page rules — ported from viewLinkDeclarationSetSelectorPage.etl
+    // =========================================================================
+
+    @TransformRule(name = VIEW_LINK_DECLARATION_SET_SELECTOR_PAGE_DEFINITION, description = "Create PageDefinition for set selector page")
+    @Lazy
+    @Transform(type = UIViewLinkDeclaration.class)
+    @To(type = PageDefinition.class)
+    public TransformFunction<UIViewLinkDeclaration, PageDefinition> viewLinkDeclarationSetSelectorPageDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+
+            TransferRelationDeclaration relation = source.getTransferRelation().getTarget();
+
+            PageDefinition target = ctx.createTarget(PageDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewLinkDeclarationSetSelectorPageDefinition");
+            target.setName(getFqName(source) + "::SetSelectorPage");
+            target.setContainer(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    PageContainer.class, TABLE_PAGE_CONTAINER));
+
+            RelationType relType = ctx.equivalent(relation, RelationType.class, RELATION_TYPE);
+            target.setDataElement(relType);
+
+            target.setOpenInDialog(true);
+            target.setDialogSize(DialogSize.MD);
+            target.setIsSelector(true);
+            target.setIsRelationSelector(true);
+
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    VIEW_LINK_DECLARATION_SET_SELECTOR_SET_ACTION));
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    VIEW_LINK_DECLARATION_SET_SELECTOR_BACK_ACTION));
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    VIEW_LINK_DECLARATION_SET_SELECTOR_TABLE_FILTER_ACTION));
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    VIEW_LINK_DECLARATION_SET_SELECTOR_TABLE_RANGE_ACTION));
+
+            Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
+            app.getPages().add(target);
+
+            LOG.debug("ViewLinkDeclarationSetSelectorPageDefinition: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = VIEW_LINK_DECLARATION_SET_SELECTOR_SET_ACTION, description = "Create set action for set selector page")
+    @Lazy
+    @Transform(type = UIViewLinkDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIViewLinkDeclaration, Action> viewLinkDeclarationSetSelectorSetAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewLinkDeclarationSetSelectorSetAction");
+            target.setName(getFqName(source) + "::SetSelector::Set");
+            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_PAGE_CONTAINER_SET_SELECTOR_SET_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = VIEW_LINK_DECLARATION_SET_SELECTOR_BACK_ACTION, description = "Create back action for set selector page")
+    @Lazy
+    @Transform(type = UIViewLinkDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIViewLinkDeclaration, Action> viewLinkDeclarationSetSelectorBackAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewLinkDeclarationSetSelectorBackAction");
+            target.setName(getFqName(source) + "::SetSelector::Back");
+            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_PAGE_CONTAINER_BACK_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = VIEW_LINK_DECLARATION_SET_SELECTOR_TABLE_FILTER_ACTION, description = "Create filter action for set selector page")
+    @Lazy
+    @Transform(type = UIViewLinkDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIViewLinkDeclaration, Action> viewLinkDeclarationSetSelectorTableFilterAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewLinkDeclarationSetSelectorTableFilterAction");
+            target.setName(getFqName(source) + "::SetSelector::Table::Filter");
+            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setTargetDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_TABLE_FILTER_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = VIEW_LINK_DECLARATION_SET_SELECTOR_TABLE_RANGE_ACTION, description = "Create range action for set selector page")
+    @Lazy
+    @Transform(type = UIViewLinkDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIViewLinkDeclaration, Action> viewLinkDeclarationSetSelectorTableRangeAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewLinkDeclarationSetSelectorTableRangeAction");
+            target.setName(getFqName(source) + "::SetSelector::Table::Range");
+            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setTargetDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_TABLE_REFRESH_ACTION_DEFINITION));
+            return target;
+        };
+    }
 }
