@@ -1,10 +1,13 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm.zeta.rules.data;
 
+import hu.blackbelt.judo.meta.jsl.jsldsl.DefaultModifier;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityRelationDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityRelationOpposite;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityRelationOppositeInjected;
 import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
+import hu.blackbelt.judo.meta.psm.derived.NavigationProperty;
+import hu.blackbelt.judo.meta.psm.namespace.Annotation;
 import hu.blackbelt.judo.zeta.annotation.*;
 import hu.blackbelt.judo.zeta.transformation.core.TransformFunction;
 import org.eclipse.emf.ecore.EObject;
@@ -24,8 +27,7 @@ import static hu.blackbelt.judo.tatami.jsl.jsl2psm.zeta.Jsl2PsmRuleNames.*;
  * - CreateDeclaredAssociationEnd: non-calculated entity relation -> AssociationEnd
  * - CreateNamedOppositeAssociationEnd: EntityRelationOppositeInjected -> AssociationEnd
  *
- * Note: CreateDefaultValueAnnotationForEntityRelationDeclaration is omitted for now
- * as it depends on transfer object structure rules (later phase).
+ * - CreateDefaultValueAnnotationForEntityRelationDeclaration: DefaultModifier on entity relation -> Annotation
  */
 @TransformationContext(
         source = EntityRelationDeclaration.class,
@@ -127,7 +129,43 @@ public class AssociationRules {
         };
     }
 
+    // ========================================================================================
+    // Default value annotation for entity relation declaration
+    // ========================================================================================
+
+    @TransformRule(
+            name = CREATE_DEFAULT_VALUE_ANNOTATION_FOR_ENTITY_RELATION_DECLARATION,
+            description = "Create annotation for entity relation default value"
+    )
+    @Greedy
+    @Transform(type = DefaultModifier.class)
+    @To(type = Annotation.class)
+    @Guard(method = "isDefaultForEntityRelation")
+    public TransformFunction<DefaultModifier, Annotation> createDefaultValueAnnotationForEntityRelationDeclaration() {
+        return (source, ctx) -> {
+            EntityRelationDeclaration relDecl = (EntityRelationDeclaration) source.eContainer();
+            Annotation target = ctx.createTarget(Annotation.class);
+            ctx.setElementId(target, "(jsl/" + getJslId(relDecl) + ")/CreateDefaultValueAnnotationForEntityRelationDeclaration");
+            target.setName("DefaultValue");
+
+            NavigationProperty navProp = ctx.equivalent(source, NavigationProperty.class,
+                    CREATE_DEFAULT_NAVIGATION_PROPERTY_FOR_DEFAULT_TRANSFER_OBJECT);
+            navProp.getAnnotations().add(target);
+
+            LOG.debug("Created DefaultValue Annotation for entity relation declaration: {}", target.getName());
+            return target;
+        };
+    }
+
     // --- Guard methods ---
+
+    public boolean isDefaultForEntityRelation(EObject eObject, hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        if (!(eObject instanceof DefaultModifier)) return false;
+        DefaultModifier dm = (DefaultModifier) eObject;
+        if (!(dm.eContainer() instanceof EntityRelationDeclaration)) return false;
+        EntityRelationDeclaration rel = (EntityRelationDeclaration) dm.eContainer();
+        return isReferenceTypeEntity(rel) && !isCalculated(rel);
+    }
 
     public boolean isNonCalculatedEntityRelation(EObject eObject, hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
         if (!(eObject instanceof EntityRelationDeclaration)) return false;

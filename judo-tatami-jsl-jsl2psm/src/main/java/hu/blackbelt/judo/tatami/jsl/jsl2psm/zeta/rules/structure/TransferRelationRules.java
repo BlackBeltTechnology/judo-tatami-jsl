@@ -320,8 +320,9 @@ public class TransferRelationRules {
         if (!(eObject instanceof DefaultModifier)) return false;
         DefaultModifier dm = (DefaultModifier) eObject;
         if (!(dm.eContainer() instanceof TransferRelationDeclaration)) return false;
-        TransferDeclaration transfer = (TransferDeclaration) dm.eContainer().eContainer();
-        return transfer.getMap() != null;
+        TransferRelationDeclaration rel = (TransferRelationDeclaration) dm.eContainer();
+        TransferDeclaration transferDecl = (TransferDeclaration) rel.eContainer();
+        return transferDecl.getMap() != null;
     }
 
     public boolean isDefaultForUnmappedTransferRelation(EObject eObject,
@@ -329,7 +330,8 @@ public class TransferRelationRules {
         if (!(eObject instanceof DefaultModifier)) return false;
         DefaultModifier dm = (DefaultModifier) eObject;
         if (!(dm.eContainer() instanceof TransferRelationDeclaration)) return false;
-        TransferDeclaration transfer = (TransferDeclaration) dm.eContainer().eContainer();
-        return transfer.getMap() == null;
+        TransferRelationDeclaration rel = (TransferRelationDeclaration) dm.eContainer();
+        TransferDeclaration transferDecl = (TransferDeclaration) rel.eContainer();
+        return transferDecl.getMap() == null;
     }
 }

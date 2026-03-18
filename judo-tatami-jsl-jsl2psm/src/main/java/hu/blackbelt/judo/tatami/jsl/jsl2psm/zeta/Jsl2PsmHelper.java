@@ -1242,6 +1242,15 @@ public final class Jsl2PsmHelper {
             EntityRelationDeclaration rel,
             hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx,
             String discriminator) {
+        return cloneDerivedRelation(rel, ctx, discriminator, null, null);
+    }
+
+    public static TransferObjectRelation cloneDerivedRelation(
+            EntityRelationDeclaration rel,
+            hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx,
+            String discriminator,
+            EntityDeclaration currentEntity,
+            MappedTransferObjectType currentTO) {
         TransferObjectRelation target = ctx.create(TransferObjectRelation.class);
         ctx.setElementId(target, discriminator + "/CloneTransferObjectDerivedRelationForDefaultTransferObjectType/" + getJslId(rel));
         target.setName(rel.getName());
@@ -1255,8 +1264,15 @@ public final class Jsl2PsmHelper {
                 Jsl2PsmRuleNames.CREATE_NAVIGATION_PROPERTY);
         target.setBinding(binding);
         EntityDeclaration refEntity = (EntityDeclaration) rel.getReferenceType();
-        MappedTransferObjectType refTO = ctx.equivalent(refEntity,
-                MappedTransferObjectType.class, Jsl2PsmRuleNames.CREATE_ENTITY_DEFAULT_TRANSFER_OBJECT_TYPE);
+        // Avoid recursive ctx.equivalent() when the reference type is the entity whose
+        // default TO is currently being created (Zeta doesn't pre-allocate targets like ETL)
+        MappedTransferObjectType refTO;
+        if (currentEntity != null && refEntity == currentEntity && currentTO != null) {
+            refTO = currentTO;
+        } else {
+            refTO = ctx.equivalent(refEntity,
+                    MappedTransferObjectType.class, Jsl2PsmRuleNames.CREATE_ENTITY_DEFAULT_TRANSFER_OBJECT_TYPE);
+        }
         target.setTarget(refTO);
         target.setCardinality(createCardinalityFromModifiable(ctx, rel,
                 discriminator + "/CloneDerivedCardinalityForDefaultTransferObjectType/" + getJslId(rel)));
