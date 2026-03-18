@@ -116,9 +116,10 @@ public class DefaultTransferObjectTypeRules {
                             addTransferAttribute(target, clonedAttr);
                         }
                     } else if (im instanceof EntityRelationDeclaration && isCalculated(im)) {
-                        // Clone derived relation inline
+                        // Clone derived relation inline, passing current entity/TO to avoid
+                        // recursive ctx.equivalent() when relation target is self
                         TransferObjectRelation clonedRel = cloneDerivedRelation(
-                                (EntityRelationDeclaration) im, ctx, discriminator);
+                                (EntityRelationDeclaration) im, ctx, discriminator, source, target);
                         addTransferRelation(target, clonedRel);
                     }
                 }
