@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Zeta JSL2PSM transformation produces equivalent PSM output
-The system SHALL provide a Java-based Zeta transformation engine (`Jsl2PsmZetaTransformation`) that transforms JSL models to PSM models, producing output structurally equivalent to the existing ETL transformation.
+The system SHALL provide a Java-based Zeta transformation engine (`Jsl2PsmZetaTransformation`) that transforms JSL models to PSM models, producing output structurally equivalent to the existing ETL transformation. All post-processing logic SHALL be implemented via `@PostExecution` hooks in the rule classes that own the related elements, not in a centralized `postProcess()` method.
 
 #### Scenario: Namespace rules produce correct model and packages
 - **WHEN** a JSL model with packages is transformed using Zeta
@@ -31,6 +31,10 @@ The system SHALL provide a Java-based Zeta transformation engine (`Jsl2PsmZetaTr
 - **WHEN** a JSL model with actor declarations and access controls is transformed using Zeta
 - **THEN** the PSM output SHALL contain ActorType elements with correct realm, claims, and access point references matching ETL output
 
+#### Scenario: Post-processing uses @PostExecution hooks
+- **WHEN** the Zeta transformation completes
+- **THEN** all post-processing (partner assignment, ordinal assignment, cardinality ID normalization, primitive materialization) SHALL be handled by `@PostExecution` methods on rule classes, not by `Jsl2PsmZetaTransformation.postProcess()`
+
 ### Requirement: Zeta JSL2PSM uses rule name constants
 The system SHALL define all transformation rule names as `public static final String` constants in `Jsl2PsmRuleNames.java`. All `@TransformRule`, `@Extends`, and `ctx.executeParentRule()` calls MUST reference these constants.
 
@@ -46,8 +50,12 @@ The system SHALL accept the same configuration parameters as the ETL transformat
 - **THEN** the generated PSM element names SHALL reflect those parameters identically to ETL behavior
 
 ### Requirement: EOL operations ported as static helper methods
-All 158 EOL operations from jsl2psm SHALL be ported to static Java helper methods in extension/helper classes. These methods SHALL produce identical results to their EOL counterparts.
+All 158 EOL operations from jsl2psm SHALL be ported to static Java helper methods in extension/helper classes. These methods SHALL produce identical results to their EOL counterparts. This includes `isSortable()`, `isFilterable()`, and `hasSortableField()` from `transferFieldDeclaration.eol`, which SHALL be implemented in `Jsl2PsmHelper` using the same primitive-kind and binding checks as the ETL originals.
 
 #### Scenario: JSL expression to JQL conversion works in Zeta
 - **WHEN** a JSL expression is encountered during Zeta transformation
 - **THEN** the `JslExpressionToJqlExpression` converter SHALL produce the same JQL output as in ETL mode
+
+#### Scenario: isSortable correctly identifies sortable fields
+- **WHEN** `Jsl2PsmHelper.isSortable()` is called on a TransferFieldDeclaration
+- **THEN** it SHALL return the same result as the ETL `isSortable()` EOL operation
