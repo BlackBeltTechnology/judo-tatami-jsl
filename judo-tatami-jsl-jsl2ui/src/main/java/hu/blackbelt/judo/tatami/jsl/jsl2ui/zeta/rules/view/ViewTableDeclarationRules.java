@@ -90,8 +90,9 @@ public class ViewTableDeclarationRules {
             if (!(source.getReferenceType() instanceof UIRowDeclaration)) return null;
 
             Table target = ctx.createTarget(Table.class);
-            ctx.setElementId(target, frontend.getName()
-                    + "/(jsl/" + getJslId(source) + ")/InlineViewTable");
+            String id = frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTable";
+            ctx.setElementId(target, id);
 
             // Apply abstract table logic
             applyAbstractTableDeclaration(source, target, ctx);
@@ -106,17 +107,19 @@ public class ViewTableDeclarationRules {
             }
 
             // Add columns from row declaration
+            // ETL uses equivalentDiscriminated with table id to create separate Column per table context
             UIRowDeclaration row = (UIRowDeclaration) source.getReferenceType();
             for (EObject member : row.getMembers()) {
                 if (member instanceof UIRowColumnDeclaration) {
                     UIRowColumnDeclaration colDecl = (UIRowColumnDeclaration) member;
                     if (colDecl.getReferenceType() instanceof DataTypeDeclaration
                             && ((DataTypeDeclaration) colDecl.getReferenceType()).getPrimitive() != null) {
-                        Column col = ctx.equivalent(colDecl, Column.class, TABLE_PRIMITIVE_COLUMN);
+                        Column col = ctx.equivalentDiscriminated(colDecl, Column.class,
+                                TABLE_PRIMITIVE_COLUMN, id);
                         target.getColumns().add(col);
                         if (col.getAttributeType() != null && col.getAttributeType().isIsFilterable()) {
-                            target.getFilters().add(ctx.equivalent(colDecl, Filter.class,
-                                    TABLE_PRIMITIVE_COLUMN_FILTER));
+                            target.getFilters().add(ctx.equivalentDiscriminated(colDecl, Filter.class,
+                                    TABLE_PRIMITIVE_COLUMN_FILTER, id));
                         }
                     }
                 }

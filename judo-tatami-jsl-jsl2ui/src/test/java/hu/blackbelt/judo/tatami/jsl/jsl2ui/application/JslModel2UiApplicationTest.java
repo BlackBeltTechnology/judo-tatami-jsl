@@ -94,7 +94,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testMenu(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("MenuTestModel", List.of("""
             model MenuTestModel;
@@ -201,7 +201,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testMultipleActors(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("MultipleActorsTestModel", List.of("""
             model MultipleActorsTestModel;
@@ -446,7 +446,7 @@ public class JslModel2UiApplicationTest extends AbstractTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testSecurity(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("SecurityTestModel", List.of("""
             model SecurityTestModel;

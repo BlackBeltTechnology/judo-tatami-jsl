@@ -210,8 +210,9 @@ public class CardDeclarationRules {
             ConcurrentHashMap<EObject, Integer> posMap = ctx.getAttribute("__pos");
 
             Table target = ctx.createTarget(Table.class);
-            ctx.setElementId(target, frontend.getName()
-                    + "/(jsl/" + getJslId(source) + ")/CardTable");
+            String id = frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/CardTable";
+            ctx.setElementId(target, id);
             target.setCol(12.0);
             target.setLabel(getLabelWithNameFallback(source));
             target.setName(source.getName() + "::Cards");
@@ -225,6 +226,7 @@ public class CardDeclarationRules {
             }
 
             // Add columns and filters from widget members
+            // ETL uses equivalentDiscriminated with table id to create separate Column per table context
             for (EObject member : source.getMembers()) {
                 if (member instanceof UIViewWidgetDeclaration) {
                     UIViewWidgetDeclaration widget = (UIViewWidgetDeclaration) member;
@@ -233,12 +235,12 @@ public class CardDeclarationRules {
                             && widget.getTransferField().getTarget().getReferenceType() != null
                             && widget.getTransferField().getTarget().getReferenceType() instanceof DataTypeDeclaration
                             && ((DataTypeDeclaration) widget.getTransferField().getTarget().getReferenceType()).getPrimitive() != null) {
-                        Column col = ctx.equivalent(widget, Column.class,
-                                CARD_WIDGET_DECLARATION_PRIMITIVE_COLUMN);
+                        Column col = ctx.equivalentDiscriminated(widget, Column.class,
+                                CARD_WIDGET_DECLARATION_PRIMITIVE_COLUMN, id);
                         target.getColumns().add(col);
                         if (col.getAttributeType() != null && col.getAttributeType().isIsFilterable()) {
-                            target.getFilters().add(ctx.equivalent(widget, Filter.class,
-                                    CARD_WIDGET_DECLARATION_PRIMITIVE_COLUMN_FILTER));
+                            target.getFilters().add(ctx.equivalentDiscriminated(widget, Filter.class,
+                                    CARD_WIDGET_DECLARATION_PRIMITIVE_COLUMN_FILTER, id));
                         }
                     }
                 }

@@ -513,4 +513,128 @@ public class ViewTableDeclarationViewPageRules {
             return target;
         };
     }
+
+    // =========================================================================
+    // Add selector page rules — ported from viewTableDeclarationAddSelectorPage.etl
+    // =========================================================================
+
+    @TransformRule(name = VIEW_TABLE_DECLARATION_ADD_SELECTOR_PAGE_DEFINITION, description = "Create PageDefinition for add selector page")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = PageDefinition.class)
+    public TransformFunction<UIViewTableDeclaration, PageDefinition> viewTableDeclarationAddSelectorPageDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            if (getSelectorTableModifier(source) == null) return null;
+
+            PageDefinition target = ctx.createTarget(PageDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewTableDeclarationAddSelectorPageDefinition");
+            target.setName(getFqName(source) + "::AddSelectorPage");
+
+            target.setContainer(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    PageContainer.class, TABLE_PAGE_CONTAINER));
+            target.setDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setOpenInDialog(true);
+            target.setDialogSize(DialogSize.MD);
+            target.setIsSelector(true);
+            target.setIsRelationSelector(true);
+
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    VIEW_TABLE_DECLARATION_ADD_SELECTOR_ADD_ACTION));
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    VIEW_TABLE_DECLARATION_ADD_SELECTOR_BACK_ACTION));
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    VIEW_TABLE_DECLARATION_ADD_SELECTOR_TABLE_FILTER_ACTION));
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    VIEW_TABLE_DECLARATION_ADD_SELECTOR_TABLE_RANGE_ACTION));
+
+            Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
+            app.getPages().add(target);
+
+            LOG.debug("ViewTableDeclarationAddSelectorPageDefinition: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = VIEW_TABLE_DECLARATION_ADD_SELECTOR_ADD_ACTION, description = "Create add action for add selector page")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIViewTableDeclaration, Action> viewTableDeclarationAddSelectorAddAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewTableDeclarationAddSelectorAddAction");
+            target.setName(getFqName(source) + "::AddSelector::Add");
+            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_PAGE_CONTAINER_ADD_SELECTOR_ADD_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = VIEW_TABLE_DECLARATION_ADD_SELECTOR_BACK_ACTION, description = "Create back action for add selector page")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIViewTableDeclaration, Action> viewTableDeclarationAddSelectorBackAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewTableDeclarationAddSelectorBackAction");
+            target.setName(getFqName(source) + "::AddSelector::Back");
+            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_PAGE_CONTAINER_BACK_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = VIEW_TABLE_DECLARATION_ADD_SELECTOR_TABLE_FILTER_ACTION, description = "Create filter action for add selector page")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIViewTableDeclaration, Action> viewTableDeclarationAddSelectorTableFilterAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewTableDeclarationAddSelectorTableFilterAction");
+            target.setName(getFqName(source) + "::AddSelector::Table::Filter");
+            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setTargetDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_TABLE_FILTER_ACTION_DEFINITION));
+            return target;
+        };
+    }
+
+    @TransformRule(name = VIEW_TABLE_DECLARATION_ADD_SELECTOR_TABLE_RANGE_ACTION, description = "Create range action for add selector page")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIViewTableDeclaration, Action> viewTableDeclarationAddSelectorTableRangeAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewTableDeclarationAddSelectorTableRangeAction");
+            target.setName(getFqName(source) + "::AddSelector::Table::Range");
+            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setTargetDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(getSelectorTableModifier(source).getRow(),
+                    ActionDefinition.class, TABLE_TABLE_REFRESH_ACTION_DEFINITION));
+            return target;
+        };
+    }
 }

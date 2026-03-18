@@ -49,7 +49,7 @@ public class JslModel2UiCarTest extends AbstractTest  {
 
 
     @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TransformationMode.class, names = {"ETL"}) // TODO: Enable ZETA when gaps are fixed
+    @EnumSource(value = TransformationMode.class)
     void testCar(TransformationMode mode) throws Exception {
         jslModel = JslParser.getModelFromStrings("Car", List.of("""
             model Car;
