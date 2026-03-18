@@ -68,10 +68,10 @@
 - [x] 5.3 All 13 dual tests pass EQUIVALENT with STRICT comparison
 - [x] 5.4 No regressions — all existing tests pass
 - [x] 5.5 All rule name constants already existed in `Jsl2UiRuleNames.java` — no new constants needed
-- [ ] 5.6 Commit changes with descriptive message
+- [x] 5.6 Committed: df570461 (selector/cards/tags page rules)
 
 ## 6. Documentation
 
-- [ ] 6.1 Update AGENTS.md or CLAUDE.md with new rule classes if applicable
-- [ ] 6.2 Document any new patterns discovered during implementation
+- [x] 6.1 No new rule classes created — rules added to existing files, no AGENTS.md update needed
+- [x] 6.2 Key pattern: @Lazy selector rules are never invoked for menu-level tables (selector modifier only valid inside view/form); ETL BulkRemove/Clear for menu tables use undefined variable — dead code
 - [ ] 6.3 Archive change when implementation is complete
