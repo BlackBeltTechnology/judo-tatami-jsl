@@ -1453,7 +1453,7 @@ public final class Jsl2UiHelper {
     public static boolean containsVisualElement(UIFrontendDeclaration frontend, EObject element) {
         boolean result = getExposedVisualElements(frontend).contains(element);
         if (!result) {
-            LOG.warn(" !!!! MISSING VISUAL ELEMENT: {}", getNameReflective(element));
+            LOG.debug(" !!!! MISSING VISUAL ELEMENT: {}", getNameReflective(element));
         }
         return result;
     }
