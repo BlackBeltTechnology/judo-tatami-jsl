@@ -78,9 +78,6 @@ public class CardDeclarationRules {
                     CARD_PAGE_CONTAINER_BUTTON_GROUP));
             target.setDataElement(ctx.equivalent(source.getMap().getTransfer(),
                     ClassType.class, CLASS_TYPE));
-            // onInit uses the same RefreshActionDefinition pattern
-            target.setOnInit(ctx.equivalent(source, RefreshActionDefinition.class,
-                    CARD_TABLE_REFRESH_ACTION_DEFINITION));
 
             Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
             app.getPageContainers().add(target);

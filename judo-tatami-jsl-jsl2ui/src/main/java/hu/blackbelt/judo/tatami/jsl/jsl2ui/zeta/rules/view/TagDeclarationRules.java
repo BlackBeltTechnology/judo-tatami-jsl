@@ -78,8 +78,6 @@ public class TagDeclarationRules {
                     TAG_PAGE_CONTAINER_BUTTON_GROUP));
             target.setDataElement(ctx.equivalent(source.getMap().getTransfer(),
                     ClassType.class, CLASS_TYPE));
-            target.setOnInit(ctx.equivalent(source, RefreshActionDefinition.class,
-                    TAG_TABLE_REFRESH_ACTION_DEFINITION));
 
             Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
             app.getPageContainers().add(target);

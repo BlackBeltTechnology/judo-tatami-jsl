@@ -314,8 +314,6 @@ public class ViewActionDeclarationRules {
             ctx.setElementId(target, frontend.getName()
                     + "/(jsl/" + getJslId(source) + ")/OperationInputFormBackAction");
             target.setName(source.getName() + "::Back");
-            target.setOwnerDataElement(ctx.equivalent(source.getTransferAction().getTarget(),
-                    OperationType.class, OPERATION_TYPE));
             target.setActionDefinition(ctx.equivalent(source.getParameterType(),
                     BackActionDefinition.class, FORM_PAGE_CONTAINER_BACK_ACTION_DEFINITION));
             LOG.debug("OperationInputFormBackAction: {}", target.getName());

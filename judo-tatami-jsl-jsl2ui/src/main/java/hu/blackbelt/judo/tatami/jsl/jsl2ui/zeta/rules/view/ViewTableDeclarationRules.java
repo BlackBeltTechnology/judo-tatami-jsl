@@ -349,6 +349,8 @@ public class ViewTableDeclarationRules {
             ctx.setElementId(target, frontend.getName()
                     + "/(jsl/" + getJslId(source) + ")/ViewTableDeclarationFilterActionDefinition");
             target.setName(source.getName() + "::Filter");
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
             target.setIsContainedRelationAction(true);
             return target;
         };
@@ -405,6 +407,8 @@ public class ViewTableDeclarationRules {
             ctx.setElementId(target, frontend.getName()
                     + "/(jsl/" + getJslId(source) + ")/ViewTableDeclarationRefreshActionDefinition");
             target.setName(source.getName() + "::Refresh");
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
             target.setIsContainedRelationAction(true);
             return target;
         };
@@ -519,6 +523,8 @@ public class ViewTableDeclarationRules {
             ctx.setElementId(target, frontend.getName()
                     + "/(jsl/" + getJslId(source) + ")/ViewTableDeclarationRowDeleteActionDefinition");
             target.setName(source.getName() + "::RowDelete");
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
             target.setIsContainedRelationAction(true);
             return target;
         };
@@ -743,6 +749,8 @@ public class ViewTableDeclarationRules {
             ctx.setElementId(target, frontend.getName()
                     + "/(jsl/" + getJslId(source) + ")/ViewTableDeclarationBulkRemoveActionDefinition");
             target.setName(source.getName() + "::BulkRemove");
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
             target.setIsContainedRelationAction(true);
             target.setIsBulk(true);
             return target;
@@ -1123,6 +1131,7 @@ public class ViewTableDeclarationRules {
             target.setName(source.getName() + "::Filter");
             target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
                     ClassType.class, CLASS_TYPE));
+            target.setIsContainedRelationAction(true);
             return target;
         };
     }
@@ -1177,6 +1186,7 @@ public class ViewTableDeclarationRules {
             target.setName(source.getName() + "::Refresh");
             target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
                     ClassType.class, CLASS_TYPE));
+            target.setIsContainedRelationAction(true);
             return target;
         };
     }
@@ -1231,6 +1241,7 @@ public class ViewTableDeclarationRules {
             target.setName(source.getName() + "::View");
             target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
                     ClassType.class, CLASS_TYPE));
+            target.setIsContainedRelationAction(true);
             return target;
         };
     }
@@ -1330,6 +1341,7 @@ public class ViewTableDeclarationRules {
             target.setName(source.getName() + "::Filter");
             target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
                     ClassType.class, CLASS_TYPE));
+            target.setIsContainedRelationAction(true);
             return target;
         };
     }
@@ -1384,6 +1396,7 @@ public class ViewTableDeclarationRules {
             target.setName(source.getName() + "::Refresh");
             target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
                     ClassType.class, CLASS_TYPE));
+            target.setIsContainedRelationAction(true);
             return target;
         };
     }
@@ -1438,6 +1451,7 @@ public class ViewTableDeclarationRules {
             target.setName(source.getName() + "::View");
             target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
                     ClassType.class, CLASS_TYPE));
+            target.setIsContainedRelationAction(true);
             return target;
         };
     }
