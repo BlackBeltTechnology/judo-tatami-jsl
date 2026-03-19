@@ -48,8 +48,8 @@ operation JSL!UIViewPanelDeclaration getAllRelations(): Set {
 }
 
 @cached
-operation JSL!UIViewPanelDeclaration getAllPrimitiveFields(): Set {
-    var fields = new Set();
+operation JSL!UIViewPanelDeclaration getAllPrimitiveFields(): Sequence {
+    var fields = new Sequence();
 
     if (self.isTypeOf(JSL!UIViewGroupDeclaration)) {
         fields.addAll(self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.referenceType.isDefined() and m.referenceType.`primitive`.isDefined()));

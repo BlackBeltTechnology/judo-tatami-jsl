@@ -77,8 +77,8 @@ operation JSL!TransferDeclaration getDirectRelations(): Set {
 }
 
 @cached
-operation JSL!TransferDeclaration getAllPrimitiveFields(): Set {
-    var fields = new Set();
+operation JSL!TransferDeclaration getAllPrimitiveFields(): Sequence {
+    var fields = new Sequence();
     fields.addAll(self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.referenceType.isDefined() and m.referenceType.`primitive`.isDefined()));
 
     for (member in self.members.select(m | m.isKindOf(JSL!UIViewPanelDeclaration))) {

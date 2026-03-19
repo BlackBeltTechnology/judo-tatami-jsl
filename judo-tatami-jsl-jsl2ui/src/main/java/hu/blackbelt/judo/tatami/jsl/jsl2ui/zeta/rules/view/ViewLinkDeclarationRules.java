@@ -649,10 +649,6 @@ public class ViewLinkDeclarationRules {
             target.setName(source.getName() + "::AutocompleteRangeAction");
             target.setActionDefinition(ctx.equivalent(source,
                     AutocompleteRangeActionDefinition.class, VIEW_LINK_DECLARATION_AUTOCOMPLETE_RANGE_ACTION_DEFINITION));
-            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
-                    RelationType.class, RELATION_TYPE));
-            target.setTargetDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
-                    RelationType.class, RELATION_TYPE));
             return target;
         };
     }
@@ -692,10 +688,6 @@ public class ViewLinkDeclarationRules {
             target.setName(source.getName() + "::AutocompleteSetAction");
             target.setActionDefinition(ctx.equivalent(source,
                     AutocompleteSetActionDefinition.class, VIEW_LINK_DECLARATION_AUTOCOMPLETE_SET_ACTION_DEFINITION));
-            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
-                    RelationType.class, RELATION_TYPE));
-            target.setTargetDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
-                    RelationType.class, RELATION_TYPE));
             return target;
         };
     }

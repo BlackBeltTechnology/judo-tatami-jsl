@@ -64,6 +64,20 @@ public final class Jsl2UiHelper {
         if (source instanceof MenuModifier || source instanceof ProfileModifier) {
             return getJslId(source.eContainer());
         }
+        // Modifiers use type instead of name (matching EOL Modifier.getId() which uses self.type)
+        // Falls back to eClass name when type is null (e.g. IconModifier has no type)
+        if (source instanceof Modifier) {
+            String id = ((Modifier) source).getType();
+            if (id == null || id.isEmpty()) {
+                id = source.eClass().getName();
+            }
+            if (id != null && source.eContainer() != null) {
+                String containerId = getJslId(source.eContainer());
+                if (containerId != null) {
+                    return containerId + "/" + id;
+                }
+            }
+        }
         String name = getNameReflective(source);
         if (name != null && source.eContainer() != null) {
             String containerId = getJslId(source.eContainer());
@@ -620,7 +634,9 @@ public final class Jsl2UiHelper {
         fields.addAll(self.getMembers().stream()
                 .filter(TransferFieldDeclaration.class::isInstance)
                 .map(TransferFieldDeclaration.class::cast)
-                .filter(f -> f.getReferenceType() != null)
+                .filter(f -> f.getReferenceType() != null
+                        && f.getReferenceType() instanceof DataTypeDeclaration
+                        && ((DataTypeDeclaration) f.getReferenceType()).getPrimitive() != null)
                 .collect(Collectors.toList()));
         for (TransferMemberDeclaration member : self.getMembers()) {
             if (member instanceof UIViewPanelDeclaration) {
@@ -637,10 +653,18 @@ public final class Jsl2UiHelper {
             fields.addAll(group.getMembers().stream()
                     .filter(TransferFieldDeclaration.class::isInstance)
                     .map(TransferFieldDeclaration.class::cast)
-                    .filter(f -> f.getReferenceType() != null)
+                    .filter(f -> f.getReferenceType() != null
+                            && f.getReferenceType() instanceof DataTypeDeclaration
+                            && ((DataTypeDeclaration) f.getReferenceType()).getPrimitive() != null)
                     .collect(Collectors.toList()));
+            // ETL processes groups first, then tabs — match that ordering
             for (EObject member : group.getMembers()) {
-                if (member instanceof UIViewPanelDeclaration) {
+                if (member instanceof UIViewGroupDeclaration) {
+                    fields.addAll(getAllPrimitiveFieldsFromPanel((UIViewPanelDeclaration) member));
+                }
+            }
+            for (EObject member : group.getMembers()) {
+                if (member instanceof UIViewTabsDeclaration) {
                     fields.addAll(getAllPrimitiveFieldsFromPanel((UIViewPanelDeclaration) member));
                 }
             }

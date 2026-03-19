@@ -1,9 +1,36 @@
 @cached
 operation JSL!Modifier getId(): String {
-    return (self.eContainer.getId() + "/" + self.name);
+    var id = self.type;
+    if (id.isUndefined() or id == "") {
+        id = self.eClass.name;
+    }
+    return (self.eContainer.getId() + "/" + id);
 }
 
 @cached
 operation JSL!Modifier getFqName(): String {
-    return self.eContainer.getFqName() + "::" + self.name;
+    var id = self.type;
+    if (id.isUndefined() or id == "") {
+        id = self.eClass.name;
+    }
+    return self.eContainer.getFqName() + "::" + id;
+}
+
+// Epsilon does not dispatch Modifier.getId() to IconModifier — need concrete operation
+@cached
+operation JSL!IconModifier getId(): String {
+    var id = self.type;
+    if (id.isUndefined() or id == "") {
+        id = self.eClass.name;
+    }
+    return (self.eContainer.getId() + "/" + id);
+}
+
+@cached
+operation JSL!IconModifier getFqName(): String {
+    var id = self.type;
+    if (id.isUndefined() or id == "") {
+        id = self.eClass.name;
+    }
+    return self.eContainer.getFqName() + "::" + id;
 }
