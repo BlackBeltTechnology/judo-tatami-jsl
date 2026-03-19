@@ -132,8 +132,6 @@ public class ActorDeclarationRules {
                 app.setAuthentication(target);
             }
 
-            ctx.addToResource(target);
-
             LOG.debug("Create Authentication: {}", target.getRealm());
             return target;
         };

@@ -23,6 +23,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view;
 import hu.blackbelt.judo.meta.jsl.jsldsl.*;
 import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.AttributeType;
+import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.meta.ui.data.RelationType;
 import hu.blackbelt.judo.zeta.annotation.Greedy;
 import hu.blackbelt.judo.zeta.annotation.Lazy;
@@ -460,6 +461,8 @@ public class ViewTableDeclarationRules {
             ctx.setElementId(target, frontend.getName()
                     + "/(jsl/" + getJslId(source) + ")/ViewTableDeclarationOpenPageActionDefinition");
             target.setName(source.getName() + "::View");
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
             target.setIsContainedRelationAction(true);
             return target;
         };
@@ -903,5 +906,579 @@ public class ViewTableDeclarationRules {
         } else {
             posMap.put(target, 0);
         }
+    }
+
+    // =========================================================================
+    // InlineViewCards (card-based tables) — greedy rule
+    // =========================================================================
+
+    @TransformRule(name = INLINE_VIEW_CARDS, description = "Create Table for card-based UIViewTableDeclaration")
+    @Greedy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Table.class)
+    public TransformFunction<UIViewTableDeclaration, Table> inlineViewCards() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            if (!containsVisualElement(frontend, source)) return null;
+            if (!(source.getReferenceType() instanceof UICardDeclaration)) return null;
+
+            Table target = ctx.createTarget(Table.class);
+            String id = frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCards";
+            ctx.setElementId(target, id);
+
+            applyAbstractTableDeclaration(source, target, ctx);
+
+            target.setDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+
+            VisualElement container = resolveUiContainer(source.eContainer(), ctx);
+            if (container instanceof Flex) {
+                ((Flex) container).getChildren().add(target);
+            }
+
+            target.setRepresentationComponent(TableRepresentation.CARD);
+
+            UICardDeclaration card = (UICardDeclaration) source.getReferenceType();
+            for (EObject member : card.getMembers()) {
+                if (member instanceof UIViewWidgetDeclaration) {
+                    UIViewWidgetDeclaration widget = (UIViewWidgetDeclaration) member;
+                    if (widget.getTransferField() != null
+                            && widget.getTransferField().getTarget() != null
+                            && widget.getTransferField().getTarget().getReferenceType() != null
+                            && ((DataTypeDeclaration) widget.getTransferField().getTarget().getReferenceType()).getPrimitive() != null) {
+                        Column col = ctx.equivalentDiscriminated(widget, Column.class,
+                                CARD_WIDGET_DECLARATION_PRIMITIVE_COLUMN, id);
+                        target.getColumns().add(col);
+                        if (col.getAttributeType() != null && col.getAttributeType().isIsFilterable()) {
+                            target.getFilters().add(ctx.equivalentDiscriminated(widget, Filter.class,
+                                    CARD_WIDGET_DECLARATION_PRIMITIVE_COLUMN_FILTER, id));
+                        }
+                    }
+                }
+            }
+
+            target.setTableActionButtonGroup(ctx.equivalent(source, ButtonGroup.class,
+                    INLINE_VIEW_CARDS_BUTTON_GROUP));
+            target.setRowActionButtonGroup(ctx.equivalent(source, ButtonGroup.class,
+                    INLINE_VIEW_CARDS_ROW_BUTTON_GROUP));
+
+            target.setSelectorRowsPerPage(10);
+
+            LOG.debug("InlineViewCards: {}", target.getName());
+            return target;
+        };
+    }
+
+    // =========================================================================
+    // InlineViewTags (tag-based tables) — greedy rule
+    // =========================================================================
+
+    @TransformRule(name = INLINE_VIEW_TAGS, description = "Create Table for tag-based UIViewTableDeclaration")
+    @Greedy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Table.class)
+    public TransformFunction<UIViewTableDeclaration, Table> inlineViewTags() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            if (!containsVisualElement(frontend, source)) return null;
+            if (!(source.getReferenceType() instanceof UITagDeclaration)) return null;
+
+            Table target = ctx.createTarget(Table.class);
+            String id = frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTags";
+            ctx.setElementId(target, id);
+
+            applyAbstractTableDeclaration(source, target, ctx);
+
+            target.setDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+
+            VisualElement container = resolveUiContainer(source.eContainer(), ctx);
+            if (container instanceof Flex) {
+                ((Flex) container).getChildren().add(target);
+            }
+
+            target.setRepresentationComponent(TableRepresentation.CARD);
+            target.setLabel(getLabelWithNameFallback(source));
+
+            UITagDeclaration tag = (UITagDeclaration) source.getReferenceType();
+            Column col = ctx.equivalentDiscriminated(tag, Column.class,
+                    TAG_WIDGET_DECLARATION_PRIMITIVE_COLUMN, id);
+            target.getColumns().add(col);
+            if (col.getAttributeType() != null && col.getAttributeType().isIsFilterable()) {
+                target.getFilters().add(ctx.equivalentDiscriminated(tag, Filter.class,
+                        TAG_WIDGET_DECLARATION_PRIMITIVE_COLUMN_FILTER, id));
+            }
+
+            target.setTableActionButtonGroup(ctx.equivalent(source, ButtonGroup.class,
+                    INLINE_VIEW_TAGS_BUTTON_GROUP));
+            target.setRowActionButtonGroup(ctx.equivalent(source, ButtonGroup.class,
+                    INLINE_VIEW_TAGS_ROW_BUTTON_GROUP));
+
+            target.setAutocompleteRangeActionDefinition(ctx.equivalent(source,
+                    AutocompleteRangeActionDefinition.class, VIEW_TAGS_DECLARATION_AUTOCOMPLETE_RANGE_ACTION_DEFINITION));
+            target.setAutocompleteAddActionDefinition(ctx.equivalent(source,
+                    AutocompleteAddActionDefinition.class, VIEW_TAGS_DECLARATION_AUTOCOMPLETE_ADD_ACTION_DEFINITION));
+
+            target.setSelectorRowsPerPage(10);
+
+            LOG.debug("InlineViewTags: {}", target.getName());
+            return target;
+        };
+    }
+
+    // =========================================================================
+    // Card ButtonGroups
+    // =========================================================================
+
+    @TransformRule(name = INLINE_VIEW_CARDS_BUTTON_GROUP, description = "Create table-level ButtonGroup for inline cards")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = ButtonGroup.class)
+    public TransformFunction<UIViewTableDeclaration, ButtonGroup> inlineViewCardsButtonGroup() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            ButtonGroup target = ctx.createTarget(ButtonGroup.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCardsButtonGroup");
+            target.setName(source.getName() + "::InlineViewCardsButtonGroup");
+            target.setLabel("Actions");
+            target.getButtons().add(ctx.equivalent(source, Button.class, INLINE_VIEW_CARDS_FILTER_BUTTON));
+            target.getButtons().add(ctx.equivalent(source, Button.class, INLINE_VIEW_CARDS_REFRESH_BUTTON));
+            LOG.debug("InlineViewCardsButtonGroup: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_CARDS_ROW_BUTTON_GROUP, description = "Create row-level ButtonGroup for inline cards")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = ButtonGroup.class)
+    public TransformFunction<UIViewTableDeclaration, ButtonGroup> inlineViewCardsRowButtonGroup() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            ButtonGroup target = ctx.createTarget(ButtonGroup.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCardsRowButtonGroup");
+            target.setName(source.getName() + "TableRowButtonGroup");
+            target.setLabel("Actions");
+            target.getButtons().add(ctx.equivalent(source, Button.class, INLINE_VIEW_CARDS_OPEN_PAGE_BUTTON));
+            LOG.debug("InlineViewCardsRowButtonGroup: {}", target.getName());
+            return target;
+        };
+    }
+
+    // =========================================================================
+    // Card Buttons + Icons + ActionDefinitions
+    // =========================================================================
+
+    @TransformRule(name = INLINE_VIEW_CARDS_FILTER_BUTTON, description = "Create filter Button for inline cards")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Button.class)
+    public TransformFunction<UIViewTableDeclaration, Button> inlineViewCardsFilterButton() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Button target = ctx.createTarget(Button.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCardsFilterButton");
+            target.setName(source.getName() + "::Filter");
+            target.setIcon(ctx.equivalent(source, Icon.class, INLINE_VIEW_CARDS_FILTER_BUTTON_ICON));
+            target.setLabel("Filter");
+            target.setButtonStyle("text");
+            target.setActionDefinition(ctx.equivalent(source, FilterActionDefinition.class,
+                    INLINE_VIEW_CARDS_FILTER_BUTTON_ACTION_DEFINITION));
+            LOG.debug("InlineViewCardsFilterButton: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_CARDS_FILTER_BUTTON_ICON, description = "Create Icon for inline cards filter button")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Icon.class)
+    public TransformFunction<UIViewTableDeclaration, Icon> inlineViewCardsFilterButtonIcon() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Icon target = ctx.createTarget(Icon.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCardsFilterButtonIcon");
+            target.setName(source.getName() + "FilterIcon");
+            target.setIconName("filter");
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_CARDS_FILTER_BUTTON_ACTION_DEFINITION, description = "Create FilterActionDefinition for inline cards")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = FilterActionDefinition.class)
+    public TransformFunction<UIViewTableDeclaration, FilterActionDefinition> inlineViewCardsFilterButtonActionDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            FilterActionDefinition target = ctx.createTarget(FilterActionDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCardsFilterButtonActionDefinition");
+            target.setName(source.getName() + "::Filter");
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_CARDS_REFRESH_BUTTON, description = "Create refresh Button for inline cards")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Button.class)
+    public TransformFunction<UIViewTableDeclaration, Button> inlineViewCardsRefreshButton() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Button target = ctx.createTarget(Button.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCardsRefreshButton");
+            target.setName(source.getName() + "::Refresh");
+            target.setIcon(ctx.equivalent(source, Icon.class, INLINE_VIEW_CARDS_REFRESH_BUTTON_ICON));
+            target.setLabel("Refresh");
+            target.setButtonStyle("text");
+            target.setActionDefinition(ctx.equivalent(source, RefreshActionDefinition.class,
+                    INLINE_VIEW_CARDS_REFRESH_ACTION_DEFINITION));
+            LOG.debug("InlineViewCardsRefreshButton: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_CARDS_REFRESH_BUTTON_ICON, description = "Create Icon for inline cards refresh button")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Icon.class)
+    public TransformFunction<UIViewTableDeclaration, Icon> inlineViewCardsRefreshButtonIcon() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Icon target = ctx.createTarget(Icon.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCardsRefreshButtonIcon");
+            target.setName(source.getName() + "RefreshIcon");
+            target.setIconName("refresh");
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_CARDS_REFRESH_ACTION_DEFINITION, description = "Create RefreshActionDefinition for inline cards")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = RefreshActionDefinition.class)
+    public TransformFunction<UIViewTableDeclaration, RefreshActionDefinition> inlineViewCardsRefreshActionDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            RefreshActionDefinition target = ctx.createTarget(RefreshActionDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCardsRefreshActionDefinition");
+            target.setName(source.getName() + "::Refresh");
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_CARDS_OPEN_PAGE_BUTTON, description = "Create view Button for inline cards row")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Button.class)
+    public TransformFunction<UIViewTableDeclaration, Button> inlineViewCardsOpenPageButton() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Button target = ctx.createTarget(Button.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCardsOpenPageButton");
+            target.setName(source.getName() + "::View");
+            target.setIcon(ctx.equivalent(source, Icon.class, INLINE_VIEW_CARDS_OPEN_PAGE_BUTTON_ICON));
+            target.setLabel("View");
+            target.setButtonStyle("contained");
+            target.setActionDefinition(ctx.equivalent(source, OpenPageActionDefinition.class,
+                    INLINE_VIEW_CARDS_OPEN_PAGE_ACTION_DEFINITION));
+            LOG.debug("InlineViewCardsOpenPageButton: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_CARDS_OPEN_PAGE_BUTTON_ICON, description = "Create Icon for inline cards view button")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Icon.class)
+    public TransformFunction<UIViewTableDeclaration, Icon> inlineViewCardsOpenPageButtonIcon() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Icon target = ctx.createTarget(Icon.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCardsOpenPageButtonIcon");
+            target.setName(source.getName() + "OpenPageIcon");
+            target.setIconName("visibility");
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_CARDS_OPEN_PAGE_ACTION_DEFINITION, description = "Create OpenPageActionDefinition for inline cards")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = OpenPageActionDefinition.class)
+    public TransformFunction<UIViewTableDeclaration, OpenPageActionDefinition> inlineViewCardsOpenPageActionDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            OpenPageActionDefinition target = ctx.createTarget(OpenPageActionDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewCardsOpenPageActionDefinition");
+            target.setName(source.getName() + "::View");
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
+            return target;
+        };
+    }
+
+    // =========================================================================
+    // Tag ButtonGroups
+    // =========================================================================
+
+    @TransformRule(name = INLINE_VIEW_TAGS_BUTTON_GROUP, description = "Create table-level ButtonGroup for inline tags")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = ButtonGroup.class)
+    public TransformFunction<UIViewTableDeclaration, ButtonGroup> inlineViewTagsButtonGroup() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            ButtonGroup target = ctx.createTarget(ButtonGroup.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTagsButtonGroup");
+            target.setName(source.getName() + "::InlineViewTagsButtonGroup");
+            target.setLabel("Actions");
+            target.getButtons().add(ctx.equivalent(source, Button.class, INLINE_VIEW_TAGS_FILTER_BUTTON));
+            target.getButtons().add(ctx.equivalent(source, Button.class, INLINE_VIEW_TAGS_REFRESH_BUTTON));
+            LOG.debug("InlineViewTagsButtonGroup: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_TAGS_ROW_BUTTON_GROUP, description = "Create row-level ButtonGroup for inline tags")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = ButtonGroup.class)
+    public TransformFunction<UIViewTableDeclaration, ButtonGroup> inlineViewTagsRowButtonGroup() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            ButtonGroup target = ctx.createTarget(ButtonGroup.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTagsRowButtonGroup");
+            target.setName(source.getName() + "TableRowButtonGroup");
+            target.setLabel("Actions");
+            target.getButtons().add(ctx.equivalent(source, Button.class, INLINE_VIEW_TAGS_OPEN_PAGE_BUTTON));
+            LOG.debug("InlineViewTagsRowButtonGroup: {}", target.getName());
+            return target;
+        };
+    }
+
+    // =========================================================================
+    // Tag Buttons + Icons + ActionDefinitions
+    // =========================================================================
+
+    @TransformRule(name = INLINE_VIEW_TAGS_FILTER_BUTTON, description = "Create filter Button for inline tags")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Button.class)
+    public TransformFunction<UIViewTableDeclaration, Button> inlineViewTagsFilterButton() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Button target = ctx.createTarget(Button.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTagsFilterButton");
+            target.setName(source.getName() + "::Filter");
+            target.setIcon(ctx.equivalent(source, Icon.class, INLINE_VIEW_TAGS_FILTER_BUTTON_ICON));
+            target.setLabel("Filter");
+            target.setButtonStyle("text");
+            target.setActionDefinition(ctx.equivalent(source, FilterActionDefinition.class,
+                    INLINE_VIEW_TAGS_FILTER_ACTION_DEFINITION));
+            LOG.debug("InlineViewTagsFilterButton: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_TAGS_FILTER_BUTTON_ICON, description = "Create Icon for inline tags filter button")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Icon.class)
+    public TransformFunction<UIViewTableDeclaration, Icon> inlineViewTagsFilterButtonIcon() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Icon target = ctx.createTarget(Icon.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTagsFilterButtonIcon");
+            target.setName(source.getName() + "FilterIcon");
+            target.setIconName("filter");
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_TAGS_FILTER_ACTION_DEFINITION, description = "Create FilterActionDefinition for inline tags")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = FilterActionDefinition.class)
+    public TransformFunction<UIViewTableDeclaration, FilterActionDefinition> inlineViewTagsFilterActionDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            FilterActionDefinition target = ctx.createTarget(FilterActionDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTagsFilterActionDefinition");
+            target.setName(source.getName() + "::Filter");
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_TAGS_REFRESH_BUTTON, description = "Create refresh Button for inline tags")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Button.class)
+    public TransformFunction<UIViewTableDeclaration, Button> inlineViewTagsRefreshButton() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Button target = ctx.createTarget(Button.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTagsRefreshButton");
+            target.setName(source.getName() + "::Refresh");
+            target.setIcon(ctx.equivalent(source, Icon.class, INLINE_VIEW_TAGS_REFRESH_BUTTON_ICON));
+            target.setLabel("Refresh");
+            target.setButtonStyle("text");
+            target.setActionDefinition(ctx.equivalent(source, RefreshActionDefinition.class,
+                    INLINE_VIEW_TAGS_REFRESH_ACTION_DEFINITION));
+            LOG.debug("InlineViewTagsRefreshButton: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_TAGS_REFRESH_BUTTON_ICON, description = "Create Icon for inline tags refresh button")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Icon.class)
+    public TransformFunction<UIViewTableDeclaration, Icon> inlineViewTagsRefreshButtonIcon() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Icon target = ctx.createTarget(Icon.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTagsRefreshButtonIcon");
+            target.setName(source.getName() + "RefreshIcon");
+            target.setIconName("refresh");
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_TAGS_REFRESH_ACTION_DEFINITION, description = "Create RefreshActionDefinition for inline tags")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = RefreshActionDefinition.class)
+    public TransformFunction<UIViewTableDeclaration, RefreshActionDefinition> inlineViewTagsRefreshActionDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            RefreshActionDefinition target = ctx.createTarget(RefreshActionDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTagsRefreshActionDefinition");
+            target.setName(source.getName() + "::Refresh");
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_TAGS_OPEN_PAGE_BUTTON, description = "Create view Button for inline tags row")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Button.class)
+    public TransformFunction<UIViewTableDeclaration, Button> inlineViewTagsOpenPageButton() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Button target = ctx.createTarget(Button.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTagsOpenPageButton");
+            target.setName(source.getName() + "::View");
+            target.setIcon(ctx.equivalent(source, Icon.class, INLINE_VIEW_TAGS_OPEN_PAGE_BUTTON_ICON));
+            target.setLabel("View");
+            target.setButtonStyle("contained");
+            target.setActionDefinition(ctx.equivalent(source, OpenPageActionDefinition.class,
+                    INLINE_VIEW_TAGS_OPEN_PAGE_ACTION_DEFINITION));
+            LOG.debug("InlineViewTagsOpenPageButton: {}", target.getName());
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_TAGS_OPEN_PAGE_BUTTON_ICON, description = "Create Icon for inline tags view button")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = Icon.class)
+    public TransformFunction<UIViewTableDeclaration, Icon> inlineViewTagsOpenPageButtonIcon() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Icon target = ctx.createTarget(Icon.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTagsOpenPageButtonIcon");
+            target.setName(source.getName() + "OpenPageIcon");
+            target.setIconName("visibility");
+            return target;
+        };
+    }
+
+    @TransformRule(name = INLINE_VIEW_TAGS_OPEN_PAGE_ACTION_DEFINITION, description = "Create OpenPageActionDefinition for inline tags")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = OpenPageActionDefinition.class)
+    public TransformFunction<UIViewTableDeclaration, OpenPageActionDefinition> inlineViewTagsOpenPageActionDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            OpenPageActionDefinition target = ctx.createTarget(OpenPageActionDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/InlineViewTagsOpenPageActionDefinition");
+            target.setName(source.getName() + "::View");
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
+            return target;
+        };
+    }
+
+    // =========================================================================
+    // Tag Autocomplete ActionDefinitions
+    // =========================================================================
+
+    @TransformRule(name = VIEW_TAGS_DECLARATION_AUTOCOMPLETE_RANGE_ACTION_DEFINITION, description = "Create AutocompleteRangeActionDefinition for tags")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = AutocompleteRangeActionDefinition.class)
+    public TransformFunction<UIViewTableDeclaration, AutocompleteRangeActionDefinition> viewTagsDeclarationAutocompleteRangeActionDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            AutocompleteRangeActionDefinition target = ctx.createTarget(AutocompleteRangeActionDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewTagsDeclarationAutocompleteRangeActionDefinition");
+            target.setName(source.getName() + "::Autocomplete");
+            target.setIsContainedRelationAction(true);
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
+            return target;
+        };
+    }
+
+    @TransformRule(name = VIEW_TAGS_DECLARATION_AUTOCOMPLETE_ADD_ACTION_DEFINITION, description = "Create AutocompleteAddActionDefinition for tags")
+    @Lazy
+    @Transform(type = UIViewTableDeclaration.class)
+    @To(type = AutocompleteAddActionDefinition.class)
+    public TransformFunction<UIViewTableDeclaration, AutocompleteAddActionDefinition> viewTagsDeclarationAutocompleteAddActionDefinition() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            AutocompleteAddActionDefinition target = ctx.createTarget(AutocompleteAddActionDefinition.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewTagsDeclarationAutocompleteAddActionDefinition");
+            target.setName(source.getName() + "::AutocompleteAdd");
+            target.setIsContainedRelationAction(true);
+            target.setTargetType(ctx.equivalent(source.getTransferRelation().getTarget().getReferenceType(),
+                    ClassType.class, CLASS_TYPE));
+            return target;
+        };
     }
 }

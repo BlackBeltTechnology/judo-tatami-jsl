@@ -130,8 +130,6 @@ public class ModifiableRules {
                 auth.getClaims().add(target);
             }
 
-            ctx.addToResource(target);
-
             return target;
         };
     }
