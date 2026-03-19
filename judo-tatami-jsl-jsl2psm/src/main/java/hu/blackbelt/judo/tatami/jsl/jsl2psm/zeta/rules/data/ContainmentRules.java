@@ -3,6 +3,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.zeta.rules.data;
 import hu.blackbelt.judo.meta.jsl.jsldsl.DefaultModifier;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.EntityFieldDeclaration;
+import hu.blackbelt.judo.meta.jsl.jsldsl.EntityMemberDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.Expression;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TransferDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.TransferRelationDeclaration;
@@ -310,12 +311,12 @@ public class ContainmentRules {
     @Greedy
     @Transform(type = DefaultModifier.class)
     @To(type = ReferenceExpressionType.class)
-    @Guard(method = "isDefaultForEntityRelationField")
+    @Guard(method = "isDefaultForEntityMemberWithEntityRef")
     public TransformFunction<DefaultModifier, ReferenceExpressionType> createDefaultReferenceExpressionTypeForDefaultTransferObject() {
         return (source, ctx) -> {
             ReferenceExpressionType target = ctx.createTarget(ReferenceExpressionType.class);
-            EntityFieldDeclaration field = (EntityFieldDeclaration) source.eContainer();
-            ctx.setElementId(target, "(jsl/" + getJslId(field) + ")/CreateDefaultReferenceExpressionTypeForDefaultTransferObject");
+            EntityMemberDeclaration member = (EntityMemberDeclaration) source.eContainer();
+            ctx.setElementId(target, "(jsl/" + getJslId(member) + ")/CreateDefaultReferenceExpressionTypeForDefaultTransferObject");
 
             String entityNamePrefix = ctx.getAttribute("entityNamePrefix");
             String entityNamePostfix = ctx.getAttribute("entityNamePostfix");
@@ -337,24 +338,27 @@ public class ContainmentRules {
     @Greedy
     @Transform(type = DefaultModifier.class)
     @To(type = NavigationProperty.class)
-    @Guard(method = "isDefaultForEntityRelationField")
+    @Guard(method = "isDefaultForEntityMemberWithEntityRef")
     public TransformFunction<DefaultModifier, NavigationProperty> createDefaultNavigationPropertyForDefaultTransferObject() {
         return (source, ctx) -> {
             NavigationProperty target = ctx.createTarget(NavigationProperty.class);
-            EntityFieldDeclaration field = (EntityFieldDeclaration) source.eContainer();
-            EntityDeclaration entity = (EntityDeclaration) field.eContainer();
-            ctx.setElementId(target, "(jsl/" + getJslId(field) + ")/CreateDefaultNavigationPropertyForDefaultTransferObject");
+            EntityMemberDeclaration member = (EntityMemberDeclaration) source.eContainer();
+            EntityDeclaration entity = (EntityDeclaration) member.eContainer();
+            ctx.setElementId(target, "(jsl/" + getJslId(member) + ")/CreateDefaultNavigationPropertyForDefaultTransferObject");
 
             String prefix = ctx.getAttribute("defaultDefaultNamePrefix");
             String midfix = ctx.getAttribute("defaultDefaultNameMidfix");
             String postfix = ctx.getAttribute("defaultDefaultNamePostfix");
-            target.setName((prefix != null ? prefix : "") + field.getName()
+            target.setName((prefix != null ? prefix : "") + member.getName()
                     + (midfix != null ? midfix : "") + entity.getName() + (postfix != null ? postfix : ""));
 
-            target.setTarget(ctx.equivalent(field.getReferenceType(),
+            target.setTarget(ctx.equivalent(member.getReferenceType(),
                     hu.blackbelt.judo.meta.psm.data.EntityType.class, CREATE_ENTITY_TYPE));
 
-            target.setCardinality(createCardinalityFromModifiable(ctx, field, "CreateCardinalityForRelationDeclaration"));
+            // Use target ID as discriminator to avoid collision with CreateDeclaredAssociationEnd's cardinality
+            // (matches ETL pattern: s.eContainer.equivalentDiscriminated("CreateCardinalityForRelationDeclaration", t.getId()))
+            target.setCardinality(createCardinalityFromModifiable(ctx, member,
+                    "CreateDefaultNavigationPropertyForDefaultTransferObject/CreateCardinalityForRelationDeclaration"));
 
             hu.blackbelt.judo.meta.psm.data.EntityType ownerEntity =
                     ctx.equivalent(entity, hu.blackbelt.judo.meta.psm.data.EntityType.class, CREATE_ENTITY_TYPE);
@@ -417,5 +421,18 @@ public class ContainmentRules {
         if (!(((DefaultModifier) eObject).eContainer() instanceof EntityFieldDeclaration)) return false;
         EntityFieldDeclaration field = (EntityFieldDeclaration) ((DefaultModifier) eObject).eContainer();
         return field.getReferenceType() instanceof EntityDeclaration && !isCalculated(field);
+    }
+
+    /**
+     * Guard for DefaultModifier on any EntityMemberDeclaration (field or relation)
+     * whose reference type is an entity and is not calculated.
+     * Matches the ETL guard: s.eContainer.getReferenceType().isKindOf(JSL!EntityDeclaration) and not s.eContainer.isCalculated()
+     */
+    public boolean isDefaultForEntityMemberWithEntityRef(EObject eObject, hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        if (!(eObject instanceof DefaultModifier)) return false;
+        EObject container = ((DefaultModifier) eObject).eContainer();
+        if (!(container instanceof EntityMemberDeclaration)) return false;
+        EntityMemberDeclaration member = (EntityMemberDeclaration) container;
+        return isReferenceTypeEntity(member) && !isCalculated(member);
     }
 }
