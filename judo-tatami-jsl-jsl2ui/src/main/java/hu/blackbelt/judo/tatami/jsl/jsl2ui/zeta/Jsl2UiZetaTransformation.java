@@ -116,6 +116,12 @@ public class Jsl2UiZetaTransformation {
             // Phase 4: Execute transformation
             executor.transform();
 
+            // Phase 5: Unwrap deferred proxies so EMF references point to real objects
+            context.unwrapAllProxiesInModel();
+
+            // Phase 6: Flush pending XMI IDs for elements added via containment
+            context.applyAllPendingXmiIds();
+
             log.info("Frontend '{}' transformation completed in {}ms",
                     actorDeclaration.getName(), System.currentTimeMillis() - frontendStart);
         }
@@ -238,6 +244,8 @@ public class Jsl2UiZetaTransformation {
         context.setTransformationRegistry(registry);
         context.setUseStructuredIds(true);
         context.setEtlCompatibilityMode(true);
+        context.setEquivalentDiscriminatedStrategy(
+                hu.blackbelt.judo.zeta.transformation.core.EquivalentDiscriminatedStrategy.CLONE_CURRENT_STATE);
 
         context.registerResource("jsl", sourceResourceSet);
         context.registerResource("ui", targetResourceSet);

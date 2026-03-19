@@ -636,6 +636,27 @@ public class ViewLinkDeclarationRules {
     // Autocomplete Range action/definition (@lazy)
     // =========================================================================
 
+    @TransformRule(name = VIEW_LINK_DECLARATION_AUTOCOMPLETE_RANGE_ACTION, description = "Create AutocompleteRangeAction for link")
+    @Lazy
+    @Transform(type = UIViewLinkDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIViewLinkDeclaration, Action> viewLinkDeclarationAutocompleteRangeAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewLinkDeclarationAutocompleteRangeAction");
+            target.setName(source.getName() + "::AutocompleteRangeAction");
+            target.setActionDefinition(ctx.equivalent(source,
+                    AutocompleteRangeActionDefinition.class, VIEW_LINK_DECLARATION_AUTOCOMPLETE_RANGE_ACTION_DEFINITION));
+            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setTargetDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            return target;
+        };
+    }
+
     @TransformRule(name = VIEW_LINK_DECLARATION_AUTOCOMPLETE_RANGE_ACTION_DEFINITION, description = "Create AutocompleteRangeActionDefinition for link")
     @Lazy
     @Transform(type = UIViewLinkDeclaration.class)
@@ -657,6 +678,27 @@ public class ViewLinkDeclarationRules {
     // =========================================================================
     // Autocomplete Set action/definition (@lazy)
     // =========================================================================
+
+    @TransformRule(name = VIEW_LINK_DECLARATION_AUTOCOMPLETE_SET_ACTION, description = "Create AutocompleteSetAction for link")
+    @Lazy
+    @Transform(type = UIViewLinkDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIViewLinkDeclaration, Action> viewLinkDeclarationAutocompleteSetAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/ViewLinkDeclarationAutocompleteSetAction");
+            target.setName(source.getName() + "::AutocompleteSetAction");
+            target.setActionDefinition(ctx.equivalent(source,
+                    AutocompleteSetActionDefinition.class, VIEW_LINK_DECLARATION_AUTOCOMPLETE_SET_ACTION_DEFINITION));
+            target.setOwnerDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            target.setTargetDataElement(ctx.equivalent(source.getTransferRelation().getTarget(),
+                    RelationType.class, RELATION_TYPE));
+            return target;
+        };
+    }
 
     @TransformRule(name = VIEW_LINK_DECLARATION_AUTOCOMPLETE_SET_ACTION_DEFINITION, description = "Create AutocompleteSetActionDefinition for link")
     @Lazy

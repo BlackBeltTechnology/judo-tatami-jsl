@@ -60,6 +60,10 @@ public final class Jsl2UiHelper {
         if (source instanceof ModelDeclaration) {
             return ((ModelDeclaration) source).getName().replaceAll("::", "/");
         }
+        // MenuModifier and ProfileModifier have no name — delegate to container (matching EOL getId())
+        if (source instanceof MenuModifier || source instanceof ProfileModifier) {
+            return getJslId(source.eContainer());
+        }
         String name = getNameReflective(source);
         if (name != null && source.eContainer() != null) {
             String containerId = getJslId(source.eContainer());
@@ -105,8 +109,9 @@ public final class Jsl2UiHelper {
         if (element instanceof ModelDeclaration) {
             return ((ModelDeclaration) element).getName();
         }
-        // MenuModifier and ProfileModifier have no name — delegate to container
-        if (element instanceof MenuModifier || element instanceof ProfileModifier) {
+        // MenuModifier, ProfileModifier, and ActionGroupModifier have no name — delegate to container
+        if (element instanceof MenuModifier || element instanceof ProfileModifier
+                || element instanceof ActionGroupModifier) {
             return getFqName(element.eContainer());
         }
         try {
@@ -1000,12 +1005,10 @@ public final class Jsl2UiHelper {
 
     public static boolean isFrame(UIViewGroupDeclaration group) {
         Modifier frame = getFrame(group);
-        if (frame == null) return false;
-        try {
-            return (Boolean) frame.getClass().getMethod("isIsTrue").invoke(frame);
-        } catch (Exception e) {
-            return false;
+        if (frame instanceof FrameModifier) {
+            return ((FrameModifier) frame).isTrue();
         }
+        return false;
     }
 
     // =========================================================================
@@ -1553,6 +1556,22 @@ public final class Jsl2UiHelper {
             return ctx.equivalent(field, AttributeType.class, Jsl2UiRuleNames.CREATE_DERIVED_TRANSFER_ATTRIBUTE);
         } else {
             return ctx.equivalent(field, AttributeType.class, Jsl2UiRuleNames.CREATE_TRANSIENT_TRANSFER_ATTRIBUTE);
+        }
+    }
+
+    /**
+     * Force-add an element to the target resource, bypassing the discriminated execution check.
+     * In ETL, lazy rules always add to the resource even when called via equivalentDiscriminated.
+     * The Zeta framework's addToResource() skips when inDiscriminatedExecution is true, so we
+     * directly add to the resource here to match ETL semantics.
+     */
+    public static void forceAddToResource(EObject element,
+            hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        if (element == null) return;
+        EObject unwrapped = ctx.unwrapProxy(element);
+        if (unwrapped.eContainer() != null || unwrapped.eResource() != null) return;
+        if (!ctx.getTargetResourceSet().getResources().isEmpty()) {
+            ctx.getTargetResourceSet().getResources().get(0).getContents().add(unwrapped);
         }
     }
 }

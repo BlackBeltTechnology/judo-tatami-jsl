@@ -152,6 +152,21 @@ public class MenuTableDeclarationRules {
                         ACCESS_TABLE_TABLE_OPEN_CREATE_ACTION));
             }
 
+            // Row-level action declarations from the row type
+            UIRowDeclaration rowType = (UIRowDeclaration) source.getReferenceType();
+            for (var member : rowType.getMembers()) {
+                if (member instanceof UIActionDeclaration) {
+                    UIActionDeclaration actionDeclaration = (UIActionDeclaration) member;
+                    Action rowAction = ctx.equivalentDiscriminated(actionDeclaration,
+                            Action.class, ROW_ACTION, getJslId(source));
+                    rowAction.setOwnerDataElement(target.getDataElement());
+                    rowAction.setTargetDataElement(ctx.equivalent(
+                            actionDeclaration.getTransferAction().getTarget(),
+                            OperationType.class, OPERATION_TYPE));
+                    target.getActions().add(rowAction);
+                }
+            }
+
             // Add to application pages
             Application app = ctx.equivalent(frontend, Application.class, APPLICATION);
             app.getPages().add(target);

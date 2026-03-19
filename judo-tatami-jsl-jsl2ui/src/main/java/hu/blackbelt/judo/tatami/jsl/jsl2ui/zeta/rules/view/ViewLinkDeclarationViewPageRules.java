@@ -118,6 +118,14 @@ public class ViewLinkDeclarationViewPageRules {
                     target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
                             VIEW_LINK_DECLARATION_UNSET_ACTION, getJslId(source)));
                 }
+                if (isGetRangeAllowed(lRelation)) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_AUTOCOMPLETE_RANGE_ACTION, getJslId(source)));
+                }
+                if (isSetReferenceAllowed(lRelation)) {
+                    target.getActions().add(ctx.equivalentDiscriminated(link, Action.class,
+                            VIEW_LINK_DECLARATION_AUTOCOMPLETE_SET_ACTION, getJslId(source)));
+                }
             }
 
             // Table processing

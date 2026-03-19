@@ -23,6 +23,7 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.zeta.rules.view;
 import hu.blackbelt.judo.meta.jsl.jsldsl.*;
 import hu.blackbelt.judo.meta.ui.*;
 import hu.blackbelt.judo.meta.ui.data.ClassType;
+import hu.blackbelt.judo.meta.ui.data.OperationParameterType;
 import hu.blackbelt.judo.meta.ui.data.OperationType;
 import hu.blackbelt.judo.zeta.annotation.Greedy;
 import hu.blackbelt.judo.zeta.annotation.Lazy;
@@ -210,9 +211,9 @@ public class ViewActionDeclarationRules {
                 // Use row/actionGroup form defs vs view form defs based on container
                 if (source.eContainer() instanceof UIRowDeclaration
                         || source.eContainer() instanceof ActionGroupModifier) {
-                    target.setActionDefinition(ctx.equivalent(source,
+                    target.setActionDefinition(ctx.unwrapProxy(ctx.equivalent(source,
                             OpenOperationInputFormActionDefinition.class,
-                            VIEW_TABLE_ACTION_DECLARATION_OPEN_FORM_ACTION_DEFINITION));
+                            VIEW_TABLE_ACTION_DECLARATION_OPEN_FORM_ACTION_DEFINITION)));
                 } else {
                     target.setActionDefinition(ctx.equivalent(source,
                             OpenOperationInputFormActionDefinition.class,
@@ -229,9 +230,9 @@ public class ViewActionDeclarationRules {
                         PageDefinition.class, OPERATION_INPUT_SELECTOR_PAGE_DEFINITION));
                 if (source.eContainer() instanceof UIRowDeclaration
                         || source.eContainer() instanceof ActionGroupModifier) {
-                    target.setActionDefinition(ctx.equivalent(source,
+                    target.setActionDefinition(ctx.unwrapProxy(ctx.equivalent(source,
                             OpenOperationInputSelectorActionDefinition.class,
-                            VIEW_TABLE_ACTION_DECLARATION_OPEN_SELECTOR_ACTION_DEFINITION));
+                            VIEW_TABLE_ACTION_DECLARATION_OPEN_SELECTOR_ACTION_DEFINITION)));
                 } else {
                     target.setActionDefinition(ctx.equivalent(source,
                             OpenOperationInputSelectorActionDefinition.class,
@@ -244,9 +245,9 @@ public class ViewActionDeclarationRules {
                 }
                 if (source.eContainer() instanceof UIRowDeclaration
                         || source.eContainer() instanceof ActionGroupModifier) {
-                    target.setActionDefinition(ctx.equivalent(source,
+                    target.setActionDefinition(ctx.unwrapProxy(ctx.equivalent(source,
                             ParameterlessCallOperationActionDefinition.class,
-                            VIEW_TABLE_ACTION_DECLARATION_CALL_OPERATION_ACTION_DEFINITION));
+                            VIEW_TABLE_ACTION_DECLARATION_CALL_OPERATION_ACTION_DEFINITION)));
                 } else {
                     target.setActionDefinition(ctx.equivalent(source,
                             ParameterlessCallOperationActionDefinition.class,
@@ -278,7 +279,7 @@ public class ViewActionDeclarationRules {
             target.setContainer(ctx.equivalent(source.getParameterType(),
                     PageContainer.class, FORM_PAGE_CONTAINER));
             target.setDataElement(ctx.equivalent(source.getTransferAction().getTarget(),
-                    OperationType.class, OPERATION_INPUT_PARAMETER_TYPE));
+                    OperationParameterType.class, OPERATION_INPUT_PARAMETER_TYPE));
 
             target.getActions().add(ctx.equivalent(source, Action.class,
                     OPERATION_INPUT_FORM_BACK_ACTION));
