@@ -1194,9 +1194,11 @@ public final class Jsl2PsmHelper {
         target.setTarget(refTO);
         target.setCardinality(createCardinalityFromModifiable(ctx, rel,
                 discriminator + "/CloneCardinalityFromEntityRelationForDefaultTransferObjectType/" + getJslId(rel)));
-        // Clone default value if present
+        // Set default value reference (matches ETL abstract rule)
         if (getDefault(rel) != null) {
-            // Note: default value is handled separately via cloneDefaultRelation
+            NavigationProperty defaultValue = ctx.equivalent(getDefault(rel),
+                    NavigationProperty.class, Jsl2PsmRuleNames.CREATE_DEFAULT_NAVIGATION_PROPERTY_FOR_DEFAULT_TRANSFER_OBJECT);
+            target.setDefaultValue(defaultValue);
         }
         return target;
     }
