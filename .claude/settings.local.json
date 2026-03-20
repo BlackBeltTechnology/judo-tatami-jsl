@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(find /Users/robson/Project/judo-ng/runtime/judo-tatami-jsl -name \"pom.xml\" -path \"*/judo-tatami-jsl-parent/*\" -exec head -200 {} ;)"
-    ]
-  }
-}

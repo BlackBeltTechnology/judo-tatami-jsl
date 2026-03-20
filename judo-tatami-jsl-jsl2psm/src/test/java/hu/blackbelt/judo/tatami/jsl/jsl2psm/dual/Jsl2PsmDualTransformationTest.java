@@ -1327,4 +1327,27 @@ public class Jsl2PsmDualTransformationTest {
                         new java.io.File("src/test/resources/function/ImportedTestInstanceFunctionModel.jsl")));
         assertModelEquivalence("instanceFunction", jslModel);
     }
+
+    @Test
+    void testStrictComparison_relationWithDefaults() throws Exception {
+        java.io.File jslFile = new java.io.File(
+                "../../judo-runtime-core-jsl/judo-runtime-core-jsl-itest/models/RelationWithDefaultsModel/src/test/resources/RelationWithDefaultsModel.jsl");
+        org.junit.jupiter.api.Assumptions.assumeTrue(jslFile.exists(),
+                "External itest model not found: " + jslFile);
+        JslDslModel jslModel = JslParser.getModelFromFiles(List.of(jslFile));
+
+        PsmModel etlResult = executeEtl(jslModel);
+        JslDslModel jslModelZeta = JslParser.getModelFromFiles(List.of(jslFile));
+        PsmModel zetaResult = executeZeta(jslModelZeta);
+
+        Resource etlResource = etlResult.getResourceSet().getResources().get(0);
+        Resource zetaResource = zetaResult.getResourceSet().getResources().get(0);
+
+        ModelComparator.ComparisonResult result = ModelComparator.compare(
+                etlResource.getContents().get(0),
+                zetaResource.getContents().get(0),
+                ModelComparator.ComparisonMode.STRICT);
+        assertTrue(result.isEquivalent(),
+                "STRICT comparison failed for relationWithDefaults:\n" + result.getDetailedReport());
+    }
 }
