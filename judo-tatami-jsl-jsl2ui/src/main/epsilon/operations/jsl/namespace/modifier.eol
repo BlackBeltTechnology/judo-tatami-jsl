@@ -16,7 +16,25 @@ operation JSL!Modifier getFqName(): String {
     return self.eContainer.getFqName() + "::" + id;
 }
 
-// Epsilon does not dispatch Modifier.getId() to IconModifier — need concrete operation
+// Epsilon does not dispatch Modifier.getId() to subtypes — need concrete operations
+@cached
+operation JSL!ClaimModifier getId(): String {
+    var id = self.type;
+    if (id.isUndefined() or id == "") {
+        id = self.eClass.name;
+    }
+    return (self.eContainer.getId() + "/" + id);
+}
+
+@cached
+operation JSL!ClaimModifier getFqName(): String {
+    var id = self.type;
+    if (id.isUndefined() or id == "") {
+        id = self.eClass.name;
+    }
+    return self.eContainer.getFqName() + "::" + id;
+}
+
 @cached
 operation JSL!IconModifier getId(): String {
     var id = self.type;

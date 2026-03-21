@@ -109,7 +109,7 @@ public class StaticQueryRules {
 
             populateQueryRelation(source, target, ctx);
 
-            Cardinality cardinality = createCardinality(ctx, "(jsl/" + getJslId(source) + ")/CreateCardinalityForStaticQueryDeclaration", 0, isMany(source) ? -1 : 1);
+            Cardinality cardinality = createCardinality(ctx, "(jsl/" + getJslId(source) + ")/CreateTransferObjectEntityQueryRelationForStaticQuery/Cardinality", 0, isMany(source) ? -1 : 1);
             target.setCardinality(cardinality);
 
             MappedTransferObjectType defaultTO = ctx.equivalent(source.getEntity(),
@@ -136,7 +136,7 @@ public class StaticQueryRules {
 
             populateQueryRelation(source, target, ctx);
 
-            Cardinality cardinality = createCardinality(ctx, "(jsl/" + getJslId(source) + ")/CreateCardinalityForStaticQueryDeclaration", 0, isMany(source) ? -1 : 1);
+            Cardinality cardinality = createCardinality(ctx, "(jsl/" + getJslId(source) + ")/CloneTransferObjectQueryRelationForStaticQuery/Cardinality", 0, isMany(source) ? -1 : 1);
             target.setCardinality(cardinality);
 
             LOG.debug("Clone TransferObjectRelation for StaticQuery: [{}]", target.getName());
@@ -383,7 +383,7 @@ public class StaticQueryRules {
                     CREATE_GETTER_EXPRESSION_FOR_STATIC_QUERY_PARAMETRIZED_REFERENCE_TYPE);
             target.setGetterExpression(getterExpr);
 
-            Cardinality cardinality = createCardinality(ctx, "(jsl/" + getJslId(source) + ")/CreateCardinalityForStaticQueryDeclaration", 0, isMany(source) ? -1 : 1);
+            Cardinality cardinality = createCardinality(ctx, "(jsl/" + getJslId(source) + ")/CreateStaticNavigationForStaticQuery/Cardinality", 0, isMany(source) ? -1 : 1);
             target.setCardinality(cardinality);
 
             EntityType targetEntity = ctx.equivalent(source.getReferenceType(), EntityType.class, CREATE_ENTITY_TYPE);
@@ -419,7 +419,7 @@ public class StaticQueryRules {
                     CREATE_GETTER_EXPRESSION_FOR_STATIC_QUERY_PARAMETRIZED_REFERENCE_TYPE);
             target.setGetterExpression(getterExpr);
 
-            Cardinality cardinality = createCardinality(ctx, "(jsl/" + getJslId(source) + ")/CreateCardinalityForStaticQueryDeclaration", 0, isMany(source) ? -1 : 1);
+            Cardinality cardinality = createCardinality(ctx, "(jsl/" + getJslId(source) + ")/CreateNavigationPropertyForStaticQuery/Cardinality", 0, isMany(source) ? -1 : 1);
             target.setCardinality(cardinality);
 
             EntityType targetEntity = ctx.equivalent(source.getReferenceType(), EntityType.class, CREATE_ENTITY_TYPE);

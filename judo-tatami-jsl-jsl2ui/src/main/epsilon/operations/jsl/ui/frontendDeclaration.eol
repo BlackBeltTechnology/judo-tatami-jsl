@@ -76,7 +76,7 @@ operation JSL!UIFrontendDeclaration getExposedVisualElements(ves: Set): Set {
 operation JSL!UIFrontendDeclaration containsVisualElement(element: Any): Boolean {
     var result = self.getExposedVisualElements().contains(element);
     if (not result) {
-        log.warn(" !!!! MISSING VISUAL ELEMENT: " + element.name);
+        log.debug(" !!!! MISSING VISUAL ELEMENT: " + element.name);
     }
     return result;
 }
