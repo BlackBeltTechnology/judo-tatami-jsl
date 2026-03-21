@@ -175,8 +175,9 @@ public class GetUploadTokenBehaviourRules {
     public TransformFunction<TransferFieldDeclaration, TransferOperationBehaviour> createGetUploadTokenBehaviour() {
         return (source, ctx) -> {
             TransferOperationBehaviour target = ctx.createTarget(TransferOperationBehaviour.class);
-            // Note: ETL uses the ID suffix "CreateGetUploadTokenOperation" (not "CreateGetUploadTokenBehaviour")
-            ctx.setElementId(target, "(jsl/" + getJslId(source) + ")/CreateGetUploadTokenOperation");
+            // ETL reuses "CreateGetUploadTokenOperation" for both behaviour and operation, but Zeta
+            // requires unique IDs per target object to avoid XMI ID collision in the element cache
+            ctx.setElementId(target, "(jsl/" + getJslId(source) + ")/CreateGetUploadTokenBehaviour");
 
             target.setBehaviourType(TransferOperationBehaviourType.GET_UPLOAD_TOKEN);
             target.setOwner(getTransferFieldDeclarationEquivalent(source, ctx));
