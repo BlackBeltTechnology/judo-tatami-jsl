@@ -61,7 +61,7 @@
 
         <epsilon-runtime-version>2.8.0.20260312_044533_9e4fdaca_develop</epsilon-runtime-version>
         <antlr-runtime-version>3.2</antlr-runtime-version>
-        <build-helper-maven-plugin-version>3.3.0</build-helper-maven-plugin-version>
+        <build-helper-maven-plugin-version>3.6.0</build-helper-maven-plugin-version>
 
         <!-- Model versions -->
         <judo-meta-jsl-version>1.0.3.20260312_044740_b7a5245b_develop</judo-meta-jsl-version>
