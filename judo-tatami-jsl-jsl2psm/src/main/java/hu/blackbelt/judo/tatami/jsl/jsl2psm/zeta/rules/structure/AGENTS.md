@@ -1,0 +1,14 @@
+# AGENTS.md — `judo-tatami-jsl-jsl2psm/src/main/java/hu/blackbelt/judo/tatami/jsl/jsl2psm/zeta/rules/structure`
+
+Zeta transformation rule sets mapping JSL entity and transfer declarations into PSM transfer objects, attributes, relations, and query customizers.
+
+| File | Purpose |
+| --- | --- |
+| `DefaultTransferAttributeRules.java` | Transformation rules generating `TransferAttribute` elements and lazy inheritance clones for default mapped transfer objects. Exports `createTransferAttributeForDefaultTransferObjectType()`, `cloneTransferAttributeForDefaultTransferObjectType()`. Handles primitive, derived, and entity query transfer attributes. |
+| `DefaultTransferObjectTypeRules.java` | Transformation rules creating default `MappedTransferObjectType` representations for `EntityDeclaration` instances. Exports `createEntityDefaultTransferObjectType()`, `shouldGenerateDefaultTransferObject()`. Aggregates direct and inherited entity fields and relations. |
+| `DefaultTransferRelationRules.java` | Transformation rules generating `TransferObjectRelation` entries on default transfer objects from entity fields, relations, and opposites. Exports `createTransferObjectRelationFromEntityFieldForDefault()`, `cloneTransferObjectRelationFromEntityRelationForDefault()`. Manages composite and associated relation mappings. |
+| `QueryCustomizerRules.java` | Transformation rules constructing PSM query customizer types, ordering enumerations, and seeking/pagination structures for transfer objects. Exports `createQueryCustomizerType()`, `createQueryOrderingType()`, `createQueryCustomizerSeekingType()`. Configures order-by and limit/offset seeking attributes. |
+| `TransferAttributeRules.java` | Transformation rules mapping explicit `TransferFieldDeclaration` to transient, derived, or mapped `TransferAttribute` elements. Exports `createTransientTransferAttribute()`, `createDerivedTransferAttribute()`, `createMappedTransferAttribute()`. Maps entity defaults and modifier annotations. |
+| `TransferObjectTypeRules.java` | Transformation rules converting explicit `TransferDeclaration` into PSM `MappedTransferObjectType` or `UnmappedTransferObjectType`. Exports `createUnmappedTransferObjectType()`, `createMappedTransferObjectType()`. Filters out actor-related transfer types. |
+| `TransferRelationChoiceRules.java` | Transformation rules generating choice range expressions, navigation properties, and relations for transfer relations with choice modifiers. Exports `createRelationRangeReferenceExpressionTypeForMappedTransferObjectRelation()`, `createRelationRangeTransferObjectRelation()`. Binds range lookup mechanisms. |
+| `TransferRelationRules.java` | Transformation rules mapping explicit `TransferRelationDeclaration` into transient, derived, or mapped `TransferObjectRelation` instances. Exports `createTransientTransferRelation()`, `createDerivedTransferRelation()`, `createMappedTransferRelation()`. Links target transfer object types. |

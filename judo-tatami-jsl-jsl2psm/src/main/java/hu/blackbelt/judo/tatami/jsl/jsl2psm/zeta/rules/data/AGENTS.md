@@ -1,0 +1,12 @@
+# AGENTS.md — `judo-tatami-jsl-jsl2psm/src/main/java/hu/blackbelt/judo/tatami/jsl/jsl2psm/zeta/rules/data`
+
+Zeta transformation rule sets mapping JSL data definitions, associations, cardinalities, containments, and static queries to PSM data model elements.
+
+| File | Purpose |
+| --- | --- |
+| `AssociationRules.java` | Transformation rules mapping non-calculated `EntityRelationDeclaration` and injected opposites to PSM `AssociationEnd` instances. Exports `createDeclaredAssociationEnd()`, `createNamedOppositeAssociationEnd()`, `createDefaultValueAnnotationForEntityRelationDeclaration()`. Links opposing association ends in post-execution phase. |
+| `CardinalityRules.java` | Lazy transformation rules constructing PSM `Cardinality` instances for relations, fields, opposite additions, derived attributes, and static queries. Exports `createCardinalityForRelationDeclaration()`, `createCardinalityForFieldDeclaration()`, `createCardinalityForStaticQueryDeclaration()`. Normalizes cardinality identifiers post-execution. |
+| `ContainmentRules.java` | Transformation rules generating PSM `Containment` structures from entity fields and resolving reads/default reference expressions. Exports `createContainmentFromField()`, `createReadsReferenceExpressionTypeForTransferRelationDeclaration()`, `createDefaultReferenceExpressionTypeForMappedTransferObjectConstructor()`. Maps contained child references. |
+| `EntityTypeRules.java` | Transformation rules converting JSL `EntityDeclaration` into PSM `EntityType`. Exports `createEntityType()`. Preserves abstract modifiers, super entity type inheritance hierarchies, and applies configured entity name prefix/postfix values. |
+| `PrimitiveTypedElementRules.java` | Transformation rules mapping primitive entity fields to PSM `Attribute` and generating default/read data expressions. Exports `createAttributeFromField()`, `createDefaultValueForPrimitiveEntityMember()`, `createReadsDataExpressionType()`. Configures technical attributes and default property annotations. |
+| `StaticQueryRules.java` | Transformation rules transforming static JSL queries into transfer attributes, query relations, unmapped transfer objects, and navigation properties. Exports `createEntityQueryTransferAttribute()`, `createUnmappedTransferObjectForStaticQuery()`, `createTransferObjectForStaticQueryParameter()`. Generates parameter transfer types and query getter expressions. |
