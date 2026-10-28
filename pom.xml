@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>hu.blackbelt.judo.tatami</groupId>
@@ -571,7 +572,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -593,7 +594,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -612,7 +613,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -633,7 +634,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -652,7 +653,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -671,7 +672,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -921,14 +922,14 @@
             <id>release-judong</id>
             <distributionManagement>
                 <snapshotRepository>
-                    <id>judong-nexus-distribution</id>
+                    <id>judong-distribution</id>
                     <!--suppress UnresolvedMavenProperty -->
-                    <url>https://nexus.judo.technology/repository/maven-judong-snapshots/</url>
+                    <url>https://repository.judo.technology/repository/maven-judong-upstream/</url>
                 </snapshotRepository>
                 <repository>
-                    <id>judong-nexus-distribution</id>
+                    <id>judong-distribution</id>
                     <!--suppress UnresolvedMavenProperty -->
-                    <url>https://nexus.judo.technology/repository/maven-judong-snapshots/</url>
+                    <url>https://repository.judo.technology/repository/maven-judong-upstream/</url>
                 </repository>
             </distributionManagement>
         </profile>
@@ -1038,7 +1039,7 @@
                                         <toc>left</toc>
                                         <icons>font</icons>
                                         <sectanchors>true</sectanchors>
-                                        <idprefix />
+                                        <idprefix/>
                                         <idseparator>-</idseparator>
                                     </attributes>
                                 </configuration>
@@ -1119,4 +1120,16 @@
             </build>
         </profile>
     </profiles>
+    <repositories>
+        <repository>
+            <id>judong</id>
+            <url>https://repository.judo.technology/repository/maven-judong/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
