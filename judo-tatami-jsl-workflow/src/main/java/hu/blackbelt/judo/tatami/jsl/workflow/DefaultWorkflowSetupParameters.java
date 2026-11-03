@@ -111,8 +111,12 @@ public class DefaultWorkflowSetupParameters {
     @Builder.Default
     private Boolean useCache = true;
 
+    /**
+     * Engine for jsl2psm / jsl2ui. Defaults to {@link TransformationMode#DEFAULT} (ZETA); ETL/DUAL need the
+     * judo-tatami-jsl-jsl2psm-etl / judo-tatami-jsl-jsl2ui-etl add-ons on the classpath. See change: split-etl-artifacts.
+     */
     @Builder.Default
-    private TransformationMode transformationMode = TransformationMode.ETL;
+    private TransformationMode transformationMode = TransformationMode.DEFAULT;
 
     @Builder.Default
     Boolean rdbmsCreateSimpleName = false;

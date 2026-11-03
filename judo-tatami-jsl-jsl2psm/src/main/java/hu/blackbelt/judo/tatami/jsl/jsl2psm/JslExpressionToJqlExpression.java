@@ -24,10 +24,8 @@ import hu.blackbelt.judo.meta.jsl.jsldsl.*;
 import hu.blackbelt.judo.meta.jsl.runtime.TypeInfo;
 import hu.blackbelt.judo.meta.jsl.util.JslDslModelExtension;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.epsilon.ecl.parse.Ecl_EolParserRules.throwStatement_return;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

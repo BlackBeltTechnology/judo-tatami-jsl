@@ -114,7 +114,7 @@ public class QueryCustomizerRules {
             target.setName("_mask");
             target.setRequired(false);
 
-            StringType dataType = ctx.equivalent(getModelDeclaration(source), StringType.class, CREATE_QUERY_CUSTOMIZER_STRING_TYPE);
+            StringType dataType = ctx.equivalent(getSingletonModelDeclaration(source, ctx), StringType.class, CREATE_QUERY_CUSTOMIZER_STRING_TYPE);
             target.setDataType(dataType);
 
             UnmappedTransferObjectType qcType = ctx.equivalent(source, UnmappedTransferObjectType.class, CREATE_QUERY_CUSTOMIZER_TYPE);
@@ -144,7 +144,7 @@ public class QueryCustomizerRules {
             target.setName("_identifier");
             target.setRequired(false);
 
-            StringType dataType = ctx.equivalent(getModelDeclaration(source), StringType.class, CREATE_QUERY_CUSTOMIZER_STRING_TYPE);
+            StringType dataType = ctx.equivalent(getSingletonModelDeclaration(source, ctx), StringType.class, CREATE_QUERY_CUSTOMIZER_STRING_TYPE);
             target.setDataType(dataType);
 
             UnmappedTransferObjectType qcType = ctx.equivalent(source, UnmappedTransferObjectType.class, CREATE_QUERY_CUSTOMIZER_TYPE);
@@ -296,7 +296,7 @@ public class QueryCustomizerRules {
             target.setName("descending");
             target.setRequired(false);
 
-            BooleanType dataType = ctx.equivalent(getModelDeclaration(source), BooleanType.class, CREATE_QUERY_CUSTOMIZER_BOOLEAN_TYPE);
+            BooleanType dataType = ctx.equivalent(getSingletonModelDeclaration(source, ctx), BooleanType.class, CREATE_QUERY_CUSTOMIZER_BOOLEAN_TYPE);
             target.setDataType(dataType);
 
             UnmappedTransferObjectType orderingType = ctx.equivalent(source, UnmappedTransferObjectType.class, CREATE_QUERY_ORDERING_TYPE);
@@ -561,7 +561,7 @@ public class QueryCustomizerRules {
             target.setName("limit");
             target.setRequired(false);
 
-            NumericType dataType = ctx.equivalent(getModelDeclaration(source), NumericType.class, CREATE_QUERY_CUSTOMIZER_INTEGER_TYPE);
+            NumericType dataType = ctx.equivalent(getSingletonModelDeclaration(source, ctx), NumericType.class, CREATE_QUERY_CUSTOMIZER_INTEGER_TYPE);
             target.setDataType(dataType);
 
             UnmappedTransferObjectType seekingType = ctx.equivalent(source, UnmappedTransferObjectType.class, CREATE_QUERY_CUSTOMIZER_SEEKING_TYPE);
@@ -587,7 +587,7 @@ public class QueryCustomizerRules {
             target.setName("offset");
             target.setRequired(false);
 
-            NumericType dataType = ctx.equivalent(getModelDeclaration(source), NumericType.class, CREATE_QUERY_CUSTOMIZER_INTEGER_TYPE);
+            NumericType dataType = ctx.equivalent(getSingletonModelDeclaration(source, ctx), NumericType.class, CREATE_QUERY_CUSTOMIZER_INTEGER_TYPE);
             target.setDataType(dataType);
 
             UnmappedTransferObjectType seekingType = ctx.equivalent(source, UnmappedTransferObjectType.class, CREATE_QUERY_CUSTOMIZER_SEEKING_TYPE);
@@ -613,7 +613,7 @@ public class QueryCustomizerRules {
             target.setName("reverse");
             target.setRequired(false);
 
-            BooleanType dataType = ctx.equivalent(getModelDeclaration(source), BooleanType.class, CREATE_QUERY_CUSTOMIZER_BOOLEAN_TYPE);
+            BooleanType dataType = ctx.equivalent(getSingletonModelDeclaration(source, ctx), BooleanType.class, CREATE_QUERY_CUSTOMIZER_BOOLEAN_TYPE);
             target.setDataType(dataType);
 
             UnmappedTransferObjectType seekingType = ctx.equivalent(source, UnmappedTransferObjectType.class, CREATE_QUERY_CUSTOMIZER_SEEKING_TYPE);

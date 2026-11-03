@@ -493,7 +493,7 @@ public class ActorTypeRules {
         // t.dataType = "extensions".equivalent("CreateActorStringType")
         // Using ModelDeclaration source pattern (same as QueryCustomizer types)
         StringType actorStringType = ctx.equivalent(
-                getModelDeclaration(source), StringType.class, CREATE_ACTOR_STRING_TYPE);
+                getSingletonModelDeclaration(source, ctx), StringType.class, CREATE_ACTOR_STRING_TYPE);
         target.setDataType(actorStringType);
 
         // Add to security type

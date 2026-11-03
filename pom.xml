@@ -372,6 +372,37 @@
                 <artifactId>judo-tatami-psm2asm</artifactId>
                 <version>${judo-tatami-base-version}</version>
             </dependency>
+            <!-- ETL add-ons of judo-tatami-base (split-etl-artifacts) -->
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-util-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-psm2asm-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-psm2measure-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm2rdbms-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm2keycloak-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-rdbms2liquibase-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
@@ -474,6 +505,37 @@
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-jsl-jsl2ui</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-jsl2psm-etl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-jsl2ui-etl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-workflow-etl</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-psm-validation-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm-validation-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-expression-asm-validation-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
@@ -864,7 +926,10 @@
                 <module>docs</module>
                 <module>judo-tatami-jsl-jsl2ui</module>
                 <module>judo-tatami-jsl-jsl2psm</module>
+                <module>judo-tatami-jsl-jsl2ui-etl</module>
+                <module>judo-tatami-jsl-jsl2psm-etl</module>
                 <module>judo-tatami-jsl-workflow</module>
+                <module>judo-tatami-jsl-workflow-etl</module>
                 <module>judo-tatami-jsl-workflow-maven-plugin</module>
                 <module>judo-tatami-jsl-workflow-maven-plugin-test</module>
             </modules>

@@ -33,15 +33,19 @@ again: the flow engine (`Work`, `WorkFlow`, `WorkFlowEngine`,
 `TransformationContext`) that both front ends schedule their steps on. Neither
 of those two repositories can read a `.jsl` file; only this one can.
 
-**Dual transformation engines.** Each of `Jsl2PsmWork` and `Jsl2UiWork` can run
-its step through the Epsilon path (`EtlExecutionContext` over the `.etl`/`.eol`
-scripts under `src/main/epsilon/`) or the Zeta path
+**Dual transformation engines (ETL split out).** The Zeta path
 (`Jsl2PsmZetaTransformation` / `Jsl2UiZetaTransformation`, annotated Java rule
 classes under `…/zeta/rules/`, executed by `judo-zeta`'s
-`TransformationExecutor` + `TransformationRegistry`), or both — the mode enum
-lives in `judo-tatami-core` (`ETL` / `ZETA` / `BOTH`) and is queried as
+`TransformationExecutor` + `TransformationRegistry`) lives in the Epsilon-free
+core modules and is the **default (ZETA)**. The Epsilon path (`etl.Jsl2Psm` /
+`etl.Jsl2Ui` over `.etl`/`.eol` scripts under `src/main/epsilon/`) lives in the
+optional add-ons `judo-tatami-jsl-jsl2psm-etl` / `judo-tatami-jsl-jsl2ui-etl`.
+`Jsl2PsmWork` / `Jsl2UiWork` reach it only through the core SPI
+`Jsl2PsmEtlEngine` / `Jsl2UiEtlEngine` via `EtlEngineRegistry` (ServiceLoader or
+OSGi DS) in `ETL`/`DUAL` mode; a missing add-on throws `EtlEngineMissingException`.
+Mode enum lives in `judo-tatami-core` and is queried as `mode.isEtl()` /
 `mode.isZeta()`. A change to transformation semantics generally has to land on
-both sides until the Zeta migration completes.
+both sides until the Zeta migration completes. See change: split-etl-artifacts.
 
 **Repository:** BlackBeltTechnology/judo-tatami-jsl ·
 **Reactor artifact:** `judo-tatami-jsl-parent` (packaging `pom`, version
@@ -57,24 +61,32 @@ parent POM alone. Declared order is build order.
 | Module | Artifact / packaging | What it contributes |
 |---|---|---|
 | `docs` | `judo-tatami-jsl-docs`, `jar` | The Antora/Markdown documentation set under `docs/pages/` packaged as an artifact so downstream doc sites can pull it. Notably carries the Workflow Maven Plugin parameter reference — the authoritative description of every Mojo parameter. No transformation logic. |
-| `judo-tatami-jsl-jsl2ui` | `judo-tatami-jsl-jsl2ui`, `bundle` (OSGi) | JSL → UI. `Jsl2Ui` orchestrates the Epsilon route over `src/main/epsilon/transformations/ui/jslToUi.etl` plus ~40 EOL operation scripts; `zeta/Jsl2UiZetaTransformation` plus `zeta/rules/{application,structure,type,view}` carry the Java route. `Jsl2UiWork` adapts it to the flow engine, `Jsl2UiTransformationTrace` records source→target links, and `osgi/` registers the transformation as an OSGi service. Each `UIFrontendDeclaration` is transformed separately. |
-| `judo-tatami-jsl-jsl2psm` | `judo-tatami-jsl-jsl2psm`, `bundle` (OSGi) | JSL → PSM, the heaviest module. `Jsl2Psm` drives `src/main/epsilon/transformations/psm/jslToPsm.etl` and ~60 EOL operation scripts; `zeta/Jsl2PsmZetaTransformation` drives the Java rule classes under `zeta/rules/{action,actor,data,derived,namespace,structure,type}`. `JslExpressionToJqlExpression` and `Jsl2JqlFunction` translate JSL expressions into JQL. `Jsl2PsmWork` wires it into the flow engine; `osgi/` publishes the OSGi service. |
-| `judo-tatami-jsl-workflow` | `judo-tatami-jsl-workflow`, `bundle` (OSGi) | Pipeline orchestration. `AbstractTatamiPipelineWorkflow` assembles the whole chain — JSL→PSM and JSL→UI from this repository, PSM→ASM / PSM→Measure / ASM→Expression / ASM→RDBMS / RDBMS→Liquibase / ASM→Keycloak from `judo-tatami` — into a `WorkFlow` on `judo-tatami-core`'s engine, honouring the `ignore*` toggles and per-dialect fan-out. `WorkflowHelper` is the work factory, `DefaultWorkflowSetupParameters` the builder-shaped configuration record, `DefaultWorkflow` / `JslDefaultWorkflow` / `PsmDefaultWorkflow` the ready-made entry points, `DefaultWorkflowSave` the model persistence step, and `DefaultWorkflowMetricsCollector` / `WorkflowMetrics` the timing instrumentation. |
-| `judo-tatami-jsl-workflow-maven-plugin` | `judo-tatami-jsl-workflow-maven-plugin`, `maven-plugin` | The build-time face of the pipeline. `DefaultWorkflowMojo` binds goal `default-model-workflow` to the `COMPILE` phase and maps Maven parameters onto `DefaultWorkflowSetupParameters`; `AbstractJslDslWorkflowProjectMojo` holds the shared project plumbing, `ArtifactResolver` locates model artifacts on the dependency graph, `DialectParam` carries the requested SQL dialects, `ResourceList` enumerates the JSL sources to feed in. |
+| `judo-tatami-jsl-jsl2ui` | `judo-tatami-jsl-jsl2ui`, `bundle` (OSGi) | JSL → UI, Epsilon-free core. `zeta/Jsl2UiZetaTransformation` plus `zeta/rules/{application,structure,type,view}` carry the Java route (default). `Jsl2UiWork` adapts it to the flow engine and delegates ETL/DUAL to the `Jsl2UiEtlEngine` SPI; `Jsl2UiTransformationTrace` records source→target links; `osgi/` registers the transformation as an OSGi service (ZETA). Each `UIFrontendDeclaration` is transformed separately. |
+| `judo-tatami-jsl-jsl2ui-etl` | `judo-tatami-jsl-jsl2ui-etl`, `bundle` (OSGi) | Optional ETL add-on for JSL → UI. `etl/Jsl2Ui` over `src/main/epsilon/transformations/ui/jslToUi.etl` plus ~40 EOL scripts; `etl/Jsl2UiEtlEngineImpl` implements the core SPI, registered by ServiceLoader or `etl/osgi/Jsl2UiEtlEngineComponent`. Holds the ETL, dual and perf tests. Only place Epsilon reaches the classpath for this stage. |
+| `judo-tatami-jsl-jsl2psm` | `judo-tatami-jsl-jsl2psm`, `bundle` (OSGi) | JSL → PSM, the heaviest module; Epsilon-free core. `zeta/Jsl2PsmZetaTransformation` drives the Java rule classes under `zeta/rules/{action,actor,data,derived,namespace,structure,type}` (default). `JslExpressionToJqlExpression` and `Jsl2JqlFunction` translate JSL expressions into JQL. `Jsl2PsmWork` wires it into the flow engine and delegates ETL/DUAL to the `Jsl2PsmEtlEngine` SPI; `osgi/` publishes the OSGi service (ZETA). |
+| `judo-tatami-jsl-jsl2psm-etl` | `judo-tatami-jsl-jsl2psm-etl`, `bundle` (OSGi) | Optional ETL add-on for JSL → PSM. `etl/Jsl2Psm` drives `src/main/epsilon/transformations/psm/jslToPsm.etl` and ~60 EOL scripts; `etl/Jsl2PsmEtlEngineImpl` implements the core SPI, registered by ServiceLoader or `etl/osgi/Jsl2PsmEtlEngineComponent`. Holds the ETL, dual and perf tests. Only place Epsilon reaches the classpath for this stage. |
+| `judo-tatami-jsl-workflow` | `judo-tatami-jsl-workflow`, `bundle` (OSGi) | Pipeline orchestration. `AbstractTatamiPipelineWorkflow` assembles the whole chain — JSL→PSM and JSL→UI from this repository, PSM→ASM / PSM→Measure / ASM→Expression / ASM→RDBMS / RDBMS→Liquibase / ASM→Keycloak from `judo-tatami` — into a `WorkFlow` on `judo-tatami-core`'s engine, honouring the `ignore*` toggles and per-dialect fan-out. `DefaultWorkflowSetupParameters.transformationMode` defaults to ZETA. `WorkflowHelper` is the work factory, `DefaultWorkflowSetupParameters` the builder-shaped configuration record, `DefaultWorkflow` / `JslDefaultWorkflow` / `PsmDefaultWorkflow` the ready-made entry points, `DefaultWorkflowSave` the model persistence step, and `DefaultWorkflowMetricsCollector` / `WorkflowMetrics` the timing instrumentation. |
+| `judo-tatami-jsl-workflow-etl` | `judo-tatami-jsl-workflow-etl`, `pom` | Dependency-only aggregate of the 10 ETL add-ons: `jsl2psm-etl`, `jsl2ui-etl`, `psm2asm-etl`, `psm2measure-etl`, `asm2rdbms-etl`, `asm2keycloak-etl`, `rdbms2liquibase-etl`, `psm-validation-etl`, `asm-validation-etl`, `expression-asm-validation-etl`. No code. Use as plugin dependency of the Maven plugin (`transformationMode` ETL) or on the runtime classpath of `JSLTransformationModelLoader`. The two jsl add-ons alone are NOT enough: every downstream stage Work reads `judo.transformation.mode`. See change: split-etl-artifacts. |
+| `judo-tatami-jsl-workflow-maven-plugin` | `judo-tatami-jsl-workflow-maven-plugin`, `maven-plugin` | The build-time face of the pipeline. `DefaultWorkflowMojo` binds goal `default-model-workflow` to the `COMPILE` phase and maps Maven parameters onto `DefaultWorkflowSetupParameters` (`transformationMode` default `ZETA`; ETL/DUAL need the aggregate `judo-tatami-jsl-workflow-etl` (type `pom`) as plugin dependency); `AbstractJslDslWorkflowProjectMojo` holds the shared project plumbing, `ArtifactResolver` locates model artifacts on the dependency graph, `DialectParam` carries the requested SQL dialects, `ResourceList` enumerates the JSL sources to feed in. |
 | `judo-tatami-jsl-workflow-maven-plugin-test` | `judo-tatami-jsl-workflow-maven-plugin-test`, `jar` | The end-to-end proof: runs the plugin against a real JSL model and asserts the full pipeline produces the expected artifacts. This is where a regression spanning several transformations actually surfaces. |
 
 ## Repository layout
 
 ```
 judo-tatami-jsl/
-├── judo-tatami-jsl-jsl2psm/           # JSL → PSM transformation module
-│   ├── src/main/java/                 #   Java orchestration + zeta/ rule classes
+├── judo-tatami-jsl-jsl2psm/           # JSL → PSM core (Zeta, Epsilon-free)
+│   └── src/main/java/                 #   Java orchestration + zeta/ rule classes + EtlEngine SPI
+├── judo-tatami-jsl-jsl2psm-etl/       # JSL → PSM ETL add-on (optional)
+│   ├── src/main/java/                 #   etl/Jsl2Psm, EtlEngineImpl, osgi/ DS component
 │   └── src/main/epsilon/              #   Epsilon ETL/EOL transformation scripts
-├── judo-tatami-jsl-jsl2ui/            # JSL → UI transformation module
-│   ├── src/main/java/                 #   Java orchestration + zeta/ rule classes
+├── judo-tatami-jsl-jsl2ui/            # JSL → UI core (Zeta, Epsilon-free)
+│   └── src/main/java/                 #   Java orchestration + zeta/ rule classes + EtlEngine SPI
+├── judo-tatami-jsl-jsl2ui-etl/        # JSL → UI ETL add-on (optional)
+│   ├── src/main/java/                 #   etl/Jsl2Ui, EtlEngineImpl, osgi/ DS component
 │   └── src/main/epsilon/              #   Epsilon ETL/EOL transformation scripts
 ├── judo-tatami-jsl-workflow/          # Pipeline orchestration module
 │   └── src/main/java/                 #   Workflow engine, configuration, metrics
+├── judo-tatami-jsl-workflow-etl/      # pom aggregate of the 10 ETL add-ons (no code)
 ├── judo-tatami-jsl-workflow-maven-plugin/      # Maven Mojo plugin
 │   └── src/main/java/                 #   DefaultWorkflowMojo, artifact resolution
 ├── judo-tatami-jsl-workflow-maven-plugin-test/ # Plugin integration tests
@@ -122,11 +134,11 @@ mvn clean verify                                     # Full verification (tests 
 ## Technology stack
 
 ### Core technologies
-- **Eclipse Epsilon 2.8.0** — ETL/EOL model transformation engine
+- **Eclipse Epsilon 2.8.0** — ETL/EOL model transformation engine (only in the `-etl` add-on modules)
 - **Eclipse EMF** — Ecore metamodeling framework, XMI model serialization
 - **ANTLR 3.2** — Parser generator (DSL parsing)
 - **JUDO Metamodels** — judo-meta-jsl (1.0.3), judo-meta-psm (1.3.0), judo-meta-ui (1.1.0), judo-meta-asm (1.1.4), judo-meta-rdbms (1.0.2), judo-meta-jql (1.0.4), judo-meta-expression (1.0.5), judo-meta-liquibase (1.0.2)
-- **judo-tatami-core** — Workflow and Work abstractions (sequential/parallel flow engine), plus the `ETL` / `ZETA` / `BOTH` transformation-mode selector
+- **judo-tatami-core** — Workflow and Work abstractions (sequential/parallel flow engine), plus the `ETL` / `ZETA` / `DUAL` transformation-mode selector
 - **judo-tatami-base** — Base transformation utilities
 - **judo-zeta** — `TransformationExecutor`, `TransformationRegistry`, `ModelProvider`, `ExtensionMethodRegistry` behind the annotated-Java rule route
 
@@ -140,9 +152,9 @@ mvn clean verify                                     # Full verification (tests 
 
 ## Architecture pointers
 
-- `judo-tatami-jsl-jsl2psm/src/main/epsilon/transformations/psm/jslToPsm.etl` — main JSL→PSM transformation entry point.
-- `judo-tatami-jsl-jsl2ui/src/main/epsilon/transformations/ui/jslToUi.etl` — main JSL→UI transformation entry point.
-- `judo-tatami-jsl-jsl2psm/src/main/java/…/zeta/Jsl2PsmZetaTransformation.java` and the sibling `Jsl2UiZetaTransformation` — the Zeta-route counterparts of those two entry points.
+- `judo-tatami-jsl-jsl2psm/src/main/java/…/zeta/Jsl2PsmZetaTransformation.java` and the sibling `Jsl2UiZetaTransformation` — the default (Zeta) JSL→PSM / JSL→UI entry points.
+- `judo-tatami-jsl-jsl2psm-etl/src/main/epsilon/transformations/psm/jslToPsm.etl` and `judo-tatami-jsl-jsl2ui-etl/src/main/epsilon/transformations/ui/jslToUi.etl` — the optional ETL entry points (add-on modules).
+- `judo-tatami-jsl-jsl2psm/src/main/java/…/Jsl2PsmEtlEngine.java` / `Jsl2UiEtlEngine.java` — core SPI the add-ons implement.
 - `judo-tatami-jsl-workflow/src/main/java/…/AbstractTatamiPipelineWorkflow.java` — the assembled pipeline; read it to see which steps exist and in what order.
 - `.github/workflows/build.yml` — main CI build pipeline; `.github/workflows/release.yml` — release automation.
 
@@ -165,11 +177,11 @@ mvn clean verify                                     # Full verification (tests 
 
 ## Important notes
 
-1. **Epsilon scripts are the core transformation logic.** Most feature changes involve editing `.etl` and `.eol` files under `src/main/epsilon/transformations/`, not Java code.
+1. **Default transformation is Zeta (Java rules in the core modules).** Epsilon scripts live only in the optional `-etl` add-ons (`judo-tatami-jsl-jsl2psm-etl`, `-jsl2ui-etl`) under `src/main/epsilon/`; keep both sides in step until Zeta fully replaces ETL. ETL/DUAL mode needs the aggregate `judo-tatami-jsl-workflow-etl` (all 10 add-ons) on the classpath (Maven plugin: as plugin dependency) — the two jsl add-ons alone are not enough, every downstream stage reads `judo.transformation.mode`.
 2. **The pipeline runs transformations in parallel by default** (`runInParallel=true`). Individual steps can be toggled on/off with `ignore*` flags.
 3. **Transformation traces** map source elements to target elements. They are optional (toggleable) and stored in XMI format.
 4. **All naming conventions for generated RDBMS artifacts** (table prefixes, column prefixes, etc.) are configurable via `DefaultWorkflowSetupParameters` or Maven plugin parameters.
-5. **OSGi support** is included via Maven Bundle Plugin — each module produces an OSGi bundle. The `jsl2psm` and `jsl2ui` modules include OSGi service tracker classes.
+5. **OSGi support** is included via Maven Bundle Plugin — each module produces an OSGi bundle. The `jsl2psm` and `jsl2ui` modules include OSGi service tracker classes; the `-etl` bundles register their engine through a DS component.
 6. **The `judo-tatami-jsl-workflow-maven-plugin-test` module** contains the integration tests that exercise the full pipeline end-to-end.
 
 ## Code instructions

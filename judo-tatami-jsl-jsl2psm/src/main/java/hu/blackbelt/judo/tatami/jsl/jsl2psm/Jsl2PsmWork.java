@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationMode;
+import hu.blackbelt.judo.tatami.core.etl.EtlEngineRegistry;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.*;
@@ -33,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.LoadArguments.jslDslLoadArgumentsBuilder;
@@ -41,9 +41,11 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveA
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
-import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.calculateJsl2PsmTransformationScriptURI;
-import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.executeJsl2PsmTransformation;
 
+/**
+ * JSL to PSM work. Zeta runs in this (Epsilon-free) artifact; ETL (and the ETL half of DUAL) delegates to
+ * the optional {@link Jsl2PsmEtlEngine} add-on ({@code judo-tatami-jsl-jsl2psm-etl}). See change: split-etl-artifacts.
+ */
 @Slf4j
 public class Jsl2PsmWork extends AbstractTransformationWork {
 
@@ -59,15 +61,9 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
         TransformationMode transformationMode = TransformationMode.fromSystemProperty();
     }
 
-    final URI transformationScriptRoot;
-
-    public Jsl2PsmWork(TransformationContext transformationContext, URI transformationScriptRoot) {
-        super(transformationContext);
-        this.transformationScriptRoot = transformationScriptRoot;
-    }
 
     public Jsl2PsmWork(TransformationContext transformationContext) {
-        this(transformationContext, calculateJsl2PsmTransformationScriptURI());
+        super(transformationContext);
     }
 
     @Override
@@ -86,15 +82,10 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
         log.info("JSL2PSM transformation mode: {}", mode);
 
         if (mode.isEtl()) {
-            Jsl2PsmTransformationTrace jsl2PsmTransformationTrace = executeJsl2PsmTransformation(Jsl2Psm.Jsl2PsmParameter.jsl2PsmParameter()
-                    .jslModel(jslModel.get())
-                    .psmModel(psmModel)
-                    .log(getTransformationContext().getByClass(Logger.class).orElse(null))
-                    .scriptUri(transformationScriptRoot)
-                    .createTrace(workParam.createTrace)
-                    .generateBehaviours(workParam.generateBehaviours)
-                    .parallel(workParam.parallel));
-
+            Jsl2PsmTransformationTrace jsl2PsmTransformationTrace = EtlEngineRegistry.require(Jsl2PsmEtlEngine.class, Jsl2PsmEtlEngine.ARTIFACT_COORDINATES)
+                    .execute(jslModel.get(), psmModel,
+                            getTransformationContext().getByClass(Logger.class).orElse(null),
+                            workParam.createTrace, workParam.generateBehaviours, workParam.parallel);
             getTransformationContext().put(jsl2PsmTransformationTrace);
         }
 
@@ -137,7 +128,7 @@ public class Jsl2PsmWork extends AbstractTransformationWork {
         transformationContext = new TransformationContext(modelName);
         transformationContext.put(jslModel);
 
-        jsl2PsmWork = new Jsl2PsmWork(transformationContext, calculateJsl2PsmTransformationScriptURI());
+        jsl2PsmWork = new Jsl2PsmWork(transformationContext);
 
         WorkFlow workflow = aNewSequentialFlow().execute(jsl2PsmWork).build();
         WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();

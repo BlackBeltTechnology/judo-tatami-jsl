@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.tatami.jsl.jsl2psm.zeta;
 
+import java.util.ArrayList;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ActorAccessDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ActorDeclaration;
 import hu.blackbelt.judo.meta.jsl.jsldsl.ClaimModifier;
@@ -185,6 +186,57 @@ public final class Jsl2PsmHelper {
         }
         ctx.setAttribute("__extensionsPackage", extensionsPkg);
         return extensionsPkg;
+    }
+
+    /**
+     * Canonical ModelDeclaration used as the source of the "extensions" singleton rules
+     * (QueryCustomizer*Type, ActorStringType, UploadToken*).
+     * <p>
+     * ETL keys these singletons on the literal {@code "extensions"}, so one instance exists per transformation.
+     * Zeta lazy rules are keyed on their source, so keying them on each element's own ModelDeclaration made an
+     * imported model (e.g. {@code import FunctionsExternals as FE}) create a second, never-attached copy: its
+     * attributes referenced a type outside the PSM resource (dangling {@code dataType}, untyped ASM attributes).
+     * All models therefore share one declaration: the one named {@code defaultModelName}, else the one with the
+     * lexicographically smallest name (deterministic). See change: split-etl-artifacts.
+     */
+    public static ModelDeclaration getSingletonModelDeclaration(
+            EObject jslElement,
+            hu.blackbelt.judo.zeta.transformation.core.TransformationContext ctx) {
+        ModelDeclaration cached = ctx.getAttribute("__singletonModelDeclaration");
+        if (cached != null) {
+            return cached;
+        }
+        synchronized (ctx) {
+            cached = ctx.getAttribute("__singletonModelDeclaration");
+            if (cached != null) {
+                return cached;
+            }
+            String defaultModelName = ctx.getAttribute("defaultModelName");
+            org.eclipse.emf.ecore.resource.ResourceSet resourceSet = ctx.getAttribute("__jslResourceSet");
+            ModelDeclaration named = null;
+            ModelDeclaration smallest = null;
+            if (resourceSet != null) {
+                for (org.eclipse.emf.ecore.resource.Resource resource : new ArrayList<>(resourceSet.getResources())) {
+                    for (EObject root : resource.getContents()) {
+                        if (root instanceof ModelDeclaration) {
+                            ModelDeclaration md = (ModelDeclaration) root;
+                            if (named == null && md.getName() != null && md.getName().equals(defaultModelName)) {
+                                named = md;
+                            }
+                            if (smallest == null || (md.getName() != null && smallest.getName() != null
+                                    && md.getName().compareTo(smallest.getName()) < 0)) {
+                                smallest = md;
+                            }
+                        }
+                    }
+                }
+            }
+            ModelDeclaration result = named != null ? named : smallest != null ? smallest : getModelDeclaration(jslElement);
+            if (result != null) {
+                ctx.setAttribute("__singletonModelDeclaration", result);
+            }
+            return result;
+        }
     }
 
     // --- JSL ID helpers (ported from modelDeclaration.eol, dataTypeDeclaration.eol, etc.) ---

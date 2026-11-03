@@ -243,7 +243,7 @@ public class GetUploadTokenBehaviourRules {
 
             // t.type = "extensions".equivalent("CreateUploadTokenType")
             // In Zeta: use ModelDeclaration as source for the lazy singleton
-            ModelDeclaration modelDecl = getModelDeclaration(source);
+            ModelDeclaration modelDecl = getSingletonModelDeclaration(source, ctx);
             target.setType(ctx.equivalent(modelDecl, UnmappedTransferObjectType.class,
                     CREATE_UPLOAD_TOKEN_TYPE));
 

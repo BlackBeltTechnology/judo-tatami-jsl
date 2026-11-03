@@ -126,8 +126,12 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
     @Parameter(property = "generateBehaviours", defaultValue = "true")
     private Boolean generateBehaviours = true;
 
-    @Parameter(property = "transformationMode", defaultValue = "ETL")
-    private String transformationMode = "ETL";
+    /**
+     * ZETA (default), ETL or DUAL. ETL/DUAL need judo-tatami-jsl-jsl2psm-etl and judo-tatami-jsl-jsl2ui-etl
+     * (plus Epsilon) added as plugin dependencies; the plugin does not ship them. See change: split-etl-artifacts.
+     */
+    @Parameter(property = "transformationMode", defaultValue = "ZETA")
+    private String transformationMode = "ZETA";
 
     @Parameter(property = "rdbmsCreateSimpleName", defaultValue = "false")
     private boolean rdbmsCreateSimpleName = false;
