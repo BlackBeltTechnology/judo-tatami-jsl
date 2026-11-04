@@ -45,7 +45,6 @@ import static hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel.buildJslDslM
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
 import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
-import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.calculateJsl2PsmTransformationScriptURI;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -79,7 +78,7 @@ class Jsl2PsmWorkTest {
         transformationContext = new TransformationContext(MODEL_NAME);
         transformationContext.put(jslModel);
 
-        jsl2PsmWork = new Jsl2PsmWork(transformationContext, calculateJsl2PsmTransformationScriptURI());
+        jsl2PsmWork = new Jsl2PsmWork(transformationContext);
         jslModel.saveJslDslModel(jslDslSaveArgumentsBuilder().file(new File(JSL_FILE_LOCATION)).build());
     }
 

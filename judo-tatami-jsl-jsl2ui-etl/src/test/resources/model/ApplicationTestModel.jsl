@@ -1,0 +1,5 @@
+model ApplicationTestModel;
+
+actor AppActor;
+
+frontend AppMenu(AppActor a);

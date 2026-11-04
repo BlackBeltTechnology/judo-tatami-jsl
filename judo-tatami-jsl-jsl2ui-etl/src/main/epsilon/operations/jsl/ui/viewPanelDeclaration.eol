@@ -1,0 +1,80 @@
+@cached
+operation JSL!UIViewPanelDeclaration getDirectRelations(): Set {
+    var relations = new Set();
+
+    if (self.isTypeOf(JSL!UIViewGroupDeclaration)) {
+        var ownRelations = self.members.select(m | m.isKindOf(JSL!TransferRelationDeclaration));
+        relations.addAll(ownRelations);
+        for (group in self.members.select(m | m.isKindOf(JSL!UIViewGroupDeclaration))) {
+            relations.addAll(group.getAllRelations());
+        }
+        for (tabs in self.members.select(m | m.isKindOf(JSL!UIViewTabsDeclaration))) {
+            relations.addAll(tabs.getAllRelations());
+        }
+    } else if (self.isTypeOf(JSL!UIViewTabsDeclaration)) {
+        for (panel in self.panels) {
+            relations.addAll(panel.getAllRelations());
+        }
+    }
+
+    return relations;
+}
+
+@cached
+operation JSL!UIViewPanelDeclaration getAllRelations(): Set {
+    var relations = new Set();
+
+    if (self.isTypeOf(JSL!UIViewGroupDeclaration)) {
+        var ownRelations = self.members.select(m | m.isKindOf(JSL!UIViewLinkDeclaration));
+        relations.addAll(ownRelations);
+        for (group in self.members.select(m | m.isKindOf(JSL!UIViewGroupDeclaration))) {
+            relations.addAll(group.getAllRelations());
+        }
+        for (tabs in self.members.select(m | m.isKindOf(JSL!UIViewTabsDeclaration))) {
+            relations.addAll(tabs.getAllRelations());
+        }
+
+        // also add relations of relations to complete the trees
+        for (member in ownRelations) {
+            relations.addAll(member.referenceType.getAllRelations());
+        }
+    } else if (self.isTypeOf(JSL!UIViewTabsDeclaration)) {
+        for (panel in self.panels) {
+            relations.addAll(panel.getAllRelations());
+        }
+    }
+
+    return relations;
+}
+
+@cached
+operation JSL!UIViewPanelDeclaration getAllPrimitiveFields(): Sequence {
+    var fields = new Sequence();
+
+    if (self.isTypeOf(JSL!UIViewGroupDeclaration)) {
+        fields.addAll(self.members.select(m | m.isKindOf(JSL!TransferFieldDeclaration) and m.referenceType.isDefined() and m.referenceType.`primitive`.isDefined()));
+        for (group in self.members.select(m | m.isKindOf(JSL!UIViewGroupDeclaration))) {
+            fields.addAll(group.getAllPrimitiveFields());
+        }
+        for (tab in self.members.select(m | m.isKindOf(JSL!UIViewTabsDeclaration))) {
+            fields.addAll(tab.getAllPrimitiveFields());
+        }
+    } else if (self.isTypeOf(JSL!UIViewTabsDeclaration)) {
+        for (panel in self.panels) {
+            fields.addAll(panel.getAllPrimitiveFields());
+        }
+    }
+
+    return fields;
+}
+
+@cached
+operation JSL!UIViewPanelDeclaration getViewContainer(): JSL!UIViewDeclaration {
+    if (self.eContainer.isKindOf(JSL!UIViewDeclaration)) {
+        return self.eContainer;
+    } else if (self.eContainer.isKindOf(JSL!UIViewPanelDeclaration)) {
+         return self.eContainer.getViewContainer();
+    }
+
+    return null;
+}
