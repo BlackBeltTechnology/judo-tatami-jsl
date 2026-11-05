@@ -65,22 +65,23 @@
 
         <!-- Model versions -->
         <judo-meta-jsl-version>1.0.3.20260312_044740_b7a5245b_develop</judo-meta-jsl-version>
-        <judo-meta-rdbms-version>1.0.2.20260312_050056_974b151c_develop</judo-meta-rdbms-version>
+        <judo-meta-rdbms-version>1.0.2.20261103_233447_e2d5baa4_feature_JNG_6349_AddZetaValidatiob</judo-meta-rdbms-version>
         <judo-meta-jql-version>1.0.4.20260312_044738_20a09856_develop</judo-meta-jql-version>
-        <judo-meta-ui-version>1.1.0.20260316_094025_bc053f8c_develop</judo-meta-ui-version>
-        <judo-meta-psm-version>1.3.0.20260312_045505_a2b65e27_develop</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.4.20260312_050057_b71fcea9_develop</judo-meta-asm-version>
-        <judo-meta-expression-version>1.0.5.20260312_050411_8c879fe1_develop</judo-meta-expression-version>
-        <judo-meta-liquibase-version>1.0.2.20260312_045736_55632be1_develop</judo-meta-liquibase-version>
+        <judo-meta-ui-version>1.1.0.20261105_084611_10ea41cf_feature_JNG_6349_AddZetaValidatiob</judo-meta-ui-version>
+        <judo-meta-psm-version>1.3.0.20261103_233608_4a6ea90e_feature_JNG_6349_AddZetaValidatiob</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.4.20261103_233209_1d600ba5_feature_JNG_6349_AddZetaValidatiob</judo-meta-asm-version>
+        <judo-meta-expression-version>1.0.5.20261103_233912_d45144f7_feature_JNG_6349_AddZetaValidatiob</judo-meta-expression-version>
+        <judo-meta-liquibase-version>1.0.2.20261103_233219_79331be6_feature_JNG_6349_AddZetaValidatiob</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.4.20260311_102800_7e7131d1_develop</judo-dao-api-version>
-        <judo-sdk-common-version>1.0.4.20260312_050505_e9d167cf_develop</judo-sdk-common-version>
+        <judo-sdk-common-version>1.0.4.20261104_004543_495afab9_feature_JNG_6349_AddZetaValidatiob</judo-sdk-common-version>
         <judo-dispatcher-api-version>1.0.3.20260311_104219_ef26bd53_develop</judo-dispatcher-api-version>
-        <judo-operation-utils-version>1.1.3.20260312_050424_cebdea40_develop</judo-operation-utils-version>
+        <judo-operation-utils-version>1.1.3.20261103_233649_3a4e2411_feature_JNG_6349_AddZetaValidatiob</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20261019_121905_5df25a58_develop</judo-runtime-core-version>
-        <judo-tatami-base-version>1.1.6.20260312_051148_a45db233_develop</judo-tatami-base-version>
-        <judo-tatami-core-version>1.1.4.20260312_044536_3538de70_develop</judo-tatami-core-version>
-        <judo-tatami-util-version>1.0.0.20260312_044854_e7967e1b_develop</judo-tatami-util-version>
+        <judo-runtime-core-version>1.0.6.20261104_005242_115b5933_feature_JNG_6349_AddZetaValidatiob</judo-runtime-core-version>
+        <judo-tatami-base-version>1.1.6.20261104_004642_efa27143_feature_JNG_6349_AddZetaValidatiob</judo-tatami-base-version>
+        <judo-tatami-core-version>1.1.4.20261103_232959_4c567754_feature_JNG_6349_AddZetaValidatiob</judo-tatami-core-version>
+        <judo-tatami-util-version>1.0.0.20261103_233047_7989f58f_feature_JNG_6349_AddZetaValidatiob</judo-tatami-util-version>
+        <judo-zeta-version>1.0.0.20261103_232955_e4f2b661_feature_JNG_6349_AddZetaValidatiob</judo-zeta-version>
 
         <!-- Code Quality-->
         <sonar-maven-plugin-version>3.9.1.2184</sonar-maven-plugin-version>
@@ -371,6 +372,37 @@
                 <artifactId>judo-tatami-psm2asm</artifactId>
                 <version>${judo-tatami-base-version}</version>
             </dependency>
+            <!-- ETL add-ons of judo-tatami-base (split-etl-artifacts) -->
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-util-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-psm2asm-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-psm2measure-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm2rdbms-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm2keycloak-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-rdbms2liquibase-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
@@ -433,6 +465,31 @@
             </dependency>
 
             <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-test-utils</artifactId>
+                <version>${judo-tatami-base-version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.zeta</groupId>
+                <artifactId>hu.blackbelt.judo.zeta.annotations</artifactId>
+                <version>${judo-zeta-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.zeta</groupId>
+                <artifactId>hu.blackbelt.judo.zeta.transformation-core</artifactId>
+                <version>${judo-zeta-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.zeta</groupId>
+                <artifactId>hu.blackbelt.judo.zeta.common</artifactId>
+                <version>${judo-zeta-version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
                 <version>2.2</version>
@@ -448,6 +505,37 @@
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-jsl-jsl2ui</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-jsl2psm-etl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-jsl2ui-etl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-jsl-workflow-etl</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-psm-validation-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm-validation-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-expression-asm-validation-etl</artifactId>
+                <version>${judo-tatami-base-version}</version>
             </dependency>
 
             <dependency>
@@ -529,6 +617,9 @@
                         <trimStackTrace>false</trimStackTrace>
                         <systemPropertyVariables>
                             <logback.configurationFile>${logback-test-config}</logback.configurationFile>
+                            <judo.test.comparison.enabled>${judo.test.comparison.enabled}</judo.test.comparison.enabled>
+                            <judo.test.comparison.mode>${judo.test.comparison.mode}</judo.test.comparison.mode>
+                            <judo.test.comparison.maxDifferences>${judo.test.comparison.maxDifferences}</judo.test.comparison.maxDifferences>
                         </systemPropertyVariables>
                         <!--suppress UnresolvedMavenProperty -->
                         <argLine>
@@ -540,6 +631,8 @@
                             --add-opens java.base/java.net=ALL-UNNAMED
                         </argLine>
                         <trimStackTrace>false</trimStackTrace>
+                        <!-- Exclude performance tests by default. Run with -Pperformance to include them -->
+                        <excludedGroups>performance</excludedGroups>
                     </configuration>
                 </plugin>
 
@@ -804,6 +897,23 @@
     </build>
 
     <profiles>
+        <!-- Profile to run performance tests -->
+        <profile>
+            <id>performance</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludedGroups combine.self="override" />
+                            <groups>performance</groups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>modules</id>
             <activation>
@@ -816,7 +926,10 @@
                 <module>docs</module>
                 <module>judo-tatami-jsl-jsl2ui</module>
                 <module>judo-tatami-jsl-jsl2psm</module>
+                <module>judo-tatami-jsl-jsl2ui-etl</module>
+                <module>judo-tatami-jsl-jsl2psm-etl</module>
                 <module>judo-tatami-jsl-workflow</module>
+                <module>judo-tatami-jsl-workflow-etl</module>
                 <module>judo-tatami-jsl-workflow-maven-plugin</module>
                 <module>judo-tatami-jsl-workflow-maven-plugin-test</module>
             </modules>

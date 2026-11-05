@@ -1,0 +1,5 @@
+model SimpleActorModel;
+
+actor TestActor;
+
+frontend TestMenu(TestActor a);

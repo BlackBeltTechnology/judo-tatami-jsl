@@ -165,6 +165,7 @@ Transformation traces map source elements to target elements, useful for debuggi
 | `saveModels` | `false` | Persist transformed models to the destination directory |
 | `useCache` | `false` | Cache intermediate transformation results |
 | `dialects` | `hsqldb,postgresql` | Comma-separated list of database dialects to generate for |
+| `transformationMode` | `ETL` | Transformation engine for JSL → PSM / JSL → UI. Valid: `ETL`, `ZETA`. |
 
 #### RDBMS Naming Configuration
 

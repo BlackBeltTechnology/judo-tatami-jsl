@@ -1,0 +1,321 @@
+package hu.blackbelt.judo.tatami.jsl.jsl2psm;
+
+/*-
+ * #%L
+ * JUDO Tatami JSL parent
+ * %%
+ * Copyright (C) 2018 - 2022 BlackBelt Technology
+ * %%
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the Eclipse
+ * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
+ * with the GNU Classpath Exception which is
+ * available at https://www.gnu.org/software/classpath/license.html.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ * #L%
+ */
+
+import hu.blackbelt.judo.tatami.jsl.jsl2psm.etl.Jsl2Psm;
+import org.slf4j.Logger;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
+import hu.blackbelt.judo.meta.jsl.runtime.JslParser;
+import hu.blackbelt.judo.meta.psm.derived.DataProperty;
+import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
+import hu.blackbelt.judo.tatami.jsl.jsl2psm.etl.Jsl2Psm.Jsl2PsmParameter.Jsl2PsmParameterBuilder;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+@Slf4j
+public class TransformationParametersTest extends AbstractTest {
+    static final String TARGET_TEST_CLASSES = "target/test-classes/parameters";
+
+    @Override
+    protected String getTargetTestClasses() {
+        return TARGET_TEST_CLASSES;
+    }
+
+    @Override
+    protected String getTest() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
+    protected Logger createLog() {
+        return new BufferedSlf4jLogger(log);
+    }
+
+    @BeforeAll
+    static void prepareTestFolders() throws IOException {
+        if (!Files.exists(Paths.get(TARGET_TEST_CLASSES))) {
+            Files.createDirectories(Paths.get(TARGET_TEST_CLASSES));
+        }
+    }
+
+    @Override
+    public Jsl2PsmParameterBuilder addTransformationParameters(String testName, Jsl2PsmParameterBuilder parameters) {
+        if (testName.equals(this.getClass().getSimpleName() + ".testNoDefaultTransferObject")) {
+            return parameters.generateDefaultTransferObject(false);
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testEntityPrefix")) {
+            return parameters.entityNamePrefix("_Entity_");
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testEntityPostfix")) {
+            return parameters.entityNamePrefix("").entityNamePostfix("_Entity");
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testTransferObjectPrefix")) {
+            return parameters.defaultTransferObjectNamePrefix("_DefaultTransferObject");
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testTransferObjectPostfix")) {
+            return parameters.defaultTransferObjectNamePostfix("_DefaultTransferObject");
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultDefaultNamePrefix")) {
+            return parameters.defaultDefaultNamePrefix("_pre_");
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultDefaultNameMidfix")) {
+            return parameters.defaultDefaultNameMidfix("_mid_");
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultDefaultNamePostfix")) {
+            return parameters.defaultDefaultNamePostfix("_post");
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultReadsNamePrefix")) {
+            return parameters.defaultReadsNamePrefix("_pre_");
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultReadsNameMidfix")) {
+            return parameters.defaultReadsNameMidfix("_mid_");
+        } else if (testName.equals(this.getClass().getSimpleName() + ".testDefaultReadsNamePostfix")) {
+            return parameters.defaultReadsNamePostfix("_post");
+        }
+        return parameters;
+    }
+
+    @Test
+    void testNoDefaultTransferObject() throws Exception {
+        jslModel = JslParser.getModelFromStrings(
+                List.of("model Test;\n" +
+                        "\n" +
+                        "entity T {\n" +
+                        "}\n"
+                        )
+        );
+
+        transform();
+
+        assertEntityType("_T");
+        assertEquals(0, getMappedTransferObjectTypes().size());
+    }
+
+    @Test
+    void testEntityPrefix() throws Exception {
+
+        jslModel = JslParser.getModelFromStrings(
+                List.of("model Test;\n" +
+                        "\n" +
+                        "entity T {\n" +
+                        "}\n"
+                        )
+        );
+
+        transform();
+
+        assertEntityType("_Entity_T");
+        assertEquals(1, getMappedTransferObjectTypes().size());
+        assertMappedTransferObject("T");
+    }
+
+    @Test
+    void testEntityPostfix() throws Exception {
+
+        jslModel = JslParser.getModelFromStrings(
+                List.of("model Test;\n" +
+                        "\n" +
+                        "entity T {\n" +
+                        "}\n"
+                        )
+        );
+
+        transform();
+
+        assertEntityType("T_Entity");
+        assertEquals(1, getMappedTransferObjectTypes().size());
+        assertMappedTransferObject("T");
+    }
+
+
+    @Test
+    void testTransferObjectPrefix() throws Exception {
+
+        jslModel = JslParser.getModelFromStrings(
+                List.of("model Test;\n" +
+                        "\n" +
+                        "entity T {\n" +
+                        "}\n"
+                        )
+        );
+
+        transform();
+
+        assertEntityType("_T");
+        assertEquals(1, getMappedTransferObjectTypes().size());
+        assertMappedTransferObject("_DefaultTransferObjectT");
+    }
+
+    @Test
+    void testTransferObjectPostfix() throws Exception {
+
+        jslModel = JslParser.getModelFromStrings(
+                List.of("model Test;\n" +
+                        "\n" +
+                        "entity T {\n" +
+                        "}\n"
+                        )
+        );
+
+        transform();
+
+        assertEntityType("_T");
+        assertEquals(1, getMappedTransferObjectTypes().size());
+        assertMappedTransferObject("T_DefaultTransferObject");
+    }
+
+    @Test
+    void testDefaultDefaultNamePrefix() throws Exception {
+        jslModel = JslParser.getModelFromStrings(
+                List.of("model Test;\n" +
+                        "\n" +
+                        "type string String min-size:0 max-size:32;\n" +
+                        "\n" +
+                        "entity T {\n" +
+                        "\tfield String strField default:\"hello\";" +
+                        "}\n"
+                )
+        );
+
+        transform();
+
+        assertEntityType("_T");
+        assertEquals(1, getMappedTransferObjectTypes().size());
+        final TransferAttribute strField = assertMappedTransferObjectAttribute("T", "strField");
+        assertEquals("_pre_strField_Default_T", strField.getDefaultValue().getName());
+    }
+
+    @Test
+    void testDefaultDefaultNameMidfix() throws Exception {
+        jslModel = JslParser.getModelFromStrings(
+                List.of("model Test;\n" +
+                        "\n" +
+                        "type string String min-size:0 max-size:32;\n" +
+                        "\n" +
+                        "entity T {\n" +
+                        "\tfield String strField default:\"hello\";" +
+                        "}\n"
+                )
+        );
+
+        transform();
+
+        assertEntityType("_T");
+        assertEquals(1, getMappedTransferObjectTypes().size());
+        final TransferAttribute strField = assertMappedTransferObjectAttribute("T", "strField");
+        assertEquals("_strField_mid_T", strField.getDefaultValue().getName());
+    }
+
+    @Test
+    void testDefaultDefaultNamePostfix() throws Exception {
+        jslModel = JslParser.getModelFromStrings(
+                List.of("model Test;\n" +
+                        "\n" +
+                        "type string String min-size:0 max-size:32;\n" +
+                        "\n" +
+                        "entity T {\n" +
+                        "\tfield String strField default:\"hello\";" +
+                        "}\n"
+                )
+        );
+
+        transform();
+
+        assertEntityType("_T");
+        assertEquals(1, getMappedTransferObjectTypes().size());
+        final TransferAttribute strField = assertMappedTransferObjectAttribute("T", "strField");
+        assertEquals("_strField_Default_T_post", strField.getDefaultValue().getName());
+    }
+
+    @Test
+    void testDefaultReadsNamePrefix() throws Exception {
+        jslModel = JslParser.getModelFromStrings(
+                List.of("model Test;\n" +
+                        "\n" +
+                        "type string String min-size:0 max-size:32;\n" +
+                        "\n" +
+                        "entity E {\n" +
+                        "    field String strField2;\n" +
+                        "    field String strField <= self.strField2;\n" +
+                        "}\n" +
+                        "transfer T maps E as e {\n" +
+                        "    field String strField <= e.strField;\n" +
+                        "}\n"
+
+                )
+        );
+
+        transform();
+
+        assertMappedTransferObjectAttribute("T", "strField");
+        assertDataProperty("_E", "_pre_strField_Reads_T");
+    }
+
+    @Test
+    void testDefaultReadsNameMidfix() throws Exception {
+        jslModel = JslParser.getModelFromStrings(
+                List.of("model Test;\n" +
+                        "\n" +
+                        "type string String min-size:0 max-size:32;\n" +
+                        "\n" +
+                        "entity E {\n" +
+                        "    field String strField2;\n" +
+                        "    field String strField <= self.strField2;\n" +
+                        "}\n" +
+                        "transfer T maps E as e {\n" +
+                        "    field String strField <= e.strField;\n" +
+                        "}\n"
+                )
+        );
+
+        transform();
+
+        assertMappedTransferObjectAttribute("T", "strField");
+        assertDataProperty("_E", "_strField_mid_T");
+    }
+
+    @Test
+    void testDefaultReadsNamePostfix() throws Exception {
+        jslModel = JslParser.getModelFromStrings(
+                List.of("model Test;\n" +
+                        "\n" +
+                        "type string String min-size:0 max-size:32;\n" +
+                        "\n" +
+                        "entity E {\n" +
+                        "    field String strField2;\n" +
+                        "    field String strField <= self.strField2;\n" +
+                        "}\n" +
+                        "transfer T maps E as e {\n" +
+                        "    field String strField <= e.strField;\n" +
+                        "}\n"
+                )
+        );
+
+        transform();
+
+        assertMappedTransferObjectAttribute("T", "strField");
+        assertDataProperty("_E", "_strField_Reads_T_post");
+    }
+
+}
+
