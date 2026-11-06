@@ -1,0 +1,102 @@
+model LinkOperations;
+
+import judo::types;
+
+widget binary BinaryWidget;
+widget boolean BooleanWidget;
+widget date DateWidget;
+widget enum ComboWidget;
+widget enum RadioWidget;
+widget numeric NumericWidget;
+widget string StringWidget;
+widget time TimeWidget;
+widget timestamp TimestampWidget;
+
+// mapped transfer
+
+entity Entity1 {
+    field Integer number;
+    relation Entity2[] entities;
+}
+
+entity Entity2 {
+    field Integer number;
+}
+
+transfer Transfer1(Entity1 e1) {
+    field Integer number <=> e1.number;
+
+    action void myAction1();
+    action Transfer1 myAction2(Transfer1 input choices:Entity1.all());
+    action Transfer2 myAction3(TransferX input);
+
+    event create createT1;
+    event update updateT1;
+
+    relation Transfer2[] list2 <= e1.entities;
+}
+
+transfer Transfer2(Entity2 e2) {
+    field Integer number <=> e2.number;
+
+    action void someAction();
+}
+
+transfer TransferX {
+    field Integer number;
+}
+
+form Form1(Transfer1 t1) {
+    widget NumericWidget number <=> t1.number;
+}
+
+form Form2(Transfer2 t2) {
+    widget NumericWidget number <=> t2.number;
+}
+
+form FormX(TransferX tx) {
+    widget NumericWidget number <=> tx.number;
+}
+
+view View1(Transfer1 t1) {
+    widget NumericWidget number <=> t1.number;
+
+    action void myAction1() <= t1.myAction1 label:"my action 1";
+    action View1 myAction2(View1 input selector:Table1) <= t1.myAction2  label:"my action 2";
+    action View2 myAction3(FormX input) <= t1.myAction3 label:"my action 3";
+
+    actions myActions label:"hello" icon:"bello" {
+        action View1 myAction4(View1 input selector:Table1) <= t1.myAction2  label:"my action 4";
+        action View2 myAction5(FormX input) <= t1.myAction3 label:"my action 5" icon:"horse";
+    }
+
+    table Table2[] table2 <= t1.list2
+        actions: {
+            action View1 myAction6(View1 input selector:Table1) <= t1.myAction2  label:"my action 6";
+        };
+}
+
+view View2(Transfer2 t2) {
+    widget NumericWidget number <=> t2.number;
+}
+
+row Table1(Transfer1 t1) {
+    column Integer number <= t1.number;
+}
+
+row Table2(Transfer2 t2) {
+    column Integer number <= t2.number;
+
+    action void someAction() <= t2.someAction label:"some action";
+}
+
+actor A {
+    access Transfer1[] t1s <= Entity1.all() create update;
+    access Transfer1 t1 <= Entity1.any() create update;
+}
+
+frontend M(A a)
+    menu: {
+        table Table1[] v1s <= a.t1s view:View1 form:Form1;
+        link View1 v1 <= a.t1 label:"V1";
+    };

@@ -28,6 +28,7 @@ import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmWork;
+import hu.blackbelt.judo.tatami.jsl.jsl2ui.Jsl2UiWork;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -78,7 +79,14 @@ public abstract class AbstractTatamiPipelineWorkflow {
 
         transformationContext.put(Jsl2PsmWork.Jsl2PsmWorkParameter.jsl2PsmWorkParameter()
                         .generateBehaviours(parameters.getGenerateBehaviours())
-                .createTrace(!parameters.getIgnoreJsl2PsmTrace()).build());
+                .createTrace(!parameters.getIgnoreJsl2PsmTrace())
+                .transformationMode(parameters.getTransformationMode())
+                .build());
+
+        transformationContext.put(Jsl2UiWork.Jsl2UiWorkParameter.jsl2UiWorkParameter()
+                .createTrace(false)
+                .transformationMode(parameters.getTransformationMode())
+                .build());
 
         transformationContext.put(psm2AsmWorkParameter()
                 .createTrace(!parameters.getIgnorePsm2AsmTrace())
@@ -141,6 +149,10 @@ public abstract class AbstractTatamiPipelineWorkflow {
                 Optional.empty() :
                 Optional.of(workflowHelper.createAsm2ExpressionWork(parameters.getValidateModels()));
 
+        Optional<Work> createQueryWork = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2Query() || workflowHelper.asm2QueryOutputPredicate().get() ?
+                Optional.empty() :
+                Optional.of(workflowHelper.createAsm2QueryWork());
+
         Stream<Optional<Work>> createRdbmsWorks = parameters.getIgnorePsm2Asm() || parameters.getIgnoreAsm2Rdbms() ?
                 Stream.empty() :
                 parameters.getDialectList()
@@ -197,7 +209,9 @@ public abstract class AbstractTatamiPipelineWorkflow {
                                     aNewParallelFlow()
                                             .named("Parallel RDBMS Transformations")
                                             .execute(createLiquibaseWorks)
-                                            .build())
+                                            .build()),
+                            // after the last parallel block: never concurrent with work over the ASM or expression ResourceSet
+                            createQueryWork
 
                             ).build();
         } else {
@@ -212,7 +226,9 @@ public abstract class AbstractTatamiPipelineWorkflow {
                                         createMeasureWork,
                                         createAsmWork,
                                         createExpressionWork),
-                                Stream.concat(createRdbmsWorks, createLiquibaseWorks))
+                                Stream.concat(
+                                        Stream.concat(createRdbmsWorks, createLiquibaseWorks),
+                                        Stream.of(createQueryWork)))
                             ).build();
         }
 

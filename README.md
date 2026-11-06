@@ -8,6 +8,12 @@ JUDO Tatami JSL is a **model transformation framework** that converts [JSL (JUDO
 
 The transformation engine is built on [Eclipse Epsilon](https://eclipse.org/epsilon/) and packaged as a Maven plugin so it integrates into standard Java build pipelines.
 
+Two transformation engines are supported:
+- **ETL** (Epsilon Transformation Language) — the original engine using `.etl` rule files
+- **Zeta** — a Java-based transformation framework with annotation-driven rules, offering improved performance and debuggability
+
+The engine is selected via the `transformationMode` parameter (`ETL` or `ZETA`).
+
 ## Transformation Pipeline
 
 The following diagram shows the full model transformation chain this project implements:
@@ -107,6 +113,22 @@ See the [Workflow Maven Plugin documentation](docs/pages/judo-tatami-jsl-workflo
 ## Context
 
 This project is a building block of the [judo-community](https://github.com/BlackBeltTechnology/judo-community) aggregator project. Check the corresponding documentation to understand how this module fits into the wider JUDO ecosystem.
+
+## Performance Testing
+
+Performance and equivalence tests compare ETL and Zeta outputs:
+
+```bash
+# Run performance tests (excluded from default build)
+mvn test -Pperformance -pl judo-tatami-jsl-jsl2psm
+mvn test -Pperformance -pl judo-tatami-jsl-jsl2ui
+
+# Run with external models
+mvn test -Pperformance -pl judo-tatami-jsl-jsl2psm -Djudo.test.discovery.basedir=/path/to/jsl/files
+
+# Run specific performance test
+mvn test -Pperformance -pl judo-tatami-jsl-jsl2psm -Dtest=Jsl2PsmRealisticPerformanceTest
+```
 
 ## Contributing
 

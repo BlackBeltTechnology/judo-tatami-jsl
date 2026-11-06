@@ -22,11 +22,11 @@ package hu.blackbelt.judo.tatami.jsl.jsl2psm.osgi;
 
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
-import hu.blackbelt.epsilon.runtime.execution.impl.*;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
-import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm;
+import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmWork;
+import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2PsmTransformationTrace;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
@@ -38,7 +38,6 @@ import org.osgi.service.component.annotations.Component;
 import java.util.Hashtable;
 import java.util.Map;
 
-import static hu.blackbelt.judo.tatami.jsl.jsl2psm.Jsl2Psm.executeJsl2PsmTransformation;
 
 @Component(immediate = true, service = Jsl2PsmTransformationService.class)
 @Slf4j
@@ -58,21 +57,19 @@ public class Jsl2PsmTransformationService {
                 .uri(URI.createURI("psm:" + jslModel.getName() + ".model"))
                 .build();
 
-        java.net.URI scriptUri =
-                bundleContext.getBundle()
-                        .getEntry("/tatami/jsl2psm/transformations/psm/jslToPsm.etl")
-                        .toURI()
-                        .resolve(".");
-        try (BufferedSlf4jLogger bufferedLog = new BufferedSlf4jLogger(log)) {
-            Jsl2PsmTransformationTrace transformationTrace = executeJsl2PsmTransformation(Jsl2Psm.Jsl2PsmParameter.jsl2PsmParameter()
-                .jslModel(jslModel)
-                .psmModel(psmModel)
-                .log(bufferedLog)
-                .scriptUri(scriptUri));
+        // Delegates to Jsl2PsmWork: Zeta by default (judo.transformation.mode); ETL needs the judo-tatami-jsl-jsl2psm-etl bundle.
+        // See change: split-etl-artifacts.
+        TransformationContext context = new TransformationContext(jslModel.getName());
+        context.put(jslModel);
+        context.put(psmModel);
+        context.put(Logger.class, log);
+        new Jsl2PsmWork(context).execute();
 
-            jsl2PsmTransformationTraceRegistration.put(jslModel,
-                    bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
-        }
+        // The Zeta path produces no ETL trace; register it only when the ETL engine ran (ETL/DUAL + add-on).
+        context.getByClass(Jsl2PsmTransformationTrace.class).ifPresent(transformationTrace ->
+                jsl2PsmTransformationTraceRegistration.put(jslModel,
+                        bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>())));
+
         return psmModel;
     }
 

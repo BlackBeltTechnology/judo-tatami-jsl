@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>hu.blackbelt.judo.tatami</groupId>
+        <artifactId>judo-tatami-jsl-parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>judo-tatami-jsl-workflow-etl</artifactId>
+    <packaging>pom</packaging>
+    <name>Judo :: Tatami :: JSL :: Workflow :: ETL add-ons</name>
+    <description>
+        Aggregate of the optional ETL/EVL (Epsilon) engine add-ons used by the JSL workflow when
+        judo.transformation.mode / transformationMode is ETL (jsl2psm, jsl2ui and every downstream stage, plus the
+        validations). Declare it with type pom: as a dependency of judo-tatami-jsl-workflow-maven-plugin, or on the
+        runtime classpath of JSLTransformationModelLoader. See change: split-etl-artifacts.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-jsl-jsl2psm-etl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-jsl-jsl2ui-etl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-psm2asm-etl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-psm2measure-etl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-asm2rdbms-etl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-asm2keycloak-etl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-rdbms2liquibase-etl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-psm-validation-etl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-asm-validation-etl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.tatami</groupId>
+            <artifactId>judo-tatami-expression-asm-validation-etl</artifactId>
+        </dependency>
+    </dependencies>
+</project>

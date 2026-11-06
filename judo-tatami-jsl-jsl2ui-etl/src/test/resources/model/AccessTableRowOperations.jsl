@@ -1,0 +1,104 @@
+model AccessTableRowOperations;
+
+import judo::types;
+
+widget numeric NumericWidget;
+
+ // mapped transfer
+
+ entity Entity1 {
+     field Integer number;
+     relation Entity2[] relatedCollection;
+ }
+
+ entity Entity2 {
+     field String name;
+ }
+
+ transfer Transfer1(Entity1 e1) {
+ 	 field Integer number <=> e1.number;
+
+ 	 event create onCreate;
+     event update onUpdate;
+     event delete onDelete;
+ }
+
+ transfer Transfer3(Entity2 e2) {
+ 	 field String name <=> e2.name;
+ 	 action void myAction4();
+
+     event create onCreate;
+     event update onUpdate;
+     event delete onDelete;
+ }
+
+ view View1(Transfer1 t1) {
+ 	widget NumericWidget number <=> t1.number;
+ }
+
+ row Row1(Transfer1 t1) {
+ 	column Integer number <= t1.number;
+ }
+
+ row Row3(Transfer3 t3) {
+ 	column String name <= t3.name;
+ 	action void myAction4() <= t3.myAction4 label:"my action 4";
+ }
+
+ // unmapped transfers
+
+ transfer Transfer2 {
+     field Integer number;
+ }
+
+ view View2(Transfer2 t2) {
+     widget NumericWidget number <=> t2.number;
+ }
+
+ form Form2(Transfer2 t2) {
+     widget NumericWidget number <=> t2.number;
+ }
+
+ // test
+
+ transfer TransferX(Entity1 e1) {
+ 	field Integer number <=> e1.number;
+ 	relation Transfer3[] relatedCollection <= e1.relatedCollection create update;
+
+ 	action void myAction1();
+ 	action Transfer1 myAction2(Transfer1 input choices:Entity1.all());
+ 	action Transfer2 myAction3(Transfer2 input);
+
+ 	event create createTX;
+ 	event update updateTX;
+ }
+
+ view ViewX(TransferX tx) {
+ 	widget NumericWidget number <=> tx.number;
+
+ 	group level {
+ 	    table Row3[] relatedCollection <= tx.relatedCollection;
+    }
+
+ 	action void myAction1() <= tx.myAction1 label:"my action 1";
+ 	action View1 myAction2(View1 input selector:Row1) <= tx.myAction2  label:"my action 2";
+ 	action View2 myAction3(Form2 input) <= tx.myAction3 label:"my action 3";
+ }
+
+ form FormX(TransferX tx) {
+ 	widget NumericWidget number <=> tx.number;
+ }
+
+ row RowX(TransferX tx) {
+ 	column Integer number <= tx.number;
+ 	action View2 myAction3(Form2 input) <= tx.myAction3 label:"my action 3";
+ }
+
+ actor A {
+ 	access TransferX[] txs <= Entity1.all() create:true update:true;
+ }
+
+ frontend M(A a)
+    menu: {
+        table RowX[] vxs <= a.txs view:ViewX form:FormX;
+     };

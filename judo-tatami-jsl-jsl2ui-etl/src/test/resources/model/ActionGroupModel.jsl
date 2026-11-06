@@ -1,0 +1,39 @@
+model ActionGroupModel;
+type string String min-size:0 max-size:255;
+type numeric Integer precision:9 scale:0;
+type boolean Boolean;
+type date Date;
+type timestamp Timestamp;
+widget string StringWidget;
+widget numeric NumericWidget;
+widget boolean BooleanWidget;
+widget date DateWidget;
+widget timestamp TimestampWidget;
+widget enum ComboWidget;
+entity Item {
+    field String name;
+}
+transfer ItemTransfer(Item i) {
+    field String name <= i.name;
+    action void myAction();
+    event create onCreate;
+    event update onUpdate;
+}
+row ItemRow(ItemTransfer i) {
+    column String name <= i.name;
+}
+view ItemView(ItemTransfer i) {
+    group main {
+        widget StringWidget name <= i.name;
+    }
+    actions operations label:"Operations" {
+        action void myAction() <= i.myAction label:"My Action";
+    }
+}
+actor TestActor {
+    access ItemTransfer[] items <= Item.all() create update;
+}
+frontend TestMenu(TestActor a)
+    menu: {
+        table ItemRow[] items <= a.items label:"Items" view:ItemView;
+    };
