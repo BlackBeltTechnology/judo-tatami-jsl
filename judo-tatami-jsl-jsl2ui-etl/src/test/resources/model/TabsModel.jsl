@@ -1,0 +1,41 @@
+model TabsModel;
+type string String min-size:0 max-size:255;
+type numeric Integer precision:9 scale:0;
+type boolean Boolean;
+type date Date;
+type timestamp Timestamp;
+widget string StringWidget;
+widget numeric NumericWidget;
+widget boolean BooleanWidget;
+widget date DateWidget;
+widget timestamp TimestampWidget;
+widget enum ComboWidget;
+entity Order {
+    field String name;
+    field String note;
+}
+transfer OrderTransfer(Order o) {
+    field String name <= o.name;
+    field String note <= o.note;
+    event update onUpdate;
+}
+row OrderRow(OrderTransfer o) {
+    column String name <= o.name;
+}
+view OrderView(OrderTransfer o) {
+    tabs orderTabs {
+        group basic label:"Basic" {
+            widget StringWidget name <= o.name;
+        }
+        group advanced label:"Advanced" {
+            widget StringWidget note <= o.note;
+        }
+    }
+}
+actor TestActor {
+    access OrderTransfer[] orders <= Order.all() update;
+}
+frontend TestMenu(TestActor a)
+    menu: {
+        table OrderRow[] orders <= a.orders label:"Orders" view:OrderView;
+    };

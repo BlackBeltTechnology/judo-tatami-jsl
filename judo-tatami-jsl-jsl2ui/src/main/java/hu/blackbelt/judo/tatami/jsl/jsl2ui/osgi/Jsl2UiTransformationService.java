@@ -21,13 +21,14 @@ package hu.blackbelt.judo.tatami.jsl.jsl2ui.osgi;
  */
 
 import com.google.common.collect.Maps;
-import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.core.TransformationTrace;
-import hu.blackbelt.judo.tatami.jsl.jsl2ui.Jsl2Ui;
+import hu.blackbelt.judo.tatami.jsl.jsl2ui.Jsl2UiWork;
+import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.jsl.jsl2ui.Jsl2UiTransformationTrace;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -37,7 +38,6 @@ import org.osgi.service.component.annotations.Component;
 import java.util.Hashtable;
 import java.util.Map;
 
-import static hu.blackbelt.judo.tatami.jsl.jsl2ui.Jsl2Ui.executeJsl2UiTransformation;
 
 @Component(immediate = true, service = Jsl2UiTransformationService.class)
 @Slf4j
@@ -57,21 +57,14 @@ public class Jsl2UiTransformationService {
                 .uri(URI.createURI("ui:" + jslModel.getName() + ".model"))
                 .build();
 
-        java.net.URI scriptUri =
-                bundleContext.getBundle()
-                        .getEntry("/tatami/jsl2ui/transformations/ui/jslToUi.etl")
-                        .toURI()
-                        .resolve(".");
-        try (BufferedSlf4jLogger bufferedLog = new BufferedSlf4jLogger(log)) {
-            /*Jsl2UiTransformationTrace transformationTrace = */executeJsl2UiTransformation(Jsl2Ui.Jsl2UiParameter.jsl2UiParameter()
-                .jslModel(jslModel)
-                .uiModel(uiModel)
-                .log(bufferedLog)
-                .scriptUri(scriptUri));
+        // Delegates to Jsl2UiWork: Zeta by default (judo.transformation.mode); ETL needs the judo-tatami-jsl-jsl2ui-etl bundle.
+        // See change: split-etl-artifacts.
+        TransformationContext context = new TransformationContext(jslModel.getName());
+        context.put(jslModel);
+        context.put(uiModel);
+        context.put(Logger.class, log);
+        new Jsl2UiWork(context).execute();
 
-//            jsl2UiTransformationTraceRegistration.put(jslModel,
-//                    bundleContext.registerService(TransformationTrace.class, transformationTrace, new Hashtable<>()));
-        }
         return uiModel;
     }
 

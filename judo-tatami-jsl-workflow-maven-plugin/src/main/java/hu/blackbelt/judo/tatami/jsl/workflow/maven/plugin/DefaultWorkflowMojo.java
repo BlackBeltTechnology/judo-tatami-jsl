@@ -21,6 +21,7 @@ package hu.blackbelt.judo.tatami.jsl.workflow.maven.plugin;
  */
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflow;
 import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSave;
 import hu.blackbelt.judo.tatami.jsl.workflow.DefaultWorkflowSetupParameters;
@@ -89,6 +90,9 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
     @Parameter(property = "ignoreAsm2Expression", defaultValue = "false")
     private Boolean ignoreAsm2Expression = false;
 
+    @Parameter(property = "ignoreAsm2Query", defaultValue = "false")
+    private Boolean ignoreAsm2Query = false;
+
     @Parameter(property = "destination", defaultValue = "${project.basedir}/target/model")
     private File destination;
 
@@ -124,6 +128,13 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
 
     @Parameter(property = "generateBehaviours", defaultValue = "true")
     private Boolean generateBehaviours = true;
+
+    /**
+     * ZETA (default), ETL or DUAL. ETL/DUAL need judo-tatami-jsl-jsl2psm-etl and judo-tatami-jsl-jsl2ui-etl
+     * (plus Epsilon) added as plugin dependencies; the plugin does not ship them. See change: split-etl-artifacts.
+     */
+    @Parameter(property = "transformationMode", defaultValue = "ZETA")
+    private String transformationMode = "ZETA";
 
     @Parameter(property = "rdbmsCreateSimpleName", defaultValue = "false")
     private boolean rdbmsCreateSimpleName = false;
@@ -177,6 +188,7 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
                         .ignorePsm2Measure(ignorePsm2Measure)
                         .ignoreAsm2Rdbms(ignoreAsm2Rdbms)
                         .ignoreAsm2Expression(ignoreAsm2Expression)
+                        .ignoreAsm2Query(ignoreAsm2Query)
                         .ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
                         .ignorePsm2AsmTrace(ignorePsm2AsmTrace)
                         .ignorePsm2MeasureTrace(ignorePsm2MeasureTrace)
@@ -197,7 +209,8 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
                         .rdbmsForeignKeyPrefix(rdbmsForeignKeyPrefix.trim().replace("-", ""))
                         .rdbmsInverseForeignKeyPrefix(rdbmsInverseForeignKeyPrefix.trim().replace("-", ""))
                         .rdbmsJunctionTablePrefix(rdbmsJunctionTablePrefix.trim().replace("-", ""))
-                        .dialectList(dialects);
+                        .dialectList(dialects)
+                        .transformationMode(TransformationMode.valueOf(transformationMode));
 
         defaultWorkflow = new DefaultWorkflow(parameters);
 

@@ -76,6 +76,15 @@ public class JslDefaultWorkflowTest {
     }
 
     @Test
+    void testDefaultWorkflowWritesQueryModel() {
+        assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
+
+        assertTrue(new File(TARGET_CLASSES, MODEL_NAME + "-asm.model").exists());
+        assertTrue(new File(TARGET_CLASSES, MODEL_NAME + "-expression.model").exists());
+        assertTrue(new File(TARGET_CLASSES, MODEL_NAME + "-query.model").exists());
+    }
+
+    @Test
     void testTransformationContextLoad() {
         // Test reload
         defaultWorkflow = new JslDefaultWorkflow(
