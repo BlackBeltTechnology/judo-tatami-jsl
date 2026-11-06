@@ -78,8 +78,8 @@
         <judo-dispatcher-api-version>1.0.3.20260311_104219_ef26bd53_develop</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20261103_233649_3a4e2411_feature_JNG_6349_AddZetaValidatiob</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20261106_091512_e854bb28_feature_JNG_6349_AddZetaValidatiob</judo-runtime-core-version>
-        <judo-tatami-base-version>1.1.6.20261106_090712_e62f8fd8_feature_JNG_6349_AddZetaValidatiob</judo-tatami-base-version>
+        <judo-runtime-core-version>1.0.6.20261106_130752_1772b3f1_feature_JNG_6349_AddZetaValidatiob</judo-runtime-core-version>
+        <judo-tatami-base-version>1.1.6.20261106_125931_392854cd_feature_JNG_6349_AddZetaValidatiob</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20261103_232959_4c567754_feature_JNG_6349_AddZetaValidatiob</judo-tatami-core-version>
         <judo-tatami-util-version>1.0.0.20261103_233047_7989f58f_feature_JNG_6349_AddZetaValidatiob</judo-tatami-util-version>
         <judo-zeta-version>1.0.0.20261103_232955_e4f2b661_feature_JNG_6349_AddZetaValidatiob</judo-zeta-version>
