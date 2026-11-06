@@ -41,6 +41,7 @@ flowchart LR
     PSM -->|Psm2Measure| Measure
     ASM -->|Asm2Rdbms| RDBMS["RDBMS<br/>(hsqldb, postgresql)"]
     ASM -->|Asm2Expression| Expression
+    Expression -->|Asm2Query| Query["Query Model"]
     ASM -->|Asm2Keycloak| Keycloak
     RDBMS -->|Rdbms2Liquibase| Liquibase["Liquibase<br/>(hsqldb, postgresql)"]
 ```
@@ -58,6 +59,7 @@ flowchart LR
 | **RDBMS** | Relational database model in XMI, generated per database dialect. |
 | **Liquibase** | DDL generation model for creating and migrating the database schema. |
 | **Expression** | Expression model for query evaluation and derived attributes. |
+| **Query** | Persisted query model (`<name>-query.model`) built from the ASM, measure and expression models; saved last, next to them. |
 | **Keycloak** | (Optional) Identity and access management configuration. |
 
 ## Plugin Parameters
@@ -91,6 +93,7 @@ Below is the full configuration with all available parameters and their defaults
         <ignoreAsm2RdbmsTrace>false</ignoreAsm2RdbmsTrace>
         <ignoreRdbms2Liquibase>false</ignoreRdbms2Liquibase>
         <ignoreAsm2Expression>false</ignoreAsm2Expression>
+        <ignoreAsm2Query>false</ignoreAsm2Query>
         <useCache>false</useCache>
         <runInParallel>true</runInParallel>
         <saveModels>true</saveModels>
@@ -141,6 +144,7 @@ Each transformation step can be individually disabled:
 | `ignorePsm2Measure` | `false` | Skip PSM → Measure transformation |
 | `ignoreAsm2Rdbms` | `false` | Skip ASM → RDBMS transformation |
 | `ignoreAsm2Expression` | `false` | Skip ASM → Expression transformation |
+| `ignoreAsm2Query` | `false` | Skip ASM + Expression → Query transformation (no `<name>-query.model`) |
 | `ignoreRdbms2Liquibase` | `false` | Skip RDBMS → Liquibase transformation |
 | `ignoreAsm2Keycloak` | `true` | Skip ASM → Keycloak transformation |
 

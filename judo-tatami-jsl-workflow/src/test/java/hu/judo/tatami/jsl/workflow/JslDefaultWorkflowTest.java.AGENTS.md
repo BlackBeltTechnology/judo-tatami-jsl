@@ -10,7 +10,7 @@ End-to-end test of `JslDefaultWorkflow` over the `test` JSL fixture with dialect
   `TARGET_CLASSES = "target/test-classes/jsl"` — public output locations shared with the
   workflow save step.
 - `setUp()` (`@BeforeEach`), `testDefaultWorkflow()`, `testTransformationContextLoad()`,
-  `testTransformationContextPartialLoad()`.
+  `testTransformationContextPartialLoad()`, `testDefaultWorkflowWritesQueryModel()`.
 
 **What setUp does**
 
@@ -26,6 +26,7 @@ End-to-end test of `JslDefaultWorkflow` over the `test` JSL fixture with dialect
 
 - `testDefaultWorkflow` — `workReport.getStatus()` equals `WorkStatus.COMPLETED` and the
   deleted `test-psm.model` exists again, proving the JSL→PSM leg actually ran.
+- `testDefaultWorkflowWritesQueryModel` — the save dir holds `test-asm.model`, `test-expression.model` and `test-query.model` (See change: persisted-query-model).
 - `testTransformationContextLoad` — rebuilds the workflow, pre-seeds it through
   `WorkflowHelper.loadJslModel` / `loadPsmModel` from the saved `test-jsl.model` /
   `test-psm.model`, then restarts the workflow to check a pre-populated transformation

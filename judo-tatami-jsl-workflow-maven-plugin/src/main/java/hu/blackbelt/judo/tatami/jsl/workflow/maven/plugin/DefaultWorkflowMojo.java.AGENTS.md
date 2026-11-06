@@ -6,4 +6,6 @@ Maven Mojo `default-model-workflow` binding to COMPILE phase; sets up `DefaultWo
 - Plugin ships no `-etl` add-on. ETL/DUAL need the aggregate `hu.blackbelt.judo.tatami:judo-tatami-jsl-workflow-etl` (`<type>pom</type>`) as a plugin `<dependency>`.
 - `judo-tatami-jsl-jsl2psm-etl` + `-jsl2ui-etl` alone are NOT enough: every downstream stage Work reads `judo.transformation.mode` and needs its `-etl` add-on, else `EtlEngineMissingException`.
 
-See change: split-etl-artifacts.
+- `ignoreAsm2Query` param (property `ignoreAsm2Query`, default `false`) maps to `DefaultWorkflowSetupParameters.ignoreAsm2Query`; default build writes `<name>-query.model` next to the ASM model.
+
+See change: split-etl-artifacts, persisted-query-model.

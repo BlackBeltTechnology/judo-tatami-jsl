@@ -6,6 +6,6 @@ Maven plugin Mojos and artifact resolution utilities executing JSL-to-metamodel 
 | --- | --- |
 | `AbstractJslDslWorkflowProjectMojo.java` | Base Mojo providing dependency artifact extraction, classpath assembly, and Xtext resource validation via `performExecution()`. |
 | `ArtifactResolver.java` | Resolves Maven artifacts and unpacks zip/tar/gzip/bzip2 archives via Aether repository system; exports `getArtifact()`, `iterateArchive()`, and `getResolvedTemplateDirectory()`. |
-| `DefaultWorkflowMojo.java` | Maven Mojo `default-model-workflow` binding to COMPILE phase; sets up `DefaultWorkflow` parameters (PSM, ASM, RDBMS, Liquibase) and runs transformation workflow. `transformationMode` defaults to `"ZETA"`. → see `DefaultWorkflowMojo.java.AGENTS.md` |
+| `DefaultWorkflowMojo.java` | Maven Mojo `default-model-workflow` binding to COMPILE phase; sets up `DefaultWorkflow` parameters (PSM, ASM, RDBMS, Liquibase) and runs transformation workflow. `transformationMode` defaults to `"ZETA"`. Param `ignoreAsm2Query` (default `false`). → see `DefaultWorkflowMojo.java.AGENTS.md` |
 | `DialectParam.java` | JavaBean data container holding database dialect configuration (`rdbms`, `liquibase`, `asm2rdbmsTrace`) for Maven plugin configuration blocks. |
 | `ResourceList.java` | Discovers and filters classpath resources across file system directories and jar archives matching a regex `Pattern`. |

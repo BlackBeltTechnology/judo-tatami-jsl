@@ -71,6 +71,7 @@
         <judo-meta-psm-version>1.3.0.20261103_233608_4a6ea90e_feature_JNG_6349_AddZetaValidatiob</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.4.20261103_233209_1d600ba5_feature_JNG_6349_AddZetaValidatiob</judo-meta-asm-version>
         <judo-meta-expression-version>1.0.5.20261103_233912_d45144f7_feature_JNG_6349_AddZetaValidatiob</judo-meta-expression-version>
+        <judo-meta-query-version>1.0.3.20261103_233303_0a513a0c_feature_JNG_6349_AddZetaValidatiob</judo-meta-query-version>
         <judo-meta-liquibase-version>1.0.2.20261103_233219_79331be6_feature_JNG_6349_AddZetaValidatiob</judo-meta-liquibase-version>
         <judo-dao-api-version>1.0.4.20260311_102800_7e7131d1_develop</judo-dao-api-version>
         <judo-sdk-common-version>1.0.4.20261104_004543_495afab9_feature_JNG_6349_AddZetaValidatiob</judo-sdk-common-version>
@@ -315,6 +316,18 @@
 
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.query.model</artifactId>
+                <version>${judo-meta-query-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.query.osgi</artifactId>
+                <version>${judo-meta-query-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.liquibase.model</artifactId>
                 <version>${judo-meta-liquibase-version}</version>
             </dependency>
@@ -352,6 +365,12 @@
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-asm2expression</artifactId>
+                <version>${judo-tatami-base-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-asm2query</artifactId>
                 <version>${judo-tatami-base-version}</version>
             </dependency>
 

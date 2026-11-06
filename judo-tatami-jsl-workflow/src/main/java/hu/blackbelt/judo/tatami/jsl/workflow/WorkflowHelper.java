@@ -28,12 +28,14 @@ import hu.blackbelt.judo.meta.keycloak.runtime.KeycloakModel;
 import hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.query.runtime.QueryModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.rdbms.support.RdbmsModelResourceSupport;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakWork;
+import hu.blackbelt.judo.tatami.asm2query.Asm2QueryWork;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsWork;
 import hu.blackbelt.judo.tatami.expression.asm.validation.ExpressionValidationOnAsmWork;
@@ -412,6 +414,28 @@ public class WorkflowHelper {
                                 )
                                 .build()
                 )
+                .otherwise(new NoOpWork())
+                .build();
+    }
+
+    /**
+     * True when a {@link QueryModel} is already in the context (preloaded or built): the query stage is skipped.
+     */
+    public Supplier<Boolean> asm2QueryOutputPredicate() {
+        return () -> transformationContext.transformationContextVerifier.verifyClassPresent(QueryModel.class);
+    }
+
+    /**
+     * The query stage. It builds the {@link QueryModel} from the expression model {@code Asm2ExpressionWork} created in
+     * this run. Without such an expression model {@link Asm2QueryWork} skips with a WARN and puts nothing into the
+     * context, so there is no output check here.
+     */
+    public Work createAsm2QueryWork() {
+        return     aNewConditionalFlow()
+                .named("Conditional when Asm model exists then Execute Asm2Query")
+                .execute(new CheckWork(() -> transformationContext.transformationContextVerifier.verifyClassPresent(AsmModel.class)))
+                .when(WorkReportPredicate.COMPLETED)
+                .then(new Asm2QueryWork(transformationContext).withMetricsCollector(workflowMetrics))
                 .otherwise(new NoOpWork())
                 .build();
     }

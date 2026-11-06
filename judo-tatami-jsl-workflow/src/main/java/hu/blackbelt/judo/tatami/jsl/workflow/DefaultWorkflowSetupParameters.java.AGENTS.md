@@ -7,4 +7,6 @@ Configuration parameter bean for Tatami workflow execution. Exports `DefaultWork
 - `judo-tatami-jsl-jsl2psm-etl` + `-jsl2ui-etl` alone are NOT enough: every downstream stage Work (psm2asm, psm2measure, asm2rdbms, asm2keycloak, rdbms2liquibase, validations) also reads `judo.transformation.mode` and needs its `-etl` add-on, else `EtlEngineMissingException`.
 - Runtime callers (`JSLTransformationModelLoader`) pass `TransformationMode.fromSystemProperty()`; Maven callers use `DefaultWorkflowMojo` param `transformationMode`.
 
-See change: split-etl-artifacts.
+- `ignoreAsm2Query` defaults to `false`: the `asm2query` stage runs unless opted out.
+
+See change: split-etl-artifacts, persisted-query-model.

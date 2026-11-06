@@ -90,6 +90,9 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
     @Parameter(property = "ignoreAsm2Expression", defaultValue = "false")
     private Boolean ignoreAsm2Expression = false;
 
+    @Parameter(property = "ignoreAsm2Query", defaultValue = "false")
+    private Boolean ignoreAsm2Query = false;
+
     @Parameter(property = "destination", defaultValue = "${project.basedir}/target/model")
     private File destination;
 
@@ -185,6 +188,7 @@ public class DefaultWorkflowMojo extends AbstractJslDslWorkflowProjectMojo {
                         .ignorePsm2Measure(ignorePsm2Measure)
                         .ignoreAsm2Rdbms(ignoreAsm2Rdbms)
                         .ignoreAsm2Expression(ignoreAsm2Expression)
+                        .ignoreAsm2Query(ignoreAsm2Query)
                         .ignoreRdbms2Liquibase(ignoreRdbms2Liquibase)
                         .ignorePsm2AsmTrace(ignorePsm2AsmTrace)
                         .ignorePsm2MeasureTrace(ignorePsm2MeasureTrace)
