@@ -22,6 +22,7 @@ package hu.blackbelt.judo.tatami.jsl.workflow;
 
 import hu.blackbelt.judo.meta.jsl.jsldsl.runtime.JslDslModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.tatami.core.TransformationMode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -102,6 +103,9 @@ public class DefaultWorkflowSetupParameters {
     private Boolean ignoreAsm2Expression = false;
 
     @Builder.Default
+    private Boolean ignoreAsm2Query = false;
+
+    @Builder.Default
     private Boolean generateBehaviours = true;
 
     @Builder.Default
@@ -109,6 +113,13 @@ public class DefaultWorkflowSetupParameters {
 
     @Builder.Default
     private Boolean useCache = true;
+
+    /**
+     * Engine for jsl2psm / jsl2ui. Defaults to {@link TransformationMode#DEFAULT} (ZETA); ETL/DUAL need the
+     * judo-tatami-jsl-jsl2psm-etl / judo-tatami-jsl-jsl2ui-etl add-ons on the classpath. See change: split-etl-artifacts.
+     */
+    @Builder.Default
+    private TransformationMode transformationMode = TransformationMode.DEFAULT;
 
     @Builder.Default
     Boolean rdbmsCreateSimpleName = false;

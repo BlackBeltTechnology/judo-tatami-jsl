@@ -1,0 +1,42 @@
+model EnumModel;
+type string String min-size:0 max-size:255;
+type numeric Integer precision:9 scale:0;
+type boolean Boolean;
+type date Date;
+type timestamp Timestamp;
+widget string StringWidget;
+widget numeric NumericWidget;
+widget boolean BooleanWidget;
+widget date DateWidget;
+widget timestamp TimestampWidget;
+widget enum ComboWidget;
+enum Status {
+    ACTIVE = 0;
+    INACTIVE = 1;
+    PENDING = 2;
+}
+entity Task {
+    field String taskName;
+    field Status status default:Status#ACTIVE;
+}
+transfer TaskTransfer(Task t) {
+    field String taskName <= t.taskName;
+    field Status status <= t.status;
+    event update onUpdate;
+}
+row TaskRow(TaskTransfer t) {
+    column String taskName <= t.taskName;
+}
+view TaskView(TaskTransfer t) {
+    group main {
+        widget StringWidget taskName <= t.taskName;
+        widget ComboWidget status <= t.status;
+    }
+}
+actor TestActor {
+    access TaskTransfer[] tasks <= Task.all() update;
+}
+frontend TestMenu(TestActor a)
+    menu: {
+        table TaskRow[] tasks <= a.tasks label:"Tasks" view:TaskView;
+    };

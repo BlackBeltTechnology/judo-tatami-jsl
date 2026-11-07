@@ -1,0 +1,126 @@
+model RelatedRowDetailViewCRUD;
+
+import judo::types;
+
+widget numeric NumericWidget;
+widget string StringWidget;
+
+entity User {
+    identifier String email required;
+    field Integer numeric;
+
+    relation Related related;
+    relation Related[] relatedCollection;
+}
+
+entity Related {
+    field String first;
+    field Integer second;
+    relation Jumper theJumper;
+    relation Jumper[] theJumpersCollection;
+}
+
+entity Jumper {
+    field String first;
+    field String second;
+}
+
+transfer UserTransfer(User u) {
+    field String email <= u.email;
+    relation RelatedTransfer related <= u.related choices:Related.all() eager create update delete;
+    relation RelatedTransfer[] relatedCollection <= u.relatedCollection choices:Related.all() create update;
+
+    event create onCreate;
+    event update onUpdate;
+    event delete onDelete;
+}
+
+transfer RelatedTransfer(Related r) {
+    field String first <= r.first;
+    field Integer second <= r.second;
+    relation JumperTransfer theJumper <= r.theJumper create update delete choices:Jumper.all();
+    relation JumperTransfer[] theJumpersCollection <= r.theJumpersCollection create update delete choices:Jumper.all();
+
+    event create onCreate;
+    event update onUpdate;
+    event delete onDelete;
+}
+
+transfer JumperTransfer(Jumper j) {
+    field String first <=j.first;
+    field String second <= j.second;
+
+    event create onCreate;
+    event update onUpdate;
+    event delete onDelete;
+}
+
+row UserRow(UserTransfer u) {
+    column String email <= u.email;
+}
+
+view UserView(UserTransfer u) {
+    widget StringWidget email <= u.email label:"Email";
+    group level {
+        link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm selector:RelatedRow;
+        table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" form:RelatedForm view:RelatedView;
+    }
+}
+
+form UserForm(UserTransfer u) {
+    widget StringWidget email <= u.email label:"Email";
+    group level1 label:"Yo" icon:"text" {
+        link RelatedView related <= u.related icon:"related" label:"Related" width:6 form:RelatedForm selector:RelatedRow;
+    }
+    table RelatedRow[] relatedCollection <= u.relatedCollection icon:"relatedCollection" label:"Related Collection" width:6 selector:RelatedRow view:RelatedView form:RelatedForm;
+}
+
+row RelatedRow(RelatedTransfer r) {
+    column String first <= r.first label:"First";
+    column Integer second <= r.second label:"Second";
+}
+
+view RelatedView(RelatedTransfer r) {
+    widget StringWidget first <= r.first label:"First";
+    widget NumericWidget second <= r.second label:"Second";
+    group g1 {
+        link JumperView readOnlyJumper <= r.theJumper icon:"jumping" label:"Read only Jumper" form:JumperForm view:JumperView selector:JumperRow;
+        link JumperView myJumper <= r.theJumper icon:"jumping" label:"My Jumper" width:6 form:JumperForm selector:JumperRow;
+        table JumperRow[] myJumpers <= r.theJumpersCollection icon:"jumping-all" label:"My Jumpers" width:6 view:JumperView form:JumperForm selector:JumperRow;
+    }
+}
+
+form RelatedForm(RelatedTransfer r) {
+    group one label:"Group 1" {
+        widget StringWidget first <= r.first label:"First";
+    }
+    group level1 label:"Yo" icon:"text" {
+        link JumperView jumper <= r.theJumper label:"Jumper" width:6 form:JumperForm selector:JumperRow;
+    }
+    table JumperRow[] jumpers <= r.theJumpersCollection label:"Jumpers" width:6 selector:JumperRow view:JumperView form:JumperForm;
+}
+
+view JumperView(JumperTransfer j) {
+    widget StringWidget first <= j.first label:"First";
+}
+
+row JumperRow(JumperTransfer j) {
+    column String second <= j.second label:"Second";
+}
+
+form JumperForm(JumperTransfer j) {
+    group one label:"Group 1" {
+        widget StringWidget firstOnForm <= j.first label:"First on form";
+    }
+}
+
+actor NavigationActor {
+    access UserTransfer user <= User.any() create update delete;
+    access UserTransfer[] users <= User.all() create update delete;
+}
+
+frontend NavigationApp(NavigationActor a)
+    menu: {
+        link UserView user <= a.user label:"User" icon:"tools" view:UserView form:UserForm;
+        table UserRow[] users <= a.users label:"Users" icon:"people" view:UserView form:UserForm;
+    };
