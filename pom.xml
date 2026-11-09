@@ -78,7 +78,7 @@
         <judo-dispatcher-api-version>1.0.3.20260311_104219_ef26bd53_develop</judo-dispatcher-api-version>
         <judo-operation-utils-version>1.1.3.20261107_063623_5a8d5560_develop</judo-operation-utils-version>
 
-        <judo-runtime-core-version>1.0.6.20261107_065007_fbf7ffc5_develop</judo-runtime-core-version>
+        <judo-runtime-core-version>1.0.6.20261109_064135_bab9a73b_develop</judo-runtime-core-version>
         <judo-tatami-base-version>1.1.6.20261107_064330_0666e69e_develop</judo-tatami-base-version>
         <judo-tatami-core-version>1.1.4.20261106_234338_1cb4f5e2_develop</judo-tatami-core-version>
         <judo-tatami-util-version>1.0.0.20261107_063133_e1940ef5_develop</judo-tatami-util-version>
